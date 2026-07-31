@@ -4,8 +4,10 @@ import com.chocohead.mm.api.ClassTinkerers;
 import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.inventory.RecipeBookType;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.mixin.RecipeBookSettingsAccessor;
@@ -42,5 +44,15 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
     @Override
     public RecipeBookType getTesselatingRecipeBookType() {
         return TESSELLATING.get();
+    }
+
+    @Override
+    public void onServerStopped(Consumer<MinecraftServer> consumer) {
+        ServerLifecycleEvents.SERVER_STOPPED.register(consumer::accept);
+    }
+
+    @Override
+    public void onServerStopping(Consumer<MinecraftServer> consumer) {
+        ServerLifecycleEvents.SERVER_STOPPING.register(consumer::accept);
     }
 }

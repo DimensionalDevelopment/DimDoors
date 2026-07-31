@@ -97,11 +97,6 @@ public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Targe
         public static final VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);
         public static final VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.INSTANCE);
 
-        //Deperecated. Kept to migrate older world. To be removed at a later date.
-        public static final VirtualTargetType<LocalReference> LOCAL = registerDeprecated("local", LocalReference.CODEC);
-        public static final VirtualTargetType<RelativeReference> RELATIVE = registerDeprecated("relative", RelativeReference.CODEC);
-        public static final VirtualTargetType<RiftReference> GLOBAL = register("global", RiftReference.CODEC);
-
         public static void register() {
         }
 

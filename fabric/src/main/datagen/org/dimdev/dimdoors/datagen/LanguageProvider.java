@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.datagen;
+
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
@@ -27,17 +27,12 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ArmorSet;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.painting.ModPaintings;
-import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModBiomes;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -351,15 +346,12 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
         virtualType(VirtualTarget.VirtualTargetType.ESCAPE, "Escape");
         virtualType(VirtualTarget.VirtualTargetType.RIFT_REFERENCE, "Rift Reference");
-        virtualType(VirtualTarget.VirtualTargetType.GLOBAL, "Global");
         virtualType(VirtualTarget.VirtualTargetType.LIMBO, "Limbo");
-        virtualType(VirtualTarget.VirtualTargetType.LOCAL, "Local");
         virtualType(VirtualTarget.VirtualTargetType.PUBLIC_POCKET, "Public Pocket");
         virtualType(VirtualTarget.VirtualTargetType.POCKET_ENTRANCE, "Pocket Entrance");
         virtualType(VirtualTarget.VirtualTargetType.POCKET_EXIT, "Pocket Exit");
         virtualType(VirtualTarget.VirtualTargetType.PRIVATE, "Private Pocket Entrance");
         virtualType(VirtualTarget.VirtualTargetType.PRIVATE_POCKET_EXIT, "Private Pocket Exit");
-        virtualType(VirtualTarget.VirtualTargetType.RELATIVE, "Relative");
         virtualType(VirtualTarget.VirtualTargetType.ID_MARKER, "Id Marker");
         virtualType(VirtualTarget.VirtualTargetType.UNSTABLE, "Unstable");
         virtualType(VirtualTarget.VirtualTargetType.NONE, "None");

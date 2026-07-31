@@ -6,11 +6,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.rift.targets.TempTarget;
 import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
+import org.dimdev.dimdoors.rift.targets.TempTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
@@ -46,7 +44,7 @@ public class RiftKeyItem extends Item {
                 if (riftOptional.isPresent()) {
                     var rift = riftOptional.get();
 
-                    VirtualTarget<?> original = rift.getDestination();
+                    VirtualTarget<?> original = rift.getData().getDestination();
                     rift.setDestination(new TempTarget(temp.copy(), original.copy()));
                     context.getLevel().playSound(null, rift.getBlockPos(), ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS);
 

@@ -1,63 +1,229 @@
 package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import static org.dimdev.dimdoors.DimensionalDoors.LOGGER;
+
 public interface Rift extends Target {
+
     RiftData getData();
 
     void setData(RiftData data);
 
-    VirtualTarget<?> getDestination();
+    default void setDestination(VirtualTarget<?> destination) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Setting destination {} for {}", destination, this.getBlockPos().toShortString());
+        }
 
-    void setDestination(VirtualTarget<?> destination);
+        var data = getData();
 
-    LinkProperties getProperties();
+        if (data.getDestination() != null && this.isRegistered()) {
+            data.getDestination().unregister();
+        }
+        data.setDestination(destination);
+        if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
+            if (this.getLevel() != null) {
+                destination.setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            }
+            if (this.isRegistered()) destination.register();
+        }
+        this.setChanged();
+        this.updateColor();
+        setStateDirty(true);
+    }
 
-    void setProperties(LinkProperties properties);
+    void setStateDirty(boolean riftStat);
 
-    void updateProperties();
+    boolean isStateDirty();
 
-    boolean isAlwaysDelete();
+    default LinkProperties getProperties() {
+        return getData().getProperties();
+    }
 
-    boolean isForcedColor();
+    default void setProperties(LinkProperties properties) {
+        this.getData().setProperties(properties);
+        this.updateProperties();
+        this.setChanged();
+    }
 
-    RGBA getColor();
+    default void updateProperties() {
+        if (this.isRegistered())
+            RiftRegistry.getInstance().setProperties(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()), getData().getProperties());
+        this.setChanged();
+    }
 
-    void setColor(RGBA color);
+    void setChanged();
 
-    Target getTarget();
+    default void markStateChanged() {
+        this.setStateDirty(true);
+        this.setChanged();
+    }
 
-    boolean isRegistered();
+    default boolean isAlwaysDelete() {
+        return getData().isAlwaysDelete();
+    }
 
-    void register();
+    default boolean isForcedColor() {
+        return getData().isForcedColor();
+    }
 
-    void unregister();
+    default RGBA getColor() {
+        return getData().getColor();
+    }
 
-    void updateType();
+    default void setColor(RGBA color) {
+        this.getData().setColor(color);
+        this.setChanged();
+    }
 
-    void markStateChanged();
+    default Target getTarget() {
+        var data = getData();
 
-    void handleSourceMoved(Location location);
+        if (data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
+            return new MessageTarget("rifts.unlinked1");
+        } else {
+            //noinspecti on ConstantConditions
+            data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            return data.getDestination();
+        }
+    }
 
-    void handleTargetGone(Location location);
+    default boolean isRegistered() {
+        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+    }
 
-    void handleSourceGone(Location location);
+    default void register() {
+        if (this.isRegistered()) {
+            return;
+        }
 
-    void updateColor();
+        var data = getData();
 
-    void copyFrom(Rift rift);
+        Location loc = Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos());
+        RiftRegistry.getInstance().addRift(loc);
+        if (data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) {
+            data.getDestination().setLocation(loc);
+            data.getDestination().register();
+        }
+        this.updateProperties();
+        this.updateColor();
+    }
 
-    void setDeleteRift(boolean deleteRift);
+    default void unregister() {
+        if (isDeleteRift() && this.isRegistered()) {
+            RiftRegistry.getInstance().removeRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+        }
+    }
 
-    void detach();
+    default void updateType() {
+        if (!this.isRegistered()) return;
+        org.dimdev.dimdoors.rift.registry.Rift rift = RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+        rift.setDetached(this.isDetached());
+        rift.markDirty();
+    }
+
+    default void handleSourceMoved(Location location) {
+        this.getData().setDestination(location.asTarget());
+        this.setChanged();
+        this.updateColor();
+    }
+
+    default void handleTargetGone(Location location) {
+        var data = getData();
+
+        if (data.getDestination().shouldInvalidate(location)) {
+            data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
+            setChanged();
+        }
+
+        this.updateColor();
+    }
+
+
+    default void handleSourceGone(Location location) {
+        this.updateColor();
+    }
+
+    default void updateColor() {
+        var data = getData();
+
+        if (data.isForcedColor()) return;
+        if (!isRegistered()) {
+            setColor(new RGBA(0, 0, 0, 1));
+        } else if (data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
+            data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
+        } else {
+            data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            RGBA newColor = data.getDestination().getColor();
+            if (data.getColor() == null && newColor != null || !Objects.equals(data.getColor(), newColor)) {
+                data.setColor(newColor);
+                this.setChanged();
+            }
+        }
+    }
+
+    default void copyFrom(Rift rift) {
+        this.setData(rift.getData().copy());
+    }
+
+    boolean isDetached();
+
+    default void detach() {}
 
     BlockPos getBlockPos();
 
     Level getLevel();
+
+    BlockState getBlockState();
+
+    default void tick(Level level, BlockPos pos, BlockState blockState) {
+        if (level.isClientSide) return;
+
+        update(level, pos, blockState);
+    }
+
+    default void update(Level level, BlockPos pos, BlockState blockState) {
+
+    }
+
+    default org.dimdev.dimdoors.rift.registry.Rift asRift() {
+        return RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+    }
+
+
+    void setDeleteRift(boolean deleteRift);
+
+    public boolean isDeleteRift();
+
+    default void sync() {
+        setChanged();
+
+        var level = getLevel();
+
+        try {
+            if(level != null) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+            }
+        } catch (UnsupportedOperationException e) {
+            LOGGER.warn("Failed to sync rift block entity: {}", e.getMessage());
+        }
+    }
+
+    default void gatherDebug(Consumer<Component> textConsumer) {
+        textConsumer.accept(Component.literal("Size: " + getData().getSize()));
+    }
 }

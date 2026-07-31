@@ -69,6 +69,14 @@ public class ClientPacketListener {
         return addons;
     }
 
+    public static void clearPocketAddons() {
+        pocketWorld = null;
+        gridSize = 1;
+        pocketId = Integer.MIN_VALUE;
+        pocketRange = 1;
+        addons = new HashMap<>();
+    }
+
     public static void onPlayerInventorySlotUpdate(PlayerInventorySlotUpdateS2CPacket packet) {
         Minecraft.getInstance().execute(() -> {
             if (Minecraft.getInstance().player != null) {

@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.Rift;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,8 +68,6 @@ public interface RiftProvider<T extends BlockEntity & Rift> extends EntityBlock,
     }
 
     static <R extends BlockEntity & Rift> void tickRift(Level level, BlockPos blockPos, BlockState state, R rift) {
-        if (rift instanceof RiftBlockEntity riftBlockEntity) {
-            riftBlockEntity.tick(level, blockPos, state);
-        }
+        rift.tick(level, blockPos, state);
     }
 }

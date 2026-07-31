@@ -61,7 +61,10 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public void init(IDimDoorsClientSided<?> sided) {
         setClientSided(sided);
-        sided.onClientPlayerJoin(() -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+        sided.onClientPlayerJoin(() -> {
+            ClientPacketListener.clearPocketAddons();
+            ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket());
+        });
         registerCompats();
         EnvironmentAddonClient.init();
     }

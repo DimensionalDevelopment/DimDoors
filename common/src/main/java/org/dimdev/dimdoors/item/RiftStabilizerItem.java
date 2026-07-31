@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -16,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.jetbrains.annotations.Nullable;
@@ -41,15 +39,15 @@ public class RiftStabilizerItem extends Item {
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             } else {
                 player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
-                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
                 return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
             }
         }
 
         if (RaycastHelper.hitsDetachedRift(hit, world)) {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
-            if (!rift.stabilized && !rift.closing) {
-                rift.setStabilized(true);
+            if (rift.getWeight() > 0) {
+                rift.setStabilized();
                 world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE, SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
 
                 var serverPlayer = (ServerPlayer) player;

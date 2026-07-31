@@ -13,6 +13,7 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.IDimensionalDoorsSided;
 import org.dimdev.limlib.api.ISided;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 
@@ -42,11 +43,11 @@ public final class ModDimensions {
     public static ServerLevel DUNGEON_POCKET_DIMENSION;
 
     public static boolean isPocketDimension(Level world) {
-        return isPocketDimension(world.dimension());
+        return world != null && isPocketDimension(world.dimension());
     }
 
     public static boolean isPrivatePocketDimension(Level world) {
-    return world != null && world == PERSONAL_POCKET_DIMENSION;
+        return world != null && world.dimension().equals(PERSONAL);
     }
 
     public static boolean isPocketDimension(ResourceKey<Level> type) {
@@ -62,7 +63,8 @@ public final class ModDimensions {
         return world != null && world.dimension().equals(LIMBO);
     }
 
-    public static void init(ISided<?> sided) {
+    public static void init(IDimensionalDoorsSided<?> sided) {
+        sided.onServerStopping(server -> clearServerReferences());
         sided.onServerStarted(server -> {
             ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(LIMBO_TYPE_KEY);
             ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(POCKET_TYPE_KEY);
@@ -71,6 +73,15 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
+    }
+
+    public static void clearServerReferences() {
+        LIMBO_TYPE = null;
+        POCKET_TYPE = null;
+        LIMBO_DIMENSION = null;
+        PERSONAL_POCKET_DIMENSION = null;
+        PUBLIC_POCKET_DIMENSION = null;
+        DUNGEON_POCKET_DIMENSION = null;
     }
 
     public static void bootstrap(BootstrapContext<DimensionType> entries) {

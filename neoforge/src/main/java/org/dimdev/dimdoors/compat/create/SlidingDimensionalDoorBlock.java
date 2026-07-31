@@ -24,7 +24,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.Rift;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

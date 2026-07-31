@@ -68,8 +68,8 @@ public class ResourceUtil {
     }
 
     public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {
-        try {
-            return reader.apply(manager.getResource(resourceKey).get().open());
+        try (InputStream stream = manager.getResource(resourceKey).get().open()) {
+            return reader.apply(stream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -81,8 +81,8 @@ public class ResourceUtil {
         map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
                 id -> keyProvider.apply(startingPath, id.getKey()),
                 id -> {
-                    try {
-                        return reader.apply(id.getValue().open(), keyProvider.apply(startingPath, id.getKey()));
+                    try (InputStream stream = id.getValue().open()) {
+                        return reader.apply(stream, keyProvider.apply(startingPath, id.getKey()));
                     } catch (IOException | RuntimeException e) {
                         throw new RuntimeException(e);
                     }
@@ -95,8 +95,8 @@ public class ResourceUtil {
         Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
 
         collection.addAll(ids.entrySet().parallelStream().unordered().map(id -> {
-            try {
-                return reader.apply(id.getValue().open(), id.getKey());
+            try (InputStream stream = id.getValue().open()) {
+                return reader.apply(stream, id.getKey());
             } catch (Exception e) {
                 LOGGER.error("Error loading resource: " + id, e);
                 return null;

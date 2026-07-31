@@ -118,7 +118,7 @@ public abstract class PocketGenerator<T extends PocketGenerator<T>> implements W
                 }
             });
 
-        manager.getRifts().forEach(rift -> rift.getDestination().setLocation(Location.ofWorld(world, rift.getBlockPos())));
+        manager.getRifts().forEach(rift -> rift.getData().getDestination().setLocation(Location.ofWorld(world, rift.getBlockPos())));
         TemplateUtils.registerRifts(manager.getRifts(), parameters.linkTo(), parameters.linkProperties(), pocket);
     }
 

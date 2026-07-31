@@ -22,7 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModLootTables;
@@ -51,7 +51,7 @@ public class RiftRemoverItem extends Item {
         if (world.isClientSide) {
             if (!RaycastHelper.hitsDetachedRift(hit, world)) {
                 player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
-                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
             }
             return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
         }
@@ -61,8 +61,8 @@ public class RiftRemoverItem extends Item {
         if (RaycastHelper.hitsDetachedRift(hit, world)) {
             // casting to BlockHitResult is mostly safe since RaycastHelper#hitsDetachedRift already checks hit type
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
-            if (!Objects.requireNonNull(rift).closing) {
-                rift.setClosing(true);
+            if (Objects.requireNonNull(rift).getWeight() >= 0) {
+                rift.setClosing();
                 world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE, SoundSource.BLOCKS, 0.6f, 1);
 
                 var serverPlayer = (ServerPlayer) player;

@@ -52,7 +52,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
         boolean outsidePocket = !ModDimensions.isPocketDimension(world);
         double speed = 0.1;
 
-        if (rift.closing) {
+        if (rift.getWeight() < 0) {
             world.addParticle(RiftParticleOptions.of(outsidePocket),
                     pos.getX() + .5,
                     pos.getY() + .5,
@@ -63,7 +63,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
             );
         }
 
-        world.addParticle(RiftParticleOptions.of(outsidePocket, rift.stabilized),
+        world.addParticle(RiftParticleOptions.of(outsidePocket, rift.getWeight() == 0),
                 pos.getX() + .5,
                 pos.getY() + .5,
                 pos.getZ() + .5,

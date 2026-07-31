@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -19,12 +18,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.item.AttackBlockResult;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
-import org.dimdev.limlib.api.client.ToolTipHelper;
-import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.item.component.IdCounter;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
+import org.dimdev.limlib.api.client.ToolTipHelper;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -51,8 +50,11 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
             if (RaycastHelper.hitsRift(hit, world)) {
                 Rift rift = (Rift) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-                if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < IdCounter.get(stack)) {
-                    EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
+                var destination = rift.getData().getDestination();
+
+
+                if (destination instanceof IdMarker idMarker && idMarker.getId() < IdCounter.get(stack)) {
+                    EntityUtils.chat(player, Component.literal("Id: " + idMarker.getId()));
                 } else {
                     int id = IdCounter.getAndIncrement(stack);
 
@@ -88,7 +90,9 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
             if (player.isShiftKeyDown()) {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof Rift rift) {
-                    if (!(rift.getDestination() instanceof IdMarker) || ((IdMarker) rift.getDestination()).getId() != -1) {
+
+
+                    if (!(rift.getData().getDestination() instanceof IdMarker idMarker) || idMarker.getId() != -1) {
                         rift.setDestination(new IdMarker(-1));
                         EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
                         return AttackBlockResult.success(false);

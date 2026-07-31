@@ -2,99 +2,51 @@ package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.chat.Component;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.LocationProvider;
-import org.dimdev.dimdoors.rift.targets.MessageTarget;
-import org.dimdev.dimdoors.rift.targets.Targets;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public abstract class RiftBlockEntity extends BlockEntity implements Rift, Target, EntityTarget {
-    private static final int UPDATE_PERIOD = 200; //10 seconds
-    private static final RandomSource random = RandomSource.create();
-    private static final Logger LOGGER = LogManager.getLogger();
-    public static long showRiftCoreUntil = 0;
-
-    @NotNull
-    protected RiftData data = new RiftData();
-
-    public float size = 0f;
-    private int updateTimer;
-    public boolean closing;
-    public boolean stabilized;
-
+    @NotNull protected RiftData data = new RiftData();
     protected boolean riftStateChanged;
     private boolean deleteRift = true;
 
     public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        this.updateTimer = random.nextInt(UPDATE_PERIOD);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+    protected void loadAdditional(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider provider) {
         super.loadAdditional(nbt, provider);
         this.deserialize(nbt);
     }
 
     public void deserialize(CompoundTag nbt) {
         this.data = RiftData.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("data")).getOrThrow();
-        this.closing = nbt.getBoolean("closing");
-        this.stabilized = nbt.getBoolean("stablized");
-        this.size = nbt.getFloat("size");
-        this.updateTimer = nbt.getInt("updateTimer");
+
+        if(nbt.contains("size", Tag.TAG_FLOAT)) {
+            this.data.setSize((int) Math.clamp(nbt.getFloat("size"), 0, 200));
+        }
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+    public void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider provider) {
         super.saveAdditional(nbt, provider);
         this.serialize(nbt);
     }
 
     public CompoundTag serialize(CompoundTag nbt) {
-        //      TODO: Eventually removal when RelativeReference and LocalReference are purged
-        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE && this.level instanceof ServerLevel serverLevel) {
-            this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
-        }
-
-
         nbt.put("data", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, this.data).getOrThrow());
-
-        nbt.putBoolean("closing", this.closing);
-        nbt.putBoolean("stablized", this.stabilized);
-        nbt.putFloat("size", this.size);
-        nbt.putInt("updateTimer", this.updateTimer);
         return nbt;
     }
 
@@ -103,99 +55,16 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void setDestination(VirtualTarget<?> destination) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Setting destination {} for {}", destination, this.worldPosition.toShortString());
-        }
-
-        if (this.getDestination() != null && this.isRegistered()) {
-            this.getDestination().unregister();
-        }
-        this.data.setDestination(destination);
-        if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
-            if (this.level != null) {
-                destination.setLocation(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-            }
-            if (this.isRegistered()) destination.register();
-        }
-        this.riftStateChanged = true;
-        this.setChanged();
-        this.updateColor();
-    }
-
-    public void setColor(RGBA color) {
-        this.data.setColor(color);
-        this.setChanged();
-    }
-
-    public void setProperties(LinkProperties properties) {
-        this.data.setProperties(properties);
-        this.updateProperties();
-        this.setChanged();
-    }
-
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
-
-
-//    for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
-//        ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
-//    }
         var nbt = super.getUpdateTag(provider);
-//      TODO: Eventually removal when RelativeReference and LocalReference are purged
-        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE && this.level instanceof ServerLevel serverLevel) {
-            this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
-        }
-
         nbt.put("data", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, this.data).getOrThrow());
-        nbt.putBoolean("closing", this.closing);
-        nbt.putBoolean("stablized", this.stabilized);
-        nbt.putFloat("size", this.size);
-
         return nbt;
     }
 
-    public void markStateChanged() {
-        this.riftStateChanged = true;
-        this.setChanged();
-    }
-
-    public boolean isRegistered() { // TODO: do we need to implement this for v2?
-        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && RiftRegistry.getInstance().isRiftAt(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-    }
-
-    public void register() {
-        if (this.isRegistered()) {
-            return;
-        }
-
-        Location loc = Location.ofWorld((ServerLevel) this.level, this.worldPosition);
-        RiftRegistry.getInstance().addRift(loc);
-        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) {
-            this.data.getDestination().setLocation(loc);
-            this.data.getDestination().register();
-        }
-        this.updateProperties();
-        this.updateColor();
-    }
-
-    public void updateProperties() {
-        if (this.isRegistered())
-            RiftRegistry.getInstance().setProperties(Location.ofWorld((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
-        this.setChanged();
-    }
-
-    public void unregister() {
-        if (deleteRift && this.isRegistered()) {
-            RiftRegistry.getInstance().removeRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-        }
-    }
-
-    public void updateType() {
-        if (!this.isRegistered()) return;
-        org.dimdev.dimdoors.rift.registry.Rift rift = RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-        rift.setDetached(this.isDetached());
-        rift.markDirty();
+    @Override
+    public void setChanged() {
+        super.setChanged();
     }
 
     public void handleSourceMoved(Location location) {
@@ -204,204 +73,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
         this.updateColor();
     }
 
-    public void handleTargetGone(Location location) {
-        if (this.data.getDestination().shouldInvalidate(location)) {
-            this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
-            this.setChanged();
-        }
-
-        this.updateColor();
-    }
-
-    public void handleSourceGone(Location location) {
-        this.updateColor();
-    }
-
-    public Target getTarget() {
-        if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
-            return new MessageTarget("rifts.unlinked1");
-        } else {
-            //noinspecti on ConstantConditions
-            this.data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-            return this.data.getDestination();
-        }
-    }
-
-    public boolean teleport(Entity entity) {
-        this.riftStateChanged = false;
-
-        // Attempt a teleport
-        try {
-            Vec3 relativePos = new Vec3(0, 0, 0);
-            Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
-            Vec3 relativeVelocity = entity.getDeltaMovement();
-
-            Target target = this.getTarget();
-            var location = target instanceof LocationProvider provider ? provider.getLocation() : null;
-
-            BlockState state = this.getLevel().getBlockState(this.getBlockPos());
-            Block block = state.getBlock();
-            if (block instanceof CoordinateTransformerBlock transformer) {
-                var blockPos = getBlockPos();
-                var sourceFrame = SableHelper.INSTANCE.sourceTeleportFrame(
-                        (ServerLevel) this.level,
-                        blockPos,
-                        entity,
-                        entity.position(),
-                        relativeAngle,
-                        relativeVelocity
-                );
-                TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, blockPos);
-                TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, blockPos);
-                relativePos = transformer.transformTo(transformationBuilder, sourceFrame.pos());
-                relativeAngle = transformer.rotateTo(rotatorBuilder, sourceFrame.angle());
-                relativeVelocity = transformer.rotateTo(rotatorBuilder, sourceFrame.velocity());
-            }
-
-            EntityTarget entityTarget = target.as(Targets.ENTITY);
-            if (entityTarget.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
-                VirtualLocation vLoc = VirtualLocation.fromLocation(Location.ofWorld((ServerLevel) entity.level(), entity.blockPosition()));
-                if (DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages)
-                    EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
-                return true;
-            }
-        } catch (Exception e) {
-            EntityUtils.chat(entity, Component.literal("Something went wrong while trying to teleport you, please report this bug."));
-            LOGGER.error("Teleporting failed with the following exception: ", e);
-        }
-
-        return false;
-    }
-
-    public void updateColor() {
-        if (this.data.isForcedColor()) return;
-        if (!this.isRegistered()) {
-            this.data.setColor(new RGBA(0, 0, 0, 1));
-        } else if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
-            this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
-        } else {
-            this.data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-            RGBA newColor = this.data.getDestination().getColor();
-            if (this.data.getColor() == null && newColor != null || !Objects.equals(this.data.getColor(), newColor)) {
-                this.data.setColor(newColor);
-                this.setChanged();
-            }
-        }
-    }
-
-    public abstract boolean isDetached();
-
-    @Override
-    public void copyFrom(Rift rift) {
-        this.data.setDestination(rift.getDestination());
-        this.data.setProperties(rift.getProperties());
-        this.data.setAlwaysDelete(rift.isAlwaysDelete());
-        this.data.setColor(rift.getColor());
-        this.data.setForcedColor(rift.isForcedColor());
-        if (rift instanceof RiftBlockEntity riftBlockEntity) {
-            this.stabilized = riftBlockEntity.stabilized;
-
-            if (this.closing) {
-                this.closing = riftBlockEntity.closing;
-                this.size = riftBlockEntity.size;
-            }
-        }
-    }
-
-    public VirtualTarget getDestination() {
-        return this.data.getDestination();
-    }
-
-    public LinkProperties getProperties() {
-        return this.data.getProperties();
-    }
-
-    public boolean isAlwaysDelete() {
-        return this.data.isAlwaysDelete();
-    }
-
-    public boolean isForcedColor() {
-        return this.data.isForcedColor();
-    }
-
-    public RGBA getColor() {
-        return this.data.getColor();
-    }
-
     public void setData(RiftData data) {
         this.data = data == null ? new RiftData() : data.copy();
     }
 
-    public RiftData getData() {
+    public @NotNull RiftData getData() {
         return this.data;
-    }
-
-    public void setWorld(Level level) {
-        this.level = level;
-    }
-
-    public org.dimdev.dimdoors.rift.registry.Rift asRift() {
-        return RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
-    }
-
-    public void tick(Level level, BlockPos pos, BlockState blockState) {
-        if (level.isClientSide) return;
-
-//    if(!blockClass().isInstance(level.getBlockState(pos).getBlock())) {
-//        setRemoved();
-//        return;
-//    }
-
-        if (updateTimer >= UPDATE_PERIOD) {
-            onUpdate(level, pos);
-            updateTimer = 0;
-        }
-
-        updateTimer++;
-
-        if (closing) {
-            if (size > 0) {
-                size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
-            } else {
-                onClose(level, pos);
-            }
-        } else if (!stablized()) {
-            onGrowth(level, pos);
-
-
-        }
-
-        if (updateTimer % 20 == 0) sync();
-    }
-
-    public void onGrowth(Level level, BlockPos pos) {
-
-    }
-
-    public void sync() {
-        setChanged();
-        try {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
-        } catch (UnsupportedOperationException e) {
-            LOGGER.warn("Failed to sync rift block entity: {}", e.getMessage());
-        }
-    }
-
-    public boolean stablized() {
-        return stabilized;
-    }
-
-    protected void onClose(Level level, BlockPos pos) {
-    }
-
-    protected void onUpdateHalfway(Level level, BlockPos pos) {
-    }
-
-    protected void onUpdate(Level level, BlockPos pos) {
-    }
-
-    public boolean updateNearestRift() {
-        return false;
     }
 
     @Override
@@ -409,7 +86,18 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
         this.deleteRift = deleteRift;
     }
 
-    public void detach() {
+    @Override
+    public boolean isDeleteRift() {
+        return deleteRift;
+    }
 
+    @Override
+    public boolean isStateDirty() {
+        return riftStateChanged;
+    }
+
+    @Override
+    public void setStateDirty(boolean riftState) {
+        this.riftStateChanged = riftState;
     }
 }

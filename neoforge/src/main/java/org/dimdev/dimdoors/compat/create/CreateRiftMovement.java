@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public final class CreateRiftMovement {
         for (Map.Entry<BlockPos, Location> entry : trackedRifts.entrySet()) {
             BlockPos targetPos = transform.apply(entry.getKey());
             BlockEntity blockEntity = level.getBlockEntity(targetPos);
-            if (blockEntity instanceof RiftBlockEntity rift) {
+            if (blockEntity instanceof Rift rift) {
                 if (!registry.isRiftAt(Location.ofWorld(level, targetPos))) {
                     rift.register();
                 }

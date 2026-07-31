@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.FACING;
 
 public class RiftUtils {
+    public static long showRiftCoreUntil = 0;
+
     public static <T extends Rift> T registerFunction(@NotNull T rift) {
         rift.register();
         return rift;

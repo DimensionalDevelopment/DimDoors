@@ -45,6 +45,10 @@ public class ServerPacketHandler {
         return DATA_MAP.computeIfAbsent(player.getUUID(), uuid -> new PlayerSyncData());
     }
 
+    public static void clear() {
+        DATA_MAP.clear();
+    }
+
     // TODO: attach this to some event to detect other kinds teleportation
 
     public static void sync(ServerPlayer player, ItemStack stack, InteractionHand hand) {

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.block.Blocks;
@@ -10,7 +11,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.*;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
@@ -20,6 +23,8 @@ import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.ModFluidTypes;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.limlib.NeoForgeSided;
+
+import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.DimensionalDoors.getSided;
 
@@ -91,5 +96,15 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
         if(getSided().isModLoaded("create")) {
             CreateCompat.init();
         }
+    }
+
+    @Override
+    public void onServerStopped(Consumer<MinecraftServer> consumer) {
+        NeoForge.EVENT_BUS.<ServerStoppedEvent>addListener(event -> consumer.accept(event.getServer()));
+    }
+
+    @Override
+    public void onServerStopping(Consumer<MinecraftServer> consumer) {
+        NeoForge.EVENT_BUS.<ServerStoppedEvent>addListener(event -> consumer.accept(event.getServer()));
     }
 }

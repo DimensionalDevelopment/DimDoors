@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -7,6 +8,8 @@ import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.limlib.api.ISided;
+
+import java.util.function.Consumer;
 
 public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> extends ISided<T> {
     public RecipeBookType getTesselatingRecipeBookType();
@@ -16,6 +19,10 @@ public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> ext
             SableCompat.init();
         }
     }
+
+    void onServerStopped(Consumer<MinecraftServer> server);
+
+    void onServerStopping(Consumer<MinecraftServer> server);
 
     default Fluid createFlowingEternalFluid() {
         return new EternalFluid.Flowing();

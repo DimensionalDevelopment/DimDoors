@@ -38,7 +38,7 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
         var blockEntity = resultingLevel.getBlockEntity(newPos);
 
         if(blockEntity instanceof Rift rift) {
-            rift.setDeleteRift(false);
+            rift.setDeleteRift(true);
             var newLocation = Location.ofWorld(resultingLevel, newPos);
             var registry = RiftRegistry.getInstance();
             if (registry.isRiftAt(newLocation)) {

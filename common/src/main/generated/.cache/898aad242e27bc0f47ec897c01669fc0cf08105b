@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-30T06:04:49.9234187	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-07-31T02:00:24.0123096	DimensionalDoors/Block Loot Tables
 55dc49e6e27f61eb91946738dc4a0d08e55111fa data\dimdoors\loot_table\blocks\dark_sand.json
 882c96b3abb97cd9b7e9b1e5a5f216b38f2a1c6c data\dimdoors\loot_table\blocks\light_blue_terracotta_button.json
 4582207b56a4968fdf1b1735447e7cf3c4fa50b3 data\dimdoors\loot_table\blocks\lime_terracotta_button.json
@@ -60,8 +60,8 @@ bdd8e9c13e4bfa401d1694a9bbdc44e1f450c0ed data\dimdoors\loot_table\blocks\deepsla
 d824a76939803ae91664925e0d860a1a89e4529f data\dimdoors\loot_table\blocks\yellow_glazed_terracotta_gate.json
 c3493ed9f87f857ca1892c2f48c9e5a37edf1784 data\dimdoors\loot_table\blocks\white_glazed_terracotta_fence.json
 886b28c97af4207e2bb8649f88281bdcf3015adf data\dimdoors\loot_table\blocks\light_gray_terracotta_gate.json
-faac9fb88253be340f69901048900d14efeeca8c data\dimdoors\loot_table\blocks\cyan_glazed_terracotta_slab.json
 37e857a73c51d2f3b956254da341ac17fc21be15 data\dimdoors\loot_table\blocks\driftwood_trapdoor.json
+faac9fb88253be340f69901048900d14efeeca8c data\dimdoors\loot_table\blocks\cyan_glazed_terracotta_slab.json
 c7cb58cc3e5dc237e1058fbe5b864545256a18f7 data\dimdoors\loot_table\blocks\light_blue_glazed_terracotta_slab.json
 4224828963f54034c80656766cc0ab756f348373 data\dimdoors\loot_table\blocks\black_glazed_terracotta_button.json
 ac91e5eba6df38506b135543e404471b83f5a789 data\dimdoors\loot_table\blocks\stone_door.json

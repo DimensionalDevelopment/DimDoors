@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.dimdev.dimdoors.item.RaycastHelper;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
@@ -67,7 +67,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
 
             if (context.getLevel().isClientSide) {
                 context.getPlayer().displayClientMessage(Component.translatable("rifts.entrances.rift_too_close"), true);
-                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
             }
 
             return InteractionResult.FAIL;
@@ -81,7 +81,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
         DetachedRiftBlockEntity rift = null;
         if (placedOnRift) {
             rift = (DetachedRiftBlockEntity) context.getLevel().getBlockEntity(pos);
-            rift.setUnregisterDisabled(true);
+            rift.setDeleteRift(false);
             context.getLevel().removeBlock(pos, false);
         }
 
@@ -107,7 +107,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
                 newRift.updateType();
             }
         } else if (rift != null) {
-            rift.setUnregisterDisabled(false);
+            rift.setDeleteRift(false);
         }
 
         return result;
@@ -120,7 +120,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
                     BlockPos searchPos = new BlockPos(x, y, z);
                     if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT) {
                         DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(searchPos);
-                        if (Math.sqrt(pos.distSqr(searchPos)) < rift.size) {
+                        if (Math.sqrt(pos.distSqr(searchPos)) < rift.getData().getSize()) {
                             return true;
                         }
                     }

@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.util.Mth;
 import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Location;
@@ -24,14 +25,16 @@ public class RiftData {
             LinkProperties.CODEC.optionalFieldOf("properties").forGetter(data -> Optional.ofNullable(data.properties)),
             RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
             Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
-            Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-    ).apply(instance, (destination, properties, color, alwaysDelete, forcedColor) -> {
+            Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor),
+            Codec.INT.optionalFieldOf("size", 0).forGetter(RiftData::getSize)
+    ).apply(instance, (destination, properties, color, alwaysDelete, forcedColor, size) -> {
         RiftData data = new RiftData();
         data.destination = destination;
         data.properties = properties.orElse(null);
         data.color = color;
         data.alwaysDelete = alwaysDelete;
         data.forcedColor = forcedColor;
+        data.setSize(size);
         return data;
     }));
 
@@ -41,6 +44,7 @@ public class RiftData {
     private LinkProperties properties = null;
     private boolean alwaysDelete;
     private boolean forcedColor;
+    private int size = 0;
     private RGBA color = RGBA.NONE;
 
     public RiftData() {
@@ -54,6 +58,7 @@ public class RiftData {
                 .build();
         data.color = this.color == null ? null : this.color.clone();
         data.alwaysDelete = this.alwaysDelete;
+        data.setSize(size);
         data.forcedColor = this.forcedColor;
         return data;
     }
@@ -97,5 +102,13 @@ public class RiftData {
     public void setColor(RGBA color) {
         this.forcedColor = color != null;
         this.color = color;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = Mth.clamp(size, 0, 200);
     }
 }

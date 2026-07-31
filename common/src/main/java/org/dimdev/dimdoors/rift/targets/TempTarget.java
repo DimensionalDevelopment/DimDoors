@@ -1,13 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.block.entity.Rift;
 
 public class TempTarget extends VirtualTarget<TempTarget> {
     public static final MapCodec<TempTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -36,7 +34,7 @@ public class TempTarget extends VirtualTarget<TempTarget> {
 
     @Override
     public Target receiveOther() {
-        if(this.getLocation() != null && this.getLocation().getBlockEntity() instanceof RiftBlockEntity rift) {
+        if(this.getLocation() != null && this.getLocation().getBlockEntity() instanceof Rift rift) {
             if(original == NoneTarget.INSTANCE && rift.getBlockState().getBlock() instanceof RiftVariantProvider provider) {
                 provider.revertToBaseVariant(this.getLocation().getWorld(), rift.getBlockPos(), rift.getBlockState());
             } else {

@@ -94,6 +94,10 @@ public final class Decay {
         }
     }
 
+    public static void clearQueue() {
+        DECAY_QUEUE.clear();
+    }
+
     public static void tick(ServerLevel world) {
         ResourceKey<Level> key = world.dimension();
         if (DECAY_QUEUE.containsKey(key)) {
@@ -157,7 +161,7 @@ public final class Decay {
 
         public static void populate(MinecraftServer server) {
             patterns.clear();
-            var registry = DimensionalDoors.getServer().registryAccess();
+            var registry = server.registryAccess();
 
             for (DecayPatternHolder pattern : undiffernitatedPatterns) {
                 pattern.value().constructApplicable(registry).forEach(resourceKey -> patterns.computeIfAbsent(resourceKey, (b) -> new ArrayList<>()).add(pattern));

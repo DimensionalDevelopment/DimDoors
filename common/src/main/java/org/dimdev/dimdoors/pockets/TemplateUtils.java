@@ -80,8 +80,8 @@ public class TemplateUtils {
         LOGGER.info("Registering {} rifts for pocket {}", rifts.size(), pocket.getId());
 
         for (Rift rift : rifts) {
-            if (rift.getDestination() instanceof PocketEntranceMarker) {
-                entranceWeights.put(rift, ((PocketEntranceMarker) rift.getDestination()).getWeight());
+            if (rift.getData().getDestination() instanceof PocketEntranceMarker entranceMarker) {
+                entranceWeights.put(rift, entranceMarker.getWeight());
             }
         }
 
@@ -95,25 +95,22 @@ public class TemplateUtils {
 
         // Replace entrances with appropriate destinations
         for (Rift rift : rifts) {
-            VirtualTarget dest = rift.getDestination();
-            if (dest instanceof PocketEntranceMarker) {
+            if (rift.getData().getDestination() instanceof PocketEntranceMarker entranceMarker) {
                 if (rift == selectedEntrance) {
-                    rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
+                    rift.setDestination(entranceMarker.getIfDestination());
                     rift.register();
 
-                    // FIX: Use 'world' instead of rift.getLevel()
                     Location entranceLocation = Location.ofWorld(world, rift.getBlockPos());
                     PocketRegistry.getInstance().addPocketEntrance(pocket, entranceLocation);
                     LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
-                    rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
+                    rift.setDestination(entranceMarker.getOtherwiseDestination());
                 }
             }
         }
 
         for (Rift rift : rifts) {
-            VirtualTarget dest = rift.getDestination();
-            if (dest instanceof PocketExitMarker) {
+            if (rift.getData().getDestination() instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 VirtualTarget<?> exitDestination = rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE;
                 if (exitDestination == null) {

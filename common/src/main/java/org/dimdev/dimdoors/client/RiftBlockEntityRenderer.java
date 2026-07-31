@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -9,13 +10,15 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.item.ModItems;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RiftBlockEntityRenderer<T extends RiftBlockEntity> implements BlockEntityRenderer<T> {
+public abstract class RiftBlockEntityRenderer<T extends BlockEntity & Rift> implements BlockEntityRenderer<T> {
     private final BlockEntityRendererProvider.Context context;
 
     public RiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -33,7 +36,7 @@ public abstract class RiftBlockEntityRenderer<T extends RiftBlockEntity> impleme
             matrices.mulPose(minecraft.getBlockEntityRenderDispatcher().camera.rotation());
             matrices.scale(0.025F, -0.025F, 0.025F);
 
-            renderTextLines(List.of(Component.literal("Closing: " + rift.closing), Component.literal("Size: " + rift.size)), matrices, multiBufferSource, LightTexture.FULL_BRIGHT);
+            renderTextLines(Util.make(new ArrayList<>(), list -> rift.gatherDebug(list::add)), matrices, multiBufferSource, LightTexture.FULL_BRIGHT);
 
             matrices.popPose();
         }

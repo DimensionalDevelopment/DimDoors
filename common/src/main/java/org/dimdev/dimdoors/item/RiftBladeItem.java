@@ -22,8 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +72,7 @@ public class RiftBladeItem extends SwordItem {
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             } else {
                 player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"), true);
-                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
                 return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
             }
         }
@@ -130,10 +130,10 @@ public class RiftBladeItem extends SwordItem {
         } else if (RaycastHelper.hitsDetachedRift(hit, world)) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockPos pos = blockHitResult.getBlockPos();
-            RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
+            Rift rift = (Rift) world.getBlockEntity(blockHitResult.getBlockPos());
 
             world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
-            var entranceRift = ((EntranceRiftBlockEntity) world.getBlockEntity(pos));
+            var entranceRift = (Rift) world.getBlockEntity(pos);
             entranceRift.copyFrom(rift);
             stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

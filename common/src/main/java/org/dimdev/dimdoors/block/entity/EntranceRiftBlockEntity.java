@@ -2,14 +2,10 @@ package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -18,17 +14,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.block.*;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.TraversableRiftBlock;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
-import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.RiftUtils;
-import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.rift.targets.LocationProvider;
+import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -66,18 +69,62 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         doorBlockState = state.getBlock() instanceof TraversableRiftBlock<?> traversableRiftBlock ? traversableRiftBlock.getVisualBlockState(state) : state;
     }
 
-
-    @Override
     public boolean teleport(Entity entity) {
         //Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
-        boolean status = super.teleport(entity);
+        boolean status = attemptTeleport(entity);
 
-        if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
+        if (this.isStateDirty() && !this.data.isAlwaysDelete()) {
             this.setChanged();
         }
 
         return status;
+    }
+
+    public boolean attemptTeleport(Entity entity) {
+        this.setStateDirty(false);
+
+        // Attempt a teleport
+        try {
+            Vec3 relativePos = new Vec3(0, 0, 0);
+            Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
+            Vec3 relativeVelocity = entity.getDeltaMovement();
+
+            Target target = this.getTarget();
+            var location = target instanceof LocationProvider provider ? provider.getLocation() : null;
+
+            BlockState state = this.getLevel().getBlockState(this.getBlockPos());
+            Block block = state.getBlock();
+            if (block instanceof CoordinateTransformerBlock transformer) {
+                var blockPos = getBlockPos();
+                var sourceFrame = SableHelper.INSTANCE.sourceTeleportFrame(
+                        (ServerLevel) this.level,
+                        blockPos,
+                        entity,
+                        entity.position(),
+                        relativeAngle,
+                        relativeVelocity
+                );
+                TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, blockPos);
+                TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, blockPos);
+                relativePos = transformer.transformTo(transformationBuilder, sourceFrame.pos());
+                relativeAngle = transformer.rotateTo(rotatorBuilder, sourceFrame.angle());
+                relativeVelocity = transformer.rotateTo(rotatorBuilder, sourceFrame.velocity());
+            }
+
+            EntityTarget entityTarget = target.as(Targets.ENTITY);
+            if (entityTarget.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
+                VirtualLocation vLoc = VirtualLocation.fromLocation(Location.ofWorld((ServerLevel) entity.level(), entity.blockPosition()));
+                if (DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages)
+                    EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+                return true;
+            }
+        } catch (Exception e) {
+            EntityUtils.chat(entity, Component.literal("Something went wrong while trying to teleport you, please report this bug."));
+            DimensionalDoors.LOGGER.error("Teleporting failed with the following exception: ", e);
+        }
+
+        return false;
     }
 
     @Override
@@ -170,18 +217,15 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    protected void onClose(Level level, BlockPos pos) {
-        var state = level.getBlockState(pos);
+    public void unregister() {
+        super.unregister();
+
+        var state = level.getBlockState(getBlockPos());
         var block = state.getBlock();
 
         if(block instanceof TraversableRiftBlock<?> traversableRiftBlock) {
-            traversableRiftBlock.closeRift(level, pos, state);
+            traversableRiftBlock.closeRift(level, getBlockPos(), state);
         }
-    }
-
-    @Override
-    public boolean stablized() {
-        return true;
     }
 
     public BlockState getRenderBlockState() {
@@ -195,7 +239,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     @Override
     public void detach() {
         if(level != null) {
-            var waterlogged = getBlockState().hasProperty(BlockStateProperties.WATERLOGGED) ? getRenderBlockState().getValue(BlockStateProperties.WATERLOGGED) : false;
+            var waterlogged = getBlockState().hasProperty(BlockStateProperties.WATERLOGGED) ? getBlockState().getValue(BlockStateProperties.WATERLOGGED) : false;
 
             level.setBlockAndUpdate(worldPosition, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged));
             level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(a -> a.setData(this.getData()));

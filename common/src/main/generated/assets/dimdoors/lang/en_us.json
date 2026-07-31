@@ -747,17 +747,14 @@
   "tools.signature_blocked": "Usage of the signature was blocked.",
   "tools.target_became_block": "Failed, there is now a block at the stored location.",
   "virtual_type.dimdoors.escape": "Escape",
-  "virtual_type.dimdoors.global": "Global",
   "virtual_type.dimdoors.id_marker": "Id Marker",
   "virtual_type.dimdoors.limbo": "Limbo",
-  "virtual_type.dimdoors.local": "Local",
   "virtual_type.dimdoors.none": "None",
   "virtual_type.dimdoors.pocket_entrance": "Pocket Entrance",
   "virtual_type.dimdoors.pocket_exit": "Pocket Exit",
   "virtual_type.dimdoors.private": "Private Pocket Entrance",
   "virtual_type.dimdoors.private_pocket_exit": "Private Pocket Exit",
   "virtual_type.dimdoors.public_pocket": "Public Pocket",
-  "virtual_type.dimdoors.relative": "Relative",
   "virtual_type.dimdoors.rift_reference": "Rift Reference",
   "virtual_type.dimdoors.unstable": "Unstable"
 }

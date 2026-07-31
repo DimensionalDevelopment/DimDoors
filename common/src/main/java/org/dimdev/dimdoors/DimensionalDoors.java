@@ -78,6 +78,8 @@ import org.dimdev.limlib.api.ModCommon;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.util.function.Consumer;
+
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
@@ -187,6 +189,11 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
         sided.registerServerPacket(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player));
         sided.onServerStarting(Decay.DecayLoader::populate);
 
+        sided.onServerStopping(server -> {
+            Decay.clearQueue();
+            ServerPacketHandler.clear();
+        });
+
         sided.addPack(PackType.SERVER_DATA, "default", "Default", true);
         sided.addPack(PackType.SERVER_DATA, "classic", "Classic", true);
 
@@ -231,7 +238,6 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
 //        sided.onPlayerQuit(player -> PocketCommand.logSetting.remove(player.getUUID()));
 
         sided.onServerStarted(server -> {
-
             LegacyDimensionalRegistryMigrator.migrateIfNeeded(server);
             SubSystem.initialize(server);
             PocketChunkLoadingManager.reconcileAll(server);
