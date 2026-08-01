@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-31T02:00:24.0143046	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-08-01T03:31:23.0445914	DimensionalDoors/Tags for minecraft:block
 ca521d6d5ffb92bc4c2050fc559b06f7b501332a data\dimdoors\tags\block\decays_to\dark_sand_stairs.json
 435e5dbd3b5153b1f830934c6a3501e156336084 data\dimdoors\tags\block\decays_to\stone.json
 a57fa5058b910960a2c250a1d6db912e8e8e8a81 data\c\tags\block\dyed\pink.json
@@ -10,7 +10,7 @@ e7bdfcd43fd5c66138754d9aed370f32c9aee13d data\dimdoors\tags\block\decays_to\drif
 384e7aa24b5225d5b5bb5bce62e6da9653ce614e data\dimdoors\tags\block\decays_to\driftwood_plank.json
 39b6bac8edde28c1d81e35ae85162285f035a193 data\dimdoors\tags\block\decays_to\stone_slab.json
 f3e00cd17144cbd7cc6e8fb5a8e5e11c88d670e7 data\minecraft\tags\block\mineable\shovel.json
-4c89ed6eb207ff7e6df4862eb6d8fde768480c2f data\minecraft\tags\block\doors.json
+2d0ee8543f0954feeff9b1ce23d4c96b7a2bb265 data\minecraft\tags\block\doors.json
 4c221805df2ecdadf34c214fd4d520bae2c6b3ed data\c\tags\block\dyed\light_gray.json
 34cd16328f0fb57e37526790a4ca65bd8f9d6aef data\minecraft\tags\block\wooden_slabs.json
 20e0871f6f07ba917e497b41639dd5c03f97acd0 data\dimdoors\tags\block\decays_to\dark_sand_slab.json
@@ -95,14 +95,13 @@ e57c61072da8c941379a96d2205f77b88218a79a data\dimdoors\tags\block\decays_to\sand
 8784b912d211e77c62ea40b284c420731c0dd0f4 data\minecraft\tags\block\sand.json
 4e658256b68d127315b88dcb8987591d255b44fb data\c\tags\block\fence_gates.json
 4286906bb98f4382a0669173b78afd64205e048d data\dimdoors\tags\block\decays_to\sand_slab.json
-97c7d85ecda4955a6f162d7db1f93fc62922645e data\dimdoors\tags\block\no_random_tick_near_unstable_rifts.json
 0e36aa79b920b7a9ff9d5caa6905918ea5bf6c79 data\c\tags\block\dyed\cyan.json
 8784b912d211e77c62ea40b284c420731c0dd0f4 data\minecraft\tags\block\bamboo_plantable_on.json
 6eed3d01ba7f81dd034d8fc153807a78c91368c8 data\dimdoors\tags\block\decays_to\unraveled_fabric.json
 53ac6319c146205685eaaf851df4615b1bc0fc51 data\minecraft\tags\block\buttons.json
 e570c8f9ab7b381e2acd76066c4475a4e122cb19 data\dimdoors\tags\block\decays_to\dark_sand_button.json
 006c087ad52a8d7fab3d67063815ba0db3cd47db data\minecraft\tags\block\walls.json
-72c23e72d20ef9a76ab05c57615b2639e517176c data\minecraft\tags\block\mineable\pickaxe.json
+02dc54a5bc9ab182f2df8e0a23bb361c545637fd data\minecraft\tags\block\mineable\pickaxe.json
 6fe9f0156ef9d2a4f9c5fe5fe5fdb8a8d6346706 data\c\tags\block\sands.json
 077a45a3091541781ab382fc31b94217c48b29c1 data\dimdoors\tags\block\decays_to\endstone.json
 40a1945c78d265684edee4adfd70c9d14e7495ef data\dimdoors\tags\block\decays_to\sand_stairs.json
@@ -134,8 +133,8 @@ faad8db2ae4cd55bde25a1511bad7a1bfbf135d1 data\dimdoors\tags\block\decays_to\unra
 610a0b6692faa4187b562c06193527389a5e65ef data\dimdoors\tags\block\decays_to\pale_sand.json
 968f54e0c7ac63c27d6b5da1344653339e6e5ced data\minecraft\tags\block\sword_efficient.json
 62f6645640655f994416edc87f8e77542f22e0e0 data\minecraft\tags\block\wooden_fences.json
-912b0326c2e9c5a937aa9e2fe61645c1857faf10 data\dimdoors\tags\block\decays_to\driftwood_stairs.json
 5e075782be9bed2ffff676c4f7543b4620fb1794 data\minecraft\tags\block\logs_that_burn.json
+912b0326c2e9c5a937aa9e2fe61645c1857faf10 data\dimdoors\tags\block\decays_to\driftwood_stairs.json
 63a7ed7582aeb332aa7c9afad1c0176aa8de8d7c data\dimdoors\tags\block\decays_to\unraveled_wall.json
 037e291f0edc7b3eda3200227ab069f161fcde0b data\dimdoors\tags\block\decays_to\clay_button.json
 86fe745fd7effeae0fa4ae28765d843122410358 data\dimdoors\tags\block\decays_to\prismarine.json

@@ -30,6 +30,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.add(ModBlocks.GOLD_DOOR, this::createDoorTable);
         this.add(ModBlocks.QUARTZ_DOOR, this::createDoorTable);
         this.add(ModBlocks.STONE_DOOR, this::createDoorTable);
+        this.add(ModBlocks.DIALING_DOOR, this::createDoorTable);
 
 //        this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
         this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE);

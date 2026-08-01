@@ -57,7 +57,8 @@ public class ItemTagProvider extends DimDoorsTagsProvider<Item> {
         add(ItemTags.DOORS,
                 ModBlocks.GOLD_DOOR,
                 ModBlocks.AMALGAM_DOOR,
-                ModBlocks.STONE_DOOR
+                ModBlocks.STONE_DOOR,
+                ModBlocks.DIALING_DOOR
         );
 
         add(ModItems.CLOD, ItemTags.BEACON_PAYMENT_ITEMS, ConventionalItemTags.GEMS);

@@ -21,6 +21,10 @@ public class ModBlockEntityTypes {
             "entrance_rift",
             EntranceRiftBlockEntity::new);
 
+    public static final MutableBlockEntityType<DialingDoorBlockEntity> DIALING_DOOR = registerMutable(
+            "dialing_door",
+            DialingDoorBlockEntity::new);
+
     public static final MutableBlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = registerMutable("tesselating_loom", TesselatingLoomBlockEntity::new);
 
 

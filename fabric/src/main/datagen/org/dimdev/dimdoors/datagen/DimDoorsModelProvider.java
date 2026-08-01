@@ -35,6 +35,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         generator.createDoor(ModBlocks.GOLD_DOOR);
         generator.createDoor(ModBlocks.STONE_DOOR);
         generator.createDoor(ModBlocks.QUARTZ_DOOR);
+        generator.createDoor(ModBlocks.DIALING_DOOR);
 
 //        BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
 

@@ -4,10 +4,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
+
+import java.util.List;
 
 public class RenderUtils {
     private static final int SUPPORTED_VERTEX_ELEMENTS = VertexFormatElement.POSITION.mask()
@@ -83,6 +90,62 @@ public class RenderUtils {
 
         if (format.contains(VertexFormatElement.NORMAL)) {
             next.setNormal(pose, normalX, normalY, normalZ);
+        }
+    }
+
+    public static void renderTextLines(
+            List<Component> lines,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            Font font,
+            int packedLight
+    ) {
+        if (lines == null || lines.isEmpty()) {
+            return;
+        }
+
+        Matrix4f matrix4f = poseStack.last().pose();
+
+        float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+        int backgroundColor = (int)(backgroundOpacity * 255.0F) << 24;
+
+        int lineHeight = font.lineHeight;
+        float startY = -((lines.size() - 1) * lineHeight) / 2.0F;
+
+        for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
+            Component line = lines.get(lineIndex);
+            if (line == null) {
+                continue;
+            }
+
+            float textX = (float)(-font.width(line) / 2);
+            float textY = startY + lineIndex * lineHeight;
+
+            font.drawInBatch(
+                    line,
+                    textX,
+                    textY,
+                    553648127,
+                    false,
+                    matrix4f,
+                    buffer,
+                    Font.DisplayMode.SEE_THROUGH,
+                    backgroundColor,
+                    packedLight
+            );
+
+            font.drawInBatch(
+                    line,
+                    textX,
+                    textY,
+                    -1,
+                    false,
+                    matrix4f,
+                    buffer,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    packedLight
+            );
         }
     }
 }

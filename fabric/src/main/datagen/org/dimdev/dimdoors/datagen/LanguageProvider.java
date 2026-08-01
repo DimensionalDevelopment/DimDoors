@@ -163,6 +163,8 @@ public class LanguageProvider extends AbstractLanguageProvider {
             info(1, "but shinier");
         });
 
+        add(ModBlocks.DIALING_DOOR);
+
         addArmor(ModItems.WORLD_THREAD_ARMOR, "Woven World Thread");
 
 //        add("item.dimdoors.unstable_dimensional_door", "Unstable Dimensional Door");

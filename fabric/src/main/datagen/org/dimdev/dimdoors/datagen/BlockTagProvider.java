@@ -1144,6 +1144,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(ModBlocks.STONE_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
         add(ModBlocks.QUARTZ_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
         add(ModBlocks.AMALGAM_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.DIALING_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
 
 
         setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL);

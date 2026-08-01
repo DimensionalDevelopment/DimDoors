@@ -37,9 +37,14 @@ public final class DimensionalPortalRenderer {
     }
 
     public static void renderModelWithPortalShader(ModelPart model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
-        transformer.transform(matrixStack);
+        matrixStack.pushPose();
+        try {
+            transformer.transform(matrixStack);
 
-        DimensionalDoorsClient.detector.wrap(type -> model.render(matrixStack, vertexConsumerProvider.getBuffer(type), light, overlay));
+            DimensionalDoorsClient.detector.wrap(type -> model.render(matrixStack, vertexConsumerProvider.getBuffer(type), light, overlay));
+        } finally {
+            matrixStack.popPose();
+        }
     }
 
     static {

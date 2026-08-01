@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
@@ -96,6 +97,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     public void initBlockEntityRenderers(BlockEntityRegister register) {
         register.register(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
         register.register(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
+        register.register(ModBlockEntityTypes.DIALING_DOOR, DialingDoorBlockEntityRenderer::new);
     }
 
     @Override
@@ -170,7 +172,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public void delayedInit() {
         initGeneratedDoorCutouts();
-        sided.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR);
+        sided.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DIALING_DOOR);
     }
 
     public static IDimDoorsClientSided<?> getClientSided() {

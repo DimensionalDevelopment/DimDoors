@@ -3,7 +3,9 @@ package org.dimdev.dimdoors.block.door;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -80,6 +82,12 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+        var x = Mth.clamp(Math.floor((hitResult.getLocation().x - hitResult.getBlockPos().getX()) * 16.0), 0.0, 15.0);
+        var y = Mth.clamp(Math.floor((hitResult.getLocation().y - hitResult.getBlockPos().getY()) * 16.0), 0.0, 15.0);
+        var z = Mth.clamp(Math.floor((hitResult.getLocation().z - hitResult.getBlockPos().getZ()) * 16.0), 0.0, 15.0);
+
+        player.sendSystemMessage(Component.literal("Voxel:" + x + ", " + y + ", " + z));
+
         state = state.cycle(OPEN);
         world.setBlock(pos, state, 10);
         if (!world.isClientSide && state.getValue(WATERLOGGED)) {

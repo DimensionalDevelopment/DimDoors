@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.door.DialingDoor;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -48,6 +49,8 @@ public final class ModBlocks {
     public static final Block DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", new DimensionalPortalBlock(BlockBehaviour.Properties.of().noLootTable().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
     public static final Block DETACHED_RIFT = registerWithoutTabOrItem("detached_rift", new DetachedRiftBlock(BlockBehaviour.Properties.of().noCollission().noLootTable().mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F)));
+
+    public static final Block DIALING_DOOR = register("dialing_door", new DialingDoor(ofFullCopy(GOLD_BLOCK).requiresCorrectToolForDrops(), BlockSetType.IRON));
 
     public static final Block WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -260,6 +263,7 @@ public final class ModBlocks {
         ModBlockEntityTypes.DETACHED_RIFT.addBlock(DETACHED_RIFT);
         ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM);
         ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(ModBlocks.DIMENSIONAL_PORTAL);
+        ModBlockEntityTypes.DIALING_DOOR.addBlock(ModBlocks.DIALING_DOOR);
     }
 
     private static <T extends Block> T registerWithoutTabOrItem(String name, T block) {

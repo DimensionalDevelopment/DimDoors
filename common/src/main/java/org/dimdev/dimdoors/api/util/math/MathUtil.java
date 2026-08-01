@@ -46,21 +46,14 @@ public final class MathUtil {
     }
 
     public static Rotations directionEulerAngle(Direction direction) {
-        switch (direction) {
-            case DOWN:
-                return EulerAngleDirection.DOWN.getAngle();
-            case UP:
-                return EulerAngleDirection.UP.getAngle();
-            case NORTH:
-                return EulerAngleDirection.NORTH.getAngle();
-            case SOUTH:
-                return EulerAngleDirection.SOUTH.getAngle();
-            case WEST:
-                return EulerAngleDirection.WEST.getAngle();
-            case EAST:
-            default:
-                return EulerAngleDirection.EAST.getAngle();
-        }
+        return switch (direction) {
+            case DOWN -> EulerAngleDirection.DOWN.getAngle();
+            case UP -> EulerAngleDirection.UP.getAngle();
+            case NORTH -> EulerAngleDirection.NORTH.getAngle();
+            case SOUTH -> EulerAngleDirection.SOUTH.getAngle();
+            case WEST -> EulerAngleDirection.WEST.getAngle();
+            default -> EulerAngleDirection.EAST.getAngle();
+        };
     }
 
     public enum EulerAngleDirection {

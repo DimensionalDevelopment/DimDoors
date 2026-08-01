@@ -53,7 +53,7 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
         DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay, blockEntity.isTall());
     }
 
-    public Transformer getTransformer(EntranceRiftBlockEntity blockEntity) {
+    public static Transformer getTransformer(EntranceRiftBlockEntity blockEntity) {
         if (blockEntity.getBlockState().getBlock() instanceof DimensionalTrapDoorBlock) {
             return blockEntity.getBlockState().getValue(TrapDoorBlock.HALF) == Half.TOP ? DefaultTransformation.TOP_TRAPDOOR : DefaultTransformation.BOTTOMM_TRAPDOOR;
         }

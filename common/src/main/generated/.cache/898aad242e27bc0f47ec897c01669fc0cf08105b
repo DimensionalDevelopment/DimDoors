@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-31T02:00:24.0123096	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-08-01T03:31:23.0435942	DimensionalDoors/Block Loot Tables
 55dc49e6e27f61eb91946738dc4a0d08e55111fa data\dimdoors\loot_table\blocks\dark_sand.json
 882c96b3abb97cd9b7e9b1e5a5f216b38f2a1c6c data\dimdoors\loot_table\blocks\light_blue_terracotta_button.json
 4582207b56a4968fdf1b1735447e7cf3c4fa50b3 data\dimdoors\loot_table\blocks\lime_terracotta_button.json
@@ -203,6 +203,7 @@ a336700d75a5c81bb01bcf3368d07d4d05c4c783 data\dimdoors\loot_table\blocks\cyan_te
 c5c77d7b38d08fe392150f551828ea4b9a5d64ed data\dimdoors\loot_table\blocks\pink_glazed_terracotta_wall.json
 d51ee0e6c88504acb36dab051dc3c7d86ee4e15b data\dimdoors\loot_table\blocks\yellow_terracotta_wall.json
 df9b842b8529bb8ba22d557080b5619b822721b6 data\dimdoors\loot_table\blocks\white_terracotta_button.json
+e92f643e0e1bd713f089ad609f1663a2739254b1 data\dimdoors\loot_table\blocks\dialing_door.json
 3421307e4097338340b344647a5abb6305f0f2fa data\dimdoors\loot_table\blocks\lime_terracotta_fence.json
 0f671c43f6695edc4aaf1775ca502a64bbd6b4e0 data\dimdoors\loot_table\blocks\gritty_stone.json
 cbd81464c49fca30d3b3af29847a5704a6cc81bf data\dimdoors\loot_table\blocks\white_terracotta_stairs.json

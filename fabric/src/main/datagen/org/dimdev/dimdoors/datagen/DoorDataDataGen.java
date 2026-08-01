@@ -54,13 +54,6 @@ public class DoorDataDataGen {
                 Condition.alwaysTrue())
         );
 
-        ctx.register(key(ModBlocks.GOLD_DOOR), RiftDataList.of(
-                dungeonBuilder.dungeonGroup(ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("gold"))).build(),
-                properties,
-                Condition.alwaysTrue())
-        );
-
-
         ctx.register(key(ModBlocks.STONE_DOOR), RiftDataList.of(
                 dungeonBuilder.dungeonGroup(PocketGenerator.ALL_DUNGEONS).build(),
                 properties,

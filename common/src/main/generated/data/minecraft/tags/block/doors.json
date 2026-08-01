@@ -7,6 +7,7 @@
     "dimdoors:gold_door",
     "dimdoors:stone_door",
     "dimdoors:quartz_door",
-    "dimdoors:amalgam_door"
+    "dimdoors:amalgam_door",
+    "dimdoors:dialing_door"
   ]
 }
