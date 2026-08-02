@@ -30,7 +30,7 @@ import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity implements TraversableRiftBlock<EntranceRiftBlockEntity> {
+public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity implements TraversableRiftBlock<EntranceRiftBlockEntity<?>> {
     public static final MapCodec<DimensionalPortalBlock> CODEC = simpleCodec(DimensionalPortalBlock::new);
 
     public static DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -123,7 +123,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
     }
 
     @Override
-    public BlockEntityType<EntranceRiftBlockEntity> getRiftBlockEnityType() {
+    public BlockEntityType<EntranceRiftBlockEntity<?>> getRiftBlockEnityType() {
         return ModBlockEntityTypes.ENTRANCE_RIFT;
     }
 

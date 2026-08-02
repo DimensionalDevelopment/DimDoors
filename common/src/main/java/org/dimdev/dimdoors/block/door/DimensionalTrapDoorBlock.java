@@ -42,7 +42,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
-public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity> extends TrapDoorBlock implements TraversableRiftBlock<T> {
+public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity<?>> extends TrapDoorBlock implements TraversableRiftBlock<T> {
     public DimensionalTrapDoorBlock(Properties settings, BlockSetType blockSetType) {
         super(blockSetType, settings.pushReaction(BLOCK));
     }

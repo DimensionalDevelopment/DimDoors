@@ -10,7 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import org.dimdev.dimdoors.world.fray.Fray;
+import org.dimdev.dimdoors.world.fray.ModDataValues;
 
 public final class FrayCommand {
     private FrayCommand() {
@@ -49,40 +49,40 @@ public final class FrayCommand {
     }
 
     private static int get(CommandContext<CommandSourceStack> context, Entity target) {
-        Integer value = Fray.FRAY_VALUE.get(target);
+        Integer value = ModDataValues.FRAY_VALUE.get(target);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + ": " + (value == null ? "<unset>" : value)), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int getOrCreate(CommandContext<CommandSourceStack> context, Entity target) {
-        int value = Fray.FRAY_VALUE.getOrCreate(target);
+        int value = ModDataValues.FRAY_VALUE.getOrCreate(target);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + ": " + value), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int has(CommandContext<CommandSourceStack> context, Entity target) {
-        boolean hasValue = Fray.FRAY_VALUE.has(target);
+        boolean hasValue = ModDataValues.FRAY_VALUE.has(target);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + " is " + (hasValue ? "set" : "unset")), false);
         return hasValue ? 1 : 0;
     }
 
     private static int set(CommandContext<CommandSourceStack> context, Entity target) {
         int value = IntegerArgumentType.getInteger(context, "value");
-        Fray.FRAY_VALUE.set(target, value);
+        ModDataValues.FRAY_VALUE.set(target, value);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + " set to " + value), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int add(CommandContext<CommandSourceStack> context, Entity target) {
         int amount = IntegerArgumentType.getInteger(context, "amount");
-        Fray.FRAY_VALUE.update(target, 0, value -> value + amount);
-        int value = Fray.FRAY_VALUE.getOrCreate(target);
+        ModDataValues.FRAY_VALUE.update(target, 0, value -> value + amount);
+        int value = ModDataValues.FRAY_VALUE.getOrCreate(target);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + " set to " + value), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int remove(CommandContext<CommandSourceStack> context, Entity target) {
-        Fray.FRAY_VALUE.remove(target);
+        ModDataValues.FRAY_VALUE.remove(target);
         context.getSource().sendSuccess(() -> Component.literal("Fray value for " + name(target) + " removed"), false);
         return Command.SINGLE_SUCCESS;
     }

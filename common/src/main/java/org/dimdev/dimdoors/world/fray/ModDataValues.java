@@ -5,11 +5,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.limlib.util.DataValue;
 
-public final class Fray {
+public final class ModDataValues {
     public static final DataValue<Integer> FRAY_VALUE = DimensionalDoors.getSided().registerDataValue("fray", () -> 0, Codec.INT, ByteBufCodecs.INT);
-
-    private Fray() {
-    }
 
     public static void init() {
 

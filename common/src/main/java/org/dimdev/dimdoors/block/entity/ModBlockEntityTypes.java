@@ -17,7 +17,7 @@ public class ModBlockEntityTypes {
             DetachedRiftBlockEntity::new
     );
 
-    public static final MutableBlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = registerMutable(
+    public static final MutableBlockEntityType<EntranceRiftBlockEntity<?>> ENTRANCE_RIFT = registerMutable(
             "entrance_rift",
             EntranceRiftBlockEntity::new);
 

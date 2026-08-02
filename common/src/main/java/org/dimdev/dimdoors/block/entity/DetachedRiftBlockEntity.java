@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.entity;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
@@ -31,10 +32,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class DetachedRiftBlockEntity extends RiftBlockEntity {
+public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEntity> {
     public static final float DECAY_RADIUS_DIVISOR = 40f;
+    private static final CodecRecord<DetachedRiftBlockEntity, Integer> SPAWNED_ENDERMAN_ID_BUILDER = new CodecRecord<>("spawnedEnderManId", Codec.INT, 0, detachedRiftBlockEntity -> detachedRiftBlockEntity.spawnedEndermanId);
+    private static final CodecRecord<DetachedRiftBlockEntity, Float> RIFT_YAW_BUILDER = new CodecRecord<>("rotation", Codec.FLOAT, (java.util.function.Supplier<Float>) () -> (float) (Math.random() * 360), detachedRiftBlockEntity -> detachedRiftBlockEntity.riftYaw);
+    private static final CodecRecord<DetachedRiftBlockEntity, Integer> CURVE_ID_BUILDER = new CodecRecord<>("curveID", Codec.INT, (java.util.function.Supplier<Integer>) () -> (int) (Math.random() * RiftCurves.CURVES.size()), detachedRiftBlockEntity -> detachedRiftBlockEntity.curveID);
+    private static final CodecRecord<DetachedRiftBlockEntity, Integer> WEIGHT_BUILDER = new CodecRecord<>("weight", Codec.intRange(-100, 100), 5, detachedRiftBlockEntity -> detachedRiftBlockEntity.weight);
+    private static final CodecRecord<DetachedRiftBlockEntity, Integer> UPDATE_TIMER_BUILDER = new CodecRecord<>("updateTimer", Codec.INT, 0, detachedRiftBlockEntity -> detachedRiftBlockEntity.updateTimer);
 
-    public int spawnedEndermanId = 0;
+    public int spawnedEndermanId;
     public float riftYaw;
     public int curveID;
     private int weight;
@@ -44,9 +50,10 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
     public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
+        this.spawnedEndermanId = 0;
         this.curveID = (int) (Math.random() * RiftCurves.CURVES.size());
         this.riftYaw = (float) (Math.random() * 360);
-        this.assignWeight(5);
+        this.weight = 5;
     }
 
     /**
@@ -80,12 +87,8 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     }
 
     public void setWeight(int weight) {
-        this.assignWeight(weight);
-        this.setChanged();
-    }
-
-    private void assignWeight(int weight) {
         this.weight = Mth.clamp(weight, -100, 100);
+        this.setChanged();
     }
 
     public int getCurveID() {
@@ -99,28 +102,34 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        super.serialize(nbt);
-        nbt.putInt("spawnedEnderManId", this.spawnedEndermanId);
-        nbt.putInt("curveID", this.curveID);
-        nbt.putFloat("rotation", this.riftYaw);
-        nbt.putInt("weight", this.weight);
-
-        return nbt;
+    public void deserialize(Deserialize<Tag> nbt) {
+        super.deserialize(nbt);
+        spawnedEndermanId = nbt.get(SPAWNED_ENDERMAN_ID_BUILDER);
+        curveID = nbt.get(CURVE_ID_BUILDER);
+        riftYaw = nbt.get(RIFT_YAW_BUILDER);
+        weight = nbt.get(WEIGHT_BUILDER);
+        updateTimer = nbt.get(UPDATE_TIMER_BUILDER);
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        super.deserialize(nbt);
-        this.spawnedEndermanId = nbt.getInt("spawnedEnderManId");
-        this.curveID = nbt.getInt("curveID");
-        this.riftYaw = nbt.getFloat("rotation");
+    public void serialize(Serialize<Tag, DetachedRiftBlockEntity> serialize) {
+        super.serialize(serialize);
+        serialize.put(SPAWNED_ENDERMAN_ID_BUILDER);
+        serialize.put(CURVE_ID_BUILDER);
+        serialize.put(RIFT_YAW_BUILDER);
+        serialize.put(WEIGHT_BUILDER);
+        serialize.put(UPDATE_TIMER_BUILDER);
+    }
 
-        if (nbt.contains("weight", Tag.TAG_ANY_NUMERIC)) {
-            this.assignWeight(nbt.getInt("weight"));
-        } else if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC) || nbt.contains("stablized", Tag.TAG_ANY_NUMERIC)) {
-            if (nbt.getBoolean("stablized")) this.assignWeight(0);
-            if (nbt.getBoolean("closing")) this.assignWeight(-100);
+    protected void prepareTag(CompoundTag nbt) {
+        super.prepareTag(nbt);
+        if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC) || nbt.contains("stablized", Tag.TAG_ANY_NUMERIC)) {
+            var weight = nbt.getInt("weight");
+
+            if (nbt.getBoolean("stablized")) weight = 0;
+            if (nbt.getBoolean("closing")) weight = -100;
+
+            nbt.putInt("weight", weight);
         }
     }
 

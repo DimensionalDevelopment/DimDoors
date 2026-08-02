@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import static org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar.transferProperty;
 
-public interface AutoGenTraversalRiftBlock<T extends EntranceRiftBlockEntity> extends TraversableRiftBlock<T> {
+public interface AutoGenTraversalRiftBlock<T extends EntranceRiftBlockEntity<?>> extends TraversableRiftBlock<T> {
     @Override
     default BlockState getVisualBlockState(BlockState state) {
         var baseState = getOriginalBlock().defaultBlockState();

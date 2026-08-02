@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
-public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
+public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity<SlidingEntranceRiftBlockEntity> {
     private static final float ANIMATION_STEP = .15f;
 
     private float animation;

@@ -29,13 +29,13 @@ import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 import java.util.List;
 
-public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<EntranceRiftBlockEntity> {
+public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<EntranceRiftBlockEntity<?>> {
     public EntranceRiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
+    public void render(EntranceRiftBlockEntity<?> blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
         super.render(blockEntity, tickDelta, matrixStack, vertexConsumerProvider, light, overlay);
 
         var state = blockEntity.getRenderBlockState();

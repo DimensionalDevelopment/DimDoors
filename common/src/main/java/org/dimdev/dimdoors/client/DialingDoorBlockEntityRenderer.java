@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.Font;
-import net.minecraft.core.Direction;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.world.level.block.DoorBlock;
-import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.DoorBlock;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
+import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity;
 
 import static org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer.getTransformer;
 
@@ -49,18 +48,20 @@ public class DialingDoorBlockEntityRenderer implements BlockEntityRenderer<Diali
 
         matrixStack.translate(-VOXEL_SIZE * 2, 0, 0);
 
+        var address = blockEntity.getAddress();
+
         matrixStack.pushPose();
         matrixStack.translate(0, VOXEL_SIZE * 7, 0);
-        renderText("0", matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial1()), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.pushPose();
-        renderText("1", matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial2()), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(0, -VOXEL_SIZE * 7, 0);
-        renderText("2", matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial3()), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.popPose();

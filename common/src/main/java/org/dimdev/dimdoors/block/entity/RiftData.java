@@ -1,23 +1,17 @@
 package org.dimdev.dimdoors.block.entity;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.Mth;
-import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 public class RiftData {
     public static final Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(

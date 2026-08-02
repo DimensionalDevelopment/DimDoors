@@ -8,8 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class EntranceRiftBlockEntity extends RiftBlockEntity {
+public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> extends RiftBlockEntity<T> {
     private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
     protected BlockState doorBlockState;
     private RiftUtils.PortalPlane plane;
@@ -45,7 +45,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         this(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
     }
 
-    protected EntranceRiftBlockEntity(BlockEntityType<? extends EntranceRiftBlockEntity> type, BlockPos pos, BlockState state) {
+    protected EntranceRiftBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         updateState(pos, state);
     }

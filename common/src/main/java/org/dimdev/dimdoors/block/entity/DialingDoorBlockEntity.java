@@ -1,43 +1,41 @@
 package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.rift.registry.DialingAddress;
 
-public class DialingDoorBlockEntity extends EntranceRiftBlockEntity {
-    private byte[] combo = new byte[] { 0, 0, 0 };
+public class DialingDoorBlockEntity extends EntranceRiftBlockEntity<DialingDoorBlockEntity> {
+    private static final CodecRecord<DialingDoorBlockEntity, DialingAddress> DIALING_ADDRESS_BUILDER = new CodecRecord<>("address", DialingAddress.CODEC, DialingAddress.DEFAULT, a -> a.address);
+
+    private DialingAddress address = DialingAddress.DEFAULT;
 
     protected DialingDoorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.DIALING_DOOR, pos, state);
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        super.serialize(nbt);
-        nbt.putByteArray("combo", combo);
-        return nbt;
+    public void serialize(Serialize<Tag, DialingDoorBlockEntity> serialize) {
+        super.serialize(serialize);
+        serialize.put(DIALING_ADDRESS_BUILDER);
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(Deserialize<Tag> nbt) {
         super.deserialize(nbt);
-        this.combo = nbt.getByteArray("combo");
-        if(combo.length != 3) {
-            DimensionalDoors.LOGGER.error("Malformed combo in dailing door at {}. Defaulting to (0, 0, 0)", getBlockPos());
-
-            combo = new byte[] { 0, 0, 0 };
-        }
+        this.address = nbt.get(DIALING_ADDRESS_BUILDER);
     }
 
-    public byte[] getCombo() {
-        return combo;
+    public void turnDial(DialingAddress.DialType type) {
+        setAddress(address.turnDial(type));
     }
 
-    public void setCombo(byte[] combo) {
-        if(combo == null || combo.length != 3) return;
+    public DialingAddress getAddress() {
+        return address;
+    }
 
-        this.combo = combo;
+    public void setAddress(DialingAddress address) {
+        this.address = address;
+        sync();
     }
 }

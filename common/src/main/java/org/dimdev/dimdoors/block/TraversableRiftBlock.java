@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.rift.RiftUtils;
 
-public interface TraversableRiftBlock<T extends EntranceRiftBlockEntity> extends RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
+public interface TraversableRiftBlock<T extends EntranceRiftBlockEntity<?>> extends RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
 
     default Boolean customDestroy(Level level, BlockPos pos, BlockState state, int i, int j) {
         var blockEntity = getRift(level, pos, state);

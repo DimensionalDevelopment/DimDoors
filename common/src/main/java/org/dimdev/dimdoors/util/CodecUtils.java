@@ -53,6 +53,14 @@ public class CodecUtils {
 
     public static ResourceManager manager;
 
+    public static <K, T> T get(DynamicOps<K> ops, K data, RecordCodecBuilder<?, T> builder) {
+        return RecordCodecBuilderExt.get(builder, ops, data);
+    }
+
+    public static <K, T> DataResult<T> getResult(DynamicOps<K> ops, K data, RecordCodecBuilder<?, T> builder) {
+        return RecordCodecBuilderExt.decode(builder, ops, data);
+    }
+
     public static <T> Codec<T> reference(Function<Path<String>, @Nullable T> function) {
         return Codec.STRING.flatXmap(s -> DataResult.success(function.apply(Path.stringPath(s))), t -> DataResult.error(() -> "Serialization of modifier reference not supported."));
     }

@@ -48,7 +48,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
-public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
+public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity<?>> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
     public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType, boolean addWaterlog) {
         super(settings.pushReaction(BLOCK), blockSetType, addWaterlog);
     }
@@ -82,12 +82,6 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
-        var x = Mth.clamp(Math.floor((hitResult.getLocation().x - hitResult.getBlockPos().getX()) * 16.0), 0.0, 15.0);
-        var y = Mth.clamp(Math.floor((hitResult.getLocation().y - hitResult.getBlockPos().getY()) * 16.0), 0.0, 15.0);
-        var z = Mth.clamp(Math.floor((hitResult.getLocation().z - hitResult.getBlockPos().getZ()) * 16.0), 0.0, 15.0);
-
-        player.sendSystemMessage(Component.literal("Voxel:" + x + ", " + y + ", " + z));
-
         state = state.cycle(OPEN);
         world.setBlock(pos, state, 10);
         if (!world.isClientSide && state.getValue(WATERLOGGED)) {
