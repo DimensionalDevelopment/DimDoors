@@ -37,7 +37,7 @@ public interface Rift extends Target {
         data.setDestination(destination);
         if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
             if (this.getLevel() != null) {
-                destination.setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+                destination.setLocation(location());
             }
             if (this.isRegistered()) destination.register();
         }
@@ -62,7 +62,7 @@ public interface Rift extends Target {
 
     default void updateProperties() {
         if (this.isRegistered())
-            RiftRegistry.getInstance().setProperties(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()), getData().getProperties());
+            RiftRegistry.getInstance().setProperties(location(), getData().getProperties());
         this.setChanged();
     }
 
@@ -97,13 +97,13 @@ public interface Rift extends Target {
             return new MessageTarget("rifts.unlinked1");
         } else {
             //noinspecti on ConstantConditions
-            data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            data.getDestination().setLocation(location());
             return data.getDestination();
         }
     }
 
     default boolean isRegistered() {
-        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(location());
     }
 
     default void register() {
@@ -113,7 +113,7 @@ public interface Rift extends Target {
 
         var data = getData();
 
-        Location loc = Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos());
+        Location loc = location();
         RiftRegistry.getInstance().addRift(loc);
         if (data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) {
             data.getDestination().setLocation(loc);
@@ -125,13 +125,13 @@ public interface Rift extends Target {
 
     default void unregister() {
         if (isDeleteRift() && this.isRegistered()) {
-            RiftRegistry.getInstance().removeRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            RiftRegistry.getInstance().removeRift(location());
         }
     }
 
     default void updateType() {
         if (!this.isRegistered()) return;
-        org.dimdev.dimdoors.rift.registry.Rift rift = RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+        org.dimdev.dimdoors.rift.registry.Rift rift = RiftRegistry.getInstance().getRift(location());
         rift.setDetached(this.isDetached());
         rift.markDirty();
     }
@@ -167,7 +167,7 @@ public interface Rift extends Target {
         } else if (data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
             data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
         } else {
-            data.getDestination().setLocation(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+            data.getDestination().setLocation(location());
             RGBA newColor = data.getDestination().getColor();
             if (data.getColor() == null && newColor != null || !Objects.equals(data.getColor(), newColor)) {
                 data.setColor(newColor);
@@ -201,13 +201,13 @@ public interface Rift extends Target {
     }
 
     default org.dimdev.dimdoors.rift.registry.Rift asRift() {
-        return RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos()));
+        return RiftRegistry.getInstance().getRift(location());
     }
 
 
     void setDeleteRift(boolean deleteRift);
 
-    public boolean isDeleteRift();
+    boolean isDeleteRift();
 
     default void sync() {
         setChanged();
@@ -225,5 +225,9 @@ public interface Rift extends Target {
 
     default void gatherDebug(Consumer<Component> textConsumer) {
         textConsumer.accept(Component.literal("Size: " + getData().getSize()));
+    }
+
+    default Location location() {
+        return Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos());
     }
 }

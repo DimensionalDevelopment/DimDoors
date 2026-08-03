@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.compat.sable.mixins;
 
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-
 import dev.ryanhcode.sable.api.block.BlockSubLevelAssemblyListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,6 +11,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 
 

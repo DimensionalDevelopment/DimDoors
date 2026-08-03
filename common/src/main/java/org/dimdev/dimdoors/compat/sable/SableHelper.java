@@ -10,7 +10,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.rift.registry.Rift;
-import org.joml.Vector3d;
 
 /**
  * Base integration point for optional Sable support.
@@ -75,44 +74,6 @@ public class SableHelper {
      */
     public Vec3 projectTo(ServerLevel level, Vec3 pos) {
         return pos;
-    }
-
-    /**
-     * Projects a mutable world-space vector into the local space of the Sable sub-level containing it.
-     *
-     * <p>The base implementation leaves {@code pos} unchanged.</p>
-     *
-     * @param level the server level containing the position
-     * @param pos the mutable position to project in place
-     */
-    public void projectTo(ServerLevel level, Vector3d pos) {
-    }
-
-    /**
-     * Ensures that the Sable sub-level containing a block position is loaded and materialized.
-     *
-     * <p>The base implementation always returns {@code true} because there is no Sable state to
-     * load.</p>
-     *
-     * @param level the server level containing the position
-     * @param pos the block position to check
-     * @return {@code true} when the position is usable
-     */
-    public boolean ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {
-        return true;
-    }
-
-    /**
-     * Ensures that the Sable sub-level containing a vector position is loaded and materialized.
-     *
-     * <p>The base implementation delegates to the block-position overload.</p>
-     *
-     * @param level the server level containing the position
-     * @param pos the vector position to check
-     * @return {@code true} when the position is usable
-     */
-    public boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
-        return ensureSableSubLevelLoaded(level, BlockPos.containing(pos));
     }
 
     /**

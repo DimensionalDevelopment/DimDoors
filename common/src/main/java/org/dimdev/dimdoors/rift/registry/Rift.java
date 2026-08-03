@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.rift.RiftUtils;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -56,52 +57,50 @@ public class Rift extends RegistryVertex {
     @Override
     public void sourceGone(RegistryVertex source) {
         super.sourceGone(source);
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift rift) {
+
+        RiftUtils.runIfRiftAt(location, rift -> {
             if (source instanceof Rift sourceRift) {
                 rift.handleSourceGone(sourceRift.location);
             }
-        }
+        });
     }
 
     @Override
     public void targetGone(RegistryVertex target) {
         super.targetGone(target);
 
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) {
+        RiftUtils.runIfRiftAt(location, rift -> {
             if (target instanceof Rift targetRift) {
-                riftBlockEntity.handleTargetGone(targetRift.location);
+                rift.handleTargetGone(targetRift.location);
             }
-            riftBlockEntity.updateColor();
-        }
+            rift.updateColor();
+        });
     }
 
     @Override
     public void targetMoved(RegistryVertex target) {
         super.sourceAdded(target);
 
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) {
+        RiftUtils.runIfRiftAt(location, rift -> {
             if (target instanceof Rift) {
-                riftBlockEntity.handleSourceMoved(((Rift) target).location);
+                rift.handleSourceMoved(((Rift) target).location);
             }
-            riftBlockEntity.updateColor();
-        }
+
+            rift.updateColor();
+        });
     }
 
     public void targetChanged(RegistryVertex target) {
-        LOGGER.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
+        LOGGER.debug("Rift {} notified of target {} having changed. Updating color.", this, target);
+        RiftUtils.runIfRiftAt(location, org.dimdev.dimdoors.block.entity.Rift::updateColor);
     }
 
     public void markDirty() {
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
+        RiftUtils.runIfRiftAt(location, org.dimdev.dimdoors.block.entity.Rift::updateColor);
 
         for (Location location : RiftRegistry.getInstance().getTargets(this.location)) {
             RiftRegistry.getInstance().getRift(location).targetChanged(this);
         }
-    }
-
-    private void updateColor() {
-        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
     }
 
     @Override

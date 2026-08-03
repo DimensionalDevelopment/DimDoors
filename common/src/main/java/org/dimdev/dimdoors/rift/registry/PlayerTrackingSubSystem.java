@@ -4,29 +4,23 @@ import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.server.level.ServerLevel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.util.CodecUtils;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-public abstract class PlayerTrackingSubSystem<T extends PlayerTrackingSubSystem<T>> extends SubSystem<T> implements VertexProvider {
-    protected static <T extends PlayerTrackingSubSystem<T>> Products.P1<RecordCodecBuilder.Mu<T>, Map<UUID, PlayerRiftConnection>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+public abstract class PlayerTrackingSubSystem<V, P extends Pocket<?, ?>, T extends PlayerTrackingSubSystem<V, P, T>> extends SubSystem<T> implements VertexProvider {
+    protected final Logger LOGGER = LogManager.getLogger();
+
+    protected static <V, P extends Pocket<?, ?>, T extends PlayerTrackingSubSystem<V, P, T>> Products.P1<RecordCodecBuilder.Mu<T>, Map<UUID, PlayerRiftConnection>> commonFields(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(PlayerRiftConnection.MAP_CODEC.fieldOf("locations").forGetter(PlayerTrackingSubSystem::getLocations));
     }
 
     protected Map<UUID, PlayerRiftConnection> locations;
-
-    public PlayerTrackingSubSystem() {
-        this(new HashMap<>());
-    }
 
     public PlayerTrackingSubSystem(Map<UUID, PlayerRiftConnection> locations) {
         this.locations = locations;
@@ -35,6 +29,9 @@ public abstract class PlayerTrackingSubSystem<T extends PlayerTrackingSubSystem<
     public Map<UUID, PlayerRiftConnection> getLocations() {
         return locations;
     }
+
+
+    public abstract P getPocketFromKey(V uuid);
 
     @Override
     public List<? extends RegistryVertex> collectVertices() {
@@ -142,6 +139,12 @@ public abstract class PlayerTrackingSubSystem<T extends PlayerTrackingSubSystem<
         }
     }
 
+    public abstract void setNewPocket(UUID uuid, V key, P pocket);
+
+    public abstract boolean isCorrectDimensionForPocket(ServerLevel world);;
+
+    public abstract void setCurrentKey(UUID uuid, V key);
+
     public static class PlayerRiftConnection {
         public static final Codec<PlayerRiftConnection> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         UUIDUtil.CODEC.optionalFieldOf("entranceId").forGetter(connection -> Optional.ofNullable(connection.getEntrance())),
@@ -181,5 +184,38 @@ public abstract class PlayerTrackingSubSystem<T extends PlayerTrackingSubSystem<
         public void setExit(UUID exit) {
             this.exit = exit;
         }
+    }
+
+    abstract public V getKeyFromPlayer(UUID playerUUID);
+
+    public P getPocketFromPlayer(UUID uuid) {
+        var key = getKeyFromPlayer(uuid);
+        return key == null ? null : getPocketFromKey(key);
+    }
+
+    public abstract String invalidKeyErrorMessage();
+    public abstract String invalidPocketErrorMessage();
+
+    public Location resolveEntrance(UUID playerUUID) {
+        Objects.requireNonNull(playerUUID, "playerUUID");
+
+        V key = getKeyFromPlayer(playerUUID);
+        if (key == null) {
+            LOGGER.warn(invalidKeyErrorMessage(), playerUUID);
+            return null;
+        }
+
+        P pocket = this.getPocketFromKey(key);
+        if (pocket == null) {
+            LOGGER.warn(invalidPocketErrorMessage(), playerUUID, key);
+            return null;
+        }
+
+        Location entrance = this.getEntranceLocation(playerUUID);
+        if (entrance != null && PocketRegistry.getInstance().getPocketEntrances(pocket).contains(entrance)) {
+            return entrance;
+        }
+
+        return PocketRegistry.getInstance().getPocketEntrance(pocket);
     }
 }

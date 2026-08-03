@@ -6,8 +6,11 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.FACING;
 
@@ -17,6 +20,10 @@ public class RiftUtils {
     public static <T extends Rift> T registerFunction(@NotNull T rift) {
         rift.register();
         return rift;
+    }
+
+    public static void runIfRiftAt(Location location, Consumer<Rift> consumer) {
+        if(location.getBlockEntity() instanceof Rift rift) consumer.accept(rift);
     }
 
     public static record PortalPlane(Vec3 normal, Vec3 tangentX, Vec3 tangentY, Vec3 origin, double halfWidth, double height) {

@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.util.Copyable;
 import org.slf4j.Logger;
 
 import java.util.Objects;
@@ -20,7 +21,7 @@ import java.util.Objects;
  * A target that is not an actual object in the game such as a block or a block
  * entity. Only virtual targets can be saved to NBT.
  */
-public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Target {
+public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Target, Copyable<T> {
     public static final Codec<VirtualTarget<?>> CODEC = VirtualTargetType.CODEC.dispatch("type", VirtualTarget::getType, VirtualTargetType::codec);
 
     public static final RGBA COLOR = new RGBA(1, 0, 0, 1);

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.compat.sable;
 
-import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
 import dev.ryanhcode.sable.companion.math.Pose3dc;
@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.api.util.BlockPosUtil;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
@@ -94,7 +95,7 @@ import java.util.regex.Pattern;
  */
 public class ActiveSableHelper extends SableHelper {
     private static final Pattern SABLE_REGION_FILE_PATTERN = Pattern.compile("r\\.(-?\\d+)\\.(-?\\d+)\\.slvlr");
-    private static Vector3d scratch = new Vector3d();
+    private final Vector3d scratch = new Vector3d();
 
     /**
      * Projects a world-space vector out of whatever Sable sub-level currently contains it.
@@ -138,20 +139,6 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Mutable-vector variant of {@link #projectTo(ServerLevel, Vec3)}.
-     *
-     * <p>The vector is transformed in place when it is inside a Sable sub-level.</p>
-     */
-    @Override
-    public void projectTo(ServerLevel level, Vector3d pos) {
-        var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-
-        if(subLevel != null) {
-            subLevel.logicalPose().transformPositionInverse(pos);
-        }
-    }
-
-    /**
      * Checks whether {@code pos} lies inside an occupied Sable plot whose live chunk holder is missing.
      *
      * <p>This is the signal that a plot exists and should contain a sub-level, but Sable has not
@@ -159,6 +146,7 @@ public class ActiveSableHelper extends SableHelper {
      */
     @Override
     public boolean isMissingSablePlotHolder(ServerLevel level, BlockPos pos) {
+        ensureSableSubLevelLoaded(level, pos);
         var container = SubLevelContainer.getContainer(level);
         if (container == null) {
             return false;
@@ -181,11 +169,16 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Block-position overload for {@link #ensureSableSubLevelLoaded(ServerLevel, Vec3)}.
+     * Ensures that the Sable sub-level containing a block position is loaded and materialized.
+     *
+     * <p>The base implementation always returns {@code true} because there is no Sable state to
+     * load.</p>
+     *
+     * @param level the server level containing the position
+     * @param pos   the block position to check
      */
-    @Override
-    public boolean ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {
-        return ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos));
+    private void ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {
+        ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos));
     }
 
     /**
@@ -198,8 +191,7 @@ public class ActiveSableHelper extends SableHelper {
      * @return {@code true} when no Sable load is needed or a live holder/sub-level is available;
      * {@code false} when an occupied plot exists but cannot be materialized
      */
-    @Override
-    public boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
+    private boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
         ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
         if (container == null) {
             return true;
@@ -237,7 +229,6 @@ public class ActiveSableHelper extends SableHelper {
      */
     @Override
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
-        ensureSableSubLevelLoaded(level, pos);
         if (isMissingSablePlotHolder(level, BlockPos.containing(pos))) {
             throw new IllegalStateException("Teleport target " + pos + " in " + level.dimension().location() + " is inside Sable's plot grid, but no plot chunk holder is loaded there");
         }
@@ -462,22 +453,14 @@ public class ActiveSableHelper extends SableHelper {
         }
 
         BlockPos blockPos = BlockPos.containing(pos);
-        Location location = Location.ofWorld(level, blockPos);
-        if (registry.isRiftAt(location)) {
+
+        return BlockPosUtil.nearbyVertical(blockPos, blockPos1 -> {
+            Location location = Location.ofWorld(level, blockPos1);
+            if (!registry.isRiftAt(location)) {
+                return null;
+            }
             return location;
-        }
-
-        Location below = Location.ofWorld(level, blockPos.below());
-        if (registry.isRiftAt(below)) {
-            return below;
-        }
-
-        Location above = Location.ofWorld(level, blockPos.above());
-        if (registry.isRiftAt(above)) {
-            return above;
-        }
-
-        return null;
+        });
     }
 
     /**
