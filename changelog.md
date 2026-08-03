@@ -61,3 +61,5 @@
 - Improved resource loading.
 - Removed deprecated virtual type (Local, Relative, Global) and their corresponding language entries.
 - Fixed issue where on singleplayer game is lock up upon reentering a game without restarting.
+- Added the Dialing door. It is a door with a combination lock on it. Similar to a quartz dimensional door except the target door is tied to the sequence on a combo lock isntead of player uuid.
+- Reduced code duplication by alot.  
