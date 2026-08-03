@@ -57,33 +57,35 @@ public class DialingDoor extends DimensionalDoorBlock<DialingDoorBlockEntity> {
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
-        if (world.isClientSide) return InteractionResult.SUCCESS;
+        var type = getType(state, pos, hitResult);
+        if(!isOpen(state) && type != null) {
+            if(!world.isClientSide()) {
+                getRift(world, pos, state).turnDial(type);
+                world.playSound(null, pos, ModSoundEvents.KEY_UNLOCKED, SoundSource.BLOCKS, 1.0f, 1.0f);
 
-        if(!isOpen(state)) {
-            var direction = state.getValue(DoorBlock.FACING);
-            var lower = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
-            var upper = lower.above();
-
-            var coordiantes = getVoxelCoord(hitResult, direction, lower, upper);
-
-            for (int i = 0; i < BUTTONS.length; i++) {
-                var button = BUTTONS[i];
-
-                if (button.intersects(coordiantes)) {
-                    var rift = getRift(world, pos, state);
-
-                    var type = DialingAddress.DialType.values()[i];
-
-                    rift.turnDial(type);
-
-                    world.playSound(null, pos, ModSoundEvents.KEY_UNLOCKED, SoundSource.BLOCKS, 1.0f, 1.0f);
-
-                    return InteractionResult.PASS;
-                }
             }
+
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, world, pos, player, hitResult);
+    }
+
+    private DialingAddress.DialType getType(BlockState state, BlockPos pos, HitResult hitResult) {
+        var direction = state.getValue(DoorBlock.FACING);
+        var lower = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+        var upper = lower.above();
+
+        var coordiantes = getVoxelCoord(hitResult, direction, lower, upper);
+
+        for (int i = 0; i < BUTTONS.length; i++) {
+            var button = BUTTONS[i];
+             if (button.intersects(coordiantes)) {
+                 return DialingAddress.DialType.values()[i];
+             }
+        }
+
+        return null;
     }
 
     private Vec3 getVoxelCoord(HitResult hit, Direction facing, BlockPos min, BlockPos max) {
