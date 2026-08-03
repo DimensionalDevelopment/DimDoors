@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistryKeys;
@@ -13,6 +12,7 @@ public class SubsystemTypes {
     public static final SubSystem.Type<RiftRegistry> RIFT = register("rift_registry", RiftRegistry::new, RiftRegistry.CODEC);
     public static final SubSystem.Type<PrivateRegistry> PRIVATE = register("private_registry", PrivateRegistry::new, PrivateRegistry.CODEC);
     public static final SubSystem.Type<PocketRegistry> POCKET = register("pocket_registry", PocketRegistry::new, PocketRegistry.CODEC);
+    public static final SubSystem.Type<DialingRegistry> DIALING = register("dialing_registry", DialingRegistry::new, DialingRegistry.CODEC);
 
     public static void register() {
     }

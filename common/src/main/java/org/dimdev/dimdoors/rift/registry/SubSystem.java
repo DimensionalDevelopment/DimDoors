@@ -20,7 +20,14 @@ public abstract class SubSystem<T extends SubSystem<T>> extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
-        return NbtUtil.serialize(compoundTag, (T) this, type().codec());
+
+        try {
+            return NbtUtil.serialize(compoundTag, (T) this, type().codec());
+        } catch (IllegalStateException e) {
+            DimensionalDoors.LOGGER.error("Error when saving subsytem " + type().name());
+
+            throw e;
+        }
     }
 
     public record Type<T extends SubSystem<T>>(String name, Supplier<T> constructor, MapCodec<T> codec) {}

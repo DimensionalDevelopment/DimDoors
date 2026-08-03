@@ -48,7 +48,8 @@ public class PocketImpl extends Pocket<PocketImpl, PocketImpl.Builder> {
         }
 
         @Override
-        Builder instance() {
+        public Builder
+        instance() {
             return builder();
         }
     }

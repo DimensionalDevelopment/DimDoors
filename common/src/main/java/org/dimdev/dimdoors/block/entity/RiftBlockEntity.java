@@ -24,7 +24,7 @@ public abstract class RiftBlockEntity<T extends RiftBlockEntity<T>> extends Bloc
     protected boolean riftStateChanged;
     private boolean deleteRift = true;
 
-    public static final CodecRecord<RiftBlockEntity<?>, RiftData> RIFT_DATA_BUILDER = new CodecRecord<>("data", RiftData.CODEC, RiftData::new, RiftBlockEntity::getData);
+    public static final CodecRecord<RiftBlockEntity<?>, RiftData> RIFT_DATA_BUILDER = new CodecRecord<RiftBlockEntity<?>, RiftData>("data", RiftData.CODEC, RiftData::new, RiftBlockEntity::getData);
 
     public RiftBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

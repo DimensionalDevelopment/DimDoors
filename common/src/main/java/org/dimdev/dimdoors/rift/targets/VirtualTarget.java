@@ -90,8 +90,8 @@ public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Targe
         public static final VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", VirtualTarget.COLOR, PocketExitMarker.INSTANCE);
         public static final VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketExitTarget.COLOR, PrivatePocketTarget.INSTANCE);
         public static final VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.COLOR, PrivatePocketExitTarget.INSTANCE);
-//        public static final VirtualTargetType<DialingTarget> DIALING = register("dialing", DialingTarget.INSTANCE);
-//        public static final VirtualTargetType<DialingExitTarget> DIALING_EXIT = register("dialing", DialingTarget.INSTANCE);
+        public static final VirtualTargetType<DialingTargetImpl> DIALING = register("dialing", DialingTargetImpl.CODEC);
+        public static final VirtualTargetType<DialingExitTarget> DIALING_EXIT = register("dialing_pocket_exit", DialingExitTarget.INSTANCE);
 
         public static final VirtualTargetType<UnstableTarget> UNSTABLE = register("unstable", UnstableTarget.INSTANCE);
         public static final VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);

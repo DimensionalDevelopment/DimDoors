@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -14,13 +13,14 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DialingDoor;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.door.EntranceRiftBlockItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static net.minecraft.world.level.block.Blocks.*;
@@ -50,7 +50,7 @@ public final class ModBlocks {
 
     public static final Block DETACHED_RIFT = registerWithoutTabOrItem("detached_rift", new DetachedRiftBlock(BlockBehaviour.Properties.of().noCollission().noLootTable().mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F)));
 
-    public static final Block DIALING_DOOR = register("dialing_door", new DialingDoor(ofFullCopy(GOLD_BLOCK).requiresCorrectToolForDrops(), BlockSetType.IRON));
+    public static final Block DIALING_DOOR = registerEntranceBlock("dialing_door", new DialingDoor(ofFullCopy(GOLD_BLOCK).requiresCorrectToolForDrops(), BlockSetType.IRON));
 
     public static final Block WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -270,6 +270,10 @@ public final class ModBlocks {
         return DimensionalDoors.getSided().register(Registries.BLOCK, name, block);
     }
 
+    private static <T extends Block> T registerEntranceBlock(String name, T block) {
+        return register(name, block, ModBlocks::entranceBlockItem);
+    }
+
     private static Block registerAncientFabric(DyeColor color) {
         Block block = register(color.getSerializedName() + "_ancient_fabric", new AncientFabricBlock(color));
         ANCIENT_FABRIC_BLOCKS.put(color, block);
@@ -291,9 +295,21 @@ public final class ModBlocks {
     }
 
     public static <T extends Block> T register(String name, T block) {
+        return register(name, block, ModBlocks::standardBlockItem);
+    }
+
+    private static BlockItem entranceBlockItem(Block block) {
+        return new EntranceRiftBlockItem(block, new Item.Properties());
+    }
+
+    private static BlockItem standardBlockItem(Block block) {
+        return new BlockItem(block, new Item.Properties());
+    }
+
+    public static <T extends Block> T register(String name, T block, Function<Block, BlockItem> blockItemFunction) {
         var sided = DimensionalDoors.getSided();
         var supplier = sided.register(Registries.BLOCK, name, block);
-        var item = sided.register(Registries.ITEM, name, new BlockItem(supplier, new Item.Properties()));
+        var item = sided.register(Registries.ITEM, name, blockItemFunction.apply(block));
         sided.appendStack(DIMENSIONAL_DOORS, item.getDefaultInstance());
 
         return supplier;

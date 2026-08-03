@@ -83,7 +83,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdRefer
         }
 
         @Override
-        IdReferencePocketBuilder instance() {
+        public IdReferencePocketBuilder instance() {
             return new IdReferencePocketBuilder();
         }
 

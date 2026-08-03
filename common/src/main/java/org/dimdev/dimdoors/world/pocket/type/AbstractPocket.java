@@ -6,11 +6,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
+import org.dimdev.dimdoors.world.pocket.DialingPocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import java.util.Map;
@@ -62,14 +62,15 @@ public abstract class AbstractPocket<V extends AbstractPocket<V, T>, T extends A
     public record AbstractPocketType<T extends AbstractPocket<T, V>, V extends AbstractPocket.AbstractPocketBuilder<T, V>>(MapCodec<T> codec, MapCodec<V> builderCodec, Supplier<T> supplier) {
         public static final Codec<AbstractPocketType<?, ?>> CODEC = ModRegistries.POCKET_TYPE.byNameCodec();
 
-        public static final AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
-        public static final AbstractPocketType<PocketImpl, PocketImpl.Builder> POCKET = register(DimensionalDoors.id(Pocket.KEY), PocketImpl.CODEC, PocketImpl.Builder.CODEC, PocketImpl::new);
-        public static final AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
+        public static final AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> ID_REFERENCE = register(IdReferencePocket.KEY, IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
+        public static final AbstractPocketType<PocketImpl, PocketImpl.Builder> POCKET = register(Pocket.KEY, PocketImpl.CODEC, PocketImpl.Builder.CODEC, PocketImpl::new);
+        public static final AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder> PRIVATE_POCKET = register(PrivatePocket.KEY, PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
+        public static final AbstractPocketType<DialingPocket, DialingPocket.Builder> DIALING = register("dialing_pocket", DialingPocket.CODEC, DialingPocket.Builder.CODEC, DialingPocket::new);
 
         public static void register() {
         }
 
-        static <U extends AbstractPocket<U, P>, P extends AbstractPocket.AbstractPocketBuilder<U, P>> AbstractPocketType<U, P> register(ResourceLocation id, MapCodec<U> codec, MapCodec<P> builderCodec, Supplier<U> supplier) {
+        static <U extends AbstractPocket<U, P>, P extends AbstractPocket.AbstractPocketBuilder<U, P>> AbstractPocketType<U, P> register(String id, MapCodec<U> codec, MapCodec<P> builderCodec, Supplier<U> supplier) {
             return DimensionalDoors.getSided().register(ModRegistryKeys.POCKET_TYPE, id, new AbstractPocketType<>(codec, builderCodec, supplier));
         }
     }
@@ -118,6 +119,6 @@ public abstract class AbstractPocket<V extends AbstractPocket<V, T>, T extends A
             return copy;
         }
 
-        abstract P instance();
+        public abstract P instance();
     }
 }

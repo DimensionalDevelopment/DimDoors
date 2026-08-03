@@ -9,11 +9,15 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
+import org.dimdev.dimdoors.rift.registry.DialingAddress;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.DialingPocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.Objects;
 
 public final class PocketGenerator {
 
@@ -32,8 +36,14 @@ public final class PocketGenerator {
     public static final ResourceKey<VirtualPocket> PYRAMID_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("pyramid"));
     public static final ResourceKey<VirtualPocket> END_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("end"));
 
-    public static Pocket<?,?> generateDialingPocket(VirtualLocation virtualLocation) {
-        return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DIALING, virtualLocation, null, null);
+    public static Pocket<?,?> generateDialingPocket(VirtualLocation virtualLocation, DialingAddress address) {
+        Objects.requireNonNull(address, "address");
+
+        Pocket<?, ?> pocket = generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DIALING, virtualLocation, null, null);
+        if (pocket instanceof DialingPocket dialingPocket) {
+            dialingPocket.setAddress(address);
+        }
+        return pocket;
     }
 
 

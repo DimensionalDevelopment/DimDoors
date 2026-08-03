@@ -29,7 +29,6 @@ import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -139,7 +138,7 @@ public class DimensionalDoorItemRegistrar {
         return Collections.unmodifiableMap(mappedDoorItems);
     }
 
-    private static class AutoGenDimensionalDoorBlockItem extends DimensionalDoorBlockItem implements ChildItem {
+    private static class AutoGenDimensionalDoorBlockItem extends EntranceRiftBlockItem implements ChildItem {
         private final Item originalItem;
 
         public AutoGenDimensionalDoorBlockItem(Block block, Properties settings, Item originalItem) {
