@@ -12,6 +12,7 @@ import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -72,6 +73,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
         generateDecaySet(generator, Blocks.RED_SAND, ModBlocks.RED_SAND_SET);
         generateDecaySet(generator, Blocks.GRAVEL, ModBlocks.GRAVEL_SET);
+        generator.createTrivialCube(ModBlocks.DARK_SAND);
         generateDecaySet(generator, ModBlocks.DARK_SAND, ModBlocks.DARK_SAND_SET);
         generateDecaySet(generator, Blocks.CLAY, ModBlocks.CLAY_SET);
         generateDecaySet(generator, Blocks.TERRACOTTA, ModBlocks.TERRACOTTA_SET);
@@ -110,15 +112,13 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
 
         generateDecaySet(generator, Blocks.MUD, ModBlocks.MUD_SET);
+        generator.createTrivialCube(ModBlocks.UNRAVELLED_FABRIC);
         generateDecaySet(generator, ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELED_SET);
         generateDecaySet(generator, Blocks.DEEPSLATE, ModBlocks.DEEPSLATE_SET);
         generateDecaySet(generator, Blocks.SAND, ModBlocks.SAND_SET);
         generateDecaySet(generator, Blocks.END_STONE, ModBlocks.END_STONE_SET);
         generateDecaySet(generator, Blocks.NETHERRACK, ModBlocks.NETHERRACK_SET);
-        generator.family(Blocks.STONE)
-                .slab(ModBlocks.STONE_SLAB)
-                .stairs(ModBlocks.STONE_STAIRS)
-                .wall(ModBlocks.STONE_WALL);
+        generateStoneSet(generator);
 
         generator.createTrivialCube(ModBlocks.DRIFTWOOD_LEAVES);
         generator.createCrossBlockWithDefaultItem(ModBlocks.DRIFTWOOD_SAPLING, BlockModelGenerators.TintState.NOT_TINTED); //TODO: Decide if we need potted version
@@ -130,14 +130,80 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
         generator.createAirLikeBlock(ModBlocks.LIMBO_AIR, Blocks.BARRIER.asItem());
     }
-    private void generateDecaySet(BlockModelGenerators generator, Block block, ModBlocks.DecayGroupSet set) {
-        generator.family(block)
-                .button(set.button())
-                .slab(set.slab())
-                .stairs(set.stairs())
-                .wall(set.wall())
-                .fence(set.fence())
-                .fenceGate(set.gate());
+
+    private void generateDecaySet(BlockModelGenerators generator, Block textureSource, ModBlocks.DecayGroupSet set) {
+        TextureMapping mapping = getTextureMapping(generator, textureSource);
+        ResourceLocation fullBlockModel = ModelLocationUtils.getModelLocation(textureSource);
+
+        generateButton(generator, set.button(), mapping);
+        generateSlab(generator, set.slab(), mapping, fullBlockModel);
+        generateStairs(generator, set.stairs(), mapping);
+        generateWall(generator, set.wall(), mapping);
+        generateFence(generator, set.fence(), mapping);
+        generateFenceGate(generator, set.gate(), mapping);
+    }
+
+    private void generateStoneSet(BlockModelGenerators generator) {
+        TextureMapping mapping = getTextureMapping(generator, Blocks.STONE);
+        ResourceLocation fullBlockModel = ModelLocationUtils.getModelLocation(Blocks.STONE);
+
+        generateSlab(generator, ModBlocks.STONE_SLAB, mapping, fullBlockModel);
+        generateStairs(generator, ModBlocks.STONE_STAIRS, mapping);
+        generateWall(generator, ModBlocks.STONE_WALL, mapping);
+    }
+
+    private TextureMapping getTextureMapping(BlockModelGenerators generator, Block textureSource) {
+        TexturedModel texturedModel = generator.texturedModels.getOrDefault(textureSource, TexturedModel.CUBE.get(textureSource));
+        return texturedModel.getMapping();
+    }
+
+    private void generateButton(BlockModelGenerators generator, Block buttonBlock, TextureMapping mapping) {
+        ResourceLocation buttonModel = ModelTemplates.BUTTON.create(buttonBlock, mapping, generator.modelOutput);
+        ResourceLocation pressedModel = ModelTemplates.BUTTON_PRESSED.create(buttonBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createButton(buttonBlock, buttonModel, pressedModel));
+        ResourceLocation inventoryModel = ModelTemplates.BUTTON_INVENTORY.create(buttonBlock, mapping, generator.modelOutput);
+        generator.delegateItemModel(buttonBlock, inventoryModel);
+    }
+
+    private void generateSlab(BlockModelGenerators generator, Block slabBlock, TextureMapping mapping, ResourceLocation fullBlockModel) {
+        ResourceLocation bottomModel = ModelTemplates.SLAB_BOTTOM.create(slabBlock, mapping, generator.modelOutput);
+        ResourceLocation topModel = ModelTemplates.SLAB_TOP.create(slabBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createSlab(slabBlock, bottomModel, topModel, fullBlockModel));
+        generator.delegateItemModel(slabBlock, bottomModel);
+    }
+
+    private void generateStairs(BlockModelGenerators generator, Block stairsBlock, TextureMapping mapping) {
+        ResourceLocation innerModel = ModelTemplates.STAIRS_INNER.create(stairsBlock, mapping, generator.modelOutput);
+        ResourceLocation straightModel = ModelTemplates.STAIRS_STRAIGHT.create(stairsBlock, mapping, generator.modelOutput);
+        ResourceLocation outerModel = ModelTemplates.STAIRS_OUTER.create(stairsBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createStairs(stairsBlock, innerModel, straightModel, outerModel));
+        generator.delegateItemModel(stairsBlock, straightModel);
+    }
+
+    private void generateWall(BlockModelGenerators generator, Block wallBlock, TextureMapping mapping) {
+        ResourceLocation postModel = ModelTemplates.WALL_POST.create(wallBlock, mapping, generator.modelOutput);
+        ResourceLocation lowSideModel = ModelTemplates.WALL_LOW_SIDE.create(wallBlock, mapping, generator.modelOutput);
+        ResourceLocation tallSideModel = ModelTemplates.WALL_TALL_SIDE.create(wallBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createWall(wallBlock, postModel, lowSideModel, tallSideModel));
+        ResourceLocation inventoryModel = ModelTemplates.WALL_INVENTORY.create(wallBlock, mapping, generator.modelOutput);
+        generator.delegateItemModel(wallBlock, inventoryModel);
+    }
+
+    private void generateFence(BlockModelGenerators generator, Block fenceBlock, TextureMapping mapping) {
+        ResourceLocation postModel = ModelTemplates.FENCE_POST.create(fenceBlock, mapping, generator.modelOutput);
+        ResourceLocation sideModel = ModelTemplates.FENCE_SIDE.create(fenceBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createFence(fenceBlock, postModel, sideModel));
+        ResourceLocation inventoryModel = ModelTemplates.FENCE_INVENTORY.create(fenceBlock, mapping, generator.modelOutput);
+        generator.delegateItemModel(fenceBlock, inventoryModel);
+    }
+
+    private void generateFenceGate(BlockModelGenerators generator, Block fenceGateBlock, TextureMapping mapping) {
+        ResourceLocation openModel = ModelTemplates.FENCE_GATE_OPEN.create(fenceGateBlock, mapping, generator.modelOutput);
+        ResourceLocation closedModel = ModelTemplates.FENCE_GATE_CLOSED.create(fenceGateBlock, mapping, generator.modelOutput);
+        ResourceLocation wallOpenModel = ModelTemplates.FENCE_GATE_WALL_OPEN.create(fenceGateBlock, mapping, generator.modelOutput);
+        ResourceLocation wallClosedModel = ModelTemplates.FENCE_GATE_WALL_CLOSED.create(fenceGateBlock, mapping, generator.modelOutput);
+        generator.blockStateOutput.accept(BlockModelGenerators.createFenceGate(fenceGateBlock, openModel, closedModel, wallOpenModel, wallClosedModel, true));
+        generator.delegateItemModel(fenceGateBlock, closedModel);
     }
 
     private void registerSingleTextureCube(BlockModelGenerators generator, Block block, ResourceLocation texture) {
