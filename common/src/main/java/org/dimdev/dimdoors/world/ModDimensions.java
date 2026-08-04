@@ -12,6 +12,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.IDimensionalDoorsSided;
 import org.dimdev.limlib.api.ISided;
@@ -33,6 +34,7 @@ public final class ModDimensions {
 
     public static final ResourceKey<DimensionType> LIMBO_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, DimensionalDoors.id("limbo"));
     public static final ResourceKey<DimensionType> POCKET_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, DimensionalDoors.id("pocket"));
+    public static final ResourceKey<NoiseGeneratorSettings> LIMBO_NOISE_SETTINGS = ResourceKey.create(Registries.NOISE_SETTINGS, DimensionalDoors.id("limbo"));
 
     public static DimensionType LIMBO_TYPE;
     public static DimensionType POCKET_TYPE;

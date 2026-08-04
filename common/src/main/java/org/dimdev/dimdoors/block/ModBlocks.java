@@ -139,7 +139,7 @@ public final class ModBlocks {
     public static final Block TESSELATING_LOOM = register("tesselating_loom", new TesselatingLoomBlock(of(LOOM)));
 
     public static final Block REALITY_SPONGE = register("reality_sponge", new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
-    public static final Block LIMBO_AIR = registerWithoutTabOrItem("limbo_air", new LimboAirBlock(BlockBehaviour.Properties.of().randomTicks().replaceable().noCollission().noLootTable().air()));
+    public static final Block LIMBO_AIR = registerWithoutTabOrItem("limbo_air", new LimboAirBlock(BlockBehaviour.Properties.of().randomTicks().replaceable().noCollission().noLootTable().isSuffocating((state, world, pos) -> false).isViewBlocking((state, world, pos) -> false)));
 
     //Decay graph filler.
 

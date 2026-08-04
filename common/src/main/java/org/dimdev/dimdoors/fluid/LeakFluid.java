@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.fluid;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -70,7 +71,7 @@ public abstract class LeakFluid extends FlowingFluid {
 
     @Override
     protected boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockGetter, BlockPos blockPos, Fluid fluid, Direction direction) {
-        return fluidState.getHeight(blockGetter, blockPos) >= 0.44444445F && fluid.isSame(ModFluids.LEAK);
+        return direction == Direction.DOWN && !fluid.is(FluidTags.WATER);
     }
 
     @Override

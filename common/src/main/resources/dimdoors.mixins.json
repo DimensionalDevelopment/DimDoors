@@ -8,6 +8,7 @@
     "AbstractArrowMixin",
     "ArgumentTypesMixin",
     "BlockMixin",
+    "ChunkGeneratorMixin",
     "ContextClipMixin",
     "DoorBlockMixin",
     "DoublePlantBlockMixin",

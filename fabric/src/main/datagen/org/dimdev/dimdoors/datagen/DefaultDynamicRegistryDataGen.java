@@ -208,7 +208,7 @@ public class DefaultDynamicRegistryDataGen {
     public static void bootstrapCarvers(DimDoorsDynamicRegistryDatagen.RegistrationHelper entries) {
         entries.register(ModCarvers.LIMBO, new ConfiguredWorldCarver<>(LIMBO_CARVER, new CaveCarverConfiguration(
                 0.2f,
-                UniformHeight.of(VerticalAnchor.absolute(0), VerticalAnchor.absolute(1)),
+                UniformHeight.of(VerticalAnchor.aboveBottom(0), VerticalAnchor.belowTop(8)),
                 ConstantFloat.of(0.5f),
                 VerticalAnchor.aboveBottom(10),
                 CarverDebugSettings.DEFAULT,
