@@ -22,6 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.tag.ModWorldTags;
+import org.dimdev.dimdoors.util.TagUtils;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 public class MonolithEntity extends Mob {
@@ -130,7 +132,7 @@ public class MonolithEntity extends Mob {
     @Override
     protected void customServerAiStep() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(this.level()) || ModDimensions.isPocketDimension(this.level()))) {
+        if (!(TagUtils.isIn(this.level(), ModWorldTags.MONOLITHS_CAN_EXIST))) {
             this.remove(RemovalReason.DISCARDED);
             super.customServerAiStep();
             return;
@@ -317,12 +319,17 @@ public class MonolithEntity extends Mob {
 
     @Override
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType spawnReason) {
-        if (spawnReason == MobSpawnType.CHUNK_GENERATION) {
-            return super.checkSpawnRules(world, spawnReason);
+        //TODO: Verify that isn't an situations where world isn't an instance of Level where relevant to monolith spawning.
+        if (world instanceof Level level  && TagUtils.isIn(level, ModWorldTags.MONOLITHS_CAN_EXIST)) {
+
+            if (spawnReason == MobSpawnType.CHUNK_GENERATION) {
+                return super.checkSpawnRules(world, spawnReason);
+            }
+            if (spawnReason == MobSpawnType.NATURAL) {
+                return this.getRandom().nextInt(32) == 2;
+            }
         }
-        if (spawnReason == MobSpawnType.NATURAL) {
-            return this.getRandom().nextInt(32) == 2;
-        }
+
         return false;
     }
 }

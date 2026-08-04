@@ -1,4 +1,4 @@
-// 1.21.1	2026-08-01T03:31:23.024646	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-08-04T05:46:28.0799079	DimensionalDoors/Tags for minecraft:item
 8c72aee9016ef5d30103537c6816d991a5d732f6 data\c\tags\item\fence_gates.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\sword.json
 c271b34bed3724cbaf6e66b1db8164bc101c8852 data\c\tags\item\ores.json
@@ -7,8 +7,8 @@ ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\enchantables.json
 a57fa5058b910960a2c250a1d6db912e8e8e8a81 data\c\tags\item\dyed\pink.json
 5d012d4f8fb9e2f65ab59939c6c0591fa1a5df5b data\c\tags\item\dyed\brown.json
 bd609edc2d80462eab96eb74e1dbb199fe383100 data\c\tags\item\dyed\gray.json
-b30c990ea036903eae7a3d93b03acbee4087cdd2 data\c\tags\item\music_discs.json
 969a8801e02d00619ba12bc2b12c607700704929 data\minecraft\tags\item\completes_find_tree_tutorial.json
+b30c990ea036903eae7a3d93b03acbee4087cdd2 data\c\tags\item\music_discs.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\tools.json
 01e8d0165920b64b6293e052d2ff9e84533d8a99 data\c\tags\item\gems.json
 2e89f80f8ba8b146adc4d04cfd6bbaad8cb121a1 data\minecraft\tags\item\beacon_payment_items.json
@@ -24,8 +24,8 @@ ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\breaks_decorat
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\swords.json
 8c72aee9016ef5d30103537c6816d991a5d732f6 data\minecraft\tags\item\fence_gates.json
 90143909f9adbc3ef2bcbf962685462d46a4fe63 data\dimdoors\tags\item\ancient_fabric.json
-d8c4e0d031f2f5822419cd0b8c9179f65ba0ff0f data\minecraft\tags\item\enchantable\leg_armor.json
 3876e0f615b165d4d01a385ddde31a77e7a92791 data\minecraft\tags\item\enchantable\chest_armor.json
+d8c4e0d031f2f5822419cd0b8c9179f65ba0ff0f data\minecraft\tags\item\enchantable\leg_armor.json
 2efbe1bc5c2f2218cd8f84ac77a048fd97a08c6d data\minecraft\tags\item\doors.json
 51a054e5b082139034ae8493c37d1a75bcd47ed8 data\c\tags\item\dyed\black.json
 f2779bbb20dd419d2b1fc6837c27b8b7266d1421 data\minecraft\tags\item\buttons.json

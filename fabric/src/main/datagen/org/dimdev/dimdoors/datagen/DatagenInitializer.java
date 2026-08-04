@@ -5,15 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.dimdoors.enchantment.ModEnchants;
-import org.dimdev.dimdoors.item.ModJukeboxSongs;
-import org.dimdev.dimdoors.painting.ModPaintings;
-import org.dimdev.dimdoors.world.ModBiomes;
-import org.dimdev.dimdoors.world.ModGatewayPools;
-import org.dimdev.dimdoors.world.ModProcessorLists;
-import org.dimdev.dimdoors.world.ModStructures;
-import org.dimdev.dimdoors.world.carvers.ModCarvers;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 
 public class DatagenInitializer implements DataGeneratorEntrypoint {
@@ -44,12 +36,14 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
         pack.addProvider(ItemTagProvider::new);
         pack.addProvider(EnchantmentTagProvider::new);
         pack.addProvider(PaintingTagProvider::new);
+        pack.addProvider(LevelTagProvider::new);
 
 //        pack.addProvider(PocketDataGenClassic::new);
     }
 
     @Override
     public void buildRegistry(RegistrySetBuilder registryBuilder) {
+        registryBuilder.add(Registries.DIMENSION_TYPE, ModDimensions::bootstrap);
 //        registryBuilder.add(Registries.BIOME, ModBiomes::bootstrap)
 //                .add(Registries.CONFIGURED_FEATURE, DefaultDynamicRegistryDataGen::bootstrapConfiguredFeature)
 //                .add(Registries.PLACED_FEATURE, DefaultDynamicRegistryDataGen::bootstrapPlacedFeature)
