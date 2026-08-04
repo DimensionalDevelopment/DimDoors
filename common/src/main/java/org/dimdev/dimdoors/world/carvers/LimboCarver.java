@@ -46,9 +46,11 @@ extends CaveWorldCarver {
         if (this.canReplaceBlock(caveCarverConfiguration, chunkAccess.getBlockState(mutableBlockPos))) {
             BlockState blockState = mutableBlockPos.getY() <= carvingContext.getMinGenY() + 31 ? ModBlocks.ETERNAL_FLUID.defaultBlockState() : ModBlocks.LIMBO_AIR.defaultBlockState();
             chunkAccess.setBlockState(mutableBlockPos, blockState, false);
+            if (!blockState.getFluidState().isEmpty()) {
+                chunkAccess.markPosForPostprocessing(mutableBlockPos);
+            }
             return true;
         }
         return false;
     }
 }
-
