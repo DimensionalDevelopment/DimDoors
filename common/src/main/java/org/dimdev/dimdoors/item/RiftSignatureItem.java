@@ -13,8 +13,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -73,22 +75,27 @@ public class RiftSignatureItem extends Item {
             state = world.getBlockState(pos);
         }
 
+        pos = normalizeRiftProviderPos(world, pos);
+        state = world.getBlockState(pos);
+
         if (!(state.canBeReplaced() || state.getBlock() instanceof RiftVariantProvider)) {
             return InteractionResult.FAIL;
         }
 
-        RotatedLocation target = getSource(stack);
+        RotatedLocation rotatedLocation = getSource(stack);
 
-        if (target == null) {
+        if (rotatedLocation == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(world.dimension(), pos, player.getYRot(), 0));
             player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
             world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START, SoundSource.BLOCKS, 0.6f, 1);
         } else {
+            rotatedLocation = normalizeRiftProviderLocation(rotatedLocation);
             var source = new RotatedLocation(world.dimension(), pos, player.getYRot(), 0);
 
-            getOrCreateRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(target.asTarget()));
-            getOrCreateRift(target.getWorld(), target.pos).ifPresent(a -> a.setDestination(source.asTarget()));
+            var target = rotatedLocation.asTarget();
+            getOrCreateRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(target));
+            getOrCreateRift(rotatedLocation.getWorld(), rotatedLocation.pos).ifPresent(a -> a.setDestination(source.asTarget()));
 
             var serverPlayer = (ServerPlayer) player;
 
@@ -103,6 +110,27 @@ public class RiftSignatureItem extends Item {
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    private static BlockPos normalizeRiftProviderPos(Level world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (state.hasProperty(DoorBlock.HALF) && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+            return pos.below();
+        }
+        return pos;
+    }
+
+    private static RotatedLocation normalizeRiftProviderLocation(RotatedLocation location) {
+        ServerLevel world = location.getWorld();
+        if (world == null) {
+            return location;
+        }
+
+        BlockPos normalizedPos = normalizeRiftProviderPos(world, location.pos);
+        if (normalizedPos.equals(location.pos)) {
+            return location;
+        }
+        return new RotatedLocation(location.world, normalizedPos, location.yaw, location.pitch);
     }
 
     public static void setSource(ItemStack itemStack, RotatedLocation destination) {
@@ -130,6 +158,8 @@ public class RiftSignatureItem extends Item {
 
     public static Optional<? extends Rift> getOrCreateRift(ServerLevel world, BlockPos pos) {
         Optional<? extends Rift> rift;
+
+        pos = normalizeRiftProviderPos(world, pos);
 
         if (!SableHelper.INSTANCE.prepareRiftCreation(world, pos)) {
             return Optional.empty();

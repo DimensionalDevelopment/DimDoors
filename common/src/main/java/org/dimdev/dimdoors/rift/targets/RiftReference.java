@@ -35,7 +35,7 @@ public class RiftReference extends VirtualTarget<RiftReference> implements Locat
 
     @Override
     public Target receiveOther() {
-        return TargetResolver.target(location);
+        return TargetResolver.target(this.target);
     }
 
     @Override
