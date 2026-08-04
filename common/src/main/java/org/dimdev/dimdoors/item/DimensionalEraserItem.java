@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -45,7 +46,7 @@ public class DimensionalEraserItem extends DimDoorsItem {
                 TeleportUtil.teleport(target, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(target), target.getDeltaMovement());
             } else {
                 target.remove(Entity.RemovalReason.KILLED);
-                player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.BLOOP, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
