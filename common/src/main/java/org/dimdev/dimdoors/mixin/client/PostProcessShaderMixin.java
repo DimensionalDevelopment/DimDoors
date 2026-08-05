@@ -22,8 +22,4 @@ public class PostProcessShaderMixin {
     public void render(float time, CallbackInfo cir) {
 //    effect.safeGetUniform("GameTime").set(RenderSystem.getShaderGameTime());
     }
-
-    private Player getCameraPlayer() {
-        return !(Minecraft.getInstance().getCameraEntity() instanceof Player player) ? null : player;
-    }
 }

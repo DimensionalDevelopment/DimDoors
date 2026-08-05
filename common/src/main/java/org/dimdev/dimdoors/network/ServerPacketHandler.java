@@ -91,7 +91,7 @@ public class ServerPacketHandler {
                 pocketSyncDirty = false;
                 lastSyncedPocketId = pocket.getId();
                 lastSyncedPocketWorld = world.dimension();
-                return new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddons(a -> a.getType().isSyncable()));
+                return new SyncPocketAddonsS2CPacket(world.dimension(), pocket.getBox(), pocket.getAddons(a -> a.getType().isSyncable()));
             }
 
             return null;

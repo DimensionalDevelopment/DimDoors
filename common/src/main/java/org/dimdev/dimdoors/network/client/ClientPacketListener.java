@@ -8,6 +8,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -30,9 +32,7 @@ public class ClientPacketListener {
     private static final RandomSource clientRandom = RandomSource.create();
 
     private static ResourceKey<Level> pocketWorld;
-    private static int gridSize = 1;
-    private static int pocketId = Integer.MIN_VALUE;
-    private static int pocketRange = 1;
+    private static BoundingBox area;
     private static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 
     public static <T extends CustomPacketPayload> void sendPacket(T packet) {
@@ -53,27 +53,13 @@ public class ClientPacketListener {
         return pocketWorld;
     }
 
-    public static int getGridSize() {
-        return gridSize;
-    }
-
-    public static int getPocketId() {
-        return pocketId;
-    }
-
-    public static int getPocketRange() {
-        return pocketRange;
-    }
-
     public static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> getAddons() {
         return addons;
     }
 
     public static void clearPocketAddons() {
         pocketWorld = null;
-        gridSize = 1;
-        pocketId = Integer.MIN_VALUE;
-        pocketRange = 1;
+        area = null;
         addons = new HashMap<>();
     }
 
@@ -87,9 +73,7 @@ public class ClientPacketListener {
 
     public static void onSyncPocketAddons(SyncPocketAddonsS2CPacket packet) {
         pocketWorld = packet.world();
-        gridSize = packet.gridSize();
-        pocketId = packet.pocketId();
-        pocketRange = packet.pocketRange();
+        area = packet.box();
         addons = packet.addons().stream().collect(Collectors.toMap(PocketAddon::getType, Function.identity()));
     }
 
@@ -132,10 +116,13 @@ public class ClientPacketListener {
     public static <T extends PocketAddon> Optional<T> getAddonClient(PocketAddon.PocketAddonType<T, ?> type, Level world, BlockPos pos) {
         if (!world.dimension().equals(pocketWorld)) return Optional.empty();
 
-        int pocketId = GridUtil.gridPosToID(new GridUtil.GridPos(pos, getGridSize()));
-        if (pocketId < getPocketId() || pocketId >= getPocketId() + getPocketRange()) {
-            return Optional.empty();
-        }
+        if(!area.isInside(pos.getX(), pos.getY(), pos.getZ())) return Optional.empty();
+
+
         return Optional.ofNullable((T) addons.get(type));
+    }
+
+    public static BoundingBox getArea() {
+        return area;
     }
 }
