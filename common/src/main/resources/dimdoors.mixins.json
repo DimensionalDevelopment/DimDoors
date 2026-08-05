@@ -47,12 +47,15 @@
     "client.BuiltinModelItemRendererMixin",
     "client.ClientLanguageMixin",
     "client.ClientPlayerInteractionManagerMixin",
+    "client.FogRendererMixin",
     "client.InGameHudMixin",
     "client.LevelRendererMixin",
     "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PlaceRecipeMixin",
-    "client.PostProcessShaderMixin"
+    "client.PostProcessShaderMixin",
+    "client.accessor.FrustumAccessor",
+    "client.accessor.LevelRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

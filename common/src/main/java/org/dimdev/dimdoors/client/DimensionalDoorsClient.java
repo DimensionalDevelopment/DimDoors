@@ -59,6 +59,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public static ShaderPackDetector detector = consumer -> consumer.accept(DimensionalPortalRenderer.RENDER_LAYER);
     private static IDimDoorsClientSided<?> sided;
+    public boolean boxDebug;
 
     public void init(IDimDoorsClientSided<?> sided) {
         setClientSided(sided);
