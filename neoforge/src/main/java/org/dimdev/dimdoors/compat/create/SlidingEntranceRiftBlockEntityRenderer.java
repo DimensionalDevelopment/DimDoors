@@ -44,13 +44,14 @@ public class SlidingEntranceRiftBlockEntityRenderer extends RiftBlockEntityRende
         BlockState blockState = blockEntity.getBlockState();
         BlockState renderState = blockEntity.getRenderBlockState();
 
+        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay, blockEntity.isTall());
+
         if (blockEntity.shouldRenderSliding(blockState)) {
             renderSlidingDoor(blockEntity, renderState, tickDelta, matrixStack, vertexConsumerProvider, light, overlay);
         } else {
             renderDoorBlockState(renderState, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
         }
 
-        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay, blockEntity.isTall());
     }
 
     private void renderDoorBlockState(BlockState state, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {

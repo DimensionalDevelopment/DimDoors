@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.api.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -47,6 +48,17 @@ public final class DimensionalPortalRenderer {
         }
     }
 
+    private static final RenderStateShard.LayeringStateShard DIMENSIONAL_PORTAL_LAYERING = new RenderStateShard.LayeringStateShard(
+            "dimensional_portal_layering",
+            () -> {
+                RenderSystem.polygonOffset(1.0F, 10.0F);
+                RenderSystem.enablePolygonOffset();
+            },
+            () -> {
+                RenderSystem.polygonOffset(0.0F, 0.0F);
+                RenderSystem.disablePolygonOffset();
+            });
+
     static {
         WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
         DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
@@ -57,8 +69,10 @@ public final class DimensionalPortalRenderer {
                 256,
                 false,
                 false,
+
                 RenderType.CompositeState.builder()
                         .setShaderState(DIMENSIONAL_PORTAL_SHADER)
+                        .setLayeringState(DIMENSIONAL_PORTAL_LAYERING)
                         .setTextureState(
                                 RenderStateShard.MultiTextureStateShard.builder()
                                         .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
@@ -68,9 +82,39 @@ public final class DimensionalPortalRenderer {
                         .createCompositeState(false)
         );
         Set<Direction> directions = new HashSet<>(List.of(Direction.values()));
-        ModelPart.Cube small = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
-        MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
-        ModelPart.Cube big = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
-        TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
+        MODEL = create(
+                0.0f,
+                0.0f,
+                -3.0f,
+                16f,
+                16f,
+                3f,
+                directions);
+        TALL_MODEL = create(
+                0f,
+                0f,
+                -3f,
+                16f,
+                32f,
+                3f,
+                directions);
+    }
+
+    public static ModelPart create(float originX, float originY, float originZ, float dimensionX, float dimensionY, float dimensionZ, Set<Direction> visibleFaces) {
+        var cube = new ModelPart.Cube(0, 0,
+                originX,
+                originY,
+                originZ,
+                dimensionX,
+                dimensionY,
+                dimensionZ,
+                0,
+                0,
+                0,
+                false,
+                0,
+                0,
+                visibleFaces);
+        return new ModelPart(Collections.singletonList(cube), Collections.emptyMap());
     }
 }
