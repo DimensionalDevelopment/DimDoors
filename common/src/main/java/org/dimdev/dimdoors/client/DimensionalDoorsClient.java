@@ -43,6 +43,7 @@ import org.dimdev.limlib.api.client.ModClient;
 import org.dimdev.limlib.api.client.ModelLoadingRegistry;
 import org.dimdev.limlib.api.fluid.FluidDetails;
 import org.dimdev.limlib.client.ModelLoadingOverride;
+import org.dimdev.limlib.client.specialmodels.SpecialModelShaderRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
@@ -68,6 +69,8 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
         });
         registerCompats();
         EnvironmentAddonClient.init();
+
+//        ModSpecialModelRenderers.register();
     }
 
     @Override
@@ -112,7 +115,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     @Override
     public void initModels(BiConsumer<ModelResourceLocation, Consumer<ModelLoadingRegistry>> consumer) {
-        consumer.accept(ModelLoadingOverride.standalone(childItem), models -> registerGeneratedDoorModels(models));
+//        consumer.accept(ModelLoadingOverride.standalone(childItem), models -> registerGeneratedDoorModels(models));
     }
 
     @Override
@@ -142,6 +145,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     }
 
     public static void registerGeneratedDoorModels(ModelLoadingRegistry models) {
+
         DimensionalDoorBlockRegistrar registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
         if (registrar != null) {
             registrar.getGennedIds().stream()

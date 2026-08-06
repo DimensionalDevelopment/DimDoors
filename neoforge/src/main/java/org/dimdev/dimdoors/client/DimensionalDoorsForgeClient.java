@@ -11,6 +11,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.event.*;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.client.*;
 import org.dimdev.dimdoors.client.config.ConfigScreen;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
@@ -22,6 +23,7 @@ import org.dimdev.limlib.client.NeoForgeClientSided;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Mod(dist = Dist.CLIENT, value = DimensionalDoors.MOD_ID)

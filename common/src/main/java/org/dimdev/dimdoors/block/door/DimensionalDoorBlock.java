@@ -177,10 +177,10 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity<?>>
         return BuiltInRegistries.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)));
     }
 
-    @Override
-    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
+//    @Override
+//    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
+//        return RenderShape.ENTITYBLOCK_ANIMATED;
+//    }
 
     @Override
     public Optional<T> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {

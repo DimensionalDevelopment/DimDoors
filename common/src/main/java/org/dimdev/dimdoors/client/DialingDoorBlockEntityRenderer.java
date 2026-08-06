@@ -26,7 +26,7 @@ public class DialingDoorBlockEntityRenderer implements BlockEntityRenderer<Diali
 
     @Override
     public void render(DialingDoorBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
-        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay, blockEntity.isTall());
+        DimensionalPortalRenderer.renderDimensionalPortal(blockEntity.getBlockState(), matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay);
 
         if(blockEntity.getBlockState().getValue(DoorBlock.OPEN)) return;
         renderDialingText(blockEntity, matrixStack, vertexConsumerProvider, light);

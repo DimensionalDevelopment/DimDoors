@@ -11,30 +11,51 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.limlib.api.client.RenderLayerFactory;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class DimensionalPortalRenderer {
     public static final ResourceLocation WARP_PATH;
     private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;
     public static final RenderType RENDER_LAYER;
-    private static final ModelPart MODEL;
-    private static final ModelPart TALL_MODEL;
 
     public static void renderDimensionalPortal(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
-        renderDimensionalPortal(matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay, true);
+        renderDimensionalPortal(null, matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay, true);
     }
 
-    public static void renderDimensionalPortal(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay, boolean tall) {
-        ModelPart model = tall ? TALL_MODEL : MODEL;
+    public static void renderDimensionalPortal(BlockState state, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay, boolean tall) {
+
+    }
+
+    public static void renderDimensionalPortal(BlockState state, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
+        var model = switch (state.getBlock()) {
+            case DoorBlock doorBlock -> getModelFromDirection(state.getValue(DoorBlock.FACING));
+            case TrapDoorBlock trapDoorBlock -> state.getValue(TrapDoorBlock.HALF) == Half.TOP ? TRAPDOOR_TOP : TRAPDOOR_BOTTOM;
+            case DimensionalPortalBlock dimensionalPortalBlock -> getModelFromDirection(state.getValue(DoorBlock.FACING));
+            default -> DOOR_NORTH;
+        };
+
         renderModelWithPortalShader(model, matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay);
+    }
+
+    public static ModelPart getModelFromDirection(Direction direction) {
+        return switch (direction) {
+            case EAST -> DOOR_EAST;
+            case SOUTH -> DOOR_SOUTH;
+            case WEST -> DOOR_WEST;
+            default -> DOOR_NORTH;
+        };
     }
 
     public static void renderModelWithPortalShader(ModelPart model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
@@ -59,6 +80,13 @@ public final class DimensionalPortalRenderer {
                 RenderSystem.disablePolygonOffset();
             });
 
+    private static final ModelPart DOOR_SOUTH;
+    private static final ModelPart DOOR_NORTH;
+    private static final ModelPart DOOR_WEST;
+    private static final ModelPart DOOR_EAST;
+    private static final ModelPart TRAPDOOR_BOTTOM;
+    private static final ModelPart TRAPDOOR_TOP;
+
     static {
         WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
         DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
@@ -72,49 +100,41 @@ public final class DimensionalPortalRenderer {
 
                 RenderType.CompositeState.builder()
                         .setShaderState(DIMENSIONAL_PORTAL_SHADER)
-                        .setLayeringState(DIMENSIONAL_PORTAL_LAYERING)
+                        .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                         .setTextureState(
                                 RenderStateShard.MultiTextureStateShard.builder()
                                         .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
                                         .add(WARP_PATH, false, false)
                                         .build()
                         )
+                        .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
                         .createCompositeState(false)
         );
         Set<Direction> directions = new HashSet<>(List.of(Direction.values()));
-        MODEL = create(
-                0.0f,
-                0.0f,
-                -3.0f,
-                16f,
-                16f,
-                3f,
-                directions);
-        TALL_MODEL = create(
-                0f,
-                0f,
-                -3f,
-                16f,
-                32f,
-                3f,
-                directions);
+
+        DOOR_SOUTH = create(0.0F, 0.0F, -3.0F, 16.0F, 32.0F, 3.0F);
+        DOOR_NORTH = create(0.0F, 0.0F, 0.0F, 16.0F, 32.0F, 3.0F);
+        DOOR_WEST = create(0.0F, 0.0F, -3.0F, 16.0F, 32.0F, 3.0F);
+        DOOR_EAST = create(0.0F, 0.0F, 0.0F, 16.0F, 32.0F, 3.0f);
+        TRAPDOOR_BOTTOM = create(0.0F, 0.0F, 0.0F, 16.0F, 3.0F, 16.0F);
+        TRAPDOOR_TOP = create(0.0F, 13.0F, 0.0F, 16.0F, 16.0F, 16.0F);
     }
 
-    public static ModelPart create(float originX, float originY, float originZ, float dimensionX, float dimensionY, float dimensionZ, Set<Direction> visibleFaces) {
-        var cube = new ModelPart.Cube(0, 0,
-                originX,
-                originY,
-                originZ,
-                dimensionX,
-                dimensionY,
-                dimensionZ,
-                0,
-                0,
-                0,
-                false,
-                0,
-                0,
-                visibleFaces);
-        return new ModelPart(Collections.singletonList(cube), Collections.emptyMap());
+    public static ModelPart create(float x, float y, float z, float width, float height, float length) {
+        return new ModelPart(
+                List.of(new ModelPart.Cube(
+                        0,
+                        0,
+                        x,y,z,width, height, length,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        false,
+                        16.0F,
+                        16.0F,
+                        EnumSet.allOf(Direction.class)
+                )),
+                Map.of()
+        );
     }
 }

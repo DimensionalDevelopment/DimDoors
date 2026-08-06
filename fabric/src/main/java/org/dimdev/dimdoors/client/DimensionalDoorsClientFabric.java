@@ -2,18 +2,44 @@ package org.dimdev.dimdoors.client;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.minecraft.client.Camera;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.TraversableRiftBlock;
+import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
 import org.dimdev.limlib.client.FabricClientSided;
 import org.dimdev.limlib.client.IDimensionSpecialEffectExtension;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class DimensionalDoorsClientFabric extends FabricClientSided<DimensionalDoorsClientFabric, DimensionalDoorsClient> implements IDimDoorsClientSided<DimensionalDoorsClientFabric> {
@@ -26,6 +52,7 @@ public class DimensionalDoorsClientFabric extends FabricClientSided<DimensionalD
         super.onInitializeClient();
         RecipeBookManager.init();
         checkCompat();
+        ModelLoadingPlugin.register(new GeneratedDoorModelCopyPlugin());
     }
 
     @Override
@@ -59,6 +86,83 @@ public class DimensionalDoorsClientFabric extends FabricClientSided<DimensionalD
         @Override
         public boolean extRenderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
             return effect.renderWeather(level, ticks, partialTick, lightTexture, camX, camY, camZ);
+        }
+    }
+
+    public final class GeneratedDoorModelCopyPlugin implements ModelLoadingPlugin {
+        @Override
+        public void onInitializeModelLoader(Context context) {
+            var registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
+
+            var blocks = registrar.getGennedIds().stream()
+                    .map(BuiltInRegistries.BLOCK::get)
+                    .filter(block -> block instanceof TraversableRiftBlock<?>)
+                    .toList();
+
+            var ids = blocks.stream()
+                    .flatMap(block -> {
+                        var rift = (TraversableRiftBlock<?>) block;
+                        var original = rift.getVisualBlockState(block.defaultBlockState()).getBlock();
+
+                        return Stream.concat(
+                                block.getStateDefinition().getPossibleStates().stream()
+                                        .map(state -> Map.entry(
+                                                BlockModelShaper.stateToModelLocation(state),
+                                                BlockModelShaper.stateToModelLocation(rift.getVisualBlockState(state))
+                                        )),
+                                Stream.of(Map.entry(
+                                        ModelResourceLocation.inventory(block.asItem().builtInRegistryHolder().key().location()),
+                                        ModelResourceLocation.inventory(original.asItem().builtInRegistryHolder().key().location())
+                                ))
+                        );
+                    })
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            blocks.forEach(block ->
+                    context.registerBlockStateResolver(block, ctx -> {
+                        var model = ctx.getOrLoadModel(
+                                ResourceLocation.withDefaultNamespace("block/air")
+                        );
+
+                        block.getStateDefinition().getPossibleStates()
+                                .forEach(state -> ctx.setModel(state, model));
+                    })
+            );
+
+            var itemIds = ids.entrySet().stream()
+                    .filter(e -> ModelResourceLocation.INVENTORY_VARIANT.equals(e.getKey().variant()))
+                    .collect(Collectors.toMap(
+                            e -> e.getKey().id().withPrefix("item/"),
+                            e -> e.getValue().id().withPrefix("item/")
+                    ));
+
+            context.resolveModel().register(ctx -> {
+                var original = itemIds.get(ctx.id());
+                return original == null ? null : ctx.getOrLoadModel(original);
+            });
+
+            var originals = new HashSet<>(ids.values());
+            var cache = new HashMap<ModelResourceLocation, BakedModel>();
+
+            context.modifyModelAfterBake().register((model, ctx) -> {
+                var id = ctx.topLevelId();
+                if (id == null) return model;
+
+                var originalId = ids.get(id);
+
+                if (originalId != null) {
+                    var originalModel = ctx.loader().getBakedTopLevelModels().get(originalId);
+                    return originalModel != null ? originalModel : model;
+                }
+
+                ids.forEach((generatedId, sourceId) -> {
+                    if (sourceId.equals(id)) {
+                        ctx.loader().getBakedTopLevelModels().put(generatedId, model);
+                    }
+                });
+
+                return model;
+            });
         }
     }
 }
