@@ -72,7 +72,7 @@ public class DimensionalDoorBlockRegistrar {
         map.forEach((tag, holders) -> result.put(tag, new ArrayList<>(holders)));
 
         map.forEach((tag, holders) -> {
-            if (tag.equals(BlockTags.MOB_INTERACTABLE_DOORS)) {
+            if (tag.equals(BlockTags.MOB_INTERACTABLE_DOORS) || tag.location().getNamespace().equals("chipped")) {
                 return;
             }
 
@@ -110,6 +110,8 @@ public class DimensionalDoorBlockRegistrar {
         map.forEach((tag, holders) -> result.put(tag, new ArrayList<>(holders)));
 
         map.forEach((tag, holders) -> {
+            if(tag.location().getNamespace().equals("chipped")) return;
+
             List<Holder<Item>> tagList = result.get(tag);
 
             for (var holder : holders) {
