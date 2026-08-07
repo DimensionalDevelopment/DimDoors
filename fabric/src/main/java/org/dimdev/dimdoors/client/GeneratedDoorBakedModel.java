@@ -10,6 +10,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -23,14 +24,18 @@ import java.util.function.Supplier;
 
 public final class GeneratedDoorBakedModel implements BakedModel {
     private final ModelResourceLocation sourceId;
-    private final boolean portal;
+    private final @Nullable ResourceLocation portalId;
 
+    /**
+     * @param portalId the portal model to draw underneath {@code sourceId}, or {@code null} for the
+     *                 block models, which get their portal from the block entity renderer instead
+     */
     public GeneratedDoorBakedModel(
             ModelResourceLocation sourceId,
-            boolean portal
+            @Nullable ResourceLocation portalId
     ) {
         this.sourceId = sourceId;
-        this.portal = portal;
+        this.portalId = portalId;
     }
 
     private BakedModel source() {
@@ -42,7 +47,7 @@ public final class GeneratedDoorBakedModel implements BakedModel {
     private BakedModel portal() {
         return Minecraft.getInstance()
                 .getModelManager()
-                .getModel(GeneratedDoorModelMappings.PORTAL_ITEM_MODEL);
+                .getModel(portalId);
     }
 
     @Override
@@ -53,7 +58,7 @@ public final class GeneratedDoorBakedModel implements BakedModel {
     ) {
         var source = source();
 
-        if (!portal) {
+        if (portalId == null) {
             return source.getQuads(state, direction, random);
         }
 
@@ -111,7 +116,7 @@ public final class GeneratedDoorBakedModel implements BakedModel {
 
     @Override
     public boolean isVanillaAdapter() {
-        return !portal && source().isVanillaAdapter();
+        return portalId == null && source().isVanillaAdapter();
     }
 
     @Override
@@ -137,18 +142,21 @@ public final class GeneratedDoorBakedModel implements BakedModel {
             Supplier<RandomSource> randomSupplier,
             RenderContext context
     ) {
-        source().emitItemQuads(
-                stack,
-                randomSupplier,
-                context
-        );
-
-        if (portal) {
+        // Portal first, so the door overwrites it wherever the door is opaque. The two are
+        // coplanar, so whichever is emitted last wins the depth test - emitting the portal
+        // second hides the door behind it completely. Must stay in sync with getQuads.
+        if (portalId != null) {
             portal().emitItemQuads(
                     stack,
                     randomSupplier,
                     context
             );
         }
+
+        source().emitItemQuads(
+                stack,
+                randomSupplier,
+                context
+        );
     }
 }

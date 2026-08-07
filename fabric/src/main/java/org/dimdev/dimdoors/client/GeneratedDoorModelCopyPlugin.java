@@ -8,7 +8,7 @@ public final class GeneratedDoorModelCopyPlugin implements ModelLoadingPlugin {
     public void onInitializeModelLoader(Context context) {
         var mappings = GeneratedDoorModelMappings.create();
 
-        context.addModels(GeneratedDoorModelMappings.PORTAL_ITEM_MODEL);
+        context.addModels(GeneratedDoorModelMappings.PORTAL_ITEM_MODELS);
 
         for (var block : mappings.blocks()) {
             context.registerBlockStateResolver(block, ctx -> {
@@ -28,14 +28,14 @@ public final class GeneratedDoorModelCopyPlugin implements ModelLoadingPlugin {
                 return model;
             }
 
-            var source = mappings.blockModels().get(id);
-            if (source != null) {
-                return new GeneratedDoorBakedModel(source, false);
+            var blockModel = mappings.blockModels().get(id);
+            if (blockModel != null) {
+                return new GeneratedDoorBakedModel(blockModel, null);
             }
 
-            source = mappings.itemModels().get(id);
-            if (source != null) {
-                return new GeneratedDoorBakedModel(source, true);
+            var itemModel = mappings.itemModels().get(id);
+            if (itemModel != null) {
+                return new GeneratedDoorBakedModel(itemModel.source(), itemModel.portal());
             }
 
             return model;
