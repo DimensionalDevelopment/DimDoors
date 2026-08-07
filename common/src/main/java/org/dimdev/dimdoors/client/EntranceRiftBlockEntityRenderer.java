@@ -40,7 +40,7 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
 
         var state = blockEntity.getRenderBlockState();
 
-        DimensionalPortalRenderer.renderDimensionalPortal(state, matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay);
+        DimensionalPortalRenderer.renderDimensionalPortal(state, matrixStack, vertexConsumerProvider, light, overlay);
 
 //        renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
 //        if (state.getBlock() instanceof DoorBlock) {

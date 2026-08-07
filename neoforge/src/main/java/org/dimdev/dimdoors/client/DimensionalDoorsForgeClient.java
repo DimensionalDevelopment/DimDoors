@@ -49,6 +49,8 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
             bus.addListener(DimensionalDoorsForgeClient::registerCreateBlockEntityRenderers);
         }
 
+        GeneratedDoorModelEvents.init(bus);
+
     }
 
     public static void registerRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {

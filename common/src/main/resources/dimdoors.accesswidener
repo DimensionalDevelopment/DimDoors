@@ -17,6 +17,13 @@ mutable field net/minecraft/world/level/block/Block stateDefinition Lnet/minecra
 
 #accessible method net/minecraft/client/render/WorldRenderer renderEndSky (Lnet/minecraft/client/util/math/MatrixStack;)V
 
+accessible field net/minecraft/world/level/block/DoorBlock SOUTH_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+accessible field net/minecraft/world/level/block/DoorBlock NORTH_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+accessible field net/minecraft/world/level/block/DoorBlock WEST_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+accessible field net/minecraft/world/level/block/DoorBlock EAST_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+accessible field net/minecraft/world/level/block/TrapDoorBlock TOP_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+accessible field net/minecraft/world/level/block/TrapDoorBlock BOTTOM_AABB Lnet/minecraft/world/phys/shapes/VoxelShape;
+
 #accessible method net/minecraft/world/biome/Biome getCategory ()Lnet/minecraft/world/biome/Biome$Category;
 
 accessible field net/minecraft/world/level/block/Block LOGGER Lorg/slf4j/Logger;
@@ -32,7 +39,7 @@ accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lne
 accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-
+accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
 #accessible method net/minecraft/world/level/block/entity/BlockEntity saveMetadata (Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;
 
 #accessible method net/minecraft/commands/arguments/blocks/BlockStateParser parse (Z)Lnet/minecraft/commands/arguments/blocks/BlockStateParser;

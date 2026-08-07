@@ -119,7 +119,7 @@ public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity
 
     @Override
     protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override

@@ -12,7 +12,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -147,5 +151,107 @@ public class RenderUtils {
                     packedLight
             );
         }
+    }
+
+    public static void renderCube(VoxelShape shape, PoseStack matrixStack, VertexConsumer buffer, int light, int overlay) {
+        var consumer = new Shapes.DoubleLineConsumer() {
+            @Override
+            public void consume(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+                renderCube(
+                        (float) minX, (float) minY, (float) minZ,
+                        (float) maxX, (float) maxY, (float) maxZ,
+                        matrixStack,
+                        buffer,
+                        light,
+                        overlay
+                );
+            }
+        };
+
+        shape.forAllBoxes(consumer);
+    }
+
+    public static void renderCube(Vec3 start, Vec3 end, PoseStack matrixStack, VertexConsumer buffer, int light, int overlay) {
+        float minX = (float) Math.min(start.x, end.x);
+        float minY = (float) Math.min(start.y, end.y);
+        float minZ = (float) Math.min(start.z, end.z);
+
+        float maxX = (float) Math.max(start.x, end.x);
+        float maxY = (float) Math.max(start.y, end.y);
+        float maxZ = (float) Math.max(start.z, end.z);
+
+        renderCube(minX, minY, minZ, maxX, maxY, maxZ, matrixStack, buffer, light, overlay);
+    }
+
+    public static void renderCube(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, PoseStack matrixStack, VertexConsumer buffer, int light, int overlay) {
+        PoseStack.Pose pose = matrixStack.last();
+
+        // DOWN
+        vertex(pose, buffer, maxX, minY, maxZ,  0, -1,  0, light, overlay);
+        vertex(pose, buffer, minX, minY, maxZ,  0, -1,  0, light, overlay);
+        vertex(pose, buffer, minX, minY, minZ,  0, -1,  0, light, overlay);
+        vertex(pose, buffer, maxX, minY, minZ,  0, -1,  0, light, overlay);
+
+        // UP
+        vertex(pose, buffer, maxX, maxY, minZ,  0,  1,  0, light, overlay);
+        vertex(pose, buffer, minX, maxY, minZ,  0,  1,  0, light, overlay);
+        vertex(pose, buffer, minX, maxY, maxZ,  0,  1,  0, light, overlay);
+        vertex(pose, buffer, maxX, maxY, maxZ,  0,  1,  0, light, overlay);
+
+        // WEST
+        vertex(pose, buffer, minX, minY, minZ, -1,  0,  0, light, overlay);
+        vertex(pose, buffer, minX, minY, maxZ, -1,  0,  0, light, overlay);
+        vertex(pose, buffer, minX, maxY, maxZ, -1,  0,  0, light, overlay);
+        vertex(pose, buffer, minX, maxY, minZ, -1,  0,  0, light, overlay);
+
+        // NORTH
+        vertex(pose, buffer, maxX, minY, minZ,  0,  0, -1, light, overlay);
+        vertex(pose, buffer, minX, minY, minZ,  0,  0, -1, light, overlay);
+        vertex(pose, buffer, minX, maxY, minZ,  0,  0, -1, light, overlay);
+        vertex(pose, buffer, maxX, maxY, minZ,  0,  0, -1, light, overlay);
+
+        // EAST
+        vertex(pose, buffer, maxX, minY, maxZ,  1,  0,  0, light, overlay);
+        vertex(pose, buffer, maxX, minY, minZ,  1,  0,  0, light, overlay);
+        vertex(pose, buffer, maxX, maxY, minZ,  1,  0,  0, light, overlay);
+        vertex(pose, buffer, maxX, maxY, maxZ,  1,  0,  0, light, overlay);
+
+        // SOUTH
+        vertex(pose, buffer, minX, minY, maxZ,  0,  0,  1, light, overlay);
+        vertex(pose, buffer, maxX, minY, maxZ,  0,  0,  1, light, overlay);
+        vertex(pose, buffer, maxX, maxY, maxZ,  0,  0,  1, light, overlay);
+        vertex(pose, buffer, minX, maxY, maxZ,  0,  0,  1, light, overlay);
+    }
+
+    private static Vector3f normal = new Vector3f(), position = new Vector3f();
+
+    private static void vertex(
+            PoseStack.Pose pose,
+            VertexConsumer buffer,
+            float x,
+            float y,
+            float z,
+            float normalX,
+            float normalY,
+            float normalZ,
+            int light,
+            int overlay
+    ) {
+        pose.pose().transformPosition(x, y, z, position);
+        pose.transformNormal(normalX, normalY, normalZ, normal);
+
+        buffer.addVertex(
+                position.x(),
+                position.y(),
+                position.z(),
+                -1,
+                0.0F,
+                0.0F,
+                overlay,
+                light,
+                normal.x(),
+                normal.y(),
+                normal.z()
+        );
     }
 }
