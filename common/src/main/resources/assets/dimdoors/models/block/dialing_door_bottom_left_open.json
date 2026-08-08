@@ -1,0 +1,35 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "dimdoors:block/dialing_door_bottom",
+		"bottom": "dimdoors:block/dialing_door_bottom",
+		"dial": "dimdoors:block/dialing_door_bottom_dial"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [3, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 16], "texture": "#bottom", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#bottom"},
+				"south": {"uv": [0, 0, 3, 16], "texture": "#bottom", "cullface": "south"},
+				"west": {"uv": [16, 0, 0, 16], "texture": "#bottom", "cullface": "west"},
+				"down": {"uv": [0, 16, 16, 13], "rotation": 90, "texture": "#bottom", "cullface": "down"}
+			}
+		},
+		{
+			"name": "dial_top",
+			"from": [2, 6, 4],
+			"to": [4, 16, 12],
+			"faces": {
+				"north": {"uv": [13, 0, 15, 9], "texture": "#dial"},
+				"east": {"uv": [4, 0, 12, 9], "texture": "#dial"},
+				"south": {"uv": [1, 0, 3, 9], "texture": "#dial"},
+				"west": {"uv": [10, 7.5, 14, 12.5], "texture": "#dial"},
+				"down": {"uv": [4, 10, 12, 12], "rotation": 90, "texture": "#dial"}
+			}
+		}
+	]
+}

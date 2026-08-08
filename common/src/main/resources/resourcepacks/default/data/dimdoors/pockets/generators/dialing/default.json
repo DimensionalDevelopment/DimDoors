@@ -9,11 +9,11 @@
     {
       "layers": [
         {
-          "block_state": "dimdoors:white_fabric",
+          "block_state": "dimdoors:gray_fabric",
           "thickness": "4"
         },
         {
-          "block_state": "dimdoors:white_ancient_fabric",
+          "block_state": "dimdoors:gray_ancient_fabric",
           "thickness": "1"
         }
       ],

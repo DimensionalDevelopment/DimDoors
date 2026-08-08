@@ -36,9 +36,9 @@ import java.util.List;
 
 public class DialingDoor extends DimensionalDoorBlock<DialingDoorBlockEntity> {
     private static final InteractionShape[] BUTTONS = new InteractionShape[] {
-            new InteractionShape(5, 20, 0, 10, 27, 1),
-            new InteractionShape(5, 13, 0, 10, 20, 1),
-            new InteractionShape(5, 6, 0, 10, 13, 1)
+            new InteractionShape(4, 21, 0, 12, 28, 1),
+            new InteractionShape(4, 14, 0, 12, 21, 1),
+            new InteractionShape(4, 6, 0, 12, 14, 1)
     };
 
     public DialingDoor(Properties settings, BlockSetType blockSetType) {
