@@ -72,6 +72,11 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
     }
 
     @Override
+    public Class<PrivatePocket> getPocketClass() {
+        return PrivatePocket.class;
+    }
+
+    @Override
     public UUID getKey(UUID uuid) {
         return uuid;
     }

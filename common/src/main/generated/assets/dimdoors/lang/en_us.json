@@ -725,6 +725,7 @@
   "resourcePackActivationType.defaultEnabled": "Default Enabled",
   "resourcePackActivationType.normal": "Normal",
   "rifts.cantUnlock": "Can't unlock this door",
+  "rifts.destinations.dialing.cant_use_dialing_door_in_dialing_pocket": "You can't use a dialing door in a dialing pocket.",
   "rifts.destinations.escape.cannot_escape_limbo": "Nice try, but you'll need to either die or find some eternal fabric to get out of Limbo.",
   "rifts.destinations.escape.did_not_use_rift": "You didn't use a rift to enter the pocket dimension, so you ended up in Limbo!",
   "rifts.destinations.escape.not_in_pocket_dim": "You can only use this to escape from a pocket dimension!",

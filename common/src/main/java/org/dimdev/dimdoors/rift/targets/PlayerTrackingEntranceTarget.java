@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.api.rift.target.TargetResolver;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem;
 import org.dimdev.dimdoors.rift.registry.PocketRegistry;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.limlib.api.util.EntityUtils;
@@ -28,6 +29,11 @@ public interface PlayerTrackingEntranceTarget<O, P extends Pocket<?, ?>, S exten
         UUID uuid = EntityUtils.getOwnerPlayerUuid(entity);
         if (uuid == null) {
             return false;
+        }
+
+        if(isInDialingPocket()) {
+            onInPocketType(entity, relativePos, relativeAngle, relativeVelocity, location);
+            return true;
         }
 
         var registry = getSubsystem();
@@ -66,6 +72,16 @@ public interface PlayerTrackingEntranceTarget<O, P extends Pocket<?, ?>, S exten
 
         return this.processEntity(pocket, target, entity, uuid, relativePos, relativeAngle, relativeVelocity);
     }
+
+    default void onInPocketType(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+
+    }
+
+    default boolean isInDialingPocket() {
+        return PocketRegistry.getInstance().getPocketAt(getLocation(), getPocketClass()) != null;
+    }
+
+    Class<P> getPocketClass();
 
     boolean processEntity(P pocket, EntityTarget target, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity);
 
@@ -116,6 +132,4 @@ public interface PlayerTrackingEntranceTarget<O, P extends Pocket<?, ?>, S exten
     O getKey(UUID uuid);
 
     P createPocket(VirtualLocation virtualLocation);
-
-
 }

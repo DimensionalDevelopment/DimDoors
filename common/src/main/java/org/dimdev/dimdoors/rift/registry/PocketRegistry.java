@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static org.dimdev.dimdoors.api.rift.target.TargetResolver.castOrNull;
+
 public class PocketRegistry extends SubSystem<PocketRegistry> implements VertexProvider {
     public static final MapCodec<PocketRegistry> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC).fieldOf("directories").forGetter(PocketRegistry::getDirectories),
@@ -185,5 +187,17 @@ public class PocketRegistry extends SubSystem<PocketRegistry> implements VertexP
         affectedRifts.forEach(Rift::markDirty);
         this.setDirty();
         return true;
+    }
+
+    public Pocket<?, ?> getPocketAt(Location location) {
+        var directory = directories.get(location.world);
+        if(directory == null) return null;
+        return directory.getPocketAt(location.getBlockPos());
+    }
+
+    public <P extends Pocket<?, ?>> P getPocketAt(Location location, Class<P> pocketClass) {
+        var pocket = getPocketAt(location);
+
+        return castOrNull(pocket, pocketClass);
     }
 }

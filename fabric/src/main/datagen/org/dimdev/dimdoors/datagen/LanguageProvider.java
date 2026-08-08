@@ -331,6 +331,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
                 add("escape.rift_has_closed", "The rift you used to enter the pocket dimension has closed and you ended up in Limbo!");
                 add("private_pocket_exit.did_not_use_rift", "You didn't use a rift to enter the pocket dimension and you ended up in Limbo!");
                 add("private_pocket_exit.rift_has_closed", "The rift you used to enter the pocket dimension has closed and you ended up in Limbo!");
+                add("dialing.cant_use_dialing_door_in_dialing_pocket", "You can't use a dialing door in a dialing pocket.");
             });
 
             add("entrances.rift_too_close", "Placing a door this close to a tear in the world would be dangerous. Shift-right-click to place anyway, or place it on the rift's core (tesseract) to bind it to the rift.");
