@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/party",
+  "id": "dimdoors:dungeon/party.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

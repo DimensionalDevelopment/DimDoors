@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_elevator_tnt_trap",
+  "id": "dimdoors:dungeon/ruins_elevator_tnt_trap.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

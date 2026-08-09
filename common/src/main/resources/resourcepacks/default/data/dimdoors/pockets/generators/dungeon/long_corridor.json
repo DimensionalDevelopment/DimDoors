@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/long_corridor",
+  "id": "dimdoors:dungeon/long_corridor.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

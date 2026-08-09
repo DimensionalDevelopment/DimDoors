@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/hot_suspense",
+      "id": "dimdoors:classic/ruins/hot_suspense.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

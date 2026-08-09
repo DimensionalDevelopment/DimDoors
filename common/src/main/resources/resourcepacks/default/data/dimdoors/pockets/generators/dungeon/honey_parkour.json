@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/honey_parkour",
+  "id": "dimdoors:dungeon/honey_parkour.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

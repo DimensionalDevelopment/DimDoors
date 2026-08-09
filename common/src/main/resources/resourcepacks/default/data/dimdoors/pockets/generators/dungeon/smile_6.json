@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dimdoors:dungeon/smile_6",
+  "id": "dimdoors:dungeon/smile_6.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_small_pressure_plate_maze",
+  "id": "dimdoors:dungeon/ruins_small_pressure_plate_maze.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

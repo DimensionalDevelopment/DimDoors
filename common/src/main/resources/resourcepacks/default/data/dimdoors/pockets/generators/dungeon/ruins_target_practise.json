@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dimdoors:dungeon/ruins_target_practise",
+  "id": "dimdoors:dungeon/ruins_target_practise.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

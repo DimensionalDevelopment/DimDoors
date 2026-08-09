@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/door_totem_ruins",
+      "id": "dimdoors:classic/ruins/door_totem_ruins.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

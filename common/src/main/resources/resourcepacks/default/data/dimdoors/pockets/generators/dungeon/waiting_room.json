@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/waiting_room",
+  "id": "dimdoors:dungeon/waiting_room.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

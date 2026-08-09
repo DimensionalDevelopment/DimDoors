@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/jungle_spire",
+  "id": "dimdoors:myth/jungle_spire.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

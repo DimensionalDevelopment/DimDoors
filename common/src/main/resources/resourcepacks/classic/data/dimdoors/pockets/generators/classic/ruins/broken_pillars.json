@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dimdoors:classic/ruins/broken_pillars",
+  "id": "dimdoors:classic/ruins/broken_pillars.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/small_desert",
+      "id": "dimdoors:classic/ruins/small_desert.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

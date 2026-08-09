@@ -5,9 +5,6 @@
   "builder": {
     "type": "dimdoors:pocket",
     "addons": [
-      {
-        "type": "dimdoors:force_loaded"
-      }
     ]
   },
   "modifiers": [

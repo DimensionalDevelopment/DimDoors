@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/u_trap_right",
+      "id": "dimdoors:classic/ruins/u_trap_right.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

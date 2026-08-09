@@ -1,19 +1,24 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/small_exit_prison",
+  "id": "dimdoors:classic/ruins/small_exit_prison.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [0],
+      "ids": [
+        0
+      ],
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [1],
+      "ids": [
+        1
+      ],
       "rift_data": "dimdoors:escape"
     }
   ]
 }
+

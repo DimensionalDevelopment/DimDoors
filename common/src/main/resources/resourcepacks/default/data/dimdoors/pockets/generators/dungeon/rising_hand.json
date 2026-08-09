@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/rising_hand",
+  "id": "dimdoors:dungeon/rising_hand.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

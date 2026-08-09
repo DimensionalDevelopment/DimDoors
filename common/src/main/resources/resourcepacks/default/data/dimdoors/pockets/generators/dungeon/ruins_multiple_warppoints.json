@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_multiple_warppoints",
+  "id": "dimdoors:dungeon/ruins_multiple_warppoints.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/decaying_chain_tunnel",
+  "id": "dimdoors:dungeon/decaying_chain_tunnel.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

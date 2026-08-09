@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/jungle_village",
+  "id": "dimdoors:myth/jungle_village.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

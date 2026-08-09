@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/collapsed_single_tunnel",
+      "id": "dimdoors:classic/ruins/collapsed_single_tunnel.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

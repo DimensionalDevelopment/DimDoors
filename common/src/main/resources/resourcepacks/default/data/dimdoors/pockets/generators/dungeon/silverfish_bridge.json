@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/silverfish_bridge",
+  "id": "dimdoors:dungeon/silverfish_bridge.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/white_fabric_maze",
+  "id": "dimdoors:dungeon/white_fabric_maze.schem",
   "setup_loot": true,
   "builder": {
     "type": "dimdoors:pocket"

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_caged_warps",
+  "id": "dimdoors:dungeon/ruins_caged_warps.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

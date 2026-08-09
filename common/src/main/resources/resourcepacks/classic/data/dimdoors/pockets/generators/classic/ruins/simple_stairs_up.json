@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/simple_stairs_up",
+      "id": "dimdoors:classic/ruins/simple_stairs_up.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

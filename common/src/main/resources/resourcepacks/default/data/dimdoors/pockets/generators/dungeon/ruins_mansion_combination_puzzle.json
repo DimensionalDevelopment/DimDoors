@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_mansion_combination_puzzle",
+  "id": "dimdoors:dungeon/ruins_mansion_combination_puzzle.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

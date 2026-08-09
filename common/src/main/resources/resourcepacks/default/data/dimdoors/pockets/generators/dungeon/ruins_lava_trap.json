@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dimdoors:dungeon/ruins_lava_trap",
+  "id": "dimdoors:dungeon/ruins_lava_trap.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

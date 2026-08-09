@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/mystery_egg",
+  "id": "dimdoors:dungeon/mystery_egg.schem",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

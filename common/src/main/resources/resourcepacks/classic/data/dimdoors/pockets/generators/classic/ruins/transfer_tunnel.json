@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/spiral_hallway",
+      "id": "dimdoors:classic/ruins/spiral_hallway.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

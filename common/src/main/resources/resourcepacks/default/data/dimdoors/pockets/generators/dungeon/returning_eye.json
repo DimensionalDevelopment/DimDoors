@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/returning_eye",
+  "id": "dimdoors:dungeon/returning_eye.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

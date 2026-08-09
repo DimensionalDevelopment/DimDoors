@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/ruins_corrupted_endportal",
+  "id": "dimdoors:dungeon/ruins_corrupted_endportal.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

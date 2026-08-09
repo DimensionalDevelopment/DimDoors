@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:lab/lab_01",
+  "id": "dimdoors:lab/lab_01.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

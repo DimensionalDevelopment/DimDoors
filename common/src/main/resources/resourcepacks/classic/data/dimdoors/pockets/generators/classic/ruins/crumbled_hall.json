@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/crumbled_hall",
+      "id": "dimdoors:classic/ruins/crumbled_hall.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

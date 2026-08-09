@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/chain_t",
+  "id": "dimdoors:dungeon/chain_t.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

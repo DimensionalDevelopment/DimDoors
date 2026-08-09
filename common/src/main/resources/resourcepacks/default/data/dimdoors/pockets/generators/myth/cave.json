@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/cave",
+  "id": "dimdoors:myth/cave.schem",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

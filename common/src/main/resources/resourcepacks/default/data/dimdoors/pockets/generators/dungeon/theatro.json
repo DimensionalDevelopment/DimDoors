@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/theatro",
+  "id": "dimdoors:dungeon/theatro.schem",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

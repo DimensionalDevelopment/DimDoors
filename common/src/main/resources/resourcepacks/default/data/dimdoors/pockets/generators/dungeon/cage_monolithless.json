@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:dungeon/cage_monolithless",
+  "id": "dimdoors:dungeon/cage_monolithless.schem",
   "setup_loot": true,
   "builder": {
     "type": "dimdoors:pocket"

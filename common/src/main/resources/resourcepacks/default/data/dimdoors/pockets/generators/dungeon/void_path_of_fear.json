@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dimdoors:dungeon/void_path_of_fear",
+  "id": "dimdoors:dungeon/void_path_of_fear.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
