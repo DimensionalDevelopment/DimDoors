@@ -87,24 +87,15 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
         };
     }
 
-    @Override
-    public GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value) {
-        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
-    }
 
     @Override
-    public GameRules.Key<GameRules.BooleanValue> registerGameRule(ResourceLocation name, GameRules.Category category, boolean value) {
-        return GameRules.register(name.toString(), category, GameRules.BooleanValue.create(value));
+    public GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value) {
+        return GameRules.register(name, category, GameRules.BooleanValue.create(value));
     }
 
     @Override
     public GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value) {
-        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
-    }
-
-    @Override
-    public GameRules.Key<GameRules.IntegerValue> registerGameRule(ResourceLocation name, GameRules.Category category, int value) {
-        return GameRules.register(name.toString(), category, GameRules.IntegerValue.create(value));
+        return GameRules.register(name, category, GameRules.IntegerValue.create(value));
     }
 
     @Override

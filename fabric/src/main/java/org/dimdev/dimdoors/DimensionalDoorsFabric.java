@@ -59,20 +59,12 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
     }
 
     public GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value) {
-        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
-    }
-
-    public GameRules.Key<GameRules.BooleanValue> registerGameRule(ResourceLocation name, GameRules.Category category, boolean value) {
         var type = GameRuleFactory.createBooleanRule(value);
-        return GameRuleRegistry.register(name.toString(), category, type);
+        return GameRuleRegistry.register(name, category, type);
     }
 
     public GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value) {
-        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
-    }
-
-    public GameRules.Key<GameRules.IntegerValue> registerGameRule(ResourceLocation name, GameRules.Category category, int value) {
         var type = GameRuleFactory.createIntRule(value);
-        return GameRuleRegistry.register(name.toString(), category, type);
+        return GameRuleRegistry.register(name, category, type);
     }
 }
