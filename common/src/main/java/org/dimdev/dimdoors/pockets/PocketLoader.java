@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.pockets;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +9,6 @@ import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.limlib.api.world.NbtPlacerUtil;
 
 public class PocketLoader {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,7 +36,7 @@ public class PocketLoader {
 
     private static PocketTemplate loadNbtTemplate(CompoundTag nbt, Path<String> id) {
         try {
-            return new PocketTemplate.SchematicTemplate(Schematic.fromNbt(nbt));
+            return new PocketTemplate.NbtTemplate(PocketTemplate.NbtTemplate.load(nbt));
         } catch (Exception e) {
             throw new RuntimeException("Error loading " + id.toString(), e);
         }

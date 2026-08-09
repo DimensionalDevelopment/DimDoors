@@ -8,9 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.util.NbtPlacer;
@@ -59,7 +57,7 @@ public interface PocketTemplate {
             return nbt.sizeVector;
         }
 
-        public static NbtPlacerUtil loadS(CompoundTag nbt) {
+        public static NbtPlacerUtil load(CompoundTag nbt) {
             ListTag paletteList = nbt.getList("palette", 10);
             HashMap<Integer, BlockState> palette = new HashMap<Integer, BlockState>(paletteList.size());
             List<CompoundTag> paletteCompoundList = paletteList
