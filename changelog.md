@@ -63,3 +63,21 @@
 - Fixed issue where on singleplayer game is lock up upon reentering a game without restarting.
 - Added the Dialing door. It is a door with a combination lock on it. Similar to a quartz dimensional door except the target door is tied to the sequence on a combo lock isntead of player uuid.
 - Reduced code duplication by alot.  
+- Added DimensionType tags for controlling where Unraveled Fabric can decay and where Monoliths can exist.
+- Added Limbo Air to Limbo so blocks and entities in Limbo air do not decay.
+- Added the `pocketsRiftSignaturesWorkInPrivatePockets` gamerule for controlling Rift Signature usage in private pockets. Removed old config option as well.
+- Added fade in and out animation to missed Rift Tesseract visuals.
+- Reworked dimensional portal rendering. It is the full door now.
+- Updated dimensional door and trapdoor item models.
+- Updated pocket syncing to include the entire pocket bounding box.
+- Added support for '.nbt' format in schematic pocket generator type. Updated jsons to match.
+- Fixed Dialing Doors playing incorrect door sounds.
+- Fixed Sliding Dimensional Doors showing normal open door visuals.
+- Fixed Dimensional Eraser bloop sound not playing.
+- Fixed clouds appearing in Limbo.
+- Fixed Eternal Fluid not flowing during Limbo generation.
+- Fixed Rift Signatures and Rift Reference targets not working correctly.
+- Fixed Minecraft decay block datagen causing rotation issues.
+- Fixed auto generated doors appearing in Chipped content.
+- Tweaked Monolith aggro to ignore invisible players.
+- Made gold and quartz doors non-occluding.
