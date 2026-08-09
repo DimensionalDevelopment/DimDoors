@@ -103,7 +103,7 @@ public interface Rift extends Target {
     }
 
     default boolean isRegistered() {
-        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(location());
+        return this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(location());
     }
 
     default void register() {

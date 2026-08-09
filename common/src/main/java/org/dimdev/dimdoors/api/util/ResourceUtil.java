@@ -43,6 +43,12 @@ public class ResourceUtil {
         }
     };
 
+    public static final BiFunction<String, ResourceLocation, Path<String>> PATH_KEY_PROVIDER_WITH_EXTENSION =
+            (startingPath, id) -> Path.stringPath(
+                    id.getNamespace() + ":" +
+                            id.getPath().substring(startingPath.length() + (startingPath.endsWith("/") ? 0 : 1))
+            );
+
     public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
         // last two is resource path, rest is flags
         String[] splitResourceKey = resourceKey.split("\\|");

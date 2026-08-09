@@ -36,24 +36,6 @@ public final class SchematicPlacer {
         blockSample.place(origin, world, false, world.registryAccess());
     }
 
-//    public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
-//        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-//        return blockSample.getAbsoluteRifts(origin);
-//    }
-
-//    public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
-//        LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
-//        for (String id : schematic.getMetadata().requiredMods()) {
-//            if (!Platform.isModLoaded(id)) {
-//                LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
-//            }
-//        }
-//        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-//        blockSample.place(origin, world, chunk, placementType, false, world.registryAccess());
-//    }
-//
-
-
     public static int[][][] getBlockData(Schematic schematic) {
         int width = schematic.getWidth();
         int height = schematic.getHeight();

@@ -40,11 +40,11 @@ public final class ModBlocks {
 
     public static final Block STONE_PLAYER = registerWithoutTabOrItem("stone_player", new Block(ofFullCopy(STONE).strength(0.5F).noOcclusion()));
 
-    public static final Block GOLD_DOOR = register("gold_door", new ModDoorBlock(BlockSetType.GOLD, ofFullCopy(GOLD_BLOCK).strength(5.0F).requiresCorrectToolForDrops()));
+    public static final Block GOLD_DOOR = register("gold_door", new ModDoorBlock(BlockSetType.GOLD, ofFullCopy(GOLD_BLOCK).strength(5.0F).noOcclusion().requiresCorrectToolForDrops()));
 
     public static final Block STONE_DOOR = register("stone_door", new ModDoorBlock(BlockSetType.IRON, ofFullCopy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops()));
 
-    public static final Block QUARTZ_DOOR = register("quartz_door", new ModDoorBlock(BlockSetType.IRON, ofFullCopy(QUARTZ_BLOCK).strength(5.0F).requiresCorrectToolForDrops()));
+    public static final Block QUARTZ_DOOR = register("quartz_door", new ModDoorBlock(BlockSetType.IRON, ofFullCopy(QUARTZ_BLOCK).strength(5.0F).noOcclusion().requiresCorrectToolForDrops()));
 
     public static final Block DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", new DimensionalPortalBlock(BlockBehaviour.Properties.of().noLootTable().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 

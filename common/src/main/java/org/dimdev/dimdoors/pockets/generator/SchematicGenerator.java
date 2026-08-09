@@ -28,24 +28,18 @@ public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
 
     public static final MapCodec<SchematicGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
             .and(ResourceLocation.CODEC.fieldOf("id").forGetter(schematicGenerator -> schematicGenerator.templateID))
-            .and(BlockPlacementType.CODEC.optionalFieldOf("placement_type", BlockPlacementType.SECTION_NO_UPDATE).<SchematicGenerator>forGetter(a -> a.placementType)).apply(instance, SchematicGenerator::new));
+            .apply(instance, SchematicGenerator::new));
 
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String KEY = "schematic";
 
     private final ResourceLocation templateID;
-    private final BlockPlacementType placementType;
 
-    public SchematicGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, ResourceLocation id, BlockPlacementType placementType) {
+    public SchematicGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, ResourceLocation id) {
         super(builder, weight, setupLoot, modifiers, tags);
         this.templateID = id;
-        this.placementType = placementType;
     }
-
-    public ResourceLocation getTemplateID() {
-        return templateID;
-    }
-
+    
     @Override
     public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
         ServerLevel world = parameters.world();
@@ -58,20 +52,8 @@ public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
         Pocket<?, ?> pocket = PocketRegistry.getInstance().createPocket(world.dimension(), builder);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin);
-//        PocketCommand.logSetting.values().forEach(commandSource ->
-//                commandSource.sendSuccess(() -> Component.translatable(
-//                        "commands.pocket.log.creation.generating",
-//                        templateID, origin.getX(), origin.getY(), origin.getZ()
-//                ), false)
-//        );
 
-        // Get block entities directly from placement
-        template.place(pocket, placementType);
-
-        // Cache them in the pocket
-//        pocket.cacheBlockEntities(placedEntities);
-
-//        LOGGER.info("Cached {} block entities in pocket", placedEntities.size());
+        template.place(pocket);
 
         return pocket;
     }
@@ -85,7 +67,6 @@ public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
     public Vec3i getSize(PocketGenerationContext parameters) {
         PocketTemplate template = PocketLoader.getTemplates().get(Path.stringPath(templateID));
         if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-        Schematic schem = template.getSchematic();
-        return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
+        return template.getSize();
     }
 }
