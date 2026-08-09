@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -83,6 +85,26 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
                 return ModFluidTypes.LEAK;
             }
         };
+    }
+
+    @Override
+    public GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value) {
+        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
+    }
+
+    @Override
+    public GameRules.Key<GameRules.BooleanValue> registerGameRule(ResourceLocation name, GameRules.Category category, boolean value) {
+        return GameRules.register(name.toString(), category, GameRules.BooleanValue.create(value));
+    }
+
+    @Override
+    public GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value) {
+        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
+    }
+
+    @Override
+    public GameRules.Key<GameRules.IntegerValue> registerGameRule(ResourceLocation name, GameRules.Category category, int value) {
+        return GameRules.register(name.toString(), category, GameRules.IntegerValue.create(value));
     }
 
     @Override

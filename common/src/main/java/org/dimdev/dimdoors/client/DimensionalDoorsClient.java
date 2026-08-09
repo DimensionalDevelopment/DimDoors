@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -38,6 +39,7 @@ import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.limlib.api.client.ModClient;
 import org.dimdev.limlib.api.client.ModelLoadingRegistry;
@@ -60,6 +62,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public static ShaderPackDetector detector = consumer -> consumer.accept(DimensionalPortalRenderer.RENDER_LAYER);
     private static IDimDoorsClientSided<?> sided;
+    private float renderTick;
 
     public void init(IDimDoorsClientSided<?> sided) {
         setClientSided(sided);
@@ -69,6 +72,8 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
         });
         registerCompats();
         EnvironmentAddonClient.init();
+
+        sided.onPreRender(this::preRender);
 
 //        ModSpecialModelRenderers.register();
     }
@@ -109,8 +114,13 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     }
 
     @Override
-    public  void initModelLayers(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
+    public void initModelLayers(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
         consumer.accept(ModEntityModelLayers.MONOLITH, MonolithModel::getTexturedModelData);
+    }
+
+    public void preRender(long ticks, float deltaTick) {
+        renderTick = ticks + deltaTick;
+        RiftUtils.updateRiftCoreRenderTime(ticks, deltaTick);
     }
 
     @Override
@@ -185,5 +195,9 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public static void setClientSided(IDimDoorsClientSided<?> sided) {
         DimensionalDoorsClient.sided = sided;
+    }
+
+    public float getRenderTick() {
+        return renderTick;
     }
 }

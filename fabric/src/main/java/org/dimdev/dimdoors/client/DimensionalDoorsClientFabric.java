@@ -3,7 +3,10 @@ package org.dimdev.dimdoors.client;
 import com.chocohead.mm.api.ClassTinkerers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
@@ -38,6 +41,17 @@ public class DimensionalDoorsClientFabric extends FabricClientSided<DimensionalD
     @Override
     public VoidDimensionSpecialEffects createVoidEffect(DimensionEffect effect) {
         return new FabricVoidDimensionSpecialEffects(effect);
+    }
+
+    @Override
+    public void onPreRender(PreRender onPrerender) {
+        WorldRenderEvents.START.register(context -> {
+            var level = context.world();
+
+            if(level == null) return;
+
+            onPrerender.preRender(level.getGameTime(), context.tickCounter().getGameTimeDeltaPartialTick(false));
+        });
     }
 
     private static class FabricVoidDimensionSpecialEffects extends VoidDimensionSpecialEffects implements IDimensionSpecialEffectExtension {

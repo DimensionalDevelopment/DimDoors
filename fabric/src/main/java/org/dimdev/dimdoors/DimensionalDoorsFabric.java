@@ -6,17 +6,19 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.level.GameRules;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.mixin.RecipeBookSettingsAccessor;
 import org.dimdev.limlib.FabricSided;
 
 
 import java.util.function.*;
-
-import static org.dimdev.dimdoors.DimensionalDoors.MOD_ID;
 
 public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, DimensionalDoors> implements IDimensionalDoorsSided<DimensionalDoorsFabric> {
     private final Supplier<RecipeBookType> TESSELLATING = Suppliers.memoize(() -> {
@@ -54,5 +56,23 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
     @Override
     public void onServerStopping(Consumer<MinecraftServer> consumer) {
         ServerLifecycleEvents.SERVER_STOPPING.register(consumer::accept);
+    }
+
+    public GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value) {
+        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
+    }
+
+    public GameRules.Key<GameRules.BooleanValue> registerGameRule(ResourceLocation name, GameRules.Category category, boolean value) {
+        var type = GameRuleFactory.createBooleanRule(value);
+        return GameRuleRegistry.register(name.toString(), category, type);
+    }
+
+    public GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value) {
+        return registerGameRule(ResourceLocation.fromNamespaceAndPath(common.getModId(), name), category, value);
+    }
+
+    public GameRules.Key<GameRules.IntegerValue> registerGameRule(ResourceLocation name, GameRules.Category category, int value) {
+        var type = GameRuleFactory.createIntRule(value);
+        return GameRuleRegistry.register(name.toString(), category, type);
     }
 }

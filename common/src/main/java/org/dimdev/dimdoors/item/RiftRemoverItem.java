@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.limlib.api.client.ToolTipHelper;
@@ -51,7 +50,7 @@ public class RiftRemoverItem extends Item {
         if (world.isClientSide) {
             if (!RaycastHelper.hitsDetachedRift(hit, world)) {
                 player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
-                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.triggerRiftCoreHighlight();
             }
             return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
         }

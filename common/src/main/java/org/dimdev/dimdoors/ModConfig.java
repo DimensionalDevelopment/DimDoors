@@ -168,7 +168,6 @@ public final class ModConfig {
         public int maxPocketSize = 15;
         public int privatePocketSize = 2;
         public int publicPocketSize = 1;
-        public boolean canUseRiftSignatureInPrivatePockets = true;
         public int blocksColoredPerDye = 100;
     }
 
@@ -234,7 +233,7 @@ public final class ModConfig {
 
     public static class Graphics {
         public boolean showRiftCore = false;
-        public int highlightRiftCoreFor = 15000;
+        public int highlightRiftCoreFor = 15000/1000;
         public double riftSize = 1;
         public double riftJitter = 1;
     }

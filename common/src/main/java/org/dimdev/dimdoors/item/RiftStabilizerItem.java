@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -39,7 +38,7 @@ public class RiftStabilizerItem extends Item {
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             } else {
                 player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
-                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.triggerRiftCoreHighlight();
                 return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
             }
         }

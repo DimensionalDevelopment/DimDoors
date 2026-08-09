@@ -10,7 +10,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -71,7 +70,7 @@ public class EntranceRiftBlockItem extends BlockItem {
 
             if (context.getLevel().isClientSide) {
                 context.getPlayer().displayClientMessage(Component.translatable("rifts.entrances.rift_too_close"), true);
-                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.triggerRiftCoreHighlight();
             }
 
             return InteractionResult.FAIL;

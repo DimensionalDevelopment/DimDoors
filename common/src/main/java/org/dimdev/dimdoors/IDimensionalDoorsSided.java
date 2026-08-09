@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
@@ -40,4 +42,7 @@ public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> ext
         return new LeakFluid.Still();
     }
 
+    GameRules.Key<GameRules.BooleanValue> registerGameRule(String name, GameRules.Category category, boolean value);
+
+    GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value);
 }

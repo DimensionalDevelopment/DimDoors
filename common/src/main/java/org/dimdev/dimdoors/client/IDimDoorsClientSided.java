@@ -14,4 +14,10 @@ public interface IDimDoorsClientSided<T extends IDimDoorsClientSided<T>> extends
     Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack);
 
     VoidDimensionSpecialEffects createVoidEffect(DimensionEffect effect);
+
+    void onPreRender(PreRender onPrerender);
+
+    public interface PreRender {
+        void preRender(long tick, float partialTick);
+    }
 }

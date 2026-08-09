@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.common.NeoForge;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.client.*;
@@ -71,5 +73,16 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
     @Override
     public VoidDimensionSpecialEffects createVoidEffect(DimensionEffect effect) {
         return new NfVoidDimensionEffects(effect);
+    }
+
+    @Override
+    public void onPreRender(PreRender onPrerender) {
+        NeoForge.EVENT_BUS.<RenderFrameEvent.Pre>addListener(event -> {
+            var minecraft = Minecraft.getInstance();
+
+            if(minecraft.level == null) return;
+
+            onPrerender.preRender(minecraft.level.getGameTime(), event.getPartialTick().getGameTimeDeltaPartialTick(false));
+        });
     }
 }

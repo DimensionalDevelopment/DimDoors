@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModGameRules;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
@@ -57,7 +58,7 @@ public class RiftSignatureItem extends Item {
 
         Player player = itemUsageContext.getPlayer();
 
-        if (ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoors.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
+        if (ModDimensions.isPrivatePocketDimension(world) && !world.getGameRules().getBoolean(ModGameRules.RIFT_SIGNATURE_WORKS_IN_PRIVATE_POCKETS)) {
             player.displayClientMessage(Component.translatable("tools.signature_blocked").withStyle(ChatFormatting.BLACK), true);
             return InteractionResult.FAIL;
         }

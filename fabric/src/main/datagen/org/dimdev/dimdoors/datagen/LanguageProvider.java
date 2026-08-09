@@ -402,7 +402,6 @@ public class LanguageProvider extends AbstractLanguageProvider {
                     addOption("classicPocketsResourcePackActivationType", "Classic Resource Pack Activation Type", "Default - Disabled but can be enabled, Default Enabled - Enabled but can be disabled, Always Enabled - Can not be disabled");
                     addOption("defaultPocketsResourcePackActivationType", "Default Resource Pack Activation Type", "Default - Disabled but can be enabled, Default Enabled - Enabled but can be disabled, Always Enabled - Can not be disabled");
                     addOption("asyncWorldEditPocketLoading", "Async WorldEdit Pocket Loading", "Sets loading pockets to your WorldEdit clipboard asynchronous or synchronous. Only affects when WorldEdit is installed.");
-                    addOption("canUseRiftSignatureInPrivatePockets", "Can Use Rift Signature In Private Pockets", "If Enabled, rift signatures can be used within private pockets.");
                     addOption("blocksColoredPerDye", "Blocks Colored Per Dye", "The amount of blocks covered by a single dye whe dyeing a private pocket.");
                 });
 

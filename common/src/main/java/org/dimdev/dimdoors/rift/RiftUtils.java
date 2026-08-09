@@ -6,8 +6,10 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.util.Timer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -15,7 +17,24 @@ import java.util.function.Consumer;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.FACING;
 
 public class RiftUtils {
-    public static long showRiftCoreUntil = 0;
+    private static final double RIFT_CORE_FADE_TICKS = 40;
+    private static final Timer.MutableTickSource RIFT_CORE_TICK_SOURCE = Timer.mutableTickSource();
+
+    public static final Timer showRiftCoreUntil = new Timer(RIFT_CORE_TICK_SOURCE, RIFT_CORE_FADE_TICKS, 3*20, RIFT_CORE_FADE_TICKS);
+
+    public static void updateRiftCoreRenderTime(long tick, float partialTick) {
+        RIFT_CORE_TICK_SOURCE.update(tick, partialTick);
+    }
+
+    public static void triggerRiftCoreHighlight() {
+        int highlightMillis = DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+        if (highlightMillis < 0) {
+            showRiftCoreUntil.reset();
+            return;
+        }
+
+        showRiftCoreUntil.trigger();
+    }
 
     public static <T extends Rift> T registerFunction(@NotNull T rift) {
         rift.register();

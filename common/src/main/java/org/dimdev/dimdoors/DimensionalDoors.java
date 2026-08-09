@@ -12,6 +12,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -155,6 +156,7 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
         registerRunDataValue(() -> PocketChunkClaims.init());
         registerRunDataValue(() -> TranscendentProjectiles.init());
 
+        ModGameRules.init();
 
         ModCommands.init();
         ModDimensions.init(sided);

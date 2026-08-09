@@ -49,7 +49,6 @@ public class ClothConfigCompat {
                     .addEntry(createInt(entryBuilder, "pockets", "maxPocketSize", pockets.maxPocketSize, 15, value -> pockets.maxPocketSize = value))
                     .addEntry(createInt(entryBuilder, "pockets", "privatePocketSize", pockets.privatePocketSize, 2, value -> pockets.privatePocketSize = value))
                     .addEntry(createInt(entryBuilder, "pockets", "publicPocketSize", pockets.publicPocketSize, 1, value -> pockets.publicPocketSize = value))
-                    .addEntry(createBoolean(entryBuilder, "pockets", "canUseRiftSignatureInPrivatePockets", pockets.canUseRiftSignatureInPrivatePockets, true, value -> pockets.canUseRiftSignatureInPrivatePockets = value))
                     .addEntry(createInt(entryBuilder, "pockets", "blocksColoredPerDye", pockets.blocksColoredPerDye, 10, value -> pockets.blocksColoredPerDye = value));
 
             var world = config.getWorldConfig();

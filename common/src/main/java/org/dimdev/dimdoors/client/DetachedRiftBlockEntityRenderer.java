@@ -35,8 +35,10 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
     public void render(@NotNull DetachedRiftBlockEntity rift, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vcs, int breakProgress, int alpha) {
         super.render(rift, tickDelta, matrices, vcs, breakProgress, alpha);
 
-        if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore || RiftUtils.showRiftCoreUntil - System.currentTimeMillis() >= 0)
-            this.renderTesseract(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), rift, matrices, tickDelta);
+        float riftCoreVisibility = DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore ? 1 : RiftUtils.showRiftCoreUntil.getVisibility();
+        if (riftCoreVisibility > 0) {
+            this.renderTesseract(vcs.getBuffer(RenderType.entityTranslucent(TESSERACT_PATH)), rift, matrices, riftCoreVisibility);
+        }
 
         if (this.shouldRenderDecayRadiusDebug()) {
             RenderType renderType = RenderType.debugStructureQuads();
@@ -80,12 +82,13 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
         matrices.popPose();
     }
 
-    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, PoseStack matrices, float tickDelta) {
-        float radian = (float) (this.nextAngle(rift, tickDelta) * Mth.DEG_TO_RAD);
+    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, PoseStack matrices, float alphaMultiplier) {
+        float radian = (DimensionalDoorsClient.INSTANCE.getRenderTick() * 10 % 360) * Mth.DEG_TO_RAD;
         RGBA color = rift.getColor();
         if (Objects.equals(color, RGBA.NONE)) {
             color = DEFAULT_COLOR;
         }
+        color = new RGBA(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * alphaMultiplier);
 
         matrices.pushPose();
 
@@ -98,7 +101,9 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
     }
 
     private double nextAngle(DetachedRiftBlockEntity rift, float tickDelta) {
-        rift.renderAngle = (rift.renderAngle + 5 * tickDelta) % 360;
-        return rift.renderAngle;
+        return 0;
+
+//        rift.renderAngle = (rift.renderAngle + 5 * tickDelta) % 360;
+//        return rift.renderAngle;
     }
 }

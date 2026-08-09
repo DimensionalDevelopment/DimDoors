@@ -46,8 +46,6 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
     private int weight;
     private int updateTimer;
 
-    public double renderAngle;
-
     public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
         this.spawnedEndermanId = 0;

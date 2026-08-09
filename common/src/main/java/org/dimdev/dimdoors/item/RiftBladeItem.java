@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.Rift;
@@ -72,7 +71,7 @@ public class RiftBladeItem extends SwordItem {
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             } else {
                 player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"), true);
-                RiftUtils.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                RiftUtils.triggerRiftCoreHighlight();
                 return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
             }
         }
