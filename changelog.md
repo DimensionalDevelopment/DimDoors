@@ -56,7 +56,7 @@
 - Command blocks that are powered or meant to automatically start will now do so when pockets are generated.
 - `/dimteleport` command's permission level has been changedhas entity selector support.
 - `/pocket` command now has a target instead of a locator, which refers to an entity to send to the pocket. Old functionality can be accomplished with execute at <locator> run pocket ...
-- Introduced a new system for rift based growth where rifts grow slower with a weight to them that increases the chance. This the first step to future proper reintroduction of rift scars.
+- Introduced a new system for rift based growth where rifts grow slower with a weight to them that increases the chance. This the first step to future proper reintroduction of rift scars. For now when an exposed rift is weight 20 or higher, it will start unraveling blocks around it.
 - Abstracted most Rift code into common interface
 - Improved resource loading.
 - Removed deprecated virtual type (Local, Relative, Global) and their corresponding language entries.

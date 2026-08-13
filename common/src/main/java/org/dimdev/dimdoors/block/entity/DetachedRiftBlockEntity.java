@@ -174,7 +174,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
                 updateTimer = 0;
                 sync();
 
-                if (DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay && getData().getSize() > 0) {
+                if (DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay && getData().getSize() > 20) {
                     applySpreadDecay((ServerLevel) level, pos);
                 }
 
