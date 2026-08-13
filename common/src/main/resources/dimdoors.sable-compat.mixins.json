@@ -8,7 +8,7 @@
   "mixins": [
     "BlockAssemblyMixin",
     "RiftRegistrySableTrackingMixin",
-    "RiftSableTrackingMixin"
+    "RiftSableTrackingMixin",
     "ServerChunkCachePlotGuardMixin",
     "ServerPlayerPlotRescueMixin",
     "ServerPlayerSubLevelTrackingCleanupMixin",
