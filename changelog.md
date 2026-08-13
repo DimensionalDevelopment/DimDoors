@@ -41,6 +41,7 @@
 - Old Rift Key functional stripped away in favor of temporarily changing target dimensional door into target key type.
 - Fixed dimensional doors and dimensional portals not teleporting when used in valid open states.
 - Re-enabled rift spread decay and fixed the `decaysIntoAir` config option.
+- Endermen spawned by a rift no long target the player.
 - Fixed generated dimensional doors crashing when the source door already had waterlogging support.
 - Added a config option for generic Limbo death messages. (Immodial)
 - Added custom equip sounds for World Thread and Garment of Reality armors. (Immodial)
