@@ -28,7 +28,6 @@
 # 6.3.0
 ------
 
-- Added new required dependency Liminal Library at version 1.13.0.
 - Bumped up minimum supported versions for the following dependencies:
     - Fabric Loader: 0.18.4
     - NeoForge: 21.1.228
