@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
@@ -31,7 +31,7 @@ public final class Targets {
                 }
 
                 var localTargetPos = Vec3.upFromBottomCenterOf(location.pos, 0.0);
-                var frame = SableHelper.INSTANCE.projectTeleportFrame(targetLevel, location, localTargetPos, relativeRotation, relativeVelocity);
+                var frame = LevelSpaceHelper.INSTANCE.projectTeleportFrame(targetLevel, location, localTargetPos, relativeRotation, relativeVelocity);
 
                 TeleportUtil.teleport(entity, targetLevel, frame.pos(), frame.angle(), frame.velocity());
                 return true;

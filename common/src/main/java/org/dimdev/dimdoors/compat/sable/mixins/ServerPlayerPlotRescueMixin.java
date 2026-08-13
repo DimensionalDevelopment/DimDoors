@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,7 +21,7 @@ public class ServerPlayerPlotRescueMixin {
         ServerPlayer player = (ServerPlayer) (Object) this;
         ServerLevel level = player.serverLevel();
 
-        if (!SableHelper.INSTANCE.isMissingSablePlotHolder(level, player.blockPosition())) {
+        if (!LevelSpaceHelper.INSTANCE.isLevelSpaceUnavailable(level, player.blockPosition())) {
             return;
         }
 

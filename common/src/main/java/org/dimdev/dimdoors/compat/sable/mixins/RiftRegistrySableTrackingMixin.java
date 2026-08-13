@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.compat.sable.mixins;
 
 import net.minecraft.server.level.ServerLevel;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ public class RiftRegistrySableTrackingMixin {
             return;
         }
 
-        SableHelper.INSTANCE.removeRiftTrackingPoint(level, registry.getRift(location));
+        LevelSpaceHelper.INSTANCE.removeRiftTrackingPoint(level, registry.getRift(location));
     }
 
     @Unique
@@ -46,6 +46,6 @@ public class RiftRegistrySableTrackingMixin {
         }
 
         Rift rift = RiftRegistry.getInstance().getRift(location);
-        SableHelper.INSTANCE.updateRiftTrackingPoint(level, rift);
+        LevelSpaceHelper.INSTANCE.updateRiftTrackingPoint(level, rift);
     }
 }

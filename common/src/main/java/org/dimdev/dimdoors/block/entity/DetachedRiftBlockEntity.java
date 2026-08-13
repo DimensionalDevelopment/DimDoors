@@ -22,7 +22,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.client.RiftCurves;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.dimdev.dimdoors.util.Utils;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
@@ -147,7 +147,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
         if (this.level instanceof ServerLevel serverLevel) {
             Vec3 localTargetPos = Vec3.atBottomCenterOf(this.worldPosition);
 
-            var frame = SableHelper.INSTANCE.projectTeleportFrame(serverLevel, location, localTargetPos, relativeAngle, velocity);
+            var frame = LevelSpaceHelper.INSTANCE.projectTeleportFrame(serverLevel, location, localTargetPos, relativeAngle, velocity);
 
             TeleportUtil.teleport(entity, this.level, frame.pos(), frame.angle(), frame.velocity());
         }

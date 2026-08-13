@@ -42,10 +42,8 @@ import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimcore.api.client.ModClient;
-import org.dimdev.dimcore.api.client.ModelLoadingRegistry;
+
 import org.dimdev.dimcore.api.fluid.FluidDetails;
-import org.dimdev.dimcore.client.ModelLoadingOverride;
-import org.dimdev.dimcore.client.specialmodels.SpecialModelShaderRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
@@ -124,11 +122,6 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     }
 
     @Override
-    public void initModels(BiConsumer<ModelResourceLocation, Consumer<ModelLoadingRegistry>> consumer) {
-//        consumer.accept(ModelLoadingOverride.standalone(childItem), models -> registerGeneratedDoorModels(models));
-    }
-
-    @Override
     public void initFluids(TriConsumer<FlowingFluid, Fluid, FluidDetails> register) {
         register.accept(ModFluids.LEAK, ModFluids.FLOWING_LEAK, ModFluids.LEAK_DETAILS);
         register.accept(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, ModFluids.ETERNAL_FLUID_DETAILS);
@@ -152,21 +145,6 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     private static void registerCompats() {
         if (DimensionalDoors.getSided().isModLoaded("iris") || DimensionalDoors.getSided().isModLoaded("oculus")) detector = new IrisCompat();
-    }
-
-    public static void registerGeneratedDoorModels(ModelLoadingRegistry models) {
-
-        DimensionalDoorBlockRegistrar registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
-        if (registrar != null) {
-            registrar.getGennedIds().stream()
-                    .filter(BuiltInRegistries.BLOCK::containsKey)
-                    .map(BuiltInRegistries.BLOCK::get)
-                    .forEach(models::replaceBlockStates);
-        }
-
-        BuiltInRegistries.ITEM.keySet().stream()
-                .filter(id -> id.getPath().startsWith(PREFIX))
-                .forEach(models::replaceItem);
     }
 
     public static void initGeneratedDoorCutouts() {

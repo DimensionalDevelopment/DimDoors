@@ -10,6 +10,8 @@ import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
+import java.util.function.Function;
+
 public class PocketLoader {
     private static final Logger LOGGER = LogManager.getLogger();
     private static SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
@@ -27,16 +29,16 @@ public class PocketLoader {
     }
 
     private static PocketTemplate loadSchematicTemplate(CompoundTag nbt, Path<String> id) {
-        try {
-            return new PocketTemplate.SchematicTemplate(Schematic.fromNbt(nbt));
-        } catch (Exception e) {
-            throw new RuntimeException("Error loading " + id.toString(), e);
-        }
+        return loadTemplate(PocketTemplate.SchematicTemplate::create, nbt, id);
     }
 
     private static PocketTemplate loadNbtTemplate(CompoundTag nbt, Path<String> id) {
+        return loadTemplate(PocketTemplate.NbtTemplate::create, nbt, id);
+    }
+
+    private static PocketTemplate loadTemplate(Function<CompoundTag, PocketTemplate> function, CompoundTag nbt, Path<String> id) {
         try {
-            return new PocketTemplate.NbtTemplate(PocketTemplate.NbtTemplate.load(nbt));
+            return function.apply(nbt);
         } catch (Exception e) {
             throw new RuntimeException("Error loading " + id.toString(), e);
         }

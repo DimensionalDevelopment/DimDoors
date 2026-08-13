@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModGameRules;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -25,7 +24,7 @@ import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimcore.api.client.ToolTipHelper;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -162,7 +161,7 @@ public class RiftSignatureItem extends Item {
 
         pos = normalizeRiftProviderPos(world, pos);
 
-        if (!SableHelper.INSTANCE.prepareRiftCreation(world, pos)) {
+        if (!LevelSpaceHelper.INSTANCE.prepareRiftCreation(world, pos)) {
             return Optional.empty();
         }
 

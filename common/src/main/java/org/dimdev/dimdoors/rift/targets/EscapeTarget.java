@@ -25,7 +25,7 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.Random;
 
-import static org.dimdev.limlib.api.util.EntityUtils.chat;
+import static org.dimdev.dimcore.api.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityTarget { // TODO: createRift option
     private static final Logger LOGGER = LogManager.getLogger();

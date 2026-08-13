@@ -36,6 +36,7 @@ import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkMapAccessor;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.RotationUtil;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.joml.Vector3d;
 
 import java.io.IOException;
@@ -46,106 +47,65 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Active Sable integration for DimDoors.
+ * Sable implementation of {@link LevelSpaceHelper}.
  *
- * <p>This class is the runtime implementation of {@link SableHelper} used when Sable is present.
- * It bridges DimDoors' rift, teleport, collision, and block-access code with Sable's dynamic
- * sub-level model. Sable sub-levels have their own local coordinate space, pose, velocity, and
- * plot storage, while DimDoors usually reasons in normal Minecraft level coordinates.</p>
+ * <p>This class integrates DimDoors' rift, teleportation, collision, and block-access systems with
+ * Sable's movable level spaces. Sable sub-levels have their own coordinates, pose, velocity, and
+ * storage lifecycle, while DimDoors normally operates in Minecraft world space.</p>
  *
- * <p>The helper has three main responsibilities:</p>
+ * <p>The helper is responsible for:</p>
  *
  * <ol>
- *     <li>Convert positions, rotations, velocities, and entity collision data between world space
- *     and Sable sub-level local space.</li>
- *     <li>Resolve rift targets that may be inside loaded, unloaded, or half-loaded Sable plots.</li>
- *     <li>Materialize stored Sable sub-level data when DimDoors needs immediate access to a live
- *     {@link ServerSubLevel} or {@code PlotChunkHolder}.</li>
+ *     <li>Transforming positions, rotations, velocities, and collision data between Sable level
+ *     space and world space.</li>
+ *     <li>Resolving rift targets inside loaded, unloaded, or partially loaded Sable plots.</li>
+ *     <li>Materializing stored Sable sub-levels when DimDoors requires immediate access to a live
+ *     {@link ServerSubLevel} or plot holder.</li>
  * </ol>
  *
  * <h2>Loaded and stored sub-levels</h2>
  *
- * <p>A Sable plot can be marked occupied even when the live {@link ServerSubLevel} is not currently
- * present in the level. In that case Sable keeps serialized {@link SubLevelData} in holding-chunk
- * storage. DimDoors still needs to teleport into that plot, create rifts there, and resolve tracking
- * points, so this class can look up stored sub-level data and recover the pose needed for projection.</p>
+ * <p>A Sable plot may remain occupied while its live {@link ServerSubLevel} is unloaded. In that
+ * state, Sable retains serialized {@link SubLevelData} in holding storage. DimDoors may still need
+ * to teleport into the plot, create rifts there, or resolve tracking points, so this helper can
+ * locate the stored data and recover the pose required for projection.</p>
  *
  * <h2>Teleport frame flow</h2>
  *
- * <p>DimDoors splits teleport frame conversion into two directions:</p>
+ * <p>Teleport frame conversion is split between the source and destination:</p>
  *
  * <ul>
- *     <li>{@link #sourceTeleportFrame(ServerLevel, BlockPos, Entity, Vec3, Rotations, Vec3)} converts
- *     an entity leaving a Sable sub-level from world-space motion into sub-level-local motion.</li>
- *     <li>{@link #projectTeleportFrame(ServerLevel, Location, Vec3, Rotations, Vec3)} converts a
- *     frame entering a target level from local rift-space into the target Sable/world pose.</li>
+ *     <li>{@link #sourceTeleportFrame(ServerLevel, BlockPos, Entity, Vec3, Rotations, Vec3)}
+ *     transforms a frame leaving a Sable sub-level from world space into the source level
+ *     space.</li>
+ *     <li>{@link #projectTeleportFrame(ServerLevel, Location, Vec3, Rotations, Vec3)} transforms
+ *     an incoming frame from destination level space into the target world-space pose.</li>
  * </ul>
  *
- * <p>Projection prefers the live loaded sub-level path. If the target plot is occupied but not loaded,
- * the helper asks Sable's holding chunk map to process the stored sub-level. If Sable still does not
- * materialize the live sub-level immediately, the helper directly loads the stored data as a fallback
- * and removes only runtime holding entries so the next Sable tick does not double-load the same data.</p>
+ * <p>Destination projection prefers a live sub-level. If the target plot is occupied but unloaded,
+ * the helper first asks Sable's holding system to materialize the stored sub-level. If that does
+ * not produce a live sub-level immediately, the stored data is loaded directly as a fallback.
+ * Runtime holding entries are then removed to prevent Sable from loading the same data again on
+ * its next processing pass.</p>
  *
  * <h2>Persistent storage safety</h2>
  *
- * <p>Runtime cleanup must never remove saved pointers from {@code SubLevelHoldingChunk#getSubLevelPointers()}.
- * Those pointers are persistent storage metadata. Removing them can orphan a stored sub-level on save.
- * Cleanup here only removes in-memory queue entries such as {@code allHoldingSubLevels} and
- * {@code loadedHoldingSubLevels} after the helper has manually materialized a sub-level.</p>
+ * <p>Runtime cleanup must never remove saved pointers from
+ * {@code SubLevelHoldingChunk#getSubLevelPointers()}. These pointers are persistent storage
+ * metadata, and removing them can orphan stored sub-levels. Direct-load cleanup therefore removes
+ * only runtime entries such as {@code allHoldingSubLevels} and {@code loadedHoldingSubLevels}.</p>
  */
-public class ActiveSableHelper extends SableHelper {
+public class SableLevelSpaceHelper extends LevelSpaceHelper {
     private static final Pattern SABLE_REGION_FILE_PATTERN = Pattern.compile("r\\.(-?\\d+)\\.(-?\\d+)\\.slvlr");
     private final Vector3d scratch = new Vector3d();
 
     /**
-     * Projects a world-space vector out of whatever Sable sub-level currently contains it.
+     * Checks whether {@code pos} belongs to an occupied Sable plot whose live holder is unavailable.
      *
-     * <p>If {@code pos} is not inside a Sable sub-level, Sable returns the original world-space
-     * position. This is used by generic DimDoors code that needs coordinates independent of
-     * Sable's local plot transforms.</p>
+     * <p>The helper first attempts to materialize the containing sub-level. If the plot remains
+     * occupied without a live holder afterward, its level space is considered unavailable.</p>
      */
-    @Override
-    public Vec3 projectFrom(Level level, Vec3 pos) {
-        return SableCompanion.INSTANCE.projectOutOfSubLevel(level, pos);
-    }
-
-    /**
-     * Block-position variant of {@link #projectFrom(Level, Vec3)}.
-     *
-     * <p>A shared scratch vector is used to avoid allocating a temporary JOML vector for every block
-     * query. The returned position is rounded through {@link BlockPos#containing(double, double, double)}.</p>
-     */
-    @Override
-    public BlockPos projectFrom(Level level, BlockPos pos) {
-        scratch.set(pos.getX(), pos.getY(), pos.getZ());
-        SableCompanion.INSTANCE.projectOutOfSubLevel(level, scratch);
-        return BlockPos.containing(scratch.x(), scratch.y(), scratch.z());
-    }
-
-    /**
-     * Converts a world-space point into the local coordinates of the Sable sub-level containing it.
-     *
-     * <p>If no sub-level contains the point, the original position is returned unchanged.</p>
-     */
-    @Override
-    public Vec3 projectTo(ServerLevel level, Vec3 pos) {
-        var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-
-        if(subLevel != null) {
-            return subLevel.logicalPose().transformPositionInverse(pos);
-        }
-
-        return pos;
-    }
-
-    /**
-     * Checks whether {@code pos} lies inside an occupied Sable plot whose live chunk holder is missing.
-     *
-     * <p>This is the signal that a plot exists and should contain a sub-level, but Sable has not
-     * materialized the runtime holder for that plot yet.</p>
-     */
-    @Override
-    public boolean isMissingSablePlotHolder(ServerLevel level, BlockPos pos) {
+    public boolean isLevelSpaceUnavailable(ServerLevel level, BlockPos pos) {
         ensureSableSubLevelLoaded(level, pos);
         var container = SubLevelContainer.getContainer(level);
         if (container == null) {
@@ -157,10 +117,12 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Returns a block entity after giving Sable a chance to materialize the target plot first.
+     * Returns the block entity at {@code pos} after giving Sable an opportunity to materialize the
+     * containing plot.
      *
-     * <p>DimDoors may ask for block entities inside Sable plot coordinates. Without the load step,
-     * the vanilla lookup may run before the plot holder exists.</p>
+     * <p>DimDoors may request block entities at Sable plot coordinates before the corresponding live
+     * holder exists. Loading the sub-level first ensures the vanilla lookup sees the expected block
+     * state.</p>
      */
     @Override
     public BlockEntity getBlockEntity(ServerLevel level, BlockPos pos) {
@@ -169,27 +131,25 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Ensures that the Sable sub-level containing a block position is loaded and materialized.
-     *
-     * <p>The base implementation always returns {@code true} because there is no Sable state to
-     * load.</p>
+     * Attempts to ensure that the Sable sub-level containing {@code pos} is loaded.
      *
      * @param level the server level containing the position
-     * @param pos   the block position to check
+     * @param pos the block position to resolve
      */
     private void ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {
         ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos));
     }
 
     /**
-     * Ensures that the occupied Sable plot containing {@code pos} has a live holder or live sub-level.
+     * Ensures that an occupied Sable plot containing {@code pos} has an accessible live holder or
+     * sub-level.
      *
-     * <p>Non-Sable levels, chunks outside the plot grid, and unoccupied plots are treated as already
-     * valid. Occupied plots without a holder are resolved by searching Sable's holding storage and
-     * materializing the matching stored sub-level.</p>
+     * <p>Non-Sable levels, positions outside the plot grid, and unoccupied plots require no special
+     * handling. Occupied plots without a live holder are resolved through Sable's holding storage
+     * and, when necessary, materialized from stored sub-level data.</p>
      *
-     * @return {@code true} when no Sable load is needed or a live holder/sub-level is available;
-     * {@code false} when an occupied plot exists but cannot be materialized
+     * @return {@code true} if no special loading is required or a live holder or sub-level is
+     * available; {@code false} if an occupied plot cannot be materialized
      */
     private boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
         ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
@@ -221,25 +181,25 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Validates that a teleport destination is not inside an occupied-but-unloaded Sable plot.
+     * Validates that a teleport destination does not resolve to an unavailable Sable level space.
      *
-     * <p>This is called before falling back to a plain world-space teleport frame. If the position
-     * is inside Sable's occupied plot grid and no holder can be loaded, teleporting as if it were
-     * normal world space would place the entity into an invalid unloaded plot.</p>
+     * <p>This is checked before falling back to an unchanged world-space teleport frame. Treating an
+     * occupied but unavailable Sable plot as ordinary world space would place the entity into
+     * invalid plot coordinates.</p>
      */
     @Override
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
-        if (isMissingSablePlotHolder(level, BlockPos.containing(pos))) {
+        if (isLevelSpaceUnavailable(level, BlockPos.containing(pos))) {
             throw new IllegalStateException("Teleport target " + pos + " in " + level.dimension().location() + " is inside Sable's plot grid, but no plot chunk holder is loaded there");
         }
     }
 
     /**
-     * Prepares a Sable plot for creating or updating a DimDoors rift at {@code pos}.
+     * Prepares the Sable level space containing {@code pos} for rift creation or modification.
      *
-     * <p>If the position is outside Sable's plot grid, no special handling is needed. For occupied
-     * plots, this method ensures the sub-level is loaded and that the plot has a chunk holder for
-     * the local chunk where the rift will be placed.</p>
+     * <p>Positions outside Sable's plot grid require no preparation. For positions inside the grid,
+     * this method ensures that an occupied sub-level is available and that its plot contains a live
+     * chunk holder for the chunk containing the rift.</p>
      */
     @Override
     public boolean prepareRiftCreation(ServerLevel level, BlockPos pos) {
@@ -287,9 +247,10 @@ public class ActiveSableHelper extends SableHelper {
     /**
      * Updates the Sable tracking point associated with a DimDoors rift.
      *
-     * <p>Tracking points let unloaded-rift projection recover the latest pose of a sub-level even
-     * after the rift's containing plot is no longer live. Existing tracking points are replaced so
-     * the rift does not keep stale pose references after movement or relocation.</p>
+     * <p>Tracking points preserve the current spatial state of a rift inside a movable Sable
+     * sub-level, allowing its pose to be recovered after the containing sub-level is unloaded.
+     * Existing tracking points are replaced so moved or relocated rifts do not retain stale pose
+     * references.</p>
      */
     @Override
     public void updateRiftTrackingPoint(ServerLevel level, Rift rift) {
@@ -329,7 +290,7 @@ public class ActiveSableHelper extends SableHelper {
     /**
      * Removes the Sable tracking point associated with a DimDoors rift.
      *
-     * <p>This is called when the rift no longer needs to track a Sable sub-level pose.</p>
+     * <p>This is called when the rift no longer requires Sable pose tracking.</p>
      */
     @Override
     public void removeRiftTrackingPoint(ServerLevel level, Rift rift) {
@@ -348,15 +309,15 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Resolves the loaded Sable sub-level that should receive a projected teleport frame.
+     * Resolves the loaded Sable level space that should receive a projected teleport frame.
      *
-     * <p>The lookup deliberately probes the rift block location when a target {@link Location} is
-     * known. The entity's projected position can be offset from the rift block by fractions of a
-     * block or by player movement, while the rift block itself is the stable coordinate that should
-     * be inside the target plot.</p>
+     * <p>When a target {@link Location} is known, the lookup uses the rift block rather than the
+     * projected entity position. The entity position may be fractionally offset from the rift or
+     * already affected by movement, while the rift position provides a stable probe into the target
+     * plot.</p>
      *
-     * <p>If the load-position probe fails and the load position is different from the original
-     * projected entity position, the method performs one fallback lookup at the original position.</p>
+     * <p>If that probe finds nothing and differs from the original projected position, the original
+     * position is checked as a fallback.</p>
      */
     private SubLevelAccess getTargetSubLevel(ServerLevel level, Location location, Vec3 pos) {
         Vec3 loadPos = getTargetSubLevelLoadPosition(level, location, pos);
@@ -374,11 +335,10 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Chooses the coordinate used to probe/load the target Sable sub-level.
+     * Chooses the position used to locate or load the target Sable level space.
      *
-     * <p>When the rift location is in the same level as the projection target, the rift block center
-     * is used instead of the entity's exact projected position. Otherwise the entity position is the
-     * only available load probe.</p>
+     * <p>If the target rift belongs to the destination level, its block position is used as the
+     * stable load probe. Otherwise the projected entity position is used.</p>
      */
     private Vec3 getTargetSubLevelLoadPosition(ServerLevel level, Location location, Vec3 pos) {
         return location != null && location.world.equals(level.dimension())
@@ -387,27 +347,26 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Projects a teleport frame through an occupied Sable plot that is not currently materialized.
+     * Projects a teleport frame through an occupied Sable plot whose live level space is unavailable.
      *
-     * <p>This is the fallback path after normal target sub-level resolution fails. It only runs when
-     * the target load position is inside an occupied Sable plot with no live holder. The method then
-     * tries to recover a pose without requiring the live sub-level to already exist.</p>
+     * <p>This fallback is used when ordinary target resolution fails. It attempts to recover the
+     * target pose without requiring the corresponding {@link ServerSubLevel} to already be live.</p>
      *
-     * <p>Pose recovery order:</p>
+     * <p>Pose resolution proceeds in this order:</p>
      *
      * <ol>
-     *     <li>Use the rift's saved Sable tracking point if present.</li>
-     *     <li>Resolve an untracked rift by finding the stored plot containing the rift.</li>
-     *     <li>Resolve the stored plot containing the target load position.</li>
+     *     <li>Resolve the rift's saved Sable tracking point, if present.</li>
+     *     <li>Locate the stored sub-level containing an otherwise untracked rift.</li>
+     *     <li>Locate the stored sub-level containing the target load position.</li>
      * </ol>
      *
-     * <p>If a pose is recovered, the frame is projected through that pose using the same lower-level
-     * transform path as loaded sub-level projection.</p>
+     * <p>Once a pose is found, the frame is transformed through the same projection path used for
+     * loaded Sable level spaces.</p>
      */
     private TeleportFrame projectUnloadedRiftTeleportFrame(ServerLevel level, Location targetLocation, Vec3 pos, Rotations angle, Vec3 velocity) {
         Vec3 loadPos = getTargetSubLevelLoadPosition(level, targetLocation, pos);
 
-        if (!isMissingSablePlotHolder(level, BlockPos.containing(loadPos))) {
+        if (!isLevelSpaceUnavailable(level, BlockPos.containing(loadPos))) {
             return null;
         }
 
@@ -439,11 +398,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Attempts to identify the DimDoors rift associated with a projected target frame.
+     * Attempts to identify the DimDoors rift associated with a projected destination frame.
      *
-     * <p>The explicit target location is preferred when it is in the same level and still contains
-     * a registered rift. If unavailable, the current block, block below, and block above the projected
-     * position are checked to tolerate small vertical or fractional offsets around the rift block.</p>
+     * <p>The explicit target location is preferred when it belongs to the destination level and
+     * still contains a registered rift. Otherwise the projected block position and nearby vertical
+     * positions are checked to tolerate small offsets around the rift block.</p>
      */
     private Location findRiftLocation(ServerLevel level, Location targetLocation, Vec3 pos) {
         var registry = RiftRegistry.getInstance();
@@ -466,10 +425,10 @@ public class ActiveSableHelper extends SableHelper {
     /**
      * Resolves a pose from a saved Sable tracking point.
      *
-     * <p>A tracking point may refer to a currently loaded sub-level, a runtime holding sub-level, or
-     * a persisted saved sub-level pointer. Loaded sub-levels provide the freshest live pose. Stored
-     * data is force-processed first, then used directly as a pose fallback if Sable still does not
-     * expose a live {@link ServerSubLevel}.</p>
+     * <p>A tracking point may refer to a live sub-level, a runtime holding entry, or persisted
+     * sub-level data. A live sub-level provides the current logical pose. Stored data is first
+     * processed through Sable's normal loading path and then used directly as a fallback if no live
+     * {@link ServerSubLevel} becomes available.</p>
      */
     private Pose3dc resolveTrackingPointPose(ServerLevel level, UUID trackingPointId) {
         TrackingPoint trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).getTrackingPoint(trackingPointId);
@@ -521,11 +480,12 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Resolves and initializes pose tracking for a Sable rift that does not yet have a tracking point.
+     * Resolves the pose of a Sable rift that does not yet have a tracking point and initializes
+     * tracking when possible.
      *
-     * <p>The rift block is converted to a local Sable lookup position, then the containing stored
-     * sub-level is found. If loading succeeds, a new tracking point is created so future unloaded
-     * projections can skip the slower storage search.</p>
+     * <p>The rift position is used to locate the containing stored sub-level. If a live sub-level can
+     * be materialized, a tracking point is created so later unloaded projections can avoid repeating
+     * the storage search.</p>
      */
     private Pose3dc resolveUntrackedRiftPose(ServerLevel level, Rift rift, Location location) {
         if (!(rift instanceof SableRiftData sableRift)) {
@@ -558,11 +518,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Resolves a pose from the stored Sable plot containing {@code pos}.
+     * Resolves a pose from the stored Sable sub-level containing {@code pos}.
      *
-     * <p>This path is used when no rift tracking information is available. It attempts to materialize
-     * the stored sub-level first. If the live sub-level becomes available, its current logical pose is
-     * used; otherwise the serialized pose is returned as a best-effort fallback.</p>
+     * <p>This path is used when no rift tracking information is available. It first attempts to
+     * materialize the stored sub-level. If a live sub-level becomes available, its logical pose is
+     * returned; otherwise the serialized pose is used as a fallback.</p>
      */
     private Pose3dc resolveStoredPlotPose(ServerLevel level, Vec3 pos) {
         StoredSubLevel storedSubLevel = forceLoadStoredSubLevelAt(level, pos);
@@ -579,21 +539,21 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Removes a directly-loaded sub-level from Sable's runtime holding queues.
+     * Removes a directly loaded sub-level from Sable's runtime holding queues.
      *
-     * <p>This is used only after this helper manually calls {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}.
-     * The direct load creates a live {@link ServerSubLevel} immediately, but Sable's holding map may
-     * still contain the same {@link HoldingSubLevel} in memory. If left queued, Sable's next
-     * {@code processChanges()} call can try to load the same sub-level again and fail with a duplicate
-     * plot allocation.</p>
+     * <p>This is used only after the helper directly calls
+     * {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}. That call creates a live
+     * {@link ServerSubLevel} immediately, but Sable's holding map may still contain the same
+     * {@link HoldingSubLevel}. Leaving it queued can cause a later {@code processChanges()} pass to
+     * load the sub-level again and fail with a duplicate plot allocation.</p>
      *
-     * <p>The search intentionally scans all loaded holding chunks, not just the stored pointer's chunk.
-     * Moved or partially serialized sub-levels can temporarily have a {@code null} pointer or a pointer
-     * that no longer matches the in-memory holding chunk that still has the queued entry.</p>
+     * <p>The search scans every loaded holding chunk rather than only the chunk named by the saved
+     * pointer. Moved or partially serialized sub-levels may temporarily have a {@code null} pointer
+     * or one that no longer matches the in-memory holding chunk containing the queued entry.</p>
      *
-     * <p>This method removes runtime map entries only. It must not remove saved pointer entries from
-     * {@code SubLevelHoldingChunk#getSubLevelPointers()}, because those pointers are persistent storage
-     * metadata and removing them can orphan the saved sub-level.</p>
+     * <p>Only runtime entries are removed. Saved pointers in
+     * {@code SubLevelHoldingChunk#getSubLevelPointers()} are persistent storage metadata and must
+     * remain intact or the stored sub-level may become orphaned.</p>
      */
     private void removeRuntimeHoldingSubLevel(ServerSubLevelContainer container, UUID uuid) {
         SubLevelHoldingChunkMapAccessor holdingMapAccessor =
@@ -613,24 +573,23 @@ public class ActiveSableHelper extends SableHelper {
     /**
      * Attempts to materialize the stored Sable sub-level containing {@code pos}.
      *
-     * <p>The method is used when DimDoors knows a position is inside an occupied Sable plot, but Sable
-     * has not provided a live holder or live {@link ServerSubLevel}. It first searches runtime holding
-     * entries, then persisted holding-region files, for stored sub-level data whose plot tag matches
-     * the target Sable plot.</p>
+     * <p>This path is used when a position belongs to an occupied Sable plot but no live holder or
+     * {@link ServerSubLevel} is available. Runtime holding entries are searched first, followed by
+     * persisted holding-region files, for stored sub-level data assigned to the target plot.</p>
      *
-     * <p>After a stored sub-level is found, the normal Sable path is tried first by requesting its
-     * holding chunk and calling {@link #forceLoadTeleportSubLevel(ServerLevel, ServerSubLevelContainer, SubLevelData, GlobalSavedSubLevelPointer)}.
-     * If Sable still does not materialize a live sub-level immediately, this method directly loads the
-     * stored {@link SubLevelData} through {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}.</p>
+     * <p>After a match is found, the helper first requests loading through
+     * {@link #forceLoadTeleportSubLevel(ServerLevel, ServerSubLevelContainer, SubLevelData, GlobalSavedSubLevelPointer)}.
+     * If Sable still does not expose a live sub-level immediately, the stored
+     * {@link SubLevelData} is loaded directly through
+     * {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}.</p>
      *
-     * <p>Direct loading is followed by runtime-only holding cleanup. This prevents Sable's next
-     * {@code processChanges()} tick from loading the same holding entry again and throwing duplicate
-     * plot allocation errors. This is especially important for moved sub-levels, whose stored pointer
-     * may be stale or temporarily {@code null}.</p>
+     * <p>Direct loading is followed by runtime-only holding cleanup so Sable does not process the
+     * same queued entry again on its next pass. This is particularly important for moved sub-levels,
+     * whose saved pointer may be stale or temporarily {@code null}.</p>
      *
-     * <p>This method intentionally does not remove saved holding pointers from persistent storage.</p>
+     * <p>Saved holding pointers are never removed from persistent storage.</p>
      *
-     * @return the stored sub-level data that was found, or {@code null} if no matching stored sub-level exists
+     * @return the matching stored sub-level, or {@code null} if none can be found
      */
     private StoredSubLevel forceLoadStoredSubLevelAt(ServerLevel level, Vec3 pos) {
         ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
@@ -664,12 +623,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Finds serialized Sable sub-level data for the occupied plot containing {@code pos}.
+     * Finds stored Sable sub-level data assigned to the occupied plot containing {@code pos}.
      *
-     * <p>The lookup converts the target chunk into Sable plot coordinates, checks already-loaded
-     * holding sublevels first, then scans Sable's holding region files. Region scanning is slower but
-     * allows DimDoors to recover stored plot data even when Sable has not loaded the relevant holding
-     * chunk into memory yet.</p>
+     * <p>The target chunk is converted to Sable plot coordinates. Runtime holding entries are
+     * searched first, followed by holding-region files on disk. The disk fallback allows DimDoors to
+     * recover stored data even when Sable has not loaded the relevant holding chunk into memory.</p>
      */
     private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, Vec3 pos) {
         ChunkPos targetChunk = new ChunkPos(BlockPos.containing(pos));
@@ -712,10 +670,10 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Searches Sable's in-memory holding sub-level map for data stored in the target plot.
+     * Searches Sable's runtime holding map for sub-level data assigned to the target plot.
      *
-     * <p>This is preferred over disk scanning because the holding map may contain fresh data for a
-     * recently moved or unloaded sub-level that has not been fully flushed to region storage yet.</p>
+     * <p>This is preferred over disk scanning because runtime holding state may contain newer data
+     * for a recently moved or unloaded sub-level that has not yet been flushed to region storage.</p>
      */
     private StoredSubLevel findLoadedHoldingSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ) {
         var holdingSubLevels = ((SubLevelHoldingChunkMapAccessor) container.getHoldingChunkMap()).dimdoors$getAllHoldingSubLevels();
@@ -730,11 +688,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Searches one Sable holding-region file for stored sub-level data in the target plot.
+     * Searches one Sable holding-region file for sub-level data assigned to the target plot.
      *
-     * <p>Each region contains up to 32 by 32 holding chunks. The method loads holding chunks and then
-     * resolves their saved sub-level pointers until it finds a stored sub-level whose serialized plot
-     * tag matches {@code targetPlotX,targetPlotZ}.</p>
+     * <p>Each region contains up to 32 by 32 holding chunks. Their saved sub-level pointers are
+     * resolved until a stored sub-level whose serialized plot tag matches
+     * {@code targetPlotX,targetPlotZ} is found.</p>
      */
     private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ, int regionX, int regionZ) {
         for (int localX = 0; localX < 32; localX++) {
@@ -762,11 +720,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Checks whether serialized sub-level data belongs to the requested Sable plot coordinate.
+     * Checks whether serialized sub-level data is assigned to the requested Sable plot.
      *
-     * <p>The plot coordinate is read from Sable's serialized {@code plot} tag rather than inferred
-     * from bounds, because moved and rotated sub-levels may have bounds that span or shift across
-     * multiple chunks.</p>
+     * <p>The plot coordinate is read directly from Sable's serialized {@code plot} tag rather than
+     * inferred from bounds, because moved or rotated sub-levels may span or shift across multiple
+     * chunks.</p>
      */
     private boolean isStoredInPlot(SubLevelData data, int targetPlotX, int targetPlotZ) {
         if (!data.fullTag().contains("plot", Tag.TAG_COMPOUND)) {
@@ -778,10 +736,11 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Returns whether a chunk belongs to an occupied Sable plot.
+     * Checks whether a chunk belongs to an occupied Sable plot.
      *
-     * <p>Sable stores plot occupancy in plot coordinates, not vanilla chunk coordinates. This method
-     * converts a chunk position into the container's plot grid using the container origin and plot size.</p>
+     * <p>Sable stores occupancy in plot coordinates rather than vanilla chunk coordinates. The
+     * supplied chunk position is converted into the container's plot grid using its origin and plot
+     * size before the occupancy bit is queried.</p>
      */
     private boolean isOccupiedSablePlot(SubLevelContainer container, ChunkPos chunkPos) {
         if (!container.inBounds(chunkPos)) {
@@ -794,22 +753,21 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Requests the chunks needed by a stored Sable sub-level and asks Sable's holding map to process
-     * pending loads.
+     * Requests the chunks needed by a stored Sable sub-level and processes pending holding loads.
      *
-     * <p>This method is intentionally conservative: it queues the holding chunk identified by the
-     * saved pointer, adds post-teleport tickets around the serialized bounds, synchronously requests
-     * those chunks, and then calls Sable's holding-map processing once. That is enough for Sable's
-     * normal loader when its own readiness checks pass.</p>
+     * <p>The method queues the holding chunk identified by the saved pointer, adds post-teleport
+     * tickets around the serialized bounds, synchronously requests those chunks, and then runs one
+     * holding-map processing pass. This gives Sable's normal loader the opportunity to materialize
+     * the sub-level when its readiness checks pass.</p>
      *
-     * <p>This does not guarantee that Sable will immediately expose a live {@link ServerSubLevel}.
-     * Sable's own loading path also depends on holding chunk state and chunk readiness. Callers that
-     * require an immediate live sub-level must verify the result with
-     * {@link SableCompanion#getContaining(Level, Position)} and use the direct-load fallback when needed.</p>
+     * <p>A live {@link ServerSubLevel} is not guaranteed immediately because Sable's loader also
+     * depends on holding state and chunk readiness. Callers requiring an immediate live sub-level
+     * must verify the result with {@link SableCompanion#getContaining(Level, Position)} and use the
+     * direct-load fallback when necessary.</p>
      *
-     * <p>A {@code null} pointer means the stored data came from runtime holding state rather than a
-     * stable saved pointer. In that case there is no holding chunk to mark loaded, but the bounds can
-     * still be ticketed before direct-load fallback is considered.</p>
+     * <p>A {@code null} pointer indicates data discovered only in runtime holding state. In that case
+     * there is no saved holding chunk to mark as loaded, but the serialized bounds can still be
+     * ticketed before direct loading is considered.</p>
      */
     private void forceLoadTeleportSubLevel(ServerLevel level, ServerSubLevelContainer container, SubLevelData data, GlobalSavedSubLevelPointer pointer) {
         var bounds = data.bounds();
@@ -835,24 +793,24 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Stored Sable sub-level data plus the saved pointer that located it, if one exists.
+     * Stored Sable sub-level data together with the saved pointer that located it, when one exists.
      *
-     * <p>The pointer may be {@code null} for data discovered from runtime holding state. Callers must
-     * not assume that every stored sub-level currently has a stable saved pointer.</p>
+     * <p>The pointer may be {@code null} when the data came from runtime holding state, so callers
+     * must not assume every stored sub-level has a stable saved pointer.</p>
      */
     private record StoredSubLevel(SubLevelData data, GlobalSavedSubLevelPointer pointer) {
     }
 
     /**
-     * Converts an outgoing teleport frame from world space into source sub-level local space.
+     * Converts an outgoing teleport frame from world space into the source Sable level space.
      *
-     * <p>When an entity leaves a Sable sub-level, DimDoors needs the frame relative to the source
-     * sub-level rather than the transformed world pose. Position, velocity, and rotation are all
-     * inverse-transformed through the source pose.</p>
+     * <p>When an entity leaves a Sable sub-level, DimDoors needs the frame relative to that
+     * sub-level rather than its transformed world pose. Position, velocity, and rotation are
+     * therefore inverse-transformed through the source pose.</p>
      *
-     * <p>Sable reports sub-level velocity in blocks per second, while entity delta movement is in
-     * blocks per tick. The inherited sub-level velocity is divided by 20 before being removed from
-     * the entity's local velocity.</p>
+     * <p>Sable reports sub-level velocity in blocks per second while entity delta movement is in
+     * blocks per tick. The inherited sub-level velocity is divided by 20 before it is removed from
+     * the entity's world-space velocity.</p>
      */
     @Override
     public TeleportFrame sourceTeleportFrame(ServerLevel level, BlockPos sourcePos, Entity entity, Vec3 pos, Rotations angle, Vec3 velocity) {
@@ -877,12 +835,12 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Projects an incoming teleport frame into the target level.
+     * Projects an incoming teleport frame into the target world space.
      *
-     * <p>The method first tries to project through a live target sub-level. If none is loaded, it
-     * attempts to materialize the target plot using the rift's load position. If that still fails,
-     * unloaded-rift projection attempts to recover a stored pose. Only when no Sable-specific path
-     * applies does the method return the frame unchanged.</p>
+     * <p>The method first attempts projection through a live target sub-level. If none is available,
+     * it tries to materialize the target plot using the selected load position. If that still fails,
+     * unloaded-rift projection attempts to recover a stored pose. The frame is returned unchanged
+     * only when no Sable-specific projection applies.</p>
      */
     @Override
     public TeleportFrame projectTeleportFrame(ServerLevel level, Location location, Vec3 pos, Rotations angle, Vec3 velocity) {
@@ -919,10 +877,10 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Applies a known Sable pose to a local teleport frame.
+     * Applies a known Sable pose to a teleport frame expressed in Sable level space.
      *
-     * <p>The caller is responsible for supplying velocity already transformed into target world space,
-     * because loaded and unloaded paths differ in how inherited Sable velocity is recovered.</p>
+     * <p>The caller must supply velocity already transformed into target world space because the
+     * loaded and unloaded paths recover inherited Sable velocity differently.</p>
      */
     private TeleportFrame projectTeleportFrame(Pose3dc pose, Vec3 pos, Rotations angle, Vec3 worldVelocity) {
         Vec3 worldPos = pose.transformPosition(pos);
@@ -932,14 +890,14 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Transforms an Euler rotation through a Sable pose without relying on direct Euler composition.
+     * Transforms an Euler rotation through a Sable pose without directly composing Euler angles.
      *
-     * <p>The method builds a forward/up basis from the input rotation, transforms those basis vectors
-     * through the pose, then reconstructs an Euler angle from the transformed basis. This avoids many
-     * of the discontinuities that can appear when composing yaw, pitch, and roll directly.</p>
+     * <p>The input rotation is converted into forward and up basis vectors, those vectors are
+     * transformed through the pose, and an Euler rotation is reconstructed from the resulting basis.
+     * This avoids many discontinuities associated with direct yaw, pitch, and roll composition.</p>
      *
-     * <p>When the transformed forward vector or projected up vector degenerates, the method falls back
-     * to the safest available orientation rather than producing NaN rotations.</p>
+     * <p>If the transformed forward vector or projected up vector degenerates, the method falls back
+     * to the safest available orientation instead of producing invalid rotations.</p>
      */
     private Rotations transformAngle(Pose3dc pose, Rotations angle, boolean inverse) {
         TransformationMatrix3d rotator = TransformationMatrix3d.builder().rotate(angle).build();
@@ -963,11 +921,12 @@ public class ActiveSableHelper extends SableHelper {
     }
 
     /**
-     * Converts collision/history data into the tracked Sable sub-level's local space.
+     * Converts collision and movement history into the tracked Sable level space.
      *
-     * <p>When an entity is being tracked by a Sable sub-level, its previous/current positions and
-     * bounding box need to be interpreted in that sub-level's local coordinates. The bounding box is
-     * rebuilt by transforming all eight corners and taking a new axis-aligned envelope in local space.</p>
+     * <p>When an entity is tracked by a Sable sub-level, its previous and current positions and its
+     * bounding box must be interpreted in that sub-level's coordinates. The bounding box is rebuilt
+     * by inverse-transforming all eight corners and taking their axis-aligned envelope in Sable level
+     * space.</p>
      */
     @Override
     public AfterBlockData getAfterBlockData(Entity entity, AABB box, Vec3 previousPos, Vec3 currentPos) {

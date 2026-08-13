@@ -23,7 +23,7 @@ import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.TraversableRiftBlock;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
@@ -97,7 +97,7 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
             Block block = state.getBlock();
             if (block instanceof CoordinateTransformerBlock transformer) {
                 var blockPos = getBlockPos();
-                var sourceFrame = SableHelper.INSTANCE.sourceTeleportFrame(
+                var sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(
                         (ServerLevel) this.level,
                         blockPos,
                         entity,
@@ -166,7 +166,7 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
                 direction.getNormal().getZ() / 2.0
         );
 
-        SableHelper.TeleportFrame frame = SableHelper.INSTANCE.projectTeleportFrame(
+        LevelSpaceHelper.TeleportFrame frame = LevelSpaceHelper.INSTANCE.projectTeleportFrame(
                 level,
                 location,
                 targetPos,

@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -42,7 +42,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "handleMovePlayer", at = @At("TAIL"))
     protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
-        var data = SableHelper.INSTANCE.getAfterBlockData(this.player, this.player.getBoundingBox(), this.dimdoors$positionBeforeMove, this.player.position());
+        var data = LevelSpaceHelper.INSTANCE.getAfterBlockData(this.player, this.player.getBoundingBox(), this.dimdoors$positionBeforeMove, this.player.position());
 
         this.dimdoors$checkAfterMoveCollision(data.box(), data.previousPos(), data.currentPos());
     }

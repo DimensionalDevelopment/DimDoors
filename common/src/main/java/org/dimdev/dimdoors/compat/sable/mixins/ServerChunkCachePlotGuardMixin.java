@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.compat.sable.mixins;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +19,7 @@ public class ServerChunkCachePlotGuardMixin {
 
     @Inject(method = "blockChanged", at = @At("HEAD"), cancellable = true)
     private void dimdoors$ignoreMissingSablePlotHolderBlockChange(BlockPos pos, CallbackInfo ci) {
-        if (SableHelper.INSTANCE.isMissingSablePlotHolder(this.level, pos)) {
+        if (LevelSpaceHelper.INSTANCE.isLevelSpaceUnavailable(this.level, pos)) {
             ci.cancel();
         }
     }

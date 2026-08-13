@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.util.LevelSpaceHelper;
 
 public final class TargetResolver {
     private TargetResolver() {}
@@ -25,7 +25,7 @@ public final class TargetResolver {
         }
 
         return BlockPosUtil.nearbyVertical(pos, p -> {
-            var target = castOrNull(SableHelper.INSTANCE.getBlockEntity(level, p), targetClazz);
+            var target = castOrNull(LevelSpaceHelper.INSTANCE.getBlockEntity(level, p), targetClazz);
             if(target == null) target = castOrNull(blockStateEntity(level, p), targetClazz);
             return target;
         });
