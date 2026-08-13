@@ -49,7 +49,6 @@ dependencies {
     api "org.jgrapht:jgrapht-core:${jgrapht_version}"
 
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    compileOnly "org.dimdev:limlib-common-${minecraft_version}:${limlib_version}"
 
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"

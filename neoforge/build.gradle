@@ -38,7 +38,6 @@ dependencies {
 
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
-    implementation "org.dimdev:limlib-neoforge-${minecraft_version}:${limlib_version}"
     compileOnly("net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}")
     compileOnly("maven.modrinth:iris:${iris_version}-neoforge")
 

@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.rift.registry.DialingAddress;
 import org.dimdev.dimdoors.rift.registry.DialingRegistry;
 import org.dimdev.dimdoors.world.pocket.DialingPocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 
 import java.util.UUID;
 

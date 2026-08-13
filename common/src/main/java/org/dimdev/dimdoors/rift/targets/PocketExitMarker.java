@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketExitMarker extends VirtualTarget<PocketExitMarker> implements EntityTarget {

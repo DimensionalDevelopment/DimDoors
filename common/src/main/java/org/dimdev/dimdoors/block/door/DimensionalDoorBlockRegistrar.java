@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.limlib.api.ISided;
+import org.dimdev.dimcore.api.ISided;
 import org.dimdev.dimdoors.api.event.RegisterDimensionalDoorProductionsCallback;
 import org.dimdev.dimdoors.block.AutoGenTraversalRiftBlock;
 import org.dimdev.dimdoors.block.DoorSoundProvider;

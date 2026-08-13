@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.limlib.api.ISided;
+import org.dimdev.dimcore.api.ISided;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 public class PlayerBlockBreakEventBeforeListener implements ISided.BlockBreakCallback {

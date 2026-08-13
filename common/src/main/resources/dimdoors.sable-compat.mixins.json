@@ -6,18 +6,20 @@
   "minVersion": "0.8",
   "refmap": "dimdoors.refmap.json",
   "mixins": [
+    "AfterBlockDataMixin",
     "BlockAssemblyMixin",
-    "DetachedRiftSubLevelCollisionMixin",
-    "EntranceRiftSubLevelFixMixin",
     "RiftRegistrySableTrackingMixin",
     "RiftSableTrackingMixin",
+    "RiftSignatureItemMixin",
     "ServerChunkCachePlotGuardMixin",
     "ServerPlayerPlotRescueMixin",
     "ServerPlayerSubLevelTrackingCleanupMixin",
     "SubLevelHoldingChunkAccessor",
     "SubLevelHoldingChunkMapAccessor",
     "SubLevelTrackingSystemDimensionChangeMixin",
-    "VoxelNeighborhoodStateMixin"
+    "TargetResolverMixin",
+    "TeleportFrameMixin",
+    "TeleportUtilMixin"
   ],
   "injectors": {
     "defaultRequire": 1

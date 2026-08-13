@@ -44,7 +44,6 @@ dependencies {
 
     modCompileOnly("maven.modrinth:iris:${iris_version}-fabric")
 
-    modImplementation "org.dimdev:limlib-fabric-${minecraft_version}:${limlib_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei}"
 
     modCompileOnlyApi "mezz.jei:jei-${minecraft_version}-fabric-api:${jei}"

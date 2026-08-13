@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.limlib.api.block.entity.MutableBlockEntityType;
+import org.dimdev.dimcore.api.entity.MutableBlockEntityType;
 
 import java.util.function.BiFunction;
 import java.util.stream.Stream;

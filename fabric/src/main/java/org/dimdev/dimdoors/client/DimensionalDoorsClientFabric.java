@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
-import org.dimdev.limlib.client.FabricClientSided;
-import org.dimdev.limlib.client.IDimensionSpecialEffectExtension;
+import org.dimdev.dimcore.client.FabricClientSided;
+import org.dimdev.dimcore.client.IDimensionSpecialEffectExtension;
 import org.joml.Matrix4f;
 
 import java.util.function.Supplier;

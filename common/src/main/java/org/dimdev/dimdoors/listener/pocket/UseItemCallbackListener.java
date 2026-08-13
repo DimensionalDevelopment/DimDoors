@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.listener.pocket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import org.dimdev.limlib.api.ISided;
+import org.dimdev.dimcore.api.ISided;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 public class UseItemCallbackListener implements ISided.UseItemCallback {

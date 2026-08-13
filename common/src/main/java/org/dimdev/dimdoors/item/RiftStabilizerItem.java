@@ -15,7 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.limlib.api.client.ToolTipHelper;
+import org.dimdev.dimcore.api.client.ToolTipHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

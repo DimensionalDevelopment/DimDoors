@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 
 import java.util.UUID;
 

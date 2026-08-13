@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "org.dimdev.dimcore.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "refmap": "dimdoors.refmap.json",
+  "client": [
+    "client.DimensionSpecialEffectsMixin"
+  ],
+  "mixins": [
+    "DataAttachmentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

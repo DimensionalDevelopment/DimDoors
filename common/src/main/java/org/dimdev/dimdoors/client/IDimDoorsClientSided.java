@@ -4,7 +4,7 @@ import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
-import org.dimdev.limlib.api.client.IClientSided;
+import org.dimdev.dimcore.api.client.IClientSided;
 
 import java.util.function.Supplier;
 

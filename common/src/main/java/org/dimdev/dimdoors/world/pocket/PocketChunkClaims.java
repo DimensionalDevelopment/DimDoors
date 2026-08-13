@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.util.ChunkBounds;
-import org.dimdev.limlib.util.DataValue;
+import org.dimdev.dimcore.util.DataValue;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PocketChunkClaims {

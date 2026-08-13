@@ -157,7 +157,6 @@ processResources {
             'minecraft_version'            : minecraft_version,
             'sable_version'                : sable_version,
             'sodium_version'               : sodium_version,
-            'limlib_version'               : limlib_version,
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,

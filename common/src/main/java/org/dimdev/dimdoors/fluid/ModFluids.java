@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.fluid;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.limlib.api.fluid.FluidDetails;
+import org.dimdev.dimcore.api.fluid.FluidDetails;
 
 public class ModFluids {
 

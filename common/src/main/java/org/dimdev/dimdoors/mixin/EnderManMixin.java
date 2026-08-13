@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.monster.EnderMan;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.enchantment.TranscendentProjectiles;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

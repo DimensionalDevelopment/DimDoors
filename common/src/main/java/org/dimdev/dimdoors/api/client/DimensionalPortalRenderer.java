@@ -21,7 +21,6 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.dimdoors.client.RenderUtils;
-import org.dimdev.limlib.api.client.RenderLayerFactory;
 
 public final class DimensionalPortalRenderer {
     private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;
@@ -82,7 +81,7 @@ public final class DimensionalPortalRenderer {
         );
 
         DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
-        RENDER_LAYER = RenderLayerFactory.create(
+        RENDER_LAYER = RenderType.create(
                 "dimensional_portal",
                 DefaultVertexFormat.POSITION,
                 VertexFormat.Mode.QUADS,

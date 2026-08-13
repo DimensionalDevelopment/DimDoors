@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.GameRules;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.mixin.RecipeBookSettingsAccessor;
-import org.dimdev.limlib.FabricSided;
+import org.dimdev.dimcore.FabricSided;
 
 
 import java.util.function.*;

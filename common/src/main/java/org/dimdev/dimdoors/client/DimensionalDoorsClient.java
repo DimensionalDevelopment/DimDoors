@@ -41,11 +41,11 @@ import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
-import org.dimdev.limlib.api.client.ModClient;
-import org.dimdev.limlib.api.client.ModelLoadingRegistry;
-import org.dimdev.limlib.api.fluid.FluidDetails;
-import org.dimdev.limlib.client.ModelLoadingOverride;
-import org.dimdev.limlib.client.specialmodels.SpecialModelShaderRegistry;
+import org.dimdev.dimcore.api.client.ModClient;
+import org.dimdev.dimcore.api.client.ModelLoadingRegistry;
+import org.dimdev.dimcore.api.fluid.FluidDetails;
+import org.dimdev.dimcore.client.ModelLoadingOverride;
+import org.dimdev.dimcore.client.specialmodels.SpecialModelShaderRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;

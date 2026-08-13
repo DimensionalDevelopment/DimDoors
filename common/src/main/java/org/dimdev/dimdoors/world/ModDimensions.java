@@ -15,7 +15,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.IDimensionalDoorsSided;
-import org.dimdev.limlib.api.ISided;
+import org.dimdev.dimcore.api.ISided;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 
 import java.util.Objects;

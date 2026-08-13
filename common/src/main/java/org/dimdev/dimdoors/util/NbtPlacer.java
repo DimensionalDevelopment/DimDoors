@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.limlib.api.world.NbtPlacerUtil;
+import org.dimdev.dimcore.api.world.NbtPlacerUtil;
 
 import java.util.Map;
 import java.util.Optional;

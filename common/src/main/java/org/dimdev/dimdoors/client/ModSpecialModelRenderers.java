@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
-import org.dimdev.limlib.client.specialmodels.SpecialModelShaderRegistry;
+import org.dimdev.dimcore.client.specialmodels.SpecialModelShaderRegistry;
 
 public class ModSpecialModelRenderers {
     public static final ResourceLocation RENDERER_ID = DimensionalDoors.id("dimensional_portal");

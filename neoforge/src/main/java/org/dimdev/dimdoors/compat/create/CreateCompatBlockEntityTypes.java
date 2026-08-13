@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.compat.create;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.limlib.api.block.entity.MutableBlockEntityType;
+import org.dimdev.dimcore.api.entity.MutableBlockEntityType;
 
 import java.util.stream.Stream;
 

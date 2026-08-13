@@ -40,14 +40,15 @@
     },
     "mixins": [
         "${mod_id}.mixins.json",
+        "dimcore.mixins.json",
         "${mod_id}.sable-compat.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "${mod_id}.fabric.mixins.json",
+        "dimcore.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
-        "limlib": "${limlib_version}",
         "java": ">=${java_version}"
     },
     "custom": {

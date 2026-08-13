@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem;
 import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 
 import java.util.UUID;
 

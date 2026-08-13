@@ -22,7 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
-import org.dimdev.limlib.api.client.ToolTipHelper;
+import org.dimdev.dimcore.api.client.ToolTipHelper;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModLootTables;
 import org.jetbrains.annotations.Nullable;

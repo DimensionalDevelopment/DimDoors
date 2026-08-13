@@ -22,8 +22,8 @@ import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.item.component.IdCounter;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.limlib.api.client.ToolTipHelper;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.client.ToolTipHelper;
+import org.dimdev.dimcore.api.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

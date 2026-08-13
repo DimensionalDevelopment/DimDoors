@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.util.NbtPlacer;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.limlib.api.world.NbtPlacerUtil;
+import org.dimdev.dimcore.api.world.NbtPlacerUtil;
 
 import java.util.Comparator;
 import java.util.HashMap;

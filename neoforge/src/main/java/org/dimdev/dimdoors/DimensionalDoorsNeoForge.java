@@ -24,7 +24,7 @@ import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.ModFluidTypes;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
-import org.dimdev.limlib.NeoForgeSided;
+import org.dimdev.dimcore.NeoForgeSided;
 
 import java.util.function.Consumer;
 

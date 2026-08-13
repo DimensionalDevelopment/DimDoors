@@ -4,7 +4,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import org.dimdev.limlib.api.ISided;
+import org.dimdev.dimcore.api.ISided;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 public class UseBlockCallbackListener implements ISided.UseBlockCallback {

@@ -31,7 +31,7 @@ import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.limlib.api.util.EntityUtils;
+import org.dimdev.dimcore.api.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
