@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -39,6 +40,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
     private static final CodecRecord<DetachedRiftBlockEntity, Integer> CURVE_ID_BUILDER = new CodecRecord<>("curveID", Codec.INT, (java.util.function.Supplier<Integer>) () -> (int) (Math.random() * RiftCurves.CURVES.size()), detachedRiftBlockEntity -> detachedRiftBlockEntity.curveID);
     private static final CodecRecord<DetachedRiftBlockEntity, Integer> WEIGHT_BUILDER = new CodecRecord<>("weight", Codec.intRange(-100, 100), 5, detachedRiftBlockEntity -> detachedRiftBlockEntity.weight);
     private static final CodecRecord<DetachedRiftBlockEntity, Integer> UPDATE_TIMER_BUILDER = new CodecRecord<>("updateTimer", Codec.INT, 0, detachedRiftBlockEntity -> detachedRiftBlockEntity.updateTimer);
+    private TargetingConditions TRACKING = TargetingConditions.forNonCombat().range(50);
 
     public int spawnedEndermanId;
     public float riftYaw;
@@ -174,13 +176,13 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
                 sync();
             }
 
+            //TODO: integrate into Rift scars once implmented
 
+//            if (DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay && getData().getSize() > 0) {
+//                applySpreadDecay((ServerLevel) level, pos);
+//            }
 
-            if (DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay /*&& level.random.nextInt(0, 100) <= weight*/ && getData().getSize() > 0) {
-                applySpreadDecay((ServerLevel) level, pos);
-            }
-
-            tryEndermanSpawn(level, pos);
+//            tryEndermanSpawn(level, pos);
 
 
 
@@ -215,7 +217,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
                 Objects.requireNonNull(enderman).absMoveTo(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
 
                 if (level.random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
-                    Player player = level.getNearestPlayer(enderman, 50);
+                    Player player = level.getNearestPlayer(TRACKING, enderman);
                     if (player != null) {
                         enderman.setTarget(player);
                     }
