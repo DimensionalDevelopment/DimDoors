@@ -83,7 +83,7 @@ import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
-public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
+public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? extends IDimensionalDoorsSided<?>>> {
     public static final DimensionalDoors INSTANCE = new DimensionalDoors();
 
     public static final String MOD_ID = "dimdoors";

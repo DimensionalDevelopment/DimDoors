@@ -64,12 +64,6 @@ public class TemplateUtils {
 
         randomizable.setLootTable(table);
         randomizable.setLootTableSeed(world.getRandom().nextLong());
-
-//        LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
-//        table.fill(inventory, ctx, world.getSeed());
-//        if (inventory.isEmpty()) {
-//            logger.error(", however Inventory is: empty!");
-//        }
     }
 
     static public void registerRifts(List<? extends Rift> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
@@ -91,7 +85,7 @@ public class TemplateUtils {
         }
 
         Rift selectedEntrance = MathUtil.weightedRandom(entranceWeights);
-        LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.getBlockPos(), pocket.getId());
+        LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.getRiftBlockPos(), pocket.getId());
 
         // Replace entrances with appropriate destinations
         for (Rift rift : rifts) {
@@ -100,7 +94,7 @@ public class TemplateUtils {
                     rift.setDestination(entranceMarker.getIfDestination());
                     rift.register();
 
-                    Location entranceLocation = Location.ofWorld(world, rift.getBlockPos());
+                    Location entranceLocation = Location.ofWorld(world, rift.getRiftBlockPos());
                     PocketRegistry.getInstance().addPocketEntrance(pocket, entranceLocation);
                     LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
@@ -112,14 +106,18 @@ public class TemplateUtils {
         for (Rift rift : rifts) {
             if (rift.getData().getDestination() instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
+
                 VirtualTarget<?> exitDestination = rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE;
+
                 if (exitDestination == null) {
-                    LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.getBlockPos(), pocket.getId());
+                    LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.getRiftBlockPos(), pocket.getId());
                     exitDestination = VirtualTarget.NoneTarget.INSTANCE;
                 }
+
                 rift.setDestination(exitDestination);
+
                 if (exitDestination != VirtualTarget.NoneTarget.INSTANCE) {
-                    exitDestination.setLocation(Location.ofWorld(world, rift.getBlockPos()));
+                    exitDestination.setLocation(Location.ofWorld(world, rift.getRiftBlockPos()));
                 }
             }
         }

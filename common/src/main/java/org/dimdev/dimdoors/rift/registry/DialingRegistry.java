@@ -38,8 +38,6 @@ public class DialingRegistry extends PlayerTrackingSubSystem<DialingAddress, Dia
         return getInstance(SubsystemTypes.DIALING);
     }
 
-
-
     @Override
     public DialingAddress getKeyFromPlayer(UUID playerUUID) {
         return playertoAddress.get(playerUUID);

@@ -13,9 +13,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.rift.registry.PocketRegistry;
+import org.dimdev.dimdoors.util.Utils;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
@@ -139,17 +141,13 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
         ChunkPos minChunk = new ChunkPos(box.minX() >> 4, box.minZ() >> 4);
         ChunkPos maxChunk = new ChunkPos(box.maxX() >> 4, box.maxZ() >> 4);
 
-        ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
-            serverWorld.getChunk(chunkPos.x, chunkPos.z)
-                    .getBlockEntities()
-                    .forEach((blockPos, blockEntity) -> {
-                        if (this.box.isInside(blockPos)) {
-                            blockEntities.put(blockPos, blockEntity);
-                        }
-                    });
-        });
-
-        return blockEntities;
+        return ChunkPos.rangeClosed(minChunk, maxChunk)
+                .map(pos -> serverWorld.getChunk(pos.x, pos.z))
+                .map(LevelChunk::getBlockEntities)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .filter(pair -> this.box.isInside(pair.getKey()))
+                .collect(Utils.mapEntryCollector());
     }
 
     public BoundingBox getBox() {

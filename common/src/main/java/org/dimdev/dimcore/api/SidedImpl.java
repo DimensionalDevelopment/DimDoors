@@ -18,6 +18,11 @@ public abstract class SidedImpl<V extends SidedImpl<V, T>, T extends ModCommon<?
         this.common = common;
     }
 
+    @Override
+    public String modId() {
+        return common.getModId();
+    }
+
     protected final Multimap<CreativeModeTab, ItemStack> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
 
     @Override

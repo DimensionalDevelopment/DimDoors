@@ -36,6 +36,7 @@ public interface ISided<T extends ISided<T>> extends IRegister, ICreativeTabHand
         return (T) this;
     }
 
+    String modId();
 
     void onServerStarting(Consumer<MinecraftServer> consumer);
     void onServerStarted(Consumer<MinecraftServer> consumer);

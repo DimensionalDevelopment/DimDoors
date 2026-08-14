@@ -21,9 +21,7 @@ public class ServerPlayerPlotRescueMixin {
         ServerPlayer player = (ServerPlayer) (Object) this;
         ServerLevel level = player.serverLevel();
 
-        if (!LevelSpaceHelper.INSTANCE.isLevelSpaceUnavailable(level, player.blockPosition())) {
-            return;
-        }
+        if (!LevelSpaceHelper.INSTANCE.isLevelSpaceUnavailable(level, player.blockPosition())) return;
 
         ServerLevel overworld = player.server.getLevel(Level.OVERWORLD);
         if (overworld == null) {

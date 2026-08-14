@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -144,5 +145,20 @@ public abstract class RiftBlockEntity<T extends RiftBlockEntity<T>> extends Bloc
     @Override
     public void setStateDirty(boolean riftState) {
         this.riftStateChanged = riftState;
+    }
+
+    @Override
+    public BlockPos getRiftBlockPos() {
+        return getBlockPos();
+    }
+
+    @Override
+    public BlockState getRiftBlockState() {
+        return getBlockState();
+    }
+
+    @Override
+    public Level getRiftLevel() {
+        return getLevel();
     }
 }

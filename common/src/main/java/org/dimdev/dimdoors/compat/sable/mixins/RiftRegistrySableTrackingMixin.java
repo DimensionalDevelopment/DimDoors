@@ -26,14 +26,11 @@ public class RiftRegistrySableTrackingMixin {
     @Inject(method = "removeRift", at = @At("HEAD"))
     private void dimdoors$untrackRemovedRift(Location location, CallbackInfo ci) {
         ServerLevel level = location.getWorld();
-        if (level == null) {
-            return;
-        }
+        if (level == null) return;
 
         var registry = RiftRegistry.getInstance();
-        if (!registry.isRiftAt(location)) {
-            return;
-        }
+
+        if (!registry.isRiftAt(location)) return;
 
         LevelSpaceHelper.INSTANCE.removeRiftTrackingPoint(level, registry.getRift(location));
     }
@@ -41,9 +38,7 @@ public class RiftRegistrySableTrackingMixin {
     @Unique
     private void dimdoors$updateSableTrackingPoint(Location location) {
         ServerLevel level = location.getWorld();
-        if (level == null) {
-            return;
-        }
+        if (level == null) return;
 
         Rift rift = RiftRegistry.getInstance().getRift(location);
         LevelSpaceHelper.INSTANCE.updateRiftTrackingPoint(level, rift);

@@ -153,31 +153,21 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
      */
     private boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
         ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
-        if (container == null) {
-            return true;
-        }
+        if (container == null) return true;
 
         ChunkPos chunkPos = new ChunkPos(BlockPos.containing(pos));
-        if (!container.inBounds(chunkPos)) {
+        if (container.inBounds(chunkPos) && isOccupiedSablePlot(container, chunkPos)) {
+            if (container.getChunkHolder(chunkPos) != null && SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel) {
+                return true;
+            }
+
+            forceLoadStoredSubLevelAt(level, pos);
+
+            return container.getChunkHolder(chunkPos) != null || SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel;
+        } else {
             return true;
         }
 
-        if (!isOccupiedSablePlot(container, chunkPos)) {
-            return true;
-        }
-
-        if (container.getChunkHolder(chunkPos) != null) {
-            return true;
-        }
-
-        if (SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel) {
-            return true;
-        }
-
-        forceLoadStoredSubLevelAt(level, pos);
-
-        return container.getChunkHolder(chunkPos) != null
-                || SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel;
     }
 
     /**
@@ -209,39 +199,36 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
         }
 
         ChunkPos chunkPos = new ChunkPos(pos);
-        if (!container.inBounds(chunkPos)) {
+        if (!container.inBounds(chunkPos) || container.getChunkHolder(chunkPos) != null) {
             return true;
         }
 
-        if (container.getChunkHolder(chunkPos) != null) {
-            return true;
-        }
+        if (ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos))) {
+            if (container.getChunkHolder(chunkPos) == null) {
+                var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+                if (!(subLevel instanceof ServerSubLevel)) {
+                    forceLoadStoredSubLevelAt(level, Vec3.atCenterOf(pos));
+                    subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+                }
 
-        if (!ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos))) {
+                if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
+                    return false;
+                }
+
+                var plot = serverSubLevel.getPlot();
+                ChunkPos localChunkPos = plot.toLocal(chunkPos);
+                if (plot.getChunkHolder(localChunkPos) == null) {
+                    plot.newEmptyChunk(chunkPos);
+                }
+
+                return plot.getChunkHolder(localChunkPos) != null;
+            } else {
+                return true;
+            }
+
+        } else {
             return false;
         }
-
-        if (container.getChunkHolder(chunkPos) != null) {
-            return true;
-        }
-
-        var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-        if (!(subLevel instanceof ServerSubLevel)) {
-            forceLoadStoredSubLevelAt(level, Vec3.atCenterOf(pos));
-            subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-        }
-
-        if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
-            return false;
-        }
-
-        var plot = serverSubLevel.getPlot();
-        ChunkPos localChunkPos = plot.toLocal(chunkPos);
-        if (plot.getChunkHolder(localChunkPos) == null) {
-            plot.newEmptyChunk(chunkPos);
-        }
-
-        return plot.getChunkHolder(localChunkPos) != null;
     }
 
     /**
@@ -798,8 +785,7 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
      * <p>The pointer may be {@code null} when the data came from runtime holding state, so callers
      * must not assume every stored sub-level has a stable saved pointer.</p>
      */
-    private record StoredSubLevel(SubLevelData data, GlobalSavedSubLevelPointer pointer) {
-    }
+    private record StoredSubLevel(SubLevelData data, GlobalSavedSubLevelPointer pointer) { }
 
     /**
      * Converts an outgoing teleport frame from world space into the source Sable level space.
@@ -940,36 +926,10 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
         previousPos = pose.transformPositionInverse(previousPos);
         currentPos = pose.transformPositionInverse(currentPos);
 
-        Vec3[] corners = new Vec3[] {
-                new Vec3(box.minX, box.minY, box.minZ),
-                new Vec3(box.minX, box.minY, box.maxZ),
-                new Vec3(box.minX, box.maxY, box.minZ),
-                new Vec3(box.minX, box.maxY, box.maxZ),
-                new Vec3(box.maxX, box.minY, box.minZ),
-                new Vec3(box.maxX, box.minY, box.maxZ),
-                new Vec3(box.maxX, box.maxY, box.minZ),
-                new Vec3(box.maxX, box.maxY, box.maxZ)
-        };
+        var boxMin = pose.transformPositionInverse(box.getMinPosition());
+        var boxMax = pose.transformPositionInverse(box.getMinPosition());
 
-        double minX = Double.POSITIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
-        double minZ = Double.POSITIVE_INFINITY;
-        double maxX = Double.NEGATIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        double maxZ = Double.NEGATIVE_INFINITY;
-
-        for (Vec3 corner : corners) {
-            Vec3 localCorner = pose.transformPositionInverse(corner);
-
-            minX = Math.min(minX, localCorner.x);
-            minY = Math.min(minY, localCorner.y);
-            minZ = Math.min(minZ, localCorner.z);
-            maxX = Math.max(maxX, localCorner.x);
-            maxY = Math.max(maxY, localCorner.y);
-            maxZ = Math.max(maxZ, localCorner.z);
-        }
-
-        box = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        box = new AABB(boxMin, boxMax);
 
         return new AfterBlockData(box, previousPos, currentPos);
     }

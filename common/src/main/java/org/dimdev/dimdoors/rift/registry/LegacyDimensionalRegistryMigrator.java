@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.rift.registry;
 
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -23,28 +22,16 @@ import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PocketInfo;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public final class LegacyDimensionalRegistryMigrator {
     private static final String OLD_DATA_NAME = "dimensional_registry";
-    private static final String MARKER_DATA_NAME = "dimensional_registry_migration";
     private static final int SUPPORTED_RIFT_DATA_VERSION = 1;
-    private static final Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC =
-            CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
-
-    private LegacyDimensionalRegistryMigrator() {
-    }
+    private static final Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC = CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
 
     public static void migrateIfNeeded(MinecraftServer server) {
         Path oldFile = dataFile(server, OLD_DATA_NAME);
@@ -64,8 +51,10 @@ public final class LegacyDimensionalRegistryMigrator {
         try {
             CompoundTag root = readSavedDataRoot(oldFile);
             CompoundTag data = root.getCompound("data");
-            MigrationResult result = parse(data);
-            install(server.overworld().getDataStorage(), result);
+            var result = parse(data);
+            result.set(server.overworld().getDataStorage());
+
+
             DimensionalDoors.LOGGER.info(
                     "Migrated old {}.dat into split registry data: {} rifts, {} pocket entrance pointers, {} private pocket owners, {} graph edges.",
                     OLD_DATA_NAME,
@@ -91,17 +80,17 @@ public final class LegacyDimensionalRegistryMigrator {
     }
 
     private static boolean hasAnySplitData(MinecraftServer server) {
-        return Files.exists(dataFile(server, SubsystemTypes.GRAPH.name()))
-                || Files.exists(dataFile(server, SubsystemTypes.RIFT.name()))
-                || Files.exists(dataFile(server, SubsystemTypes.PRIVATE.name()))
-                || Files.exists(dataFile(server, SubsystemTypes.POCKET.name()));
+        return Files.exists(dataFile(server, SubsystemTypes.GRAPH.toFilename()))
+                || Files.exists(dataFile(server, SubsystemTypes.RIFT.toFilename()))
+                || Files.exists(dataFile(server, SubsystemTypes.PRIVATE.toFilename()))
+                || Files.exists(dataFile(server, SubsystemTypes.POCKET.toFilename()));
     }
 
     private static boolean hasAllSplitData(MinecraftServer server) {
-        return Files.exists(dataFile(server, SubsystemTypes.GRAPH.name()))
-                && Files.exists(dataFile(server, SubsystemTypes.RIFT.name()))
-                && Files.exists(dataFile(server, SubsystemTypes.PRIVATE.name()))
-                && Files.exists(dataFile(server, SubsystemTypes.POCKET.name()));
+        return Files.exists(dataFile(server, SubsystemTypes.GRAPH.toFilename()))
+                && Files.exists(dataFile(server, SubsystemTypes.RIFT.toFilename()))
+                && Files.exists(dataFile(server, SubsystemTypes.PRIVATE.toFilename()))
+                && Files.exists(dataFile(server, SubsystemTypes.POCKET.toFilename()));
     }
 
     private static Path dataFile(MinecraftServer server, String name) {
@@ -345,20 +334,7 @@ public final class LegacyDimensionalRegistryMigrator {
     }
 
     private static void install(DimensionDataStorage storage, MigrationResult result) {
-        markDirty(result.pocketRegistry);
-        markDirty(result.riftRegistry);
-        markDirty(result.privateRegistry);
-        markDirty(result.riftGraph);
-
-        storage.set(SubsystemTypes.POCKET.name(), result.pocketRegistry);
-        storage.set(SubsystemTypes.RIFT.name(), result.riftRegistry);
-        storage.set(SubsystemTypes.PRIVATE.name(), result.privateRegistry);
-        storage.set(SubsystemTypes.GRAPH.name(), result.riftGraph);
-
-        MigrationMarker marker = new MigrationMarker(result);
-        marker.setDirty();
-        storage.set(MARKER_DATA_NAME, marker);
-        storage.save();
+        result.set(storage);
     }
 
     private static void markDirty(SavedData data) {
@@ -395,30 +371,17 @@ public final class LegacyDimensionalRegistryMigrator {
             ListTag legacyOverworldRifts,
             ListTag legacyOverworldLocations
     ) {
-    }
+        public void set(DimensionDataStorage storage) {
+            pocketRegistry.setDirty();
+            riftRegistry.setDirty();
+            privateRegistry.setDirty();
+            riftGraph.setDirty();
 
-    private static final class MigrationMarker extends SavedData {
-        private final MigrationResult result;
-
-        private MigrationMarker(MigrationResult result) {
-            this.result = result;
-        }
-
-        @Override
-        public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-            tag.putInt("RiftDataVersion", result.riftDataVersion);
-            tag.putInt("rifts", result.riftCount);
-            tag.putInt("pocket_entrance_pointers", result.pocketEntrancePointerCount);
-            tag.putInt("private_pocket_owners", result.privatePocketOwnerCount);
-            tag.putInt("graph_edges", result.graphEdgeCount);
-            tag.putInt("dropped_rifts", result.droppedRiftCount);
-            tag.putInt("dropped_pocket_pointer_entries", result.droppedPocketPointerCount);
-            tag.putInt("dropped_links", result.droppedLinkCount);
-            tag.putInt("dropped_private_pointer_entries", result.droppedPlayerPointerCount);
-            tag.putInt("dropped_overworld_entries", result.droppedOverworldEntryCount);
-            tag.put("legacy_overworld_rifts", result.legacyOverworldRifts.copy());
-            tag.put("legacy_overworld_locations", result.legacyOverworldLocations.copy());
-            return tag;
+            storage.set(SubsystemTypes.POCKET.toFilename(), this.pocketRegistry);
+            storage.set(SubsystemTypes.RIFT.toFilename(), this.riftRegistry);
+            storage.set(SubsystemTypes.PRIVATE.toFilename(), this.privateRegistry);
+            storage.set(SubsystemTypes.GRAPH.toFilename(), this.riftGraph);
+            storage.save();
         }
     }
 }

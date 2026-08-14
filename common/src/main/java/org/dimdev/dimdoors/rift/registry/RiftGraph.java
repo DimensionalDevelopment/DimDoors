@@ -28,8 +28,8 @@ public class RiftGraph extends SubSystem<RiftGraph> {
 
     private final Graph<UUID, DefaultEdge> graph = GraphTypeBuilder
             .<UUID, DefaultEdge>directed()
-            .allowingMultipleEdges(false)
-            .allowingSelfLoops(false)
+            .allowingMultipleEdges(true)
+            .allowingSelfLoops(true)
             .edgeClass(DefaultEdge.class)
             .buildGraph();
 

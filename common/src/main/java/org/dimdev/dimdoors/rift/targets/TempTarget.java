@@ -35,8 +35,8 @@ public class TempTarget extends VirtualTarget<TempTarget> {
     @Override
     public Target receiveOther() {
         if(this.getLocation() != null && this.getLocation().getBlockEntity() instanceof Rift rift) {
-            if(original == NoneTarget.INSTANCE && rift.getBlockState().getBlock() instanceof RiftVariantProvider provider) {
-                provider.revertToBaseVariant(this.getLocation().getWorld(), rift.getBlockPos(), rift.getBlockState());
+            if(original == NoneTarget.INSTANCE && rift.getRiftBlockState().getBlock() instanceof RiftVariantProvider provider) {
+                provider.revertToBaseVariant(this.getLocation().getWorld(), rift.getRiftBlockPos(), rift.getRiftBlockState());
             } else {
                 rift.setDestination(original);
             }

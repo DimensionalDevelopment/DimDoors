@@ -47,7 +47,6 @@ public final class DimensionalPortalRenderer {
 
     public static void renderModelWithPortalShader(VoxelShape model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
 
-
         matrixStack.pushPose();
         try {
             DimensionalDoorsClient.detector.wrap(type -> RenderUtils.renderCube(model, matrixStack, vertexConsumerProvider.getBuffer(type), light, overlay));

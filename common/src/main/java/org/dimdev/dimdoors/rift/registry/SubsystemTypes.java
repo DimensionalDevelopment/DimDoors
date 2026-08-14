@@ -18,6 +18,6 @@ public class SubsystemTypes {
     }
 
     private static <T extends SubSystem<T>> SubSystem.Type<T> register(String name, Supplier<T> supplier, MapCodec<T> codec) {
-        return DimensionalDoors.getSided().register(ModRegistryKeys.SUBSYSTEM_TYPE, name, new SubSystem.Type<>(name, supplier, codec));
+        return DimensionalDoors.getSided().registerSubSystem(name, supplier, codec);
     }
 }

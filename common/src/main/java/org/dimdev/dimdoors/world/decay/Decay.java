@@ -215,6 +215,10 @@ public final class Decay {
 
     public record DecayContext(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, FluidState targetFluidState, @Nullable Entity targetEntity, DecaySource source) {
 
+        public static DecayContext create(ServerLevel world, BlockPos blockPos, BlockState blockState, DecaySource source) {
+            return create(world, blockPos, blockState, blockPos, blockState, source);
+        }
+
         public static DecayContext create(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, DecaySource source) {
             FluidState targetFluidState = world.getFluidState(targetBlockPos);
 

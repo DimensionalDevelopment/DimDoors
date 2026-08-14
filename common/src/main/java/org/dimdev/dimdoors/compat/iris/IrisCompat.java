@@ -12,6 +12,9 @@ import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.client.MyRenderLayer.WARP_PATH;
 
+/*
+ * Iris compat for dimensional portal rendering by feeding a entity solid RenderType with the warp.png's path when shaders are active and use the normal one when not.
+ */
 public class IrisCompat implements ShaderPackDetector {
     @Override
     public void wrap(Consumer<RenderType> type) {

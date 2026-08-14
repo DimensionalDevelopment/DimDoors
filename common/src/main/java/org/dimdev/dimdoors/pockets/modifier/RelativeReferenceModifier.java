@@ -4,10 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.Rift;
@@ -34,8 +31,8 @@ public record RelativeReferenceModifier(int point_a, int point_b, ConnectionType
 
     @Override
     public void apply(PocketGenerationContext parameters, RiftManager manager) {
-        Optional<Location> riftA = manager.get(point_a).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos()));
-        Optional<Location> riftB = manager.get(point_b).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos()));
+        Optional<Location> riftA = manager.get(point_a).map(rift -> Location.ofWorld((ServerLevel) rift.getRiftLevel(), rift.getRiftBlockPos()));
+        Optional<Location> riftB = manager.get(point_b).map(rift -> Location.ofWorld((ServerLevel) rift.getRiftLevel(), rift.getRiftBlockPos()));
 
         if (riftA.isPresent() && riftB.isPresent()) {
             VirtualTarget link1 = riftB.get().asTarget();

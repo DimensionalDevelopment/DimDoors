@@ -46,7 +46,7 @@ public class RiftKeyItem extends Item {
 
                     VirtualTarget<?> original = rift.getData().getDestination();
                     rift.setDestination(new TempTarget(temp.copy(), original.copy()));
-                    context.getLevel().playSound(null, rift.getBlockPos(), ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS);
+                    context.getLevel().playSound(null, rift.getRiftBlockPos(), ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS);
 
                     return InteractionResult.SUCCESS;
                 }

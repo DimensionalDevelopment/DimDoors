@@ -26,7 +26,7 @@ public interface Rift extends Target {
 
     default void setDestination(VirtualTarget<?> destination) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Setting destination {} for {}", destination, this.getBlockPos().toShortString());
+            LOGGER.debug("Setting destination {} for {}", destination, this.getRiftBlockPos().toShortString());
         }
 
         var data = getData();
@@ -36,7 +36,7 @@ public interface Rift extends Target {
         }
         data.setDestination(destination);
         if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
-            if (this.getLevel() != null) {
+            if (this.getRiftLevel() != null) {
                 destination.setLocation(location());
             }
             if (this.isRegistered()) destination.register();
@@ -103,7 +103,7 @@ public interface Rift extends Target {
     }
 
     default boolean isRegistered() {
-        return this.getLevel() != null && RiftRegistry.getInstance().isRiftAt(location());
+        return this.getRiftLevel() != null && RiftRegistry.getInstance().isRiftAt(location());
     }
 
     default void register() {
@@ -184,11 +184,11 @@ public interface Rift extends Target {
 
     default void detach() {}
 
-    BlockPos getBlockPos();
+    BlockPos getRiftBlockPos();
 
-    Level getLevel();
+    Level getRiftLevel();
 
-    BlockState getBlockState();
+    BlockState getRiftBlockState();
 
     default void tick(Level level, BlockPos pos, BlockState blockState) {
         if (level.isClientSide) return;
@@ -212,11 +212,11 @@ public interface Rift extends Target {
     default void sync() {
         setChanged();
 
-        var level = getLevel();
+        var level = getRiftLevel();
 
         try {
             if(level != null) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+                level.sendBlockUpdated(getRiftBlockPos(), getRiftBlockState(), getRiftBlockState(), 2);
             }
         } catch (UnsupportedOperationException e) {
             LOGGER.warn("Failed to sync rift block entity: {}", e.getMessage());
@@ -228,6 +228,6 @@ public interface Rift extends Target {
     }
 
     default Location location() {
-        return Location.ofWorld((ServerLevel) this.getLevel(), this.getBlockPos());
+        return Location.ofWorld((ServerLevel) this.getRiftLevel(), this.getRiftBlockPos());
     }
 }

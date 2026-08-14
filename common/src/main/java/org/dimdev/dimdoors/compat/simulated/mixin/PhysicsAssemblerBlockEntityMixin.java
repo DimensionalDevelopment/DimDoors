@@ -47,9 +47,8 @@ public class PhysicsAssemblerBlockEntityMixin {
 
         for (PlotChunkHolder chunk : subLevel.getPlot().getLoadedChunks()) {
             BoundingBox3ic localChunkBounds = chunk.getBoundingBox();
-            if (localChunkBounds == null || localChunkBounds == BoundingBox3i.EMPTY) {
-                continue;
-            }
+
+            if (localChunkBounds == null || localChunkBounds == BoundingBox3i.EMPTY) continue;
 
             for (int x = localChunkBounds.minX(); x <= localChunkBounds.maxX(); x++) {
                 for (int y = localChunkBounds.minY(); y <= localChunkBounds.maxY(); y++) {
@@ -66,16 +65,13 @@ public class PhysicsAssemblerBlockEntityMixin {
 
                         BlockPos targetPos = transform.apply(sourcePos);
                         BlockState targetState = serverLevel.getBlockState(targetPos);
-                        if (dimdoors$containsRift(targetState)) {
+
+                        if (targetState.getBlock() instanceof RiftProvider<?> riftProvider && riftProvider.stateContainsRift(targetState)) {
                             throw AssemblyException.unmovableBlock(targetPos, targetState);
                         }
                     }
                 }
             }
         }
-    }
-
-    private static boolean dimdoors$containsRift(BlockState state) {
-        return state.getBlock() instanceof RiftProvider<?> riftProvider && riftProvider.stateContainsRift(state);
     }
 }
