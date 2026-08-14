@@ -25,7 +25,7 @@ public abstract class WaterLoggableDoorBlock extends DoorBlock implements Simple
 
     protected WaterLoggableDoorBlock(Properties settings, BlockSetType blockSetType, boolean addWaterlog) {
         super(blockSetType, settings);
-        this.addWaterlog = addWaterlog;
+        this.addWaterlog = addWaterlog && !this.stateDefinition.getProperties().contains(WATERLOGGED);
         StateDefinition.Builder<Block, BlockState> builder = new StateDefinition.Builder<>(this);
         this.createBlockStateDefinition(builder);
         this.stateDefinition = builder.create(Block::defaultBlockState, BlockState::new);
@@ -48,7 +48,6 @@ public abstract class WaterLoggableDoorBlock extends DoorBlock implements Simple
 //    }
 //    return result;
 //    }
-
 
 
     @Override
@@ -78,11 +77,11 @@ public abstract class WaterLoggableDoorBlock extends DoorBlock implements Simple
     }
 
     protected BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
-        if ((Boolean)blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        BlockState result = super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        if (result.hasProperty(WATERLOGGED) && blockState.hasProperty(WATERLOGGED)) {
+            result = result.setValue(WATERLOGGED, blockState.getValue(WATERLOGGED));
         }
-
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return result;
     }
 
     protected FluidState getFluidState(BlockState blockState) {

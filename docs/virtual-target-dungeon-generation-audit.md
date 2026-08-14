@@ -1,4 +1,4 @@
-# VirtualTarget Dungeon Generation Audit
+VirtualTarget Dungeon Generation Audit
 
 This audit traces how dungeon and pocket generation is reached from `VirtualTarget`
 instances. It covers the current non-dialing variants. The dialing door path is
