@@ -8,121 +8,71 @@ import dev.ryanhcode.sable.companion.math.Pose3dc;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import dev.ryanhcode.sable.sublevel.storage.HoldingSubLevel;
 import dev.ryanhcode.sable.sublevel.storage.holding.GlobalSavedSubLevelPointer;
-import dev.ryanhcode.sable.sublevel.storage.holding.SavedSubLevelPointer;
-import dev.ryanhcode.sable.sublevel.storage.holding.SubLevelHoldingChunk;
-import dev.ryanhcode.sable.sublevel.storage.serialization.SubLevelData;
-import dev.ryanhcode.sable.sublevel.storage.serialization.SubLevelSerializer;
+import dev.ryanhcode.sable.sublevel.storage.holding.SubLevelHoldingChunkMap;
 import dev.ryanhcode.sable.sublevel.tracking_points.SubLevelTrackingPointSavedData;
 import dev.ryanhcode.sable.sublevel.tracking_points.TrackingPoint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Rotations;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.TicketType;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPosUtil;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkAccessor;
-import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkMapAccessor;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.RotationUtil;
 import org.dimdev.dimdoors.util.LevelSpaceHelper;
-import org.joml.Vector3d;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Sable implementation of {@link LevelSpaceHelper}.
  *
- * <p>This class integrates DimDoors' rift, teleportation, collision, and block-access systems with
- * Sable's movable level spaces. Sable sub-levels have their own coordinates, pose, velocity, and
- * storage lifecycle, while DimDoors normally operates in Minecraft world space.</p>
+ * <p>Sable sub-levels carry their own coordinates, pose, velocity, and storage lifecycle, while
+ * DimDoors works in world space. This class converts between the two and loads sub-levels that Sable
+ * has unloaded.</p>
  *
- * <p>The helper is responsible for:</p>
- *
- * <ol>
- *     <li>Transforming positions, rotations, velocities, and collision data between Sable level
- *     space and world space.</li>
- *     <li>Resolving rift targets inside loaded, unloaded, or partially loaded Sable plots.</li>
- *     <li>Materializing stored Sable sub-levels when DimDoors requires immediate access to a live
- *     {@link ServerSubLevel} or plot holder.</li>
- * </ol>
- *
- * <h2>Loaded and stored sub-levels</h2>
- *
- * <p>A Sable plot may remain occupied while its live {@link ServerSubLevel} is unloaded. In that
- * state, Sable retains serialized {@link SubLevelData} in holding storage. DimDoors may still need
- * to teleport into the plot, create rifts there, or resolve tracking points, so this helper can
- * locate the stored data and recover the pose required for projection.</p>
- *
- * <h2>Teleport frame flow</h2>
- *
- * <p>Teleport frame conversion is split between the source and destination:</p>
- *
- * <ul>
- *     <li>{@link #sourceTeleportFrame(ServerLevel, BlockPos, Entity, Vec3, Rotations, Vec3)}
- *     transforms a frame leaving a Sable sub-level from world space into the source level
- *     space.</li>
- *     <li>{@link #projectTeleportFrame(ServerLevel, Location, Vec3, Rotations, Vec3)} transforms
- *     an incoming frame from destination level space into the target world-space pose.</li>
- * </ul>
- *
- * <p>Destination projection prefers a live sub-level. If the target plot is occupied but unloaded,
- * the helper first asks Sable's holding system to materialize the stored sub-level. If that does
- * not produce a live sub-level immediately, the stored data is loaded directly as a fallback.
- * Runtime holding entries are then removed to prevent Sable from loading the same data again on
- * its next processing pass.</p>
- *
- * <h2>Persistent storage safety</h2>
- *
- * <p>Runtime cleanup must never remove saved pointers from
- * {@code SubLevelHoldingChunk#getSubLevelPointers()}. These pointers are persistent storage
- * metadata, and removing them can orphan stored sub-levels. Direct-load cleanup therefore removes
- * only runtime entries such as {@code allHoldingSubLevels} and {@code loadedHoldingSubLevels}.</p>
+ * <p>A plot stays occupied after its {@link ServerSubLevel} unloads, and the only way back to that
+ * sub-level is the rift's tracking point, which holds the sub-level id and last saved pointer that
+ * {@link SubLevelHoldingChunkMap#snatchAndLoad(GlobalSavedSubLevelPointer, java.util.UUID)} needs.
+ * Sable's occupancy grid says whether a plot is taken but not which sub-level took it, so a world
+ * position on its own is not enough to find one. Rifts made before this integration existed have no
+ * tracking point, and {@link SableSubLevelStorage} searches storage to give them one.</p>
  */
 public class SableLevelSpaceHelper extends LevelSpaceHelper {
-    private static final Pattern SABLE_REGION_FILE_PATTERN = Pattern.compile("r\\.(-?\\d+)\\.(-?\\d+)\\.slvlr");
-    private final Vector3d scratch = new Vector3d();
-
     /**
-     * Checks whether {@code pos} belongs to an occupied Sable plot whose live holder is unavailable.
-     *
-     * <p>The helper first attempts to materialize the containing sub-level. If the plot remains
-     * occupied without a live holder afterward, its level space is considered unavailable.</p>
+     * Checks whether {@code pos} is in an occupied Sable plot with no live holder, first attempting to
+     * load the containing sub-level.
      */
     public boolean isLevelSpaceUnavailable(ServerLevel level, BlockPos pos) {
         ensureSableSubLevelLoaded(level, pos);
+        return isLevelSpaceUnavailableNow(level, pos);
+    }
+
+    /**
+     * As {@link #isLevelSpaceUnavailable}, but without loading anything. That variant can reach disk,
+     * so callers running per tick or per block update must use this one.
+     */
+    public boolean isLevelSpaceUnavailableNow(ServerLevel level, BlockPos pos) {
         var container = SubLevelContainer.getContainer(level);
         if (container == null) {
             return false;
         }
 
         var chunkPos = new ChunkPos(pos);
-        return isOccupiedSablePlot(container, chunkPos) && container.getChunkHolder(chunkPos) == null;
+        return SableSubLevelStorage.isOccupiedPlot(container, chunkPos) && container.getChunkHolder(chunkPos) == null;
     }
 
     /**
-     * Returns the block entity at {@code pos} after giving Sable an opportunity to materialize the
-     * containing plot.
-     *
-     * <p>DimDoors may request block entities at Sable plot coordinates before the corresponding live
-     * holder exists. Loading the sub-level first ensures the vanilla lookup sees the expected block
-     * state.</p>
+     * Returns the block entity at {@code pos}, first loading the sub-level that contains it.
      */
     @Override
     public BlockEntity getBlockEntity(ServerLevel level, BlockPos pos) {
@@ -130,66 +80,95 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
         return level.getBlockEntity(pos);
     }
 
-    /**
-     * Attempts to ensure that the Sable sub-level containing {@code pos} is loaded.
-     *
-     * @param level the server level containing the position
-     * @param pos the block position to resolve
-     */
+    /** @see #ensureSableSubLevelLoaded(ServerLevel, Vec3) */
     private void ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {
         ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos));
     }
 
     /**
-     * Ensures that an occupied Sable plot containing {@code pos} has an accessible live holder or
-     * sub-level.
+     * Ensures the Sable plot containing {@code pos} has a live holder or sub-level, loading the
+     * sub-level through the tracking point of a rift registered there.
      *
-     * <p>Non-Sable levels, positions outside the plot grid, and unoccupied plots require no special
-     * handling. Occupied plots without a live holder are resolved through Sable's holding storage
-     * and, when necessary, materialized from stored sub-level data.</p>
-     *
-     * @return {@code true} if no special loading is required or a live holder or sub-level is
-     * available; {@code false} if an occupied plot cannot be materialized
+     * @return {@code true} if nothing needed loading or the plot is now available; {@code false} if an
+     * occupied plot could not be loaded
      */
     private boolean ensureSableSubLevelLoaded(ServerLevel level, Vec3 pos) {
         ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
-        if (container == null) return true;
-
-        ChunkPos chunkPos = new ChunkPos(BlockPos.containing(pos));
-        if (container.inBounds(chunkPos) && isOccupiedSablePlot(container, chunkPos)) {
-            if (container.getChunkHolder(chunkPos) != null && SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel) {
-                return true;
-            }
-
-            forceLoadStoredSubLevelAt(level, pos);
-
-            return container.getChunkHolder(chunkPos) != null || SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel;
-        } else {
+        if (container == null) {
             return true;
         }
 
+        BlockPos blockPos = BlockPos.containing(pos);
+        ChunkPos chunkPos = new ChunkPos(blockPos);
+
+        if (!SableSubLevelStorage.isOccupiedPlot(container, chunkPos)) {
+            return true;
+        }
+
+        if (container.getChunkHolder(chunkPos) != null && SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel) {
+            return true;
+        }
+
+        loadSubLevelAtRift(level, blockPos);
+
+        return container.getChunkHolder(chunkPos) != null || SableCompanion.INSTANCE.getContaining(level, pos) instanceof ServerSubLevel;
     }
 
     /**
-     * Validates that a teleport destination does not resolve to an unavailable Sable level space.
+     * Loads the Sable sub-level containing {@code pos} using the tracking point of a rift registered
+     * there.
      *
-     * <p>This is checked before falling back to an unchanged world-space teleport frame. Treating an
-     * occupied but unavailable Sable plot as ordinary world space would place the entity into
-     * invalid plot coordinates.</p>
+     * @return {@code true} when the sub-level is live afterwards
+     */
+    private boolean loadSubLevelAtRift(ServerLevel level, BlockPos pos) {
+        var registry = RiftRegistry.getInstance();
+        Location location = Location.ofWorld(level, pos);
+
+        if (!registry.isRiftAt(location) || !(registry.getRift(location) instanceof SableRiftData sableRift)) {
+            return false;
+        }
+
+        UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
+
+        return trackingPointId != null && resolveTrackingPointPose(level, trackingPointId) != null;
+    }
+
+    /**
+     * Rejects a teleport into an unavailable Sable level space, which would otherwise be treated as
+     * ordinary world space and drop the entity into raw plot-grid coordinates.
      */
     @Override
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
-        if (isLevelSpaceUnavailable(level, BlockPos.containing(pos))) {
+        BlockPos blockPos = BlockPos.containing(pos);
+        if (isLevelSpaceUnavailable(level, blockPos)) {
+            logUnavailableLevelSpace(level, blockPos, pos);
             throw new IllegalStateException("Teleport target " + pos + " in " + level.dimension().location() + " is inside Sable's plot grid, but no plot chunk holder is loaded there");
         }
     }
 
     /**
-     * Prepares the Sable level space containing {@code pos} for rift creation or modification.
-     *
-     * <p>Positions outside Sable's plot grid require no preparation. For positions inside the grid,
-     * this method ensures that an occupied sub-level is available and that its plot contains a live
-     * chunk holder for the chunk containing the rift.</p>
+     * Records why a plot-grid position was judged unavailable, separating "no sub-level is loaded here"
+     * from "a sub-level is loaded but this particular chunk has no holder", which the availability check
+     * cannot distinguish because it mixes plot granularity with chunk granularity.
+     */
+    private void logUnavailableLevelSpace(ServerLevel level, BlockPos blockPos, Vec3 pos) {
+        var container = SubLevelContainer.getContainer(level);
+        if (container == null) {
+            return;
+        }
+
+        var chunkPos = new ChunkPos(blockPos);
+        DimensionalDoors.LOGGER.warn("Sable level space unavailable at {}: chunk {}, occupiedPlot={}, plot={}, chunkHolder={}, containingSubLevel={}",
+                pos, chunkPos,
+                SableSubLevelStorage.isOccupiedPlot(container, chunkPos),
+                container.getPlot(chunkPos),
+                container.getChunkHolder(chunkPos),
+                SableCompanion.INSTANCE.getContaining(level, blockPos));
+    }
+
+    /**
+     * Prepares the Sable level space containing {@code pos} for rift creation, ensuring the sub-level
+     * is live and its plot has a chunk holder for the rift's chunk.
      */
     @Override
     public boolean prepareRiftCreation(ServerLevel level, BlockPos pos) {
@@ -203,43 +182,38 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
             return true;
         }
 
-        if (ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos))) {
-            if (container.getChunkHolder(chunkPos) == null) {
-                var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-                if (!(subLevel instanceof ServerSubLevel)) {
-                    forceLoadStoredSubLevelAt(level, Vec3.atCenterOf(pos));
-                    subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-                }
-
-                if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
-                    return false;
-                }
-
-                var plot = serverSubLevel.getPlot();
-                ChunkPos localChunkPos = plot.toLocal(chunkPos);
-                if (plot.getChunkHolder(localChunkPos) == null) {
-                    plot.newEmptyChunk(chunkPos);
-                }
-
-                return plot.getChunkHolder(localChunkPos) != null;
-            } else {
-                return true;
-            }
-
-        } else {
+        if (!ensureSableSubLevelLoaded(level, Vec3.atCenterOf(pos))) {
             return false;
         }
+
+        if (container.getChunkHolder(chunkPos) != null) {
+            return true;
+        }
+
+        var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+        if (!(subLevel instanceof ServerSubLevel)) {
+            loadSubLevelAtRift(level, pos);
+            subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+        }
+
+        if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
+            return false;
+        }
+
+        var plot = serverSubLevel.getPlot();
+        ChunkPos localChunkPos = plot.toLocal(chunkPos);
+        if (plot.getChunkHolder(localChunkPos) == null) {
+            plot.newEmptyChunk(chunkPos);
+        }
+
+        return plot.getChunkHolder(localChunkPos) != null;
     }
 
     /**
-     * Updates the Sable tracking point associated with a DimDoors rift.
-     *
-     * <p>Tracking points preserve the current spatial state of a rift inside a movable Sable
-     * sub-level, allowing its pose to be recovered after the containing sub-level is unloaded.
-     * Existing tracking points are replaced so moved or relocated rifts do not retain stale pose
-     * references.</p>
+     * Records where a rift sits inside its Sable sub-level, so the rift's pose can be recovered after
+     * that sub-level unloads. Any existing tracking point is replaced rather than updated, so a moved
+     * rift cannot retain a stale reference.
      */
-    @Override
     public void updateRiftTrackingPoint(ServerLevel level, Rift rift) {
         if (!(rift instanceof SableRiftData sableRift)) {
             return;
@@ -252,34 +226,24 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
             sableRift.dimdoors$setSableTrackingPoint(null);
         }
 
+        UUID trackingPoint = null;
         Location location = rift.getLocation();
-        if (location == null || !location.world.equals(level.dimension())) {
-            if (previousTrackingPoint != null) {
-                RiftRegistry.getInstance().setDirty();
+
+        if (location != null && location.world.equals(level.dimension())) {
+            Vec3 localPos = Vec3.upFromBottomCenterOf(location.pos, 0.0);
+
+            if (SableCompanion.INSTANCE.getContaining(level, localPos) instanceof ServerSubLevel serverSubLevel) {
+                trackingPoint = trackingData.generateTrackingPoint(localPos, serverSubLevel);
+                sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
+                logRecordedTrackingPoint(trackingData, trackingPoint, location, "an updated");
             }
-            return;
         }
 
-        Vec3 localPos = Vec3.upFromBottomCenterOf(location.pos, 0.0);
-        var subLevel = SableCompanion.INSTANCE.getContaining(level, localPos);
-        if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
-            if (previousTrackingPoint != null) {
-                RiftRegistry.getInstance().setDirty();
-            }
-            return;
+        if (previousTrackingPoint != null || trackingPoint != null) {
+            RiftRegistry.getInstance().setDirty();
         }
-
-        UUID trackingPoint = trackingData.generateTrackingPoint(localPos, serverSubLevel);
-        sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        RiftRegistry.getInstance().setDirty();
     }
 
-    /**
-     * Removes the Sable tracking point associated with a DimDoors rift.
-     *
-     * <p>This is called when the rift no longer requires Sable pose tracking.</p>
-     */
-    @Override
     public void removeRiftTrackingPoint(ServerLevel level, Rift rift) {
         if (!(rift instanceof SableRiftData sableRift)) {
             return;
@@ -296,36 +260,58 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Resolves the loaded Sable level space that should receive a projected teleport frame.
+     * Reports what a freshly recorded tracking point actually names, so that a later load failure can
+     * be traced back to whether its pointer was already wrong when the tracking point was written.
      *
-     * <p>When a target {@link Location} is known, the lookup uses the rift block rather than the
-     * projected entity position. The entity position may be fractionally offset from the rift or
-     * already affected by movement, while the rift position provides a stable probe into the target
-     * plot.</p>
-     *
-     * <p>If that probe finds nothing and differs from the original projected position, the original
-     * position is checked as a fallback.</p>
+     * <p>Sable derives the pointer, not DimDoors, so a pointer logged as null here belongs to Sable's
+     * save cycle rather than to anything DimDoors recorded.</p>
+     */
+    static void logRecordedTrackingPoint(SubLevelTrackingPointSavedData trackingData, UUID trackingPointId, Location location, String riftDescription) {
+        TrackingPoint written = trackingData.getTrackingPoint(trackingPointId);
+
+        if (written == null) {
+            DimensionalDoors.LOGGER.warn("Sable tracking point {} for {} rift at {} could not be read back after being recorded", trackingPointId, riftDescription, location);
+            return;
+        }
+
+        DimensionalDoors.LOGGER.info("Recorded Sable tracking point {} for {} rift at {}: sub-level {}, pointer {}", trackingPointId, riftDescription, location, written.subLevelID(), written.lastSavedSubLevelPointer());
+    }
+
+    /**
+     * Resolves the Sable level space that should receive a projected teleport frame, loading it if it
+     * is not already live.
      */
     private SubLevelAccess getTargetSubLevel(ServerLevel level, Location location, Vec3 pos) {
         Vec3 loadPos = getTargetSubLevelLoadPosition(level, location, pos);
 
-        var loadPosSubLevel = SableCompanion.INSTANCE.getContaining(level, loadPos);
-        if (loadPosSubLevel != null) {
-            return loadPosSubLevel;
+        SubLevelAccess subLevel = probeTargetSubLevel(level, loadPos, pos);
+        if (subLevel != null) {
+            return subLevel;
         }
 
-        if (loadPos == pos) {
-            return null;
+        ensureSableSubLevelLoaded(level, loadPos);
+        return probeTargetSubLevel(level, loadPos, pos);
+    }
+
+    /**
+     * Looks for a live sub-level at the load probe, then at the projected entity position.
+     *
+     * <p>The rift block is probed first because the entity position may be fractionally offset from
+     * the rift or already advanced by movement.</p>
+     */
+    private SubLevelAccess probeTargetSubLevel(ServerLevel level, Vec3 loadPos, Vec3 pos) {
+        var subLevel = SableCompanion.INSTANCE.getContaining(level, loadPos);
+
+        if (subLevel != null || loadPos.equals(pos)) {
+            return subLevel;
         }
 
         return SableCompanion.INSTANCE.getContaining(level, pos);
     }
 
     /**
-     * Chooses the position used to locate or load the target Sable level space.
-     *
-     * <p>If the target rift belongs to the destination level, its block position is used as the
-     * stable load probe. Otherwise the projected entity position is used.</p>
+     * Chooses the load probe: the target rift's block position when that rift belongs to this level,
+     * and otherwise the projected entity position.
      */
     private Vec3 getTargetSubLevelLoadPosition(ServerLevel level, Location location, Vec3 pos) {
         return location != null && location.world.equals(level.dimension())
@@ -334,48 +320,42 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Projects a teleport frame through an occupied Sable plot whose live level space is unavailable.
+     * Projects a teleport frame through an occupied Sable plot whose level space is unavailable, by
+     * loading it from the target rift's tracking point.
      *
-     * <p>This fallback is used when ordinary target resolution fails. It attempts to recover the
-     * target pose without requiring the corresponding {@link ServerSubLevel} to already be live.</p>
-     *
-     * <p>Pose resolution proceeds in this order:</p>
-     *
-     * <ol>
-     *     <li>Resolve the rift's saved Sable tracking point, if present.</li>
-     *     <li>Locate the stored sub-level containing an otherwise untracked rift.</li>
-     *     <li>Locate the stored sub-level containing the target load position.</li>
-     * </ol>
-     *
-     * <p>Once a pose is found, the frame is transformed through the same projection path used for
-     * loaded Sable level spaces.</p>
+     * @return the projected frame, or {@code null} if no rift or pose could be resolved, leaving the
+     * caller to fall back to world space
      */
     private TeleportFrame projectUnloadedRiftTeleportFrame(ServerLevel level, Location targetLocation, Vec3 pos, Rotations angle, Vec3 velocity) {
         Vec3 loadPos = getTargetSubLevelLoadPosition(level, targetLocation, pos);
 
-        if (!isLevelSpaceUnavailable(level, BlockPos.containing(loadPos))) {
+        // getTargetSubLevel has already attempted a load by this point, so only check the result.
+        if (!isLevelSpaceUnavailableNow(level, BlockPos.containing(loadPos))) {
+            DimensionalDoors.LOGGER.warn("Sable plot at load probe {} reports available, but no sub-level was found there; entity target is {}", loadPos, pos);
             return null;
         }
 
-        Pose3dc pose = null;
-
         Location location = findRiftLocation(level, targetLocation, pos);
-        if (location != null) {
-            Rift rift = RiftRegistry.getInstance().getRift(location);
-
-            if (rift instanceof SableRiftData sableRift) {
-                UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
-
-                pose = trackingPointId == null ? null : resolveTrackingPointPose(level, trackingPointId);
-                if (pose == null) {
-                    pose = resolveUntrackedRiftPose(level, rift, location);
-                }
-            }
+        if (location == null) {
+            DimensionalDoors.LOGGER.warn("No registered rift near {} in {}; cannot resolve its unloaded Sable sub-level", pos, level.dimension().location());
+            return null;
         }
 
-        if (pose == null) {
-            pose = resolveStoredPlotPose(level, loadPos);
+        Rift rift = RiftRegistry.getInstance().getRift(location);
+        if (!(rift instanceof SableRiftData sableRift)) {
+            DimensionalDoors.LOGGER.warn("Rift at {} is {}, which carries no Sable tracking data", location, rift == null ? "missing from the registry" : "not Sable-tracked");
+            return null;
         }
+
+        UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
+
+        // A rift with no tracking point predates Sable integration. Record one now; from here on
+        // it resolves through the ordinary path like every other rift.
+        if (trackingPointId == null) {
+            trackingPointId = SableSubLevelStorage.trackRiftFromStorage(level, rift, location);
+        }
+
+        Pose3dc pose = trackingPointId == null ? null : resolveTrackingPointPose(level, trackingPointId);
 
         if (pose == null) {
             return null;
@@ -385,11 +365,29 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Attempts to identify the DimDoors rift associated with a projected destination frame.
+     * Records a tracking point for a rift that has none, while its sub-level is live.
      *
-     * <p>The explicit target location is preferred when it belongs to the destination level and
-     * still contains a registered rift. Otherwise the projected block position and nearby vertical
-     * positions are checked to tolerate small offsets around the rift block.</p>
+     * <p>{@code addRift} does not fire for rifts restored from saved data, so those rifts are never
+     * tracked by the ordinary path. Does nothing if the rift already has a tracking point or does not
+     * lie inside a sub-level.</p>
+     */
+    private void trackRiftIfUntracked(ServerLevel level, Location location) {
+        var registry = RiftRegistry.getInstance();
+        if (location == null || !registry.isRiftAt(location)) {
+            return;
+        }
+
+        Rift rift = registry.getRift(location);
+        if (!(rift instanceof SableRiftData sableRift) || sableRift.dimdoors$getSableTrackingPoint() != null) {
+            return;
+        }
+
+        updateRiftTrackingPoint(level, rift);
+    }
+
+    /**
+     * Identifies the rift a projected destination frame belongs to, preferring the explicit target
+     * location and otherwise searching nearby vertical positions to tolerate small offsets.
      */
     private Location findRiftLocation(ServerLevel level, Location targetLocation, Vec3 pos) {
         var registry = RiftRegistry.getInstance();
@@ -398,24 +396,24 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
             return targetLocation;
         }
 
-        BlockPos blockPos = BlockPos.containing(pos);
-
-        return BlockPosUtil.nearbyVertical(blockPos, blockPos1 -> {
-            Location location = Location.ofWorld(level, blockPos1);
-            if (!registry.isRiftAt(location)) {
-                return null;
-            }
-            return location;
+        return BlockPosUtil.nearbyVertical(BlockPos.containing(pos), candidate -> {
+            Location location = Location.ofWorld(level, candidate);
+            return registry.isRiftAt(location) ? location : null;
         });
     }
 
     /**
-     * Resolves a pose from a saved Sable tracking point.
+     * Resolves a pose from a saved Sable tracking point, loading the sub-level if it is not live.
      *
-     * <p>A tracking point may refer to a live sub-level, a runtime holding entry, or persisted
-     * sub-level data. A live sub-level provides the current logical pose. Stored data is first
-     * processed through Sable's normal loading path and then used directly as a fallback if no live
-     * {@link ServerSubLevel} becomes available.</p>
+     * <p>A holding entry is loaded directly rather than through its pointer. Sable stamps an entry
+     * unloaded at runtime with the sub-level's last serialization pointer, which names where it was
+     * last written to disk rather than the holding chunk it now sits in, and {@code snatchAndLoad}
+     * resolves the chunk from that pointer and so would look in the wrong place. Sable reconciles the
+     * two in {@code saveAll}, so the mismatch lasts only until the next save. The tracking point's
+     * pointer is the fallback for a sub-level that has no holding entry at all.</p>
+     *
+     * @return the sub-level's pose, or {@code null} if the tracking point is unusable, nothing can be
+     * found to load, or the sub-level does not go live
      */
     private Pose3dc resolveTrackingPointPose(ServerLevel level, UUID trackingPointId) {
         TrackingPoint trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).getTrackingPoint(trackingPointId);
@@ -433,370 +431,43 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
             return null;
         }
 
-        SubLevelData data = null;
-        GlobalSavedSubLevelPointer pointer = null;
-
-        if (trackingPoint.subLevelID() != null) {
-            var holdingSubLevel = container.getHoldingChunkMap().getHoldingSubLevel(trackingPoint.subLevelID());
-            if (holdingSubLevel != null) {
-                data = holdingSubLevel.data();
-                pointer = holdingSubLevel.pointer();
-            }
+        UUID subLevelId = trackingPoint.subLevelID();
+        if (subLevelId == null) {
+            DimensionalDoors.LOGGER.warn("Sable tracking point {} names no sub-level, so it cannot be loaded", trackingPointId);
+            return null;
         }
 
-        if (data == null) {
-            pointer = trackingPoint.lastSavedSubLevelPointer();
-            if (pointer == null) {
-                return null;
-            }
+        SubLevelHoldingChunkMap holdingChunkMap = container.getHoldingChunkMap();
+        HoldingSubLevel holdingSubLevel = holdingChunkMap.getHoldingSubLevel(subLevelId);
 
-            data = container.getHoldingChunkMap().getStorage().attemptLoadSubLevel(pointer.chunkPos(), pointer.local());
-            if (data == null) {
-                return null;
+        GlobalSavedSubLevelPointer pointer = trackingPoint.lastSavedSubLevelPointer();
+
+        if (holdingSubLevel != null) {
+            if (!SableSubLevelStorage.snatchAndLoadFromOwningChunk(holdingChunkMap, subLevelId)) {
+                SableSubLevelStorage.loadChain(holdingChunkMap, holdingSubLevel);
             }
+        } else if (pointer != null) {
+            holdingChunkMap.snatchAndLoad(pointer, subLevelId);
+        } else {
+            DimensionalDoors.LOGGER.warn("Sable sub-level {} has no holding entry and no saved pointer, so it cannot be loaded", subLevelId);
+            return null;
         }
 
-        forceLoadTeleportSubLevel(level, container, data, pointer);
-
-        loadedSubLevel = SableCompanion.INSTANCE.getContaining(level, trackingPoint.point());
-        if (loadedSubLevel instanceof ServerSubLevel serverSubLevel) {
+        if (container.getSubLevel(subLevelId) instanceof ServerSubLevel serverSubLevel) {
+            DimensionalDoors.LOGGER.info("Sable sub-level {} is live with pose {}", subLevelId, serverSubLevel.logicalPose());
             return serverSubLevel.logicalPose();
         }
 
-        return data.pose();
-    }
-
-    /**
-     * Resolves the pose of a Sable rift that does not yet have a tracking point and initializes
-     * tracking when possible.
-     *
-     * <p>The rift position is used to locate the containing stored sub-level. If a live sub-level can
-     * be materialized, a tracking point is created so later unloaded projections can avoid repeating
-     * the storage search.</p>
-     */
-    private Pose3dc resolveUntrackedRiftPose(ServerLevel level, Rift rift, Location location) {
-        if (!(rift instanceof SableRiftData sableRift)) {
-            return null;
-        }
-
-        ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
-        if (container == null) {
-            return null;
-        }
-
-        Vec3 localRiftPos = Vec3.upFromBottomCenterOf(location.pos, 0.0);
-        StoredSubLevel storedSubLevel = findStoredSubLevelContaining(container, localRiftPos);
-        if (storedSubLevel == null) {
-            return null;
-        }
-
-        forceLoadTeleportSubLevel(level, container, storedSubLevel.data(), storedSubLevel.pointer());
-
-        var loadedSubLevel = SableCompanion.INSTANCE.getContaining(level, localRiftPos);
-        if (!(loadedSubLevel instanceof ServerSubLevel serverSubLevel)) {
-            return storedSubLevel.data().pose();
-        }
-
-        UUID trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).generateTrackingPoint(localRiftPos, serverSubLevel);
-        sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        RiftRegistry.getInstance().setDirty();
-
-        return serverSubLevel.logicalPose();
-    }
-
-    /**
-     * Resolves a pose from the stored Sable sub-level containing {@code pos}.
-     *
-     * <p>This path is used when no rift tracking information is available. It first attempts to
-     * materialize the stored sub-level. If a live sub-level becomes available, its logical pose is
-     * returned; otherwise the serialized pose is used as a fallback.</p>
-     */
-    private Pose3dc resolveStoredPlotPose(ServerLevel level, Vec3 pos) {
-        StoredSubLevel storedSubLevel = forceLoadStoredSubLevelAt(level, pos);
-        if (storedSubLevel == null) {
-            return null;
-        }
-
-        var loadedSubLevel = SableCompanion.INSTANCE.getContaining(level, pos);
-        if (loadedSubLevel instanceof ServerSubLevel serverSubLevel) {
-            return serverSubLevel.logicalPose();
-        }
-
-        return storedSubLevel.data().pose();
-    }
-
-    /**
-     * Removes a directly loaded sub-level from Sable's runtime holding queues.
-     *
-     * <p>This is used only after the helper directly calls
-     * {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}. That call creates a live
-     * {@link ServerSubLevel} immediately, but Sable's holding map may still contain the same
-     * {@link HoldingSubLevel}. Leaving it queued can cause a later {@code processChanges()} pass to
-     * load the sub-level again and fail with a duplicate plot allocation.</p>
-     *
-     * <p>The search scans every loaded holding chunk rather than only the chunk named by the saved
-     * pointer. Moved or partially serialized sub-levels may temporarily have a {@code null} pointer
-     * or one that no longer matches the in-memory holding chunk containing the queued entry.</p>
-     *
-     * <p>Only runtime entries are removed. Saved pointers in
-     * {@code SubLevelHoldingChunk#getSubLevelPointers()} are persistent storage metadata and must
-     * remain intact or the stored sub-level may become orphaned.</p>
-     */
-    private void removeRuntimeHoldingSubLevel(ServerSubLevelContainer container, UUID uuid) {
-        SubLevelHoldingChunkMapAccessor holdingMapAccessor =
-                (SubLevelHoldingChunkMapAccessor) container.getHoldingChunkMap();
-
-        holdingMapAccessor
-                .dimdoors$getAllHoldingSubLevels()
-                .remove(uuid);
-
-        for (SubLevelHoldingChunk holdingChunk : holdingMapAccessor.dimdoors$getLoadedHoldingChunks().values()) {
-            ((SubLevelHoldingChunkAccessor) holdingChunk)
-                    .dimdoors$getLoadedHoldingSubLevels()
-                    .remove(uuid);
-        }
-    }
-
-    /**
-     * Attempts to materialize the stored Sable sub-level containing {@code pos}.
-     *
-     * <p>This path is used when a position belongs to an occupied Sable plot but no live holder or
-     * {@link ServerSubLevel} is available. Runtime holding entries are searched first, followed by
-     * persisted holding-region files, for stored sub-level data assigned to the target plot.</p>
-     *
-     * <p>After a match is found, the helper first requests loading through
-     * {@link #forceLoadTeleportSubLevel(ServerLevel, ServerSubLevelContainer, SubLevelData, GlobalSavedSubLevelPointer)}.
-     * If Sable still does not expose a live sub-level immediately, the stored
-     * {@link SubLevelData} is loaded directly through
-     * {@link SubLevelSerializer#fullyLoad(ServerLevel, SubLevelData)}.</p>
-     *
-     * <p>Direct loading is followed by runtime-only holding cleanup so Sable does not process the
-     * same queued entry again on its next pass. This is particularly important for moved sub-levels,
-     * whose saved pointer may be stale or temporarily {@code null}.</p>
-     *
-     * <p>Saved holding pointers are never removed from persistent storage.</p>
-     *
-     * @return the matching stored sub-level, or {@code null} if none can be found
-     */
-    private StoredSubLevel forceLoadStoredSubLevelAt(ServerLevel level, Vec3 pos) {
-        ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
-        if (container == null) {
-            return null;
-        }
-
-        StoredSubLevel storedSubLevel = findStoredSubLevelContaining(container, pos);
-        if (storedSubLevel == null) {
-            return null;
-        }
-
-        forceLoadTeleportSubLevel(level, container, storedSubLevel.data(), storedSubLevel.pointer());
-
-        var containingAfter = SableCompanion.INSTANCE.getContaining(level, pos);
-        var holderAfter = container.getChunkHolder(new ChunkPos(BlockPos.containing(pos)));
-
-        if (!(containingAfter instanceof ServerSubLevel) && holderAfter == null) {
-            ServerSubLevel loadedSubLevel = SubLevelSerializer.fullyLoad(level, storedSubLevel.data());
-
-            if (loadedSubLevel != null) {
-                if (storedSubLevel.pointer() != null) {
-                    loadedSubLevel.setLastSerializationPointer(storedSubLevel.pointer());
-                }
-
-                removeRuntimeHoldingSubLevel(container, storedSubLevel.data().uuid());
-            }
-        }
-
-        return storedSubLevel;
-    }
-
-    /**
-     * Finds stored Sable sub-level data assigned to the occupied plot containing {@code pos}.
-     *
-     * <p>The target chunk is converted to Sable plot coordinates. Runtime holding entries are
-     * searched first, followed by holding-region files on disk. The disk fallback allows DimDoors to
-     * recover stored data even when Sable has not loaded the relevant holding chunk into memory.</p>
-     */
-    private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, Vec3 pos) {
-        ChunkPos targetChunk = new ChunkPos(BlockPos.containing(pos));
-        if (!isOccupiedSablePlot(container, targetChunk)) {
-            return null;
-        }
-
-        int targetPlotX = (targetChunk.x >> container.getLogPlotSize()) - container.getOrigin().x;
-        int targetPlotZ = (targetChunk.z >> container.getLogPlotSize()) - container.getOrigin().y;
-
-        StoredSubLevel loadedHoldingSubLevel = findLoadedHoldingSubLevelContaining(container, targetPlotX, targetPlotZ);
-        if (loadedHoldingSubLevel != null) {
-            return loadedHoldingSubLevel;
-        }
-
-        Path folder = container.getHoldingChunkMap().getStorage().getFolder();
-        if (!Files.isDirectory(folder)) {
-            return null;
-        }
-
-        try (var paths = Files.newDirectoryStream(folder, "*.slvlr")) {
-            for (Path path : paths) {
-                Matcher matcher = SABLE_REGION_FILE_PATTERN.matcher(path.getFileName().toString());
-                if (!matcher.matches()) {
-                    continue;
-                }
-
-                int regionX = Integer.parseInt(matcher.group(1));
-                int regionZ = Integer.parseInt(matcher.group(2));
-                StoredSubLevel storedSubLevel = findStoredSubLevelContaining(container, targetPlotX, targetPlotZ, regionX, regionZ);
-                if (storedSubLevel != null) {
-                    return storedSubLevel;
-                }
-            }
-        } catch (IOException e) {
-            return null;
-        }
-
+        DimensionalDoors.LOGGER.warn("Sable sub-level {} did not become live after being loaded from {}", subLevelId,
+                holdingSubLevel != null ? "its holding entry" : "pointer " + pointer + " on tracking point " + trackingPointId);
         return null;
     }
-
-    /**
-     * Searches Sable's runtime holding map for sub-level data assigned to the target plot.
-     *
-     * <p>This is preferred over disk scanning because runtime holding state may contain newer data
-     * for a recently moved or unloaded sub-level that has not yet been flushed to region storage.</p>
-     */
-    private StoredSubLevel findLoadedHoldingSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ) {
-        var holdingSubLevels = ((SubLevelHoldingChunkMapAccessor) container.getHoldingChunkMap()).dimdoors$getAllHoldingSubLevels();
-        for (HoldingSubLevel holdingSubLevel : holdingSubLevels.values()) {
-            SubLevelData data = holdingSubLevel.data();
-            if (isStoredInPlot(data, targetPlotX, targetPlotZ)) {
-                return new StoredSubLevel(data, holdingSubLevel.pointer());
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Searches one Sable holding-region file for sub-level data assigned to the target plot.
-     *
-     * <p>Each region contains up to 32 by 32 holding chunks. Their saved sub-level pointers are
-     * resolved until a stored sub-level whose serialized plot tag matches
-     * {@code targetPlotX,targetPlotZ} is found.</p>
-     */
-    private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ, int regionX, int regionZ) {
-        for (int localX = 0; localX < 32; localX++) {
-            for (int localZ = 0; localZ < 32; localZ++) {
-                ChunkPos holdingChunkPos = new ChunkPos((regionX << 5) + localX, (regionZ << 5) + localZ);
-                var holdingChunk = container.getHoldingChunkMap().getStorage().attemptLoadHoldingChunk(holdingChunkPos);
-                if (holdingChunk == null) {
-                    continue;
-                }
-
-                for (SavedSubLevelPointer pointer : holdingChunk.getSubLevelPointers()) {
-                    SubLevelData data = container.getHoldingChunkMap().getStorage().attemptLoadSubLevel(holdingChunkPos, pointer);
-                    if (data == null) {
-                        continue;
-                    }
-
-                    if (isStoredInPlot(data, targetPlotX, targetPlotZ)) {
-                        return new StoredSubLevel(data, new GlobalSavedSubLevelPointer(holdingChunkPos, pointer.storageIndex(), pointer.subLevelIndex()));
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Checks whether serialized sub-level data is assigned to the requested Sable plot.
-     *
-     * <p>The plot coordinate is read directly from Sable's serialized {@code plot} tag rather than
-     * inferred from bounds, because moved or rotated sub-levels may span or shift across multiple
-     * chunks.</p>
-     */
-    private boolean isStoredInPlot(SubLevelData data, int targetPlotX, int targetPlotZ) {
-        if (!data.fullTag().contains("plot", Tag.TAG_COMPOUND)) {
-            return false;
-        }
-
-        var plotTag = data.fullTag().getCompound("plot");
-        return plotTag.getInt("plot_x") == targetPlotX && plotTag.getInt("plot_z") == targetPlotZ;
-    }
-
-    /**
-     * Checks whether a chunk belongs to an occupied Sable plot.
-     *
-     * <p>Sable stores occupancy in plot coordinates rather than vanilla chunk coordinates. The
-     * supplied chunk position is converted into the container's plot grid using its origin and plot
-     * size before the occupancy bit is queried.</p>
-     */
-    private boolean isOccupiedSablePlot(SubLevelContainer container, ChunkPos chunkPos) {
-        if (!container.inBounds(chunkPos)) {
-            return false;
-        }
-
-        int plotX = (chunkPos.x >> container.getLogPlotSize()) - container.getOrigin().x;
-        int plotZ = (chunkPos.z >> container.getLogPlotSize()) - container.getOrigin().y;
-        return container.getOccupancy().get(container.getIndex(plotX, plotZ));
-    }
-
-    /**
-     * Requests the chunks needed by a stored Sable sub-level and processes pending holding loads.
-     *
-     * <p>The method queues the holding chunk identified by the saved pointer, adds post-teleport
-     * tickets around the serialized bounds, synchronously requests those chunks, and then runs one
-     * holding-map processing pass. This gives Sable's normal loader the opportunity to materialize
-     * the sub-level when its readiness checks pass.</p>
-     *
-     * <p>A live {@link ServerSubLevel} is not guaranteed immediately because Sable's loader also
-     * depends on holding state and chunk readiness. Callers requiring an immediate live sub-level
-     * must verify the result with {@link SableCompanion#getContaining(Level, Position)} and use the
-     * direct-load fallback when necessary.</p>
-     *
-     * <p>A {@code null} pointer indicates data discovered only in runtime holding state. In that case
-     * there is no saved holding chunk to mark as loaded, but the serialized bounds can still be
-     * ticketed before direct loading is considered.</p>
-     */
-    private void forceLoadTeleportSubLevel(ServerLevel level, ServerSubLevelContainer container, SubLevelData data, GlobalSavedSubLevelPointer pointer) {
-        var bounds = data.bounds();
-
-        int minChunkX = Mth.floor(bounds.minX() - 1.0) >> 4;
-        int minChunkZ = Mth.floor(bounds.minZ() - 1.0) >> 4;
-        int maxChunkX = Mth.floor(bounds.maxX() + 1.0) >> 4;
-        int maxChunkZ = Mth.floor(bounds.maxZ() + 1.0) >> 4;
-
-        if (pointer != null) {
-            container.getHoldingChunkMap().updateChunkStatus(pointer.chunkPos(), true);
-        }
-
-        for (int x = minChunkX; x <= maxChunkX; x++) {
-            for (int z = minChunkZ; z <= maxChunkZ; z++) {
-                ChunkPos chunkPos = new ChunkPos(x, z);
-                level.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, 0);
-                level.getChunk(x, z);
-            }
-        }
-
-        container.getHoldingChunkMap().processChanges();
-    }
-
-    /**
-     * Stored Sable sub-level data together with the saved pointer that located it, when one exists.
-     *
-     * <p>The pointer may be {@code null} when the data came from runtime holding state, so callers
-     * must not assume every stored sub-level has a stable saved pointer.</p>
-     */
-    private record StoredSubLevel(SubLevelData data, GlobalSavedSubLevelPointer pointer) { }
 
     /**
      * Converts an outgoing teleport frame from world space into the source Sable level space.
      *
-     * <p>When an entity leaves a Sable sub-level, DimDoors needs the frame relative to that
-     * sub-level rather than its transformed world pose. Position, velocity, and rotation are
-     * therefore inverse-transformed through the source pose.</p>
-     *
-     * <p>Sable reports sub-level velocity in blocks per second while entity delta movement is in
-     * blocks per tick. The inherited sub-level velocity is divided by 20 before it is removed from
-     * the entity's world-space velocity.</p>
+     * <p>Sable reports sub-level velocity in blocks per second and entity delta movement is in blocks
+     * per tick, so the inherited velocity is divided by 20 before being removed.</p>
      */
     @Override
     public TeleportFrame sourceTeleportFrame(ServerLevel level, BlockPos sourcePos, Entity entity, Vec3 pos, Rotations angle, Vec3 velocity) {
@@ -821,22 +492,15 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Projects an incoming teleport frame into the target world space.
+     * Projects an incoming teleport frame into the target world space, returning it unchanged only
+     * when no Sable-specific projection applies.
      *
-     * <p>The method first attempts projection through a live target sub-level. If none is available,
-     * it tries to materialize the target plot using the selected load position. If that still fails,
-     * unloaded-rift projection attempts to recover a stored pose. The frame is returned unchanged
-     * only when no Sable-specific projection applies.</p>
+     * <p>Reaching a live sub-level is also the only opportunity to repair a rift missing its tracking
+     * point; see {@link #trackRiftIfUntracked}.</p>
      */
     @Override
     public TeleportFrame projectTeleportFrame(ServerLevel level, Location location, Vec3 pos, Rotations angle, Vec3 velocity) {
         var subLevel = getTargetSubLevel(level, location, pos);
-
-        if (subLevel == null) {
-            Vec3 loadPos = getTargetSubLevelLoadPosition(level, location, pos);
-            ensureSableSubLevelLoaded(level, loadPos);
-            subLevel = getTargetSubLevel(level, location, pos);
-        }
 
         if (subLevel == null) {
             TeleportFrame unloadedFrame = projectUnloadedRiftTeleportFrame(level, location, pos, angle, velocity);
@@ -846,6 +510,10 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
 
             validateTeleportDestination(level, pos);
             return new TeleportFrame(pos, angle, velocity);
+        }
+
+        if (subLevel instanceof ServerSubLevel) {
+            trackRiftIfUntracked(level, location);
         }
 
         var pose = subLevel.logicalPose();
@@ -876,14 +544,10 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Transforms an Euler rotation through a Sable pose without directly composing Euler angles.
+     * Transforms an Euler rotation through a Sable pose by way of forward and up basis vectors,
+     * which avoids the discontinuities of composing yaw, pitch, and roll directly.
      *
-     * <p>The input rotation is converted into forward and up basis vectors, those vectors are
-     * transformed through the pose, and an Euler rotation is reconstructed from the resulting basis.
-     * This avoids many discontinuities associated with direct yaw, pitch, and roll composition.</p>
-     *
-     * <p>If the transformed forward vector or projected up vector degenerates, the method falls back
-     * to the safest available orientation instead of producing invalid rotations.</p>
+     * <p>Degenerate forward or up vectors fall back to the safest available orientation.</p>
      */
     private Rotations transformAngle(Pose3dc pose, Rotations angle, boolean inverse) {
         TransformationMatrix3d rotator = TransformationMatrix3d.builder().rotate(angle).build();
@@ -907,12 +571,8 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
     }
 
     /**
-     * Converts collision and movement history into the tracked Sable level space.
-     *
-     * <p>When an entity is tracked by a Sable sub-level, its previous and current positions and its
-     * bounding box must be interpreted in that sub-level's coordinates. The bounding box is rebuilt
-     * by inverse-transforming all eight corners and taking their axis-aligned envelope in Sable level
-     * space.</p>
+     * Converts an entity's collision box and movement history into the coordinates of the Sable
+     * sub-level tracking it.
      */
     @Override
     public AfterBlockData getAfterBlockData(Entity entity, AABB box, Vec3 previousPos, Vec3 currentPos) {
@@ -926,11 +586,38 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
         previousPos = pose.transformPositionInverse(previousPos);
         currentPos = pose.transformPositionInverse(currentPos);
 
-        var boxMin = pose.transformPositionInverse(box.getMinPosition());
-        var boxMax = pose.transformPositionInverse(box.getMinPosition());
-
-        box = new AABB(boxMin, boxMax);
+        box = inverseTransformBox(pose, box);
 
         return new AfterBlockData(box, previousPos, currentPos);
+    }
+
+    /**
+     * Inverse-transforms an axis-aligned box through a Sable pose. A rotated pose does not map one
+     * axis-aligned box onto another, so all eight corners are transformed and their envelope taken.
+     */
+    private AABB inverseTransformBox(Pose3dc pose, AABB box) {
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (int corner = 0; corner < 8; corner++) {
+            Vec3 transformed = pose.transformPositionInverse(new Vec3(
+                    (corner & 1) == 0 ? box.minX : box.maxX,
+                    (corner & 2) == 0 ? box.minY : box.maxY,
+                    (corner & 4) == 0 ? box.minZ : box.maxZ
+            ));
+
+            minX = Math.min(minX, transformed.x);
+            minY = Math.min(minY, transformed.y);
+            minZ = Math.min(minZ, transformed.z);
+            maxX = Math.max(maxX, transformed.x);
+            maxY = Math.max(maxY, transformed.y);
+            maxZ = Math.max(maxZ, transformed.z);
+        }
+
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }
