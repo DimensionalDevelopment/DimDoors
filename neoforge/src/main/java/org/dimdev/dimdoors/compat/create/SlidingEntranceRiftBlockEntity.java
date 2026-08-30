@@ -56,8 +56,8 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity<Slid
             return;
         }
 
-        if (!open && !wasSettled && isAnimationSettled(target) && !isVisible(getBlockState())) {
-            showBlockModel();
+        if (!open && isAnimationSettled(target) && !isVisible(getBlockState())) {
+            showBlockModel(!wasSettled);
         }
     }
 
@@ -74,7 +74,7 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity<Slid
                 .orElse(true);
     }
 
-    private void showBlockModel() {
+    private void showBlockModel(boolean playSound) {
         if(level != null) {
 
             BlockState state = getBlockState();
@@ -83,7 +83,9 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity<Slid
             }
 
             level.setBlock(worldPosition, state.setValue(SlidingDoorBlock.VISIBLE, true), Block.UPDATE_ALL);
-            level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, .5f, 1);
+            if (playSound) {
+                level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, .5f, 1);
+            }
         }
     }
 
