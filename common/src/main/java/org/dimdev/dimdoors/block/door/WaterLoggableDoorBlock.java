@@ -77,6 +77,10 @@ public abstract class WaterLoggableDoorBlock extends DoorBlock implements Simple
     }
 
     protected BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+        if (blockState.getValue(WATERLOGGED)) {
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        }
+
         BlockState result = super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
         if (result.hasProperty(WATERLOGGED) && blockState.hasProperty(WATERLOGGED)) {
             result = result.setValue(WATERLOGGED, blockState.getValue(WATERLOGGED));

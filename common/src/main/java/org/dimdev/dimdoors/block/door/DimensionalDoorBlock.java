@@ -128,7 +128,14 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity<?>>
 
         DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
         if (direction.getAxis() == Direction.Axis.Y && doubleBlockHalf == DoubleBlockHalf.LOWER == (direction == Direction.UP)) {
-            return neighborState.getBlock() instanceof DoorBlock && neighborState.getValue(HALF) != doubleBlockHalf ? neighborState.setValue(HALF, doubleBlockHalf) : Blocks.AIR.defaultBlockState();
+            if (neighborState.getBlock() instanceof DoorBlock && neighborState.getValue(HALF) != doubleBlockHalf) {
+                BlockState copied = neighborState.setValue(HALF, doubleBlockHalf);
+                if (copied.hasProperty(WATERLOGGED) && state.hasProperty(WATERLOGGED)) {
+                    copied = copied.setValue(WATERLOGGED, state.getValue(WATERLOGGED));
+                }
+                return copied;
+            }
+            return Blocks.AIR.defaultBlockState();
         } else {
             return doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos) ? ModBlocks.DETACHED_RIFT.defaultBlockState() : state;
         }
