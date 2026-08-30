@@ -30,12 +30,11 @@ public final class PocketChunkClaims {
         return false;
     }
 
-    public static int claimChunks(Pocket<?, ?> pocket) {
+    public static void claimChunks(Pocket<?, ?> pocket) {
         ServerLevel level = DimensionalDoors.getWorld(pocket.getWorld());
-        if (level == null) return 0;
+        if (level == null) return;
 
         ChunkBounds bounds = ChunkBounds.of(pocket);
-        int claimed = 0;
 
         for (int cx = bounds.minX(); cx <= bounds.maxX(); cx++) {
             for (int cz = bounds.minZ(); cz <= bounds.maxZ(); cz++) {
@@ -43,15 +42,13 @@ public final class PocketChunkClaims {
                 if (!isClaimed(chunk)) {
                     POCKET_GENERATED.set(chunk, true);
                     chunk.setUnsaved(true);
-                    claimed++;
                 }
             }
         }
 
-        return claimed;
     }
 
-    private static boolean isClaimed(ChunkAccess chunk) {
-        return Boolean.TRUE.equals(POCKET_GENERATED.get(chunk));
+    public static boolean isClaimed(ChunkAccess chunk) {
+        return POCKET_GENERATED.getOrDefault(chunk, false);
     }
 }

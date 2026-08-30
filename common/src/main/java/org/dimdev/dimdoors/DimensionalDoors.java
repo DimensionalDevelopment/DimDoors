@@ -72,14 +72,11 @@ import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
-import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimcore.api.ModCommon;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-
-import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
@@ -242,7 +239,6 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
         sided.onServerStarted(server -> {
             LegacyDimensionalRegistryMigrator.migrateIfNeeded(server);
             SubSystem.initialize(server);
-            PocketChunkLoadingManager.reconcileAll(server);
         });
 
         sided.onAttackBlock(new AttackBlockCallbackListener());

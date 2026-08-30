@@ -396,20 +396,6 @@ Example:
 }
 ```
 
-#### `dimdoors:force_loaded`
-
-Adds force-loaded pocket behavior.
-
-Fields: none.
-
-Example:
-
-```json
-{
-  "type": "dimdoors:force_loaded"
-}
-```
-
 #### `dimdoors:prevent_block_modification`
 
 Prevents non-creative block placement and modification inside the pocket.

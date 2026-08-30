@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -41,8 +40,6 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
-import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +92,6 @@ public class PocketCommand {
         dispatcher.register(
                 literal("pocket")
                         .requires(source -> source.hasPermission(2))
-                        .then(chunkLoadingCommand())
                         .then(placeOption("virtual_pocket", ModRegistryKeys.VIRTUAL_POCKET))
                         .then(placeOption("pocket_group", ModRegistryKeys.POCKET_GROUPS))
                         .then(placeOption("pocket_generator", ModRegistryKeys.POCKET_GENERATOR)
@@ -115,61 +111,6 @@ public class PocketCommand {
                                                         })
                                         )
                         ));
-    }
-
-    private static ArgumentBuilder<CommandSourceStack, ?> chunkLoadingCommand() {
-        return literal("chunk_loading")
-                .then(literal("status")
-                        .executes(context -> reportChunkLoading(context.getSource(), null))
-                        .then(argument("id", IntegerArgumentType.integer())
-                                .executes(context -> reportChunkLoading(context.getSource(), IntegerArgumentType.getInteger(context, "id")))))
-                .then(literal("enable")
-                        .executes(context -> setChunkLoading(context.getSource(), null, true))
-                        .then(argument("id", IntegerArgumentType.integer())
-                                .executes(context -> setChunkLoading(context.getSource(), IntegerArgumentType.getInteger(context, "id"), true))))
-                .then(literal("disable")
-                        .executes(context -> setChunkLoading(context.getSource(), null, false))
-                        .then(argument("id", IntegerArgumentType.integer())
-                                .executes(context -> setChunkLoading(context.getSource(), IntegerArgumentType.getInteger(context, "id"), false))));
-    }
-
-    private static int reportChunkLoading(CommandSourceStack source, @Nullable Integer pocketId) {
-        Pocket<?, ?> pocket = resolvePocketForChunkLoading(source, pocketId);
-        if (pocket == null) return 0;
-
-        boolean enabled = PocketChunkLoadingManager.isForceLoaded(pocket);
-        int chunks = PocketChunkLoadingManager.chunkCount(pocket);
-        source.sendSuccess(() -> Component.literal("Pocket " + pocket.getId() + " chunk loading is " + (enabled ? "enabled" : "disabled") + " for " + chunks + " chunks."), false);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private static int setChunkLoading(CommandSourceStack source, @Nullable Integer pocketId, boolean enabled) {
-        Pocket<?, ?> pocket = resolvePocketForChunkLoading(source, pocketId);
-        if (pocket == null) return 0;
-
-        int chunks = PocketChunkLoadingManager.setForceLoaded(pocket, enabled);
-        source.sendSuccess(() -> Component.literal((enabled ? "Enabled" : "Disabled") + " chunk loading for pocket " + pocket.getId() + " (" + chunks + " chunks)."), true);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private static @Nullable Pocket<?, ?> resolvePocketForChunkLoading(CommandSourceStack source, @Nullable Integer pocketId) {
-        ServerLevel level = source.getLevel();
-        if (!ModDimensions.isPocketDimension(level)) {
-            source.sendFailure(Component.literal("Chunk loading can only target pockets while the command source is in a pocket dimension."));
-            return null;
-        }
-
-        PocketDirectory directory = PocketRegistry.getInstance().getPocketDirectory(level.dimension());
-        Pocket<?, ?> pocket = pocketId == null
-                ? directory.getPocketAt(BlockPos.containing(source.getPosition()))
-                : directory.getPocket(pocketId);
-
-        if (pocket == null) {
-            source.sendFailure(Component.literal(pocketId == null ? "The command source is not inside a pocket." : "Unknown pocket id " + pocketId + " in " + level.dimension().location() + "."));
-            return null;
-        }
-
-        return pocket;
     }
 
     private static <T extends PocketCreator> int placePocket(CommandSourceStack source, ResourceLocation id, ResourceKey<Registry<T>> idFunction, @Nullable Entity targetEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {

@@ -118,7 +118,6 @@ public class PocketDirectory {
         }
 
         preloadPocketChunks(pocket);
-        PocketChunkLoadingManager.applyIfForceLoaded(pocket);
 
         return pocket;
     }

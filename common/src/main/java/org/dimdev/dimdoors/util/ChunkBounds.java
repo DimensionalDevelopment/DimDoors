@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.util;
 
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public record ChunkBounds(int minX, int maxX, int minZ, int maxZ) {

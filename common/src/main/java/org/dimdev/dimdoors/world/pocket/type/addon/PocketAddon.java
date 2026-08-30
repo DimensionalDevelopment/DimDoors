@@ -68,7 +68,6 @@ public interface PocketAddon {
 
         public static final PocketAddonType<DyeableAddon, DyeableAddon.DyeableBuilderAddon> DYEABLE_ADDON = register("dyeable", DyeableAddon.CODEC, DyeableAddon.DyeableBuilderAddon.CODEC);
         public static PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon> PREVENT_BLOCK_MODIFICATION_ADDON = register("prevent_block_modification", PreventBlockModificationAddon.CODEC, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon.CODEC, PreventBlockModificationAddon.STREAM_CODEC);
-        public static final PocketAddonType<ForceLoadedPocketAddon, ForceLoadedPocketAddon.BuilderAddon> FORCE_LOADED_ADDON = register("force_loaded", ForceLoadedPocketAddon.CODEC, ForceLoadedPocketAddon.BuilderAddon.CODEC);
         //    PocketAddonType<BlockBreakContainer> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
         public static final PocketAddonType<EnvironmentAddon, EnvironmentAddon.EnvironmentBuilderAddon> ENVIRONMENT_ADDON = register("environment", EnvironmentAddon.CODEC, EnvironmentAddon.EnvironmentBuilderAddon.CODEC, EnvironmentAddon.STREAM_CODEC);
         public static final PocketAddonType<MusicAddon, MusicAddon.MusicAddonBuilder> MUSIC_ADDON = register("music", MusicAddon.CODEC, MusicAddon.MusicAddonBuilder.CODEC, MusicAddon.STREAM_CODEC);
