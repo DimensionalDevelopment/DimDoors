@@ -22,17 +22,58 @@ import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.dimdoors.client.RenderUtils;
 
+import java.util.function.Consumer;
+
 public final class DimensionalPortalRenderer {
-    private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;
-    private static final RenderStateShard.LayeringStateShard PORTAL_LAYERING;
-    public static final ResourceLocation WARP_PATH;
-    public static final RenderType RENDER_LAYER;
+    private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
 
+    private static final RenderStateShard.LayeringStateShard PORTAL_LAYERING = new RenderStateShard.LayeringStateShard(
+            "dimensional_portal_offset",
+            () -> {
+                RenderSystem.enablePolygonOffset();
+                RenderSystem.polygonOffset(1.0F, 1.0F);
+            },
+            () -> {
+                RenderSystem.polygonOffset(0.0F, 0.0F);
+                RenderSystem.disablePolygonOffset();
+            }
+    );
+    public static final ResourceLocation WARP_PATH = DimensionalDoors.id("textures/other/warp.png");;
+    public static final RenderType VANILLA_DIMENSIONAL_PORTAL_RENDER_LAYER = createRenderType(
+            "vanilla_dimensional_portal",
+            DefaultVertexFormat.POSITION,
+            256,
+            false,
+            builder -> builder
+                    .setShaderState(DIMENSIONAL_PORTAL_SHADER)
+                    .setLayeringState(PORTAL_LAYERING)
+                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                            .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
+                            .add(WARP_PATH, false, false)
+                            .build()
+                    )
+                    .createCompositeState(false)
+    );
 
-    private static final VoxelShape SOUTH_AABB;
-    private static final VoxelShape NORTH_AABB;
-    private static final VoxelShape WEST_AABB;
-    private static final VoxelShape EAST_AABB;
+    public static final RenderType IRIS_DIMENSIONAL_PORTAL_RENDER_LAYER = createRenderType(
+                "iris_dimensional_portal",
+                DefaultVertexFormat.NEW_ENTITY,
+            1536,
+                        true,
+            builder -> builder
+                    .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_SOLID_SHADER)
+                    .setLayeringState(PORTAL_LAYERING)
+                    .setTextureState(new RenderStateShard.TextureStateShard(WARP_PATH, false, false))
+                    .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+
+        );;
+
+    private static final VoxelShape SOUTH_AABB = Block.box(0.0F, 0.0F, 0.0F, 16.0F, 32.0F, 3.0F);
+    private static final VoxelShape NORTH_AABB = Block.box(0.0F, 0.0F, 13.0F, 16.0F, 32.0F, 16.0F);
+    private static final VoxelShape WEST_AABB = Block.box(13.0F, 0.0F, 0.0F, 16.0F, 32.0F, 16.0F);
+    private static final VoxelShape EAST_AABB = Block.box(0.0F, 0.0F, 0.0F, 3.0F, 32.0F, 16.0F);
 
     public static void renderDimensionalPortal(BlockState state, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
         var model = switch (state.getBlock()) {
@@ -65,45 +106,17 @@ public final class DimensionalPortalRenderer {
         };
     }
 
-    static {
-        WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
-        PORTAL_LAYERING = new RenderStateShard.LayeringStateShard(
-                "dimensional_portal_offset",
-                () -> {
-                    RenderSystem.enablePolygonOffset();
-                    RenderSystem.polygonOffset(1.0F, 1.0F);
-                },
-                () -> {
-                    RenderSystem.polygonOffset(0.0F, 0.0F);
-                    RenderSystem.disablePolygonOffset();
-                }
-        );
 
-        DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
-        RENDER_LAYER = RenderType.create(
-                "dimensional_portal",
-                DefaultVertexFormat.POSITION,
-                VertexFormat.Mode.QUADS,
-                256,
-                false,
-                false,
+    private static RenderType createRenderType(
+            String name,
+            VertexFormat format,
+            int bufferSize,
+            boolean affectsCrumbling,
+            Consumer<RenderType.CompositeState.CompositeStateBuilder> builderConsumer
+    ) {
+        var state = RenderType.CompositeState.builder();
+        builderConsumer.accept(state);
 
-                RenderType.CompositeState.builder()
-                        .setShaderState(DIMENSIONAL_PORTAL_SHADER)
-                        .setLayeringState(PORTAL_LAYERING)
-                        .setTextureState(
-                                RenderStateShard.MultiTextureStateShard.builder()
-                                        .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
-                                        .add(WARP_PATH, false, false)
-                                        .build()
-                        )
-                        .createCompositeState(false)
-        );
-
-        SOUTH_AABB = Block.box(0.0F, 0.0F, 0.0F, 16.0F, 32.0F, 3.0F);
-        NORTH_AABB = Block.box(0.0F, 0.0F, 13.0F, 16.0F, 32.0F, 16.0F);
-        WEST_AABB = Block.box(13.0F, 0.0F, 0.0F, 16.0F, 32.0F, 16.0F);
-        EAST_AABB = Block.box(0.0F, 0.0F, 0.0F, 3.0F, 32.0F, 16.0F);
+        return RenderType.create(name, format, VertexFormat.Mode.QUADS, bufferSize, affectsCrumbling, false, state.createCompositeState(false));
     }
-
 }

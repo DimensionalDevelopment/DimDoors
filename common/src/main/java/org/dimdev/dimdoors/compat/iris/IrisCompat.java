@@ -26,13 +26,13 @@ public class IrisCompat implements ShaderPackDetector {
 
             try {
                 state.setCurrentBlockEntity(id);
-                type.accept(RenderType.entitySolid(WARP_PATH));
+                type.accept(DimensionalPortalRenderer.IRIS_DIMENSIONAL_PORTAL_RENDER_LAYER);
             } finally {
                 state.setCurrentBlockEntity(previous);
             }
 
         } else {
-            type.accept(DimensionalPortalRenderer.RENDER_LAYER);
+            type.accept(DimensionalPortalRenderer.VANILLA_DIMENSIONAL_PORTAL_RENDER_LAYER);
         }
     }
 }
