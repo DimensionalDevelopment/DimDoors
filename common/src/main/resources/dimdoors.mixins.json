@@ -52,7 +52,8 @@
     "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PlaceRecipeMixin",
-    "client.PostProcessShaderMixin"
+    "client.PostProcessShaderMixin",
+    "client.UniformMixin"
   ],
   "injectors": {
     "defaultRequire": 1
