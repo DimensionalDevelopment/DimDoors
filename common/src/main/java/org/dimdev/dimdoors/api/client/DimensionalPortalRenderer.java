@@ -47,11 +47,7 @@ public final class DimensionalPortalRenderer {
             builder -> builder
                     .setShaderState(DIMENSIONAL_PORTAL_SHADER)
                     .setLayeringState(PORTAL_LAYERING)
-                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
-                            .add(WARP_PATH, false, false)
-                            .build()
-                    )
+                    .setTextureState(new RenderStateShard.TextureStateShard(WARP_PATH, false, false))
                     .createCompositeState(false)
     );
 
@@ -68,7 +64,7 @@ public final class DimensionalPortalRenderer {
                     .setLightmapState(RenderStateShard.LIGHTMAP)
                     .setOverlayState(RenderStateShard.OVERLAY)
 
-        );;
+        );
 
     private static final VoxelShape SOUTH_AABB = Block.box(0.0F, 0.0F, 0.0F, 16.0F, 32.0F, 3.0F);
     private static final VoxelShape NORTH_AABB = Block.box(0.0F, 0.0F, 13.0F, 16.0F, 32.0F, 16.0F);

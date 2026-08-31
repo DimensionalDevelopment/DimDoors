@@ -5,12 +5,13 @@
 #moj_import <matrix.glsl>
 
 uniform sampler2D Sampler0;
-uniform sampler2D Sampler1;
 
 uniform float GameTime;
 uniform int EndPortalLayers;
 
 in vec4 texProj0;
+
+const vec3 BASE_COLOR = vec3(0.4627, 0.3569, 0.6196);
 
 const vec3[] COLORS = vec3[](
     vec3(0.022087, 0.098399, 0.110818),
@@ -56,9 +57,9 @@ mat4 end_portal_layer(float layer) {
 out vec4 fragColor;
 
 void main() {
-    vec3 color = textureProj(Sampler0, texProj0).rgb * COLORS[0];
+    vec3 color = vec3(0, 0, 0);
     for (int i = 0; i < EndPortalLayers; i++) {
-        color += textureProj(Sampler1, texProj0 * end_portal_layer(float(i + 1))).rgb * COLORS[i];
+        color += textureProj(Sampler0, texProj0 * end_portal_layer(float(i + 1))).rgb * COLORS[i];
     }
     fragColor = vec4(color, 1.0);
 }
