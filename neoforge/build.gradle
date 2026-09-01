@@ -52,6 +52,8 @@ dependencies {
 
 
     implementation "curse.maven:create-328085:7963363"
+
+    implementation("foundry.imguimc:imguimc-neoforge-${project.minecraft_version}:${project.imguimc_version}")
 }
 
 neoForge {

@@ -64,12 +64,12 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
             color = DEFAULT_COLOR;
         }
 
-        float alpha = DECAY_RADIUS_ALPHA * color.getAlpha();
+        float alpha = DECAY_RADIUS_ALPHA * color.alpha();
 
         matrices.pushPose();
         matrices.translate(0.5f, 0.5f, 0.5f);
 
-        RenderUtils.renderSolidColorSphere(renderType, vc, matrices, radius + 1, color.getRed(), color.getGreen(), color.getBlue(), alpha, DECAY_RADIUS_LATITUDE_SEGMENTS, DECAY_RADIUS_LONGITUDE_SEGMENTS);
+        RenderUtils.renderSolidColorSphere(renderType, vc, matrices, radius + 1, color.red(), color.green(), color.blue(), alpha, DECAY_RADIUS_LATITUDE_SEGMENTS, DECAY_RADIUS_LONGITUDE_SEGMENTS);
 
         matrices.popPose();
     }
@@ -88,7 +88,7 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
         if (Objects.equals(color, RGBA.NONE)) {
             color = DEFAULT_COLOR;
         }
-        color = new RGBA(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * alphaMultiplier);
+        color = new RGBA(color.red(), color.green(), color.blue(), color.alpha() * alphaMultiplier);
 
         matrices.pushPose();
 

@@ -25,7 +25,7 @@ public class Plane {
         float scalar = 1f / (vector.w() + 1);
         vector.mul(scalar);;
         vc.addVertex(model, vector.x(), vector.y(), vector.z())
-                .setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .setColor(color.red(), color.green(), color.blue(), color.alpha())
                 .setUv(u, v)
                 .setOverlay(0)
                 .setLight(LightTexture.FULL_BRIGHT)

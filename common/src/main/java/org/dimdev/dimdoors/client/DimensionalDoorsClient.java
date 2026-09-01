@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import foundry.imgui.api.ImGuiMCEvents;
+import imgui.ImGui;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -161,6 +163,10 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     public void delayedInit() {
         initGeneratedDoorCutouts();
         sided.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DIALING_DOOR);
+
+        ImGuiMCEvents.INSTANCE.preRenderImGuiEvent(() -> {
+            ModShaders.renderColors();
+        });
     }
 
     public static IDimDoorsClientSided<?> getClientSided() {

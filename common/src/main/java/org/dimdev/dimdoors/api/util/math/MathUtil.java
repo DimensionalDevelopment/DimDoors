@@ -56,6 +56,10 @@ public final class MathUtil {
         };
     }
 
+    public static boolean between(int value, int min, int max) {
+        return value >= min && value <= max;
+    }
+
     public enum EulerAngleDirection {
         DOWN(new Rotations(90, 0, 0)),
         UP(new Rotations(-90, 0, 0)),

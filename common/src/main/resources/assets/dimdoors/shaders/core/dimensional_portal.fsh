@@ -14,7 +14,7 @@ uniform vec3[16] Colors;
 in vec4 texProj0;
 
 const vec3 BASE_COLOR = vec3(0.4627, 0.3569, 0.6196);
-const int layers = 15;
+const int layers = 16;
 
 const mat4 SCALE_TRANSLATE = mat4(
     0.5, 0.0, 0.0, 0.25,

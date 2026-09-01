@@ -58,6 +58,8 @@ dependencies {
 //            break
 //        }
 //    }
+
+    implementation("foundry.imguimc:imguimc-fabric-${project.minecraft_version}:${project.imguimc_version}")
 }
 
 loom {

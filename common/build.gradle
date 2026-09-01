@@ -56,6 +56,7 @@ dependencies {
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-lib:${jei}"
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-common-api:${jei}"
     runtimeOnly "mezz.jei:jei-${minecraft_version}-common:${jei}"
+    compileOnly("foundry.imguimc:imguimc-common-${project.minecraft_version}:${project.imguimc_version}")
 }
 
 configurations {
