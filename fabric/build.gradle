@@ -59,7 +59,12 @@ dependencies {
 //        }
 //    }
 
-    implementation("foundry.imguimc:imguimc-fabric-${project.minecraft_version}:${project.imguimc_version}")
+    modImplementation("foundry.imguimc:imguimc-fabric-${project.minecraft_version}:${project.imguimc_version}") {
+        exclude group: "net.fabricmc", module: "fabric-loader"
+        // imguimc's pom pulls unremapped (intermediary) fabric-api modules onto the
+        // run classpath, which loader 0.18+ rejects. fabric-api is declared above.
+        exclude group: "net.fabricmc.fabric-api"
+    }
 }
 
 loom {

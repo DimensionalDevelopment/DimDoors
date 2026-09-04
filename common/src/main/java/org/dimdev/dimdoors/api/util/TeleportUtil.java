@@ -95,9 +95,7 @@ public final class TeleportUtil {
             }
 
             // If you ever re-enable this, make sure it's safe on both loaders
-            // serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
-
-            ServerPacketHandler.syncPocketAddonsIfNeeded(serverPlayer, serverWorld, targetPos);
+            // serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));;
 
             if (serverWorld.dimension() == ModDimensions.DUNGEON) {
                 serverPlayer.awardStat(ModStats.TIMES_BEEN_TO_DUNGEON);

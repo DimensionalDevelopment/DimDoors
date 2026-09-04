@@ -339,7 +339,8 @@ Generators may include a `builder` object:
     "type": "dimdoors:private_pocket",
     "addons": [
       {
-        "type": "dimdoors:dyeable"
+        "type": "dimdoors:dyeable",
+        "dye_color": "white"
       }
     ]
   },

@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.tag.ModItemTags;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PocketColor implements StringRepresentable {
@@ -31,6 +33,17 @@ public enum PocketColor implements StringRepresentable {
     private final DyeColor color;
 
     public static Codec<PocketColor> CODEC = StringRepresentable.fromValues(PocketColor::values);
+    public static StreamCodec<RegistryFriendlyByteBuf, PocketColor> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, PocketColor>() {
+        @Override
+        public @NotNull PocketColor decode(RegistryFriendlyByteBuf buffer) {
+            return buffer.readEnum(PocketColor.class);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buffer, @NotNull PocketColor pocketColor) {
+            buffer.writeEnum(pocketColor);
+        }
+    };
 
     PocketColor(String name, DyeColor color) {
     this.id = name;
@@ -62,7 +75,7 @@ public enum PocketColor implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
     return id;
     }
 }

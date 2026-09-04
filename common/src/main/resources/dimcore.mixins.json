@@ -5,6 +5,8 @@
   "minVersion": "0.8",
   "refmap": "dimdoors.refmap.json",
   "mixins": [
+    "PlayerListRespawnMixin",
+    "ServerPlayerTeleportMixin",
     "accessor.BlockEntityTypeAccessor"
   ],
   "client": [

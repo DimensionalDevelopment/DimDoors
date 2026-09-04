@@ -9,7 +9,7 @@ uniform sampler2D Sampler0;
 uniform float GameTime;
 uniform int EndPortalLayers;
 
-uniform vec3[16] Colors;
+uniform int[16] Colors;
 
 in vec4 texProj0;
 
@@ -38,12 +38,22 @@ mat4 end_portal_layer(float layer) {
     return mat4(scale * rotate) * translate * SCALE_TRANSLATE;
 }
 
+vec3 getColor(int layer) {
+    int color = Colors[layer];
+
+    return vec3(
+            ((color >> 16) & 0xff) * 0.003921569f,
+            ((color >> 8) & 0xff) * 0.003921569f,
+            (color & 0xff) * 0.003921569f
+    );
+}
+
 out vec4 fragColor;
 
 void main() {
     vec3 color = vec3(0, 0, 0);
     for (int i = 0; i < layers; i++) {
-        color += textureProj(Sampler0, texProj0 * end_portal_layer(float(i + 1))).rgb * Colors[i];
+        color += textureProj(Sampler0, texProj0 * end_portal_layer(float(i + 1))).rgb * getColor(i);
     }
     fragColor = vec4(color, 1.0);
 }

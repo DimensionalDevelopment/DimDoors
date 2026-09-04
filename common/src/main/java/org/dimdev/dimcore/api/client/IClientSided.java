@@ -1,5 +1,6 @@
 package org.dimdev.dimcore.api.client;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +16,8 @@ public interface IClientSided<T extends IClientSided<T>> {
     void register(RenderType type, Block... blocks);
 
     void onClientPlayerJoin(Runnable listener);
+
+    void registerKeyBinding(KeyMapping mapping);
 
     void registerClientLoader(String name, Consumer<ResourceManager> consumer);
 }

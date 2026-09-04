@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.simibubi.create.foundation.render.RenderTypes;
 import foundry.imgui.api.ImGuiMCEvents;
 import imgui.ImGui;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -29,21 +30,23 @@ import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.imgui.PortalColorGui;
 import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
-import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
+import org.dimdev.dimcore.api.client.ActionKeyMapping;
 import org.dimdev.dimcore.api.client.ModClient;
 
 import org.dimdev.dimcore.api.fluid.FluidDetails;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -62,14 +65,19 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public void init(IDimDoorsClientSided<?> sided) {
         setClientSided(sided);
-        sided.onClientPlayerJoin(() -> {
-            ClientPacketListener.clearPocketAddons();
-            ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket());
-        });
+        sided.onClientPlayerJoin(ClientPacketListener::clearPocketAddons);
         registerCompats();
         EnvironmentAddonClient.init();
 
         sided.onPreRender(this::preRender);
+
+        if(DimensionalDoors.getSided().isModLoaded("imguimc")) {
+            sided.registerKeyBinding(new ActionKeyMapping("key.dimdoors.portal_colors_editor", GLFW.GLFW_KEY_N, "key.categories.dimdoors", PortalColorGui::toggle));
+
+            ImGuiMCEvents.INSTANCE.preRenderImGuiEvent(() -> {
+                PortalColorGui.render();
+            });
+        }
 
 //        ModSpecialModelRenderers.register();
     }
@@ -163,10 +171,6 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     public void delayedInit() {
         initGeneratedDoorCutouts();
         sided.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DIALING_DOOR);
-
-        ImGuiMCEvents.INSTANCE.preRenderImGuiEvent(() -> {
-            ModShaders.renderColors();
-        });
     }
 
     public static IDimDoorsClientSided<?> getClientSided() {

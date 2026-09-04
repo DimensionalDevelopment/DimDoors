@@ -5,15 +5,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -72,9 +72,23 @@ public class ClientPacketListener {
     }
 
     public static void onSyncPocketAddons(SyncPocketAddonsS2CPacket packet) {
+        boolean hadMusic = hasMusicAddon();
+
         pocketWorld = packet.world();
         area = packet.box();
         addons = packet.addons().stream().collect(Collectors.toMap(PocketAddon::getType, Function.identity()));
+
+        if (hadMusic || hasMusicAddon()) stopMusic();
+    }
+
+    private static boolean hasMusicAddon() {
+        return addons.containsKey(PocketAddon.PocketAddonType.MUSIC_ADDON);
+    }
+
+    // Not MusicManager#stopPlaying: it does nextSongDelay += 100 on Integer.MAX_VALUE, which overflows
+    // negative and makes the next tick start a replacement track immediately.
+    private static void stopMusic() {
+        Minecraft.getInstance().getSoundManager().stop(null, SoundSource.MUSIC);
     }
 
     public static void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
@@ -124,5 +138,17 @@ public class ClientPacketListener {
 
     public static BoundingBox getArea() {
         return area;
+    }
+
+    public static void onPortalColors(PortalColorsS2CPacket packet) {
+        ModShaders.setPortalColors(packet.colors());
+    }
+
+    public static void onClearPocket(ClearPocketS2CPacket packet) {
+        boolean hadMusic = hasMusicAddon();
+
+        clearPocketAddons();
+
+        if (hadMusic) stopMusic();
     }
 }

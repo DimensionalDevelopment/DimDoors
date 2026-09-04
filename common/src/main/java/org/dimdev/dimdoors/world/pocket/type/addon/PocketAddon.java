@@ -25,7 +25,7 @@ public interface PocketAddon {
     StreamCodec<RegistryFriendlyByteBuf, List<PocketAddon>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
 
-    default boolean applicable(Pocket pocket) {
+    default boolean applicable(Pocket<?, ?> pocket) {
         return true;
     }
 

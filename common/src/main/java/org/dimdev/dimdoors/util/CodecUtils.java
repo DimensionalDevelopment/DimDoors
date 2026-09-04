@@ -7,6 +7,7 @@ import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -16,20 +17,19 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class CodecUtils {
@@ -229,6 +229,10 @@ public class CodecUtils {
         }
     }
 
+    public static <T, V> Optional<V> emptyOptional(T t) {
+        return Optional.empty();
+    }
+
     private record HashMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements Codec<Map<K, V>> {
         @Override
         public <T> DataResult<Pair<Map<K, V>, T>> decode(DynamicOps<T> ops, T input) {
@@ -319,7 +323,9 @@ public class CodecUtils {
         }
 
         public Set<ResourceKey<T>> getValues(HolderLookup.RegistryLookup<T> lookup) {
-            return key != null ? Set.of(key) : lookup.get(tag).stream().flatMap(a -> a.stream()).map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+            return key != null ? Set.of(key) : lookup.get(tag).stream().flatMap(HolderSet.ListBacked::stream).map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
         }
     }
+
+    public static Codec<int[]> INT_ARRAY_CODEC = Codec.INT_STREAM.xmap(IntStream::toArray, Arrays::stream);
 }

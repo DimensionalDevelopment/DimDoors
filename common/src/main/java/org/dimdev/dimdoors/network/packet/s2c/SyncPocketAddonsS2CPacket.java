@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.util.StreamCodecUtils;
+import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,6 @@ public record SyncPocketAddonsS2CPacket(ResourceKey<Level> world, BoundingBox bo
             StreamCodecUtils.BOUNDING_BOX, SyncPocketAddonsS2CPacket::box,
             PocketAddon.LIST_STREAM_CODEC, SyncPocketAddonsS2CPacket::addons,
             SyncPocketAddonsS2CPacket::new
-
     );
 
     @Override

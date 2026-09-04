@@ -2,6 +2,8 @@ package org.dimdev.dimcore.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -11,6 +13,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -32,8 +35,10 @@ import org.dimdev.dimcore.FabricResourceLoader;
 import org.dimdev.dimcore.api.client.IClientSided;
 import org.dimdev.dimcore.api.client.ModClient;
 import org.dimdev.dimcore.api.util.function.TriFunction;
+import org.dimdev.dimdoors.datagen.AbstractLanguageProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -94,5 +99,10 @@ public class FabricClientSided<V extends FabricClientSided<V, T>, T extends ModC
 	public void registerClientLoader(String name, Consumer<ResourceManager> consumer) {
 		var id = ResourceLocation.fromNamespaceAndPath(client.getModId(), name);
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new FabricResourceLoader(id, consumer, List.of()));
+	}
+
+	@Override
+	public void registerKeyBinding(KeyMapping mapping) {
+		KeyBindingHelper.registerKeyBinding(mapping);
 	}
 }

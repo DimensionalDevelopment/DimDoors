@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -141,6 +142,16 @@ public abstract class FabricSided<V extends FabricSided<V, S>, S extends ModComm
     }
 
     @Override
+    public boolean canSend(ServerPlayer player, CustomPacketPayload.Type<?> type) {
+        return ServerPlayNetworking.canSend(player, type);
+    }
+
+    @Override
+    public void onPlayerJoin(Consumer<ServerPlayer> consumer) {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> consumer.accept(handler.player));
+    }
+
+    @Override
     public void onPlayerQuit(Consumer<ServerPlayer> consumer) {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> consumer.accept(handler.player));
     }
@@ -148,6 +159,11 @@ public abstract class FabricSided<V extends FabricSided<V, S>, S extends ModComm
     @Override
     public void onServerLevelTick(Consumer<ServerLevel> consumer) {
         ServerTickEvents.START_WORLD_TICK.register(world -> consumer.accept(world));
+    }
+
+    @Override
+    public void onPlayerChangeWorld(TriConsumer<ServerPlayer, ServerLevel, ServerLevel> consumer) {
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(consumer::accept);
     }
 
     @Override

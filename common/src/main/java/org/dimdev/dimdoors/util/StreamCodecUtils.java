@@ -1,21 +1,17 @@
 package org.dimdev.dimdoors.util;
 
-import com.google.common.io.Files;
-import com.mojang.datafixers.util.Function6;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
-import org.dimdev.dimdoors.world.pocket.type.addon.cloud.OverworldCloudData;
-
-import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
 
 public class StreamCodecUtils {
     public static final StreamCodec<RegistryFriendlyByteBuf, Music> MUSIC = StreamCodec.composite(
@@ -36,4 +32,30 @@ public class StreamCodecUtils {
             ByteBufCodecs.INT, BoundingBox::maxZ,
             BoundingBox::new
     );
+
+    public static StreamCodec<FriendlyByteBuf, int[]> intArray(int length) {
+        return new StreamCodec<>() {
+            public int @NotNull [] decode(@NotNull FriendlyByteBuf buffer) {
+                return buffer.readVarIntArray(length);
+            }
+
+            public void encode(@NotNull FriendlyByteBuf buffer, int @NotNull [] value) {
+                if(value.length > length) {
+                    throw new EncoderException("Array with size " + value.length + " is bigger than allowed " + length);
+                } else {
+                    buffer.writeVarIntArray(value);
+                }
+            }
+        };
+    }
+
+    StreamCodec<FriendlyByteBuf, int[]> INT_ARRAY = new StreamCodec<>() {
+        public int @NotNull [] decode(FriendlyByteBuf buffer) {
+            return buffer.readVarIntArray();
+        }
+
+        public void encode(FriendlyByteBuf buffer, int @NotNull [] value) {
+            buffer.writeVarIntArray(value);
+        }
+    };
 }

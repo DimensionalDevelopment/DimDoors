@@ -1,5 +1,6 @@
 package org.dimdev.dimcore.client;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.particle.ParticleProvider;
@@ -46,8 +47,10 @@ public class NeoForgeClientSided<V extends NeoForgeClientSided<V, T>, T extends 
     private final List<Runnable> loginRunnables = new ArrayList<>();
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	private final List<Pair<ResourceLocation, Consumer<ResourceManager>>> loaders = new ArrayList<>();
+    private List<KeyMapping> keyMappings = new ArrayList<>();
 
-	public NeoForgeClientSided(IEventBus bus, ModContainer container, T client) {
+
+    public NeoForgeClientSided(IEventBus bus, ModContainer container, T client) {
 		this.client = client;
 		client.init(self());
 
@@ -70,6 +73,8 @@ public class NeoForgeClientSided<V extends NeoForgeClientSided<V, T>, T extends 
             client.initBlockEntityRenderers(event::registerBlockEntityRenderer);
         });
         bus.<EntityRenderersEvent.RegisterLayerDefinitions>addListener(event -> client. initModelLayers(event::registerLayerDefinition));
+
+        if(!keyMappings.isEmpty()) bus.<RegisterKeyMappingsEvent>addListener(event -> keyMappings.forEach(event::register));
 
 		bus.addListener(this::addReloaders);
         bus.<RegisterDimensionSpecialEffectsEvent>addListener(event -> client.initDimensionEffects(event::register));
@@ -129,5 +134,10 @@ public class NeoForgeClientSided<V extends NeoForgeClientSided<V, T>, T extends 
         public ResourceLocation getStillTexture() {
             return still;
         }
+    }
+
+    @Override
+    public void registerKeyBinding(KeyMapping mapping) {
+        keyMappings.add(mapping);
     }
 }

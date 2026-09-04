@@ -3,18 +3,15 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimcore.api.util.EntityUtils;
+import org.dimdev.dimdoors.PortalColors;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -22,9 +19,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
-import java.util.HashMap;
-
-public class DyeableAddon implements PocketAddon {
+public class DyeableAddon implements PocketAddon, PortalColorProvider {
     public static final MapCodec<DyeableAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     PocketColor.CODEC.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
                     PocketColor.CODEC.fieldOf("nextDyeColor").forGetter(a -> a.nextDyeColor),
@@ -50,8 +45,8 @@ public class DyeableAddon implements PocketAddon {
         this.nextDyeColor = nextDyeColor;
     }
 
-    protected PocketColor dyeColor = PocketColor.WHITE;
-    private PocketColor nextDyeColor = PocketColor.NONE;
+    protected PocketColor dyeColor;
+    private PocketColor nextDyeColor;
     private int count = 0;
 
     private static int amountOfDyeRequiredToColor(Pocket<?, ?> pocket) {
@@ -132,7 +127,7 @@ public class DyeableAddon implements PocketAddon {
         }
 
         if (this.dyeColor == color) {
-            EntityUtils.chat(entity, Component.translatable("dimdoors.pocket.dyeAlreadyAbsorbed"));
+            EntityUtils.chat(entity, Component.translatable("advancement.pocket.dyeAlreadyAbsorbed"));
             return count;
         }
 
@@ -157,7 +152,7 @@ public class DyeableAddon implements PocketAddon {
             EntityUtils.chat(
                     entity,
                     Component.translatable(
-                            "dimdoors.pocket.pocketHasBeenDyed",
+                            "advancement.pocket.pocketHasBeenDyed",
                             dyeColor.getSerializedName()
                     )
             );
@@ -165,7 +160,7 @@ public class DyeableAddon implements PocketAddon {
             EntityUtils.chat(
                     entity,
                     Component.translatable(
-                            "dimdoors.pocket.remainingNeededDyes",
+                            "advancement.pocket.remainingNeededDyes",
                             this.count,
                             maxDye,
                             color.getSerializedName()
@@ -177,13 +172,18 @@ public class DyeableAddon implements PocketAddon {
     }
 
     @Override
-    public boolean applicable(Pocket pocket) {
+    public boolean applicable(Pocket<?, ?> pocket) {
         return pocket instanceof PrivatePocket;
     }
 
     @Override
     public PocketAddonType<?, ?> getType() {
         return PocketAddonType.DYEABLE_ADDON;
+    }
+
+    @Override
+    public int[] getColors() {
+        return PortalColors.dye(dyeColor.getColor());
     }
 
     public interface DyeablePocketBuilder<T extends Pocket<T, P>, P extends Pocket.PocketBuilder<T, P>> extends PocketBuilderExtension<T, P> {
@@ -199,7 +199,7 @@ public class DyeableAddon implements PocketAddon {
 
         public static MapCodec<DyeableBuilderAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(PocketColor.CODEC.lenientOptionalFieldOf("dye_color", PocketColor.NONE).forGetter(a -> a.dyeColor)).apply(instance, DyeableBuilderAddon::new));
 
-        private PocketColor dyeColor = PocketColor.NONE;
+        private PocketColor dyeColor;
 
         public DyeableBuilderAddon() {
             this(PocketColor.NONE);

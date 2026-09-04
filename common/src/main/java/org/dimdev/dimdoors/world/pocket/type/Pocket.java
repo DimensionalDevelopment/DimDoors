@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -20,13 +19,12 @@ import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.util.Utils;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
-import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuilder<T, V>> extends AbstractPocket<T, V> implements AddonProvider {
     public static String KEY = "pocket";
@@ -84,9 +82,13 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
     }
 
     public List<PocketAddon> getAddons(Predicate<PocketAddon> predicate) {
-        return addons.values().stream()
+        return streamAddon()
                 .filter(predicate)
                 .collect(Collectors.toList());
+    }
+
+    public Stream<PocketAddon> streamAddon() {
+        return addons.values().stream();
     }
 
     public <T extends PocketAddon> Optional<T> getAddon(PocketAddon.PocketAddonType<T, ?> type) {

@@ -10,6 +10,9 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public interface INetworking {
+    /** Whether the player's client registered a receiver for this payload, ie. whether it has the mod. */
+    boolean canSend(ServerPlayer player, CustomPacketPayload.Type<?> type);
+
     <T extends CustomPacketPayload> void sendPacket(ServerPlayer player, T packet);
 
     <T extends CustomPacketPayload> void sendPacket(T packet);

@@ -300,10 +300,40 @@ public abstract class NeoForgeSided<V extends NeoForgeSided<V, T>, T extends Mod
     }
 
     @Override
+    public boolean canSend(ServerPlayer player, CustomPacketPayload.Type<?> type) {
+        return player.connection.hasChannel(type);
+    }
+
+    @Override
+    public void onPlayerJoin(Consumer<ServerPlayer> consumer) {
+        NeoForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(event -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                consumer.accept(player);
+            }
+        });
+    }
+
+    @Override
     public void onPlayerQuit(Consumer<ServerPlayer> consumer) {
         NeoForge.EVENT_BUS.<PlayerEvent.PlayerLoggedOutEvent>addListener(event -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 consumer.accept(player);
+            }
+        });
+    }
+
+    @Override
+    public void onPlayerChangeWorld(TriConsumer<ServerPlayer, ServerLevel, ServerLevel> consumer) {
+        NeoForge.EVENT_BUS.<PlayerEvent.PlayerChangedDimensionEvent>addListener(event -> {
+            if (!(event.getEntity() instanceof ServerPlayer player)) {
+                return;
+            }
+
+            ServerLevel origin = player.getServer().getLevel(event.getFrom());
+            ServerLevel destination = player.getServer().getLevel(event.getTo());
+
+            if (origin != null && destination != null) {
+                consumer.accept(player, origin, destination);
             }
         });
     }

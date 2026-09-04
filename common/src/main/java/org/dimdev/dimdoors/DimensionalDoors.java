@@ -2,22 +2,25 @@ package org.dimdev.dimdoors;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import org.dimdev.dimcore.api.event.PlayerTeleportEvents;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.api.util.LocationCondition.LocationConditionType;
 import org.dimdev.dimdoors.api.util.LocationValue.LocationValueWithType;
@@ -45,7 +48,6 @@ import org.dimdev.dimdoors.listener.pocket.*;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
-import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -73,12 +75,18 @@ import org.dimdev.dimdoors.world.decay.results.DecayResultType;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimcore.api.ModCommon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PortalColorProvider;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.util.Objects;
+import java.util.function.BiConsumer;
+
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
+import static org.dimdev.dimdoors.network.ServerPacketHandler.PlayerSyncData.getPocket;
 
 public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? extends IDimensionalDoorsSided<?>>> {
     public static final DimensionalDoors INSTANCE = new DimensionalDoors();
@@ -177,6 +185,8 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
 
         sided.registerServerLoader("pocket_loader", PocketLoader::reload);
         sided.registerServerLoader("decay_loader", Decay.DecayLoader::reload, true);
+        sided.registerServerLoader("portal_colors", (provider, manager) -> PortalColors.load(manager));
+
 //        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
         sided.registerClientPacket(PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onPlayerInventorySlotUpdate(packet));
@@ -185,8 +195,21 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
         sided.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onMonolithTeleportParticles(packet));
         sided.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onRenderBreakBlock(packet));
         sided.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onAttackBlock(player, packet));
-        sided.registerServerPacket(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player));
+        sided.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onPortalColors(packet));
+        sided.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onClearPocket(packet));
         sided.onServerStarting(Decay.DecayLoader::populate);
+
+        PlayerTeleportEvents.BEFORE.register((player, level, pos) -> {
+            var pocket = getPocket(level, BlockPos.containing(pos));
+            syncColors(player, pocket);
+            syncPocket(player, pocket);
+        });
+
+        sided.onPlayerJoin(player -> {
+            var pocket = getPocket(player.serverLevel(), BlockPos.containing(player.position()));
+            syncColors(player, pocket);
+            syncPocket(player, pocket);
+        });
 
         sided.onServerStopping(server -> {
             Decay.clearQueue();
@@ -198,6 +221,34 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
 
         registerListeners();
 //        SchemFixer.run();
+    }
+
+    private void syncColors(ServerPlayer player, Pocket<?, ?> pocket) {
+        int[] colors;
+
+        if(pocket != null) {
+            colors = pocket.streamAddon()
+                    .filter(PortalColorProvider.class::isInstance)
+                    .map(PortalColorProvider.class::cast)
+                    .map(PortalColorProvider::getColors)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(PortalColors.base());
+        } else {
+            colors = PortalColors.levels(player.serverLevel().dimension());
+
+            if (colors == null) colors = PortalColors.base();
+        }
+
+        getSided().sendPacket(player, new PortalColorsS2CPacket(colors));
+    }
+
+    private void syncPocket(ServerPlayer player, Pocket<?, ?> pocket) {
+        if(pocket != null) {
+            ServerPacketHandler.syncPocketAddonsIfNeeded(player, pocket);
+        } else {
+            ServerPacketHandler.clearPocketIfNeeded(player);
+        }
     }
 
     @Override
@@ -246,12 +297,13 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
 
         sided.onBeforeBlockBreak(new PlayerBlockBreakEventBeforeListener());
 
+
+
         sided.onUseItem(new UseItemCallbackListener());
         UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
         sided.onUseBlock(new UseBlockCallbackListener());
         sided.onBeforeBlockPlace((level, pos, state, placer) -> shouldCancelBlockModification(level, pos, placer));
 
-        // placing doors on rifts
         UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
 
         sided.onServerLevelTick(Decay::tick);

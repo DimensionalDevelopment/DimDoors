@@ -44,7 +44,6 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
     public DimensionalDoorsForgeClient(IEventBus bus, ModContainer container) {
         super(bus, container, DimensionalDoorsClient.INSTANCE);
         container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, screen) -> ConfigScreen.createScreen(screen));
-        DimensionalDoorsClient.INSTANCE.init(this);
 
         bus.addListener(DimensionalDoorsForgeClient::registerRecipeBookCategories);
         if (DimensionalDoors.getSided().isModLoaded("create")) {

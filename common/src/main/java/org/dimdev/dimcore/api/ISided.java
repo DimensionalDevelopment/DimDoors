@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.apache.commons.lang3.function.TriConsumer;
 
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
@@ -41,8 +42,10 @@ public interface ISided<T extends ISided<T>> extends IRegister, ICreativeTabHand
     void onServerStarting(Consumer<MinecraftServer> consumer);
     void onServerStarted(Consumer<MinecraftServer> consumer);
     MinecraftServer getServer();
+    void onPlayerJoin(Consumer<ServerPlayer> consumer);
     void onPlayerQuit(Consumer<ServerPlayer> consumer);
     void onServerLevelTick(Consumer<ServerLevel> consumer);
+    void onPlayerChangeWorld(TriConsumer<ServerPlayer, ServerLevel, ServerLevel> consumer);
     void onAttackBlock(AttackBlockCallback callback);
     void onUseItem(UseItemCallback callback);
     void onUseBlock(UseBlockCallback callback);
