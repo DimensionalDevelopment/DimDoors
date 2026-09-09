@@ -1,9 +1,10 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/heart_of_disorder.schem",
+      "id": "dimdoors:classic/ruins/simple_small_t.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
+  "setup_loot": true,
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

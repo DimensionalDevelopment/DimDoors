@@ -1,18 +1,19 @@
 {
   "type": "dimdoors:schematic",
-      "id": "dimdoors:classic/ruins/hot_suspense.schem",
+      "id": "dimdoors:classic/ruins/small_maze.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
+  "setup_loot": true,
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [0],
+      "ids": [1],
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [1, 2, 3],
+      "ids": [2, 3],
       "rift_data": "dimdoors:default_dungeon"
     }
   ]

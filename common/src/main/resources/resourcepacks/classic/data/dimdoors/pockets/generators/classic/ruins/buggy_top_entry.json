@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-      "id": "dimdoors:classic/ruins/buggy_top_entry",
+      "id": "dimdoors:classic/ruins/buggy_top_entry.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -331,5 +331,13 @@
   {
     "id": "dimdoors:dungeon/spiti_me_vafles",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:dungeon/krevatokamara",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:dungeon/ruins_target_practise",
+    "type": "dimdoors:id"
   }
 ]
