@@ -3,8 +3,11 @@ package org.dimdev.dimdoors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
@@ -56,5 +59,9 @@ public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> ext
     default <U extends SubSystem<U>> SubSystem.Type<U> registerSubSystem(String name, Supplier<U> supplier, MapCodec<U> codec) {
         var id = ResourceLocation.fromNamespaceAndPath(modId(), name);
         return registerSubSystem(id, supplier, codec);
+    }
+
+    default int onArrowLoose(ItemStack stack, Level level, Player player, int charge, boolean hasAmmo) {
+        return charge;
     }
 }

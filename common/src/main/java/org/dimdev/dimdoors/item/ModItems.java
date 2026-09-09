@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -40,7 +42,12 @@ public final class ModItems {
 
     public static final Item RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", RiftConfigurationToolItem::new);
 
+
+    //TOOLS
+
     public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F))));
+
+    public static final Item FARSHOT = registerRegular("farshot", properties -> new FarShotItem(properties.stacksTo(1).durability(465).component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
 
     public static final Item RIFT_REMOVER = registerRegular("rift_remover", properties -> new RiftRemoverItem(properties.stacksTo(1).durability(100)));
 
