@@ -5,7 +5,7 @@ plugins {
 
 def includeCompile(entry) {
     project.dependencies {
-        api(entry)
+        implementation(entry)
         jarJar(entry)
     }
     neoForge.runs.configureEach {
@@ -13,15 +13,25 @@ def includeCompile(entry) {
     }
 }
 
+configurations {
+    localRuntime {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    runtimeClasspath.extendsFrom(localRuntime)
+}
+
 dependencies {
 
-    runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}") {
+    localRuntime("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}") {
         exclude group: "foundry.veil"
     }
-    runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}") {
+
+    localRuntime("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}") {
         exclude group: "foundry.veil"
     }
-    runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}") {
+
+    localRuntime("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}") {
         exclude group: "foundry.veil"
     }
 
@@ -34,9 +44,9 @@ dependencies {
     compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
     compileOnly "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei}"
-    compileOnlyApi "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei}"
 
-    api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
+    localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
     compileOnly("net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}")
     compileOnly("maven.modrinth:iris:${iris_version}-neoforge")
@@ -46,14 +56,14 @@ dependencies {
 //            compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei}"
 //            break
 //        case 'jei':
-            runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei}"
+            localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei}"
 //            break
 //    }
 
 
-    implementation "curse.maven:create-328085:7963363"
+    localRuntime "curse.maven:create-328085:7963363"
 
-    implementation("foundry.imguimc:imguimc-neoforge-${project.minecraft_version}:${project.imguimc_version}")
+    localRuntime("foundry.imguimc:imguimc-neoforge-${project.minecraft_version}:${project.imguimc_version}")
 }
 
 neoForge {

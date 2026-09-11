@@ -17,6 +17,8 @@ dependencies {
             requireCapability "$group:$mod_id"
         }
     }
+    // common's compile-only deps, needed here because we compile its sources. Not published.
+    compileOnly project(path: ':common', configuration: 'sharedCompileOnly')
     commonJava project(path: ':common', configuration: 'commonJava')
     commonResources project(path: ':common', configuration: 'commonResources')
 }
