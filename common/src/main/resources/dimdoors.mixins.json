@@ -31,7 +31,6 @@
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
-    "ThrownEnderPearlEntityMixin",
     "TrapDoorMixin",
     "V1460SpongeSchematicMixin",
     "V99SpongeSchematicMixin",

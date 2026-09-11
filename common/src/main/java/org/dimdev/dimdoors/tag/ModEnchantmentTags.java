@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModEnchantmentTags {
     public static final TagKey<Enchantment> DUNGEON_LOOT = of("dungeon_loot");
+    public static final TagKey<Enchantment> BLOCKED_ON_FARSHOT = of("blocked_on_farshot");
 
     private static TagKey<Enchantment> of(String id) {
         return TagKey.create(Registries.ENCHANTMENT, DimensionalDoors.id(id));

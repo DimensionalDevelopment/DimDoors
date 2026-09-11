@@ -37,6 +37,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
         pack.addProvider(EnchantmentTagProvider::new);
         pack.addProvider(PaintingTagProvider::new);
         pack.addProvider(LevelTagProvider::new);
+        pack.addProvider(EntityTagProvider::new);
 
 //        pack.addProvider(PocketDataGenClassic::new);
     }

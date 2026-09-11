@@ -1,4 +1,4 @@
-// 1.21.1	2026-08-08T09:56:45.105432	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-09-11T01:41:08.1192895	DimensionalDoors/Tags for minecraft:item
 8c72aee9016ef5d30103537c6816d991a5d732f6 data\c\tags\item\fence_gates.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\sword.json
 c271b34bed3724cbaf6e66b1db8164bc101c8852 data\c\tags\item\ores.json
@@ -7,8 +7,8 @@ ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\enchantables.json
 a57fa5058b910960a2c250a1d6db912e8e8e8a81 data\c\tags\item\dyed\pink.json
 5d012d4f8fb9e2f65ab59939c6c0591fa1a5df5b data\c\tags\item\dyed\brown.json
 bd609edc2d80462eab96eb74e1dbb199fe383100 data\c\tags\item\dyed\gray.json
-969a8801e02d00619ba12bc2b12c607700704929 data\minecraft\tags\item\completes_find_tree_tutorial.json
 b30c990ea036903eae7a3d93b03acbee4087cdd2 data\c\tags\item\music_discs.json
+969a8801e02d00619ba12bc2b12c607700704929 data\minecraft\tags\item\completes_find_tree_tutorial.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\tools.json
 01e8d0165920b64b6293e052d2ff9e84533d8a99 data\c\tags\item\gems.json
 2e89f80f8ba8b146adc4d04cfd6bbaad8cb121a1 data\minecraft\tags\item\beacon_payment_items.json
@@ -34,9 +34,9 @@ f2779bbb20dd419d2b1fc6837c27b8b7266d1421 data\minecraft\tags\item\buttons.json
 cfcad26923b372e137eea32f4561ee982d598a52 data\minecraft\tags\item\enchantable\armor.json
 d8c4e0d031f2f5822419cd0b8c9179f65ba0ff0f data\minecraft\tags\item\leg_armor.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\fire_aspect.json
+86dc4ffc82b4786c8bdd468c22ed3440d1548cd5 data\dimdoors\tags\item\enchantable\transcendent.json
 2e3854a8a3d6c3cc8739c37495aed8fcd7e6fb62 data\minecraft\tags\item\foot_armor.json
 dc9f915bccfecf5f9a6a50a52bbc3146103b2608 data\c\tags\item\dyed\white.json
-86dc4ffc82b4786c8bdd468c22ed3440d1548cd5 data\dimdoors\tags\item\enchantable\transcendent.json
 2e3854a8a3d6c3cc8739c37495aed8fcd7e6fb62 data\minecraft\tags\item\enchantable\foot_armor.json
 db1c81bd4fa453111199ce17a160ee0d39da1501 data\minecraft\tags\item\wooden_doors.json
 cfcad26923b372e137eea32f4561ee982d598a52 data\c\tags\item\armors.json
@@ -74,3 +74,4 @@ b4133380cdcbcf84f3a0d04043c8d3861e16175f data\minecraft\tags\item\saplings.json
 0116f731140377947c015ecb22772ccf3f616fcf data\c\tags\item\fences.json
 5381089cac668940b3f12295dd58b4cf9370d0e1 data\c\tags\item\fences\wooden.json
 301e74f8938adcc073fdfc2841725646cc8dccf8 data\minecraft\tags\item\slabs.json
+65236fe1b78dfeda63d0825249d087fa91f2c94f data\minecraft\tags\item\enchantable\bow.json

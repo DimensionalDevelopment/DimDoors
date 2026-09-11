@@ -47,7 +47,7 @@ public final class ModItems {
 
     public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F))));
 
-    public static final Item FARSHOT = registerRegular("farshot", properties -> new FarShotItem(properties.stacksTo(1).durability(465).component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
+    public static final Item FARSHOT = registerRegular("farshot", properties -> DimensionalDoors.getSided().createFarShot(properties.stacksTo(1).durability(384)));
 
     public static final Item RIFT_REMOVER = registerRegular("rift_remover", properties -> new RiftRemoverItem(properties.stacksTo(1).durability(100)));
 

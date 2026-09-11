@@ -1,0 +1,20 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "dimdoors:driftwood_planks"
+    },
+    "X": {
+      "item": "dimdoors:world_thread"
+    }
+  },
+  "pattern": [
+    " XO",
+    "X O",
+    " XO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:farshot"
+  }
+}

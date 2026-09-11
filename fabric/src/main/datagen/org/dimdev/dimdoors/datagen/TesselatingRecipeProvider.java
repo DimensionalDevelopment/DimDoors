@@ -106,5 +106,13 @@ public class TesselatingRecipeProvider {
                 .unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER))
                 .save(exporter, DimensionalDoors.id("garment_of_reality_boots"));
 
+        ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.FARSHOT)
+                .pattern(" XO")
+                .pattern("X O")
+                .pattern(" XO")
+                .define('X', ModItems.WORLD_THREAD)
+                .define('O', ModBlocks.DRIFTWOOD_PLANKS)
+                .unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD))
+                .save(exporter, DimensionalDoors.id("farshot"));
     }
 }

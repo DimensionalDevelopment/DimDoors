@@ -229,6 +229,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add(ModItems.FRAYED_FILAMENT, "Frayed Filament");
         add(ModItems.STABLE_FABRIC, "Stable Fabric");
 
+        add(ModItems.FARSHOT, "Farshot");
 
         addDoorAutoGen(Blocks.OAK_DOOR, "Escape Door", () -> {
             info(0, "Place on the block under a rift");

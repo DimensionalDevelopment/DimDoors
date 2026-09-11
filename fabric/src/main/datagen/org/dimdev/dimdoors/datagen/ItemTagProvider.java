@@ -29,6 +29,8 @@ public class ItemTagProvider extends DimDoorsTagsProvider<Item> {
                 .addTag(ItemTags.BOW_ENCHANTABLE)
                 .addTag(ItemTags.CROSSBOW_ENCHANTABLE);
 
+        this.tag(ItemTags.BOW_ENCHANTABLE).add(ModItems.FARSHOT.builtInRegistryHolder().key());
+
         add(ModItems.RIFT_BLADE, ConventionalItemTags.MELEE_WEAPON_TOOLS,
                 ItemTags.FIRE_ASPECT_ENCHANTABLE,
                 ConventionalItemTags.ENCHANTABLES,

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -72,6 +74,7 @@ import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
+import org.dimdev.dimdoors.world.fray.ModDataValues;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
@@ -157,9 +160,10 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
         registerRun(Registries.PARTICLE_TYPE, () -> ModParticleTypes.init());
         registerRun(Registries.TRIGGER_TYPE, () -> ModCriteria.init());
         registerRun(Registries.STRUCTURE_PROCESSOR, () -> ModStructureProccessors.init());
-//        registerRunDataValue(() -> Fray.init()); TODO: Finish Fray
+        registerRunDataValue(() -> ModDataValues.init());
         registerRunDataValue(() -> PocketChunkClaims.init());
         registerRunDataValue(() -> TranscendentProjectiles.init());
+
 
         ModGameRules.init();
 

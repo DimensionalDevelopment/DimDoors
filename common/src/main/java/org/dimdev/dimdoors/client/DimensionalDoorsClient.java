@@ -2,9 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.simibubi.create.foundation.render.RenderTypes;
 import foundry.imgui.api.ImGuiMCEvents;
-import imgui.ImGui;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -14,9 +12,12 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -35,6 +36,7 @@ import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
@@ -57,7 +59,6 @@ import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
 public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>> {
 
     public static final DimensionalDoorsClient INSTANCE = new DimensionalDoorsClient();
-    public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
 
     public static ShaderPackDetector detector = consumer -> consumer.accept(DimensionalPortalRenderer.VANILLA_DIMENSIONAL_PORTAL_RENDER_LAYER);
     private static IDimDoorsClientSided<?> sided;
@@ -74,12 +75,8 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
         if(DimensionalDoors.getSided().isModLoaded("imguimc")) {
             sided.registerKeyBinding(new ActionKeyMapping("key.dimdoors.portal_colors_editor", GLFW.GLFW_KEY_N, "key.categories.dimdoors", PortalColorGui::toggle));
 
-            ImGuiMCEvents.INSTANCE.preRenderImGuiEvent(() -> {
-                PortalColorGui.render();
-            });
+            ImGuiMCEvents.INSTANCE.preRenderImGuiEvent(PortalColorGui::render);
         }
-
-//        ModSpecialModelRenderers.register();
     }
 
     @Override
@@ -89,9 +86,9 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     @Override
     public void initParticles(RegularParticleRegister regularParticleRegister, SpecialParticleRegister specialParticleRegister) {
-        specialParticleRegister.register(MONOLITH, new ParticleProvider<SimpleParticleType>() {
+        specialParticleRegister.register(MONOLITH, new ParticleProvider<>() {
             @Override
-            public @NotNull Particle createParticle(@NotNull SimpleParticleType simpleParticleType, ClientLevel clientLevel, double x, double y, double z, double g, double h, double i) {
+            public @NotNull Particle createParticle(@NotNull SimpleParticleType simpleParticleType, @NotNull ClientLevel clientLevel, double x, double y, double z, double g, double h, double i) {
                 return new MonolithParticle(clientLevel, x, y, z);
             }
         });
@@ -115,6 +112,13 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     @Override
     public void initShaders(TriConsumer<ResourceLocation, VertexFormat, Consumer<ShaderInstance>> shaderRegister) {
         shaderRegister.accept(DimensionalDoors.id("dimensional_portal"), DefaultVertexFormat.POSITION, ModShaders::setDimensionalPortal);
+    }
+
+    @Override
+    public void initItemProperties(TriConsumer<Item, ResourceLocation, ClampedItemPropertyFunction> consumer) {
+        consumer.accept(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pull"), (stack, level, entity, p_351685_) -> entity == null ? 0.0F : CrossbowItem.isCharged(stack) ? 0.0F : (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / (float) CrossbowItem.getChargeDuration(stack, entity));
+        consumer.accept(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pulling"), (p_174605_, p_174606_, p_174607_, p_174608_) -> p_174607_ != null && p_174607_.isUsingItem() && p_174607_.getUseItem() == p_174605_ && !CrossbowItem.isCharged(p_174605_) ? 1.0F : 0.0F);
+        consumer.accept(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("charged"), (p_275891_, p_275892_, p_275893_, p_275894_) -> CrossbowItem.isCharged(p_275891_) ? 1.0F : 0.0F);
     }
 
     @Override
@@ -143,10 +147,11 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
         register.register(ModEntityTypes.MONOLITH, MonolithRenderer::new);
         register.register(ModEntityTypes.MASK, context -> new EntityRenderer<>(context) {
             @Override
-            public ResourceLocation getTextureLocation(MaskEntity entity) {
+            public @NotNull ResourceLocation getTextureLocation(@NotNull MaskEntity entity) {
                 return ResourceLocation.parse("blep");
             }
         });
+        register.register(ModEntityTypes.FARSHOT_ENDER_PEARL, FarShotEnderPearlRenderer::new);
     }
 
     private static void registerCompats() {

@@ -1,9 +1,14 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -13,6 +18,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -23,6 +29,7 @@ import org.dimdev.dimdoors.compat.create.CreateCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.ModFluidTypes;
+import org.dimdev.dimdoors.item.FarShotItem;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.dimcore.NeoForgeSided;
 
@@ -99,6 +106,19 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
     }
 
     @Override
+    public FarShotItem createFarShot(Item.Properties properties) {
+        return new FarShotItem(properties) {
+            public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
+                return allowsEnchantment(enchantment) && enchantment.value().isPrimaryItem(stack);
+            }
+
+            public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+                return allowsEnchantment(enchantment) && enchantment.value().isSupportedItem(stack);
+            }
+        };
+    }
+
+    @Override
     public RecipeBookType getTesselatingRecipeBookType() {
         return TESSELLATING.getValue();
     }
@@ -119,5 +139,10 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
     @Override
     public void onServerStopping(Consumer<MinecraftServer> consumer) {
         NeoForge.EVENT_BUS.<ServerStoppedEvent>addListener(event -> consumer.accept(event.getServer()));
+    }
+
+    @Override
+    public TagKey<Item> getEnderPearlsTag() {
+        return Tags.Items.ENDER_PEARLS;
     }
 }

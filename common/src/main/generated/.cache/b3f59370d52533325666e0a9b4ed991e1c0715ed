@@ -1,2 +1,3 @@
-// 1.21.1	2026-08-08T09:56:45.1044349	DimensionalDoors/Tags for minecraft:enchantment
+// 1.21.1	2026-09-11T01:41:08.1192895	DimensionalDoors/Tags for minecraft:enchantment
 baa6f560365e735beff2cc56f4223e10432b59ff data\dimdoors\tags\enchantment\dungeon_loot.json
+bc5a57f002239dec2bc44a16cc04c3da47607841 data\dimdoors\tags\enchantment\blocked_on_farshot.json

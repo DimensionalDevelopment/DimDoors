@@ -1,0 +1,98 @@
+{
+  "parent": "minecraft:item/generated",
+  "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ],
+      "translation": [
+        1.13,
+        3.2,
+        1.13
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ],
+      "translation": [
+        1.13,
+        3.2,
+        1.13
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        -80,
+        -280,
+        40
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ],
+      "translation": [
+        -1,
+        -2,
+        -2.5
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        -80,
+        260,
+        -40
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ],
+      "translation": [
+        -1,
+        -2,
+        -2.5
+      ]
+    }
+  },
+  "overrides": [
+    {
+      "model": "dimdoors:item/farshot_pulling_0",
+      "predicate": {
+        "pulling": 1
+      }
+    },
+    {
+      "model": "dimdoors:item/farshot_pulling_1",
+      "predicate": {
+        "pull": 0.65,
+        "pulling": 1
+      }
+    },
+    {
+      "model": "dimdoors:item/farshot_pulling_2",
+      "predicate": {
+        "pull": 0.9,
+        "pulling": 1
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "dimdoors:item/farshot"
+  }
+}

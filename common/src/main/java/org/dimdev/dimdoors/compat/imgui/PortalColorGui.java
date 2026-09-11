@@ -19,8 +19,6 @@ public class PortalColorGui {
 
     private static final int[] colors = new int[16];
 
-    private static final ImInt dyeId = new ImInt(-1);
-
     public static void toggle() {
         if(Minecraft.getInstance().screen == null) {
             if(ModShaders.getPortalColors(colors)) Minecraft.getInstance().setScreen(SCREEN);
@@ -62,7 +60,7 @@ public class PortalColorGui {
 //                ModShaders.setPortalColors(ints);
 //            }
 //        }
-        ImGui.end();
+//        ImGui.end();
     }
 
     private static void renderColor(String name, int index) {

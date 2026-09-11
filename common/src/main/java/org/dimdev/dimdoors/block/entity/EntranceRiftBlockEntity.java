@@ -72,7 +72,7 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
     public boolean teleport(Entity entity) {
         //Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
-        boolean status = attemptTeleport(entity);
+        boolean status = attemptTeleport(entity, this);
 
         if (this.isStateDirty() && !this.data.isAlwaysDelete()) {
             this.setChanged();
@@ -81,8 +81,8 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
         return status;
     }
 
-    public boolean attemptTeleport(Entity entity) {
-        this.setStateDirty(false);
+    public static boolean attemptTeleport(Entity entity, Rift rift) {
+        rift.setStateDirty(false);
 
         // Attempt a teleport
         try {
@@ -90,15 +90,15 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
             Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
             Vec3 relativeVelocity = entity.getDeltaMovement();
 
-            Target target = this.getTarget();
+            Target target = rift.getTarget();
             var location = target instanceof LocationProvider provider ? provider.getLocation() : null;
 
-            BlockState state = this.getLevel().getBlockState(this.getBlockPos());
+            BlockState state = rift.getRiftLevel().getBlockState(rift.getRiftBlockPos());
             Block block = state.getBlock();
             if (block instanceof CoordinateTransformerBlock transformer) {
-                var blockPos = getBlockPos();
+                var blockPos = rift.getRiftBlockPos();
                 var sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(
-                        (ServerLevel) this.level,
+                        (ServerLevel) rift.getRiftLevel(),
                         blockPos,
                         entity,
                         entity.position(),

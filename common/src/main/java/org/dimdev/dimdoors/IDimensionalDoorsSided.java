@@ -3,24 +3,24 @@ package org.dimdev.dimdoors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimcore.api.ISided;
+import org.dimdev.dimdoors.item.FarShotItem;
 import org.dimdev.dimdoors.rift.registry.SubSystem;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> extends ISided<T> {
-    public RecipeBookType getTesselatingRecipeBookType();
+    RecipeBookType getTesselatingRecipeBookType();
 
     default void checkCompat() {
         if(isModLoaded("sable")) {
@@ -61,7 +61,7 @@ public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> ext
         return registerSubSystem(id, supplier, codec);
     }
 
-    default int onArrowLoose(ItemStack stack, Level level, Player player, int charge, boolean hasAmmo) {
-        return charge;
-    }
+    FarShotItem createFarShot(Item.Properties properties);
+
+    public TagKey<Item> getEnderPearlsTag();
 }

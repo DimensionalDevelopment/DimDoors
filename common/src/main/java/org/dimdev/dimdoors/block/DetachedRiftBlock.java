@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -12,11 +13,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity;
 import org.dimdev.dimdoors.particle.client.RiftParticleOptions;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.NotNull;
@@ -107,6 +111,19 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
     @Override
     public BlockEntityType<DetachedRiftBlockEntity> getRiftBlockEnityType() {
         return ModBlockEntityTypes.DETACHED_RIFT;
+    }
+
+    @Override
+    protected void onProjectileHit(Level level, @NotNull BlockState state, @NotNull BlockHitResult hit, @NotNull Projectile projectile) {
+        if(!level.isClientSide() && projectile instanceof FarShotEnderPearlEntity) {
+            var entity = projectile.getOwner();
+
+            if (entity == null) return;
+
+            var rift = getRift(level, hit.getBlockPos(), state);
+
+            if (EntranceRiftBlockEntity.attemptTeleport(entity, rift)) projectile.discard();
+        }
     }
 
     @Override

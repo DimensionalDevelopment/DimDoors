@@ -17,8 +17,6 @@ import org.dimdev.dimdoors.block.entity.Rift;
 import org.joml.Vector3d;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public final class RaycastHelper {
@@ -64,4 +62,18 @@ public final class RaycastHelper {
     }
 
     public static Predicate<BlockEntity> predicate = null;
+
+    public static HitResult projectileCast(Entity entity, Predicate<Entity> predicate) {
+        RaycastHelper.predicate = DETACH;
+
+        HitResult hit;
+
+        try {
+            hit = ProjectileUtil.getHitResultOnMoveVector(entity, predicate);
+        } finally {
+            RaycastHelper.predicate = null;
+        }
+
+        return hit;
+    }
 }

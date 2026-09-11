@@ -8,12 +8,22 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameRules;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
+import org.dimdev.dimdoors.item.FarShotItem;
 import org.dimdev.dimdoors.mixin.RecipeBookSettingsAccessor;
 import org.dimdev.dimcore.FabricSided;
 
@@ -40,7 +50,6 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
 
         PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);
         ServerChunkEvents.CHUNK_LOAD.register((serverLevel, levelChunk) -> ChunkServedCallback.EVENT.invoker().onChunkServed(serverLevel, levelChunk));
-
     }
 
     @Override
@@ -66,5 +75,20 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
     public GameRules.Key<GameRules.IntegerValue> registerGameRule(String name, GameRules.Category category, int value) {
         var type = GameRuleFactory.createIntRule(value);
         return GameRuleRegistry.register(name, category, type);
+    }
+
+    @Override
+    public FarShotItem createFarShot(Item.Properties properties) {
+        return new FarShotItem(properties) {
+            @Override
+            public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
+                return super.canBeEnchantedWith(stack, enchantment, context) && FarShotItem.allowsEnchantment(enchantment);
+            }
+        };
+    }
+
+    @Override
+    public TagKey<Item> getEnderPearlsTag() {
+        return ConventionalItemTags.ENDER_PEARLS;
     }
 }

@@ -1,5 +1,6 @@
 package org.dimdev.dimcore.client;
 
+import dev.architectury.registry.item.ItemPropertiesRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -8,6 +9,8 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
@@ -18,6 +21,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -78,7 +82,10 @@ public class NeoForgeClientSided<V extends NeoForgeClientSided<V, T>, T extends 
 
 		bus.addListener(this::addReloaders);
         bus.<RegisterDimensionSpecialEffectsEvent>addListener(event -> client.initDimensionEffects(event::register));
-        bus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(client::delayedInit));
+        bus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> {
+            client.delayedInit();
+            client.initItemProperties(ItemProperties::register);
+        }));
         bus.<RegisterShadersEvent>addListener(event -> {
             var provider = event.getResourceProvider();
 
@@ -111,7 +118,7 @@ public class NeoForgeClientSided<V extends NeoForgeClientSided<V, T>, T extends 
 		loaders.add(Pair.of(ResourceLocation.fromNamespaceAndPath(client.getModId(), name), consumer));
 	}
 
-	public void addReloaders(RegisterClientReloadListenersEvent event) {
+    public void addReloaders(RegisterClientReloadListenersEvent event) {
 		loaders.forEach(pair -> event.registerReloadListener(new NeoforgeResourceLoader.Client(pair.getLeft(), pair.getValue())));
 	}
 

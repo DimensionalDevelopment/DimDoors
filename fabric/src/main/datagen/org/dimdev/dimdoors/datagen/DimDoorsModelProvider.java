@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.core.Direction;
@@ -14,6 +16,7 @@ import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -21,7 +24,10 @@ import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.item.FarShotItem;
 import org.dimdev.dimdoors.item.ModItems;
+
+import java.util.Locale;
 
 import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
 import static net.minecraft.data.models.model.TextureMapping.getItemTexture;
@@ -36,16 +42,6 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         generator.createDoor(ModBlocks.GOLD_DOOR);
         generator.createDoor(ModBlocks.STONE_DOOR);
         generator.createDoor(ModBlocks.QUARTZ_DOOR);
-//        generator.createDoor(ModBlocks.DIALING_DOOR);
-
-//        BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
-
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), Blocks.IRON_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_quartz_door")), ModBlocks.QUARTZ_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door")), Blocks.OAK_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_stone_door")), ModBlocks.STONE_DOOR);
-
 
         generator.woodProvider(ModBlocks.DRIFTWOOD_LOG).log(ModBlocks.DRIFTWOOD_LOG).wood(ModBlocks.DRIFTWOOD_WOOD);
         generator.family(ModBlocks.DRIFTWOOD_PLANKS)
@@ -281,5 +277,76 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.chestplate(), ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.helmet(), ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.leggings(), ModelTemplates.FLAT_ITEM);
+
+        generateFarshot(itemModelGenerator);
+    }
+
+    private static void generateFarshot(ItemModelGenerators itemModelGenerator) {
+        itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_0", ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_1", ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_2", ModelTemplates.FLAT_ITEM);
+
+        ModelTemplates.FLAT_ITEM.create(
+                ModelLocationUtils.getModelLocation(ModItems.FARSHOT),
+                TextureMapping.layer0(getItemTexture(ModItems.FARSHOT)),
+                itemModelGenerator.output,
+                (location, textures) -> {
+                    JsonObject json = ModelTemplates.FLAT_ITEM.createBaseTemplate(location, textures);
+
+                    JsonObject display = new JsonObject();
+                    display.add("thirdperson_righthand", transform(
+                            nums(-80, 260, -40),
+                            nums(-1, -2, -2.5),
+                            nums(0.9, 0.9, 0.9)));
+                    display.add("thirdperson_lefthand", transform(
+                            nums(-80, -280, 40),
+                            nums(-1, -2, -2.5),
+                            nums(0.9, 0.9, 0.9)));
+                    display.add("firstperson_righthand", transform(
+                            nums(0, -90, 25),
+                            nums(1.13, 3.2, 1.13),
+                            nums(0.68, 0.68, 0.68)));
+                    display.add("firstperson_lefthand", transform(
+                            nums(0, 90, -25),
+                            nums(1.13, 3.2, 1.13),
+                            nums(0.68, 0.68, 0.68)));
+                    json.add("display", display);
+
+                    JsonArray overrides = new JsonArray();
+                    overrides.add(override(ModelLocationUtils.getModelLocation(ModItems.FARSHOT, "_pulling_0"), "pulling", 1));
+                    overrides.add(override(ModelLocationUtils.getModelLocation(ModItems.FARSHOT, "_pulling_1"), "pulling", 1, "pull", 0.65));
+                    overrides.add(override(ModelLocationUtils.getModelLocation(ModItems.FARSHOT, "_pulling_2"), "pulling", 1, "pull", 0.90));
+                    json.add("overrides", overrides);
+
+                    return json;
+                });
+    }
+
+    private static JsonObject transform(JsonArray rotation, JsonArray translation, JsonArray scale) {
+        JsonObject json = new JsonObject();
+        json.add("rotation", rotation);
+        json.add("translation", translation);
+        json.add("scale", scale);
+        return json;
+    }
+
+    private static JsonArray nums(Number... values) {
+        JsonArray array = new JsonArray();
+        for (Number value : values) {
+            array.add(value);
+        }
+        return array;
+    }
+
+    private static JsonObject override(ResourceLocation model, Object... predicate) {
+        JsonObject predicateJson = new JsonObject();
+        for (int i = 0; i < predicate.length; i += 2) {
+            predicateJson.addProperty((String) predicate[i], (Number) predicate[i + 1]);
+        }
+
+        JsonObject json = new JsonObject();
+        json.add("predicate", predicateJson);
+        json.addProperty("model", model.toString());
+        return json;
     }
 }
