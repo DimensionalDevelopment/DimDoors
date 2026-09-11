@@ -53,6 +53,7 @@
 - Fixed a server-side crash risk caused by client-side logging usage.
 - Improved Create sliding door compatibility, including mixed double doors, redstone, waterlogging, and folding-door visuals.
 - Updated Create contraption and Sable compatibility for the new rift system.
+- Fixed the issue in sable compat where sublevels connected a sublevel that dimensional door being teleported to disappear
 - Command blocks that are powered or meant to automatically start will now do so when pockets are generated.
 - `/dimteleport` command's permission level has been changedhas entity selector support.
 - `/pocket` command now has a target instead of a locator, which refers to an entity to send to the pocket. Old functionality can be accomplished with execute at <locator> run pocket ...
@@ -81,3 +82,14 @@
 - Fixed auto generated doors appearing in Chipped content.
 - Tweaked Monolith aggro to ignore invisible players.
 - Made gold and quartz doors non-occluding.
+- Updated portal effect of dimensional door and trap door to be a full volume vs plane.
+- Nuke chunkloading pocket addon.
+- Added the ability to change the colors of the dimensional portal effect. 
+  - Personal pockets now have a custom set of colors based on the current color their dyed too.
+  - Pockets can their own custom portal colors
+  - Added new file `portal_colors.json` for datapack creators to customize portal colors per dimension or pocket type.
+- Imguimc support
+  - Pressing in N opens a portal color edtior.
+- Fixed several pockets having no loot and misconfigured doors. 
+- Added Farshot.
+  - Bow that uses enderpearls like arrows allowing them to fired further than they can thrown. Additional effects is swapping with entity when hit and firing a pearl at a detached rift lets you teleport through it.
