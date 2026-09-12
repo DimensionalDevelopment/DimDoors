@@ -11,61 +11,58 @@ def includeCompile(entry) {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
+    def loaderExclude = { exclude group: "net.fabricmc", module: "fabric-loader" }
+
+    minecraft libs.minecraft
     mappings loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+        parchment(variantOf(libs.parchment) { artifactType("zip") })
     }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation libs.fabric.api
+    modImplementation libs.fabric.loader
 
-    modLocalRuntime("dev.ryanhcode.sable:sable-fabric-${project.minecraft_version}:${project.sable_version}") {
-        exclude group: "net.fabricmc", module: "fabric-loader"
-    }
+    modLocalRuntime(libs.sable.fabric, loaderExclude)
 
-    includeCompile "org.apfloat:apfloat:${apfloat_version}"
-    includeCompile "org.jheaps:jheaps:${jheaps_version}"
-    includeCompile "org.jgrapht:jgrapht-core:${jgrapht_version}"
-    includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    includeCompile "com.github.Chocohead:Fabric-ASM:v2.3"
+    includeCompile libs.apfloat
+    includeCompile libs.jheaps
+    includeCompile libs.jgrapht
+    includeCompile libs.poly2tri
+    includeCompile libs.fabric.asm
 
-    modLocalRuntime "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
-    modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:${rootProject.properties["cloth_config"]}") {
-        exclude(group: "net.fabricmc", module: "fabric-loader")
-    }
+    modLocalRuntime libs.wthit.fabric
+    modLocalRuntime(libs.cloth.config.fabric, loaderExclude)
 
-    modLocalRuntime "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
+    modLocalRuntime libs.worldedit
 
     // Moonlight: only the datagen LanguageProvider compiles against it.
-    modCompileOnly "curse.maven:selene-499980:7522322"
-    modLocalRuntime "curse.maven:selene-499980:7522322"
-    modCompileOnly "curse.maven:modmenu-308702:7808443"
-    modLocalRuntime "curse.maven:modmenu-308702:7808443"
-    modCompileOnly("net.caffeinemc:sodium-fabric:${sodium_version}+mc${minecraft_version}") {
-        exclude group: "net.fabricmc", module: "fabric-loader"
+    modCompileOnly libs.moonlight
+    modLocalRuntime libs.moonlight
+    modCompileOnly libs.modmenu
+    modLocalRuntime libs.modmenu
+    modCompileOnly(libs.sodium.fabric, loaderExclude)
+
+    modCompileOnly libs.iris.fabric
+
+    modCompileOnly libs.rei.api.fabric
+
+    modCompileOnly libs.jei.api.fabric
+
+    switch (recipe_viewer) {
+        case "rei" -> {
+
+            modLocalRuntime(libs.rei.fabric) {
+                exclude group: "net.fabricmc", module: "fabric-loader"
+                exclude group: "net.fabricmc.fabric-api"
+                exclude group: "me.shedaniel.cloth"
+            }
+        }
+        case "jei" -> {
+            modLocalRuntime libs.jei.fabric
+        }
     }
 
-    modCompileOnly("maven.modrinth:iris:${iris_version}-fabric")
-
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei}"
-
-    modCompileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei}"
-
-//    switch (recipe_viewer) {
-//        case "rei": {
-//            modLocalRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${rei}"
-//            break
-//        }
-//        case "jei": {
-            modLocalRuntime "mezz.jei:jei-${minecraft_version}-fabric:${jei}"
-//            break
-//        }
-//    }
-
-    modLocalRuntime("foundry.imguimc:imguimc-fabric-${project.minecraft_version}:${project.imguimc_version}") {
+    modLocalRuntime(libs.imguimc.fabric) {
         exclude group: "net.fabricmc", module: "fabric-loader"
-        // imguimc's pom pulls unremapped (intermediary) fabric-api modules onto the
-        // run classpath, which loader 0.18+ rejects. fabric-api is declared above.
         exclude group: "net.fabricmc.fabric-api"
     }
 }

@@ -156,6 +156,7 @@ processResources {
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'sable_version'                : sable_version,
+            'create_version'               : create_version,
             'sodium_version'               : sodium_version,
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,

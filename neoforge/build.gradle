@@ -23,47 +23,48 @@ configurations {
 
 dependencies {
 
-    localRuntime("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}") {
+    localRuntime(libs.sable.neoforge) {
         exclude group: "foundry.veil"
     }
 
-    localRuntime("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}") {
+    localRuntime(libs.simulated.neoforge) {
         exclude group: "foundry.veil"
     }
 
-    localRuntime("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}") {
+    localRuntime(libs.aeronautics.neoforge) {
         exclude group: "foundry.veil"
     }
 
-    includeCompile "org.apfloat:apfloat:${apfloat_version}"
-    includeCompile "org.jheaps:jheaps:${jheaps_version}"
-    includeCompile "org.jgrapht:jgrapht-core:${jgrapht_version}"
-    includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+    includeCompile libs.apfloat
+    includeCompile libs.jheaps
+    includeCompile libs.jgrapht
+    includeCompile libs.poly2tri
 
-    compileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
-    compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
-    compileOnly "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei}"
+    compileOnly libs.wthit.api.neoforge
+    compileOnly libs.wthit.neoforge
+    compileOnly libs.worldedit
+    compileOnly libs.rei.api.neoforge
+    compileOnly libs.jei.api.neoforge
 
-    localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
+    localRuntime libs.cloth.config.neoforge
 
-    compileOnly("net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}")
-    compileOnly("maven.modrinth:iris:${iris_version}-neoforge")
+    compileOnly libs.sodium.neoforge
+    compileOnly libs.iris.neoforge
 
-//    switch (recipe_viewer?.toString()) {
-//        case 'rei':
-//            compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei}"
-//            break
-//        case 'jei':
-            localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei}"
-//            break
-//    }
+    switch (recipe_viewer?.toString()) {
+        case "rei" -> {
+//            compileOnly libs.rei.default.plugin.neoforge
+            localRuntime libs.rei.neoforge
+        }
+        case "jei" -> {
+            localRuntime libs.jei.neoforge
+        }
+    }
 
 
-    localRuntime "curse.maven:create-328085:7963363"
+    localRuntime libs.create
 
-    localRuntime("foundry.imguimc:imguimc-neoforge-${project.minecraft_version}:${project.imguimc_version}")
+    localRuntime libs.imguimc.neoforge
 }
 
 neoForge {

@@ -57,5 +57,50 @@ versionRange = "[6.0.0,)"
 ordering = "AFTER"
 side = "BOTH"
 
+# Soft dependencies: not required, but if present must match. Sable, Aeronautics and
+# ImGuiMC are pinned to an exact version because their APIs shift between releases.
+
+[[dependencies.${mod_id}]]
+modId = "sable"
+type = "optional"
+versionRange = "[2.0.5]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "simulated"
+type = "optional"
+versionRange = "[1.3.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "aeronautics"
+type = "optional"
+versionRange = "[1.3.1]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "imguimc"
+type = "optional"
+versionRange = "[1.2.5+mc1.21.1]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "sodium"
+type = "optional"
+versionRange = "[0.8.12,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "iris"
+type = "optional"
+versionRange = "[1.8.14-beta.1,)"
+ordering = "NONE"
+side = "CLIENT"
+
 # [features.${mod_id}]
 # openGLVersion = "[3.2,)"

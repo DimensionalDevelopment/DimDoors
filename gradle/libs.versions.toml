@@ -1,0 +1,81 @@
+[libraries]
+apfloat = { group = "org.apfloat", name = "apfloat", version = "1.16.0" }
+jheaps = { group = "org.jheaps", name = "jheaps", version = "0.14" }
+jgrapht = { group = "org.jgrapht", name = "jgrapht-core", version = "1.6.0-SNAPSHOT" }
+poly2tri = { group = "com.github.DimensionalDevelopment", name = "poly2tri.java", version = "0.1.1" }
+fabric-asm = { group = "com.github.Chocohead", name = "Fabric-ASM", version = "v2.3" }
+
+#compile tooling
+annotations = { group = "org.jetbrains", name = "annotations", version = "24.1.0" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.14.0" }
+mixin = { group = "org.spongepowered", name = "mixin", version = "0.8.5" }
+asm-tree = { group = "org.ow2.asm", name = "asm-tree", version = "9.6" }
+mixinextras-common = { group = "io.github.llamalad7", name = "mixinextras-common", version = "0.3.5" }
+
+#fabric
+minecraft = { group = "com.mojang", name = "minecraft", version = "1.21.1" }
+parchment = { group = "org.parchmentmc.data", name = "parchment-1.21.1", version = "2024.11.17" }
+fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.116.6+1.21.1" }
+fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version = "0.18.4" }
+
+#sable
+sable-common = { group = "dev.ryanhcode.sable", name = "sable-common-1.21.1", version = "2.0.5" }
+sable-fabric = { group = "dev.ryanhcode.sable", name = "sable-fabric-1.21.1", version = "2.0.5" }
+sable-neoforge = { group = "dev.ryanhcode.sable", name = "sable-neoforge-1.21.1", version = "2.0.5" }
+
+#simulated
+simulated-common = { group = "dev.simulated_team.simulated", name = "simulated-common-1.21.1", version = "1.3.1" }
+simulated-neoforge = { group = "dev.simulated_team.simulated", name = "simulated-neoforge-1.21.1", version = "1.3.1" }
+
+#aeronautics
+aeronautics-common = { group = "dev.eriksonn.aeronautics", name = "aeronautics-common-1.21.1", version = "1.3.1" }
+aeronautics-neoforge = { group = "dev.eriksonn.aeronautics", name = "aeronautics-neoforge-1.21.1", version = "1.3.1" }
+
+#iris
+iris-common = { group = "maven.modrinth", name = "iris", version = "1.8.14-beta.1+1.21.1-neoforge" }
+iris-fabric = { group = "maven.modrinth", name = "iris", version = "1.8.14-beta.1+1.21.1-fabric" }
+iris-neoforge = { group = "maven.modrinth", name = "iris", version = "1.8.14-beta.1+1.21.1-neoforge" }
+
+#sodium
+sodium-fabric = { group = "net.caffeinemc", name = "sodium-fabric", version = "0.8.12+mc1.21.1" }
+sodium-neoforge = { group = "net.caffeinemc", name = "sodium-neoforge-mod", version = "0.8.12+mc1.21.1" }
+
+#create
+create = { group = "curse.maven", name = "create-328085", version = "7963363" }
+
+#cloth config
+cloth-config-fabric = { group = "me.shedaniel.cloth", name = "cloth-config-fabric", version = "15.0.140" }
+cloth-config-neoforge = { group = "me.shedaniel.cloth", name = "cloth-config-neoforge", version = "15.0.140" }
+
+#wthit
+wthit-api-neoforge = { group = "mcp.mobius.waila", name = "wthit-api", version = "neo-12.5.3" }
+wthit-fabric = { group = "mcp.mobius.waila", name = "wthit", version = "fabric-12.5.3" }
+wthit-neoforge = { group = "mcp.mobius.waila", name = "wthit", version = "neo-12.5.3" }
+
+#worldedit
+worldedit = { group = "curse.maven", name = "worldedit-225608", version = "5830452" }
+
+#rei
+rei-api-fabric = { group = "me.shedaniel", name = "RoughlyEnoughItems-api-fabric", version = "16.0.799" }
+rei-api-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-api-neoforge", version = "16.0.799" }
+rei-fabric = { group = "me.shedaniel", name = "RoughlyEnoughItems-fabric", version = "16.0.799" }
+rei-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-neoforge", version = "16.0.799" }
+rei-default-plugin-common = { group = "me.shedaniel", name = "RoughlyEnoughItems-default-plugin", version = "16.0.799" }
+rei-default-plugin-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-default-plugin-neoforge", version = "16.0.799" }
+
+#jei
+jei-lib = { group = "mezz.jei", name = "jei-1.21.1-lib", version = "19.21.0.247" }
+jei-api-common = { group = "mezz.jei", name = "jei-1.21.1-common-api", version = "19.21.0.247" }
+jei-api-fabric = { group = "mezz.jei", name = "jei-1.21.1-fabric-api", version = "19.21.0.247" }
+jei-api-neoforge = { group = "mezz.jei", name = "jei-1.21.1-neoforge-api", version = "19.21.0.247" }
+jei-fabric = { group = "mezz.jei", name = "jei-1.21.1-fabric", version = "19.21.0.247" }
+jei-neoforge = { group = "mezz.jei", name = "jei-1.21.1-neoforge", version = "19.21.0.247" }
+
+#imguimc
+imguimc-common = { group = "foundry.imguimc", name = "imguimc-common-1.21.1", version = "1.2.5" }
+imguimc-fabric = { group = "foundry.imguimc", name = "imguimc-fabric-1.21.1", version = "1.2.5" }
+imguimc-neoforge = { group = "foundry.imguimc", name = "imguimc-neoforge-1.21.1", version = "1.2.5" }
+
+#fabric dev mods
+moonlight = { group = "curse.maven", name = "selene-499980", version = "7522322" }
+modmenu = { group = "curse.maven", name = "modmenu-308702", version = "7808443" }

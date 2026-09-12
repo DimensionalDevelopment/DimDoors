@@ -38,40 +38,41 @@ configurations {
 }
 
 dependencies {
-    compileOnlyApi "org.jetbrains:annotations:24.1.0"
-    compileOnlyApi "org.apache.commons:commons-lang3:3.14.0"
+    compileOnlyApi libs.annotations
+    compileOnlyApi libs.commons.lang3
 
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
-    compileOnly 'org.ow2.asm:asm-tree:9.6'
+    compileOnly libs.mixin
+    compileOnly libs.asm.tree
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
-    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
-    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    compileOnly libs.mixinextras.common
+    annotationProcessor libs.mixinextras.common
 
-    compileOnly "net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}"
-    compileOnly("maven.modrinth:iris:${iris_version}-neoforge")
-    sharedCompileOnly("dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}")
-    sharedCompileOnly("dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}") {
+    compileOnly libs.sodium.neoforge
+    compileOnly libs.iris.common
+    sharedCompileOnly libs.sable.common
+    sharedCompileOnly(libs.simulated.common) {
         exclude group: "dev.ryanhcode.sable"
     }
-    sharedCompileOnly("dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}") {
+    sharedCompileOnly(libs.aeronautics.common) {
         exclude group: "dev.ryanhcode.sable"
     }
-    sharedCompileOnly "curse.maven:create-328085:7963363"
+    sharedCompileOnly libs.create
 
-    sharedCompileOnly("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
+    sharedCompileOnly libs.cloth.config.neoforge
 
-    sharedCompileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
+    sharedCompileOnly libs.wthit.api.neoforge
 
-    compileOnly "org.jgrapht:jgrapht-core:${jgrapht_version}"
+    compileOnly libs.jgrapht
 
-    compileOnly "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+    compileOnly libs.poly2tri
 
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"
+    compileOnly libs.rei.neoforge
+    compileOnly libs.rei.default.plugin.common
 
-    sharedCompileOnly "mezz.jei:jei-${minecraft_version}-lib:${jei}"
-    sharedCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei}"
-    sharedCompileOnly("foundry.imguimc:imguimc-common-${project.minecraft_version}:${project.imguimc_version}")
+    sharedCompileOnly libs.jei.lib
+    sharedCompileOnly libs.jei.api.common
+
+    sharedCompileOnly libs.imguimc.common
 }
 
 artifacts {
