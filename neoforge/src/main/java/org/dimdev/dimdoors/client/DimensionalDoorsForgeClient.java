@@ -18,8 +18,6 @@ import org.dimdev.dimdoors.client.*;
 import org.dimdev.dimdoors.client.config.ConfigScreen;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
-import org.dimdev.dimdoors.compat.create.CreateCompatBlockEntityTypes;
-import org.dimdev.dimdoors.compat.create.SlidingEntranceRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimcore.client.NeoForgeClientSided;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -46,9 +44,6 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
         container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, screen) -> ConfigScreen.createScreen(screen));
 
         bus.addListener(DimensionalDoorsForgeClient::registerRecipeBookCategories);
-        if (DimensionalDoors.getSided().isModLoaded("create")) {
-            bus.addListener(DimensionalDoorsForgeClient::registerCreateBlockEntityRenderers);
-        }
 
         GeneratedDoorModelEvents.init(bus);
 
@@ -63,10 +58,6 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
                         event::registerRecipeCategoryFinder
                 )
         );
-    }
-
-    private static void registerCreateBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(CreateCompatBlockEntityTypes.SLIDING_ENTRANCE_RIFT, SlidingEntranceRiftBlockEntityRenderer::new);
     }
 
     @Override

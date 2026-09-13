@@ -50,13 +50,6 @@ dependencies {
     compileOnly libs.sodium.neoforge
     compileOnly libs.iris.common
     sharedCompileOnly libs.sable.common
-    sharedCompileOnly(libs.simulated.common) {
-        exclude group: "dev.ryanhcode.sable"
-    }
-    sharedCompileOnly(libs.aeronautics.common) {
-        exclude group: "dev.ryanhcode.sable"
-    }
-    sharedCompileOnly libs.create
 
     sharedCompileOnly libs.cloth.config.neoforge
 

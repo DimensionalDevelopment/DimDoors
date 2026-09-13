@@ -23,14 +23,6 @@ sable-common = { group = "dev.ryanhcode.sable", name = "sable-common-1.21.1", ve
 sable-fabric = { group = "dev.ryanhcode.sable", name = "sable-fabric-1.21.1", version = "2.0.5" }
 sable-neoforge = { group = "dev.ryanhcode.sable", name = "sable-neoforge-1.21.1", version = "2.0.5" }
 
-#simulated
-simulated-common = { group = "dev.simulated_team.simulated", name = "simulated-common-1.21.1", version = "1.3.1" }
-simulated-neoforge = { group = "dev.simulated_team.simulated", name = "simulated-neoforge-1.21.1", version = "1.3.1" }
-
-#aeronautics
-aeronautics-common = { group = "dev.eriksonn.aeronautics", name = "aeronautics-common-1.21.1", version = "1.3.1" }
-aeronautics-neoforge = { group = "dev.eriksonn.aeronautics", name = "aeronautics-neoforge-1.21.1", version = "1.3.1" }
-
 #iris
 iris-common = { group = "maven.modrinth", name = "iris", version = "1.8.14-beta.1+1.21.1-neoforge" }
 iris-fabric = { group = "maven.modrinth", name = "iris", version = "1.8.14-beta.1+1.21.1-fabric" }
@@ -39,9 +31,6 @@ iris-neoforge = { group = "maven.modrinth", name = "iris", version = "1.8.14-bet
 #sodium
 sodium-fabric = { group = "net.caffeinemc", name = "sodium-fabric", version = "0.8.12+mc1.21.1" }
 sodium-neoforge = { group = "net.caffeinemc", name = "sodium-neoforge-mod", version = "0.8.12+mc1.21.1" }
-
-#create
-create = { group = "curse.maven", name = "create-328085", version = "7963363" }
 
 #cloth config
 cloth-config-fabric = { group = "me.shedaniel.cloth", name = "cloth-config-fabric", version = "15.0.140" }
@@ -61,7 +50,6 @@ rei-api-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-api-neof
 rei-fabric = { group = "me.shedaniel", name = "RoughlyEnoughItems-fabric", version = "16.0.799" }
 rei-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-neoforge", version = "16.0.799" }
 rei-default-plugin-common = { group = "me.shedaniel", name = "RoughlyEnoughItems-default-plugin", version = "16.0.799" }
-rei-default-plugin-neoforge = { group = "me.shedaniel", name = "RoughlyEnoughItems-default-plugin-neoforge", version = "16.0.799" }
 
 #jei
 jei-lib = { group = "mezz.jei", name = "jei-1.21.1-lib", version = "19.21.0.247" }

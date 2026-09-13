@@ -3,9 +3,12 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+// Bundled (jar-in-jar) libraries: compile against, run with, ship inside the jar,
+// but never publish — consumers get them from the nested jars, not the POM.
 def includeCompile(entry) {
     project.dependencies {
-        implementation(entry)
+        compileOnly(entry)
+        localRuntime(entry)
         jarJar(entry)
     }
     neoForge.runs.configureEach {
@@ -24,14 +27,6 @@ configurations {
 dependencies {
 
     localRuntime(libs.sable.neoforge) {
-        exclude group: "foundry.veil"
-    }
-
-    localRuntime(libs.simulated.neoforge) {
-        exclude group: "foundry.veil"
-    }
-
-    localRuntime(libs.aeronautics.neoforge) {
         exclude group: "foundry.veil"
     }
 
@@ -60,9 +55,6 @@ dependencies {
             localRuntime libs.jei.neoforge
         }
     }
-
-
-    localRuntime libs.create
 
     localRuntime libs.imguimc.neoforge
 }

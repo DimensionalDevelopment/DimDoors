@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.tag;
 
-import dev.eriksonn.aeronautics.index.AeroTags;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;

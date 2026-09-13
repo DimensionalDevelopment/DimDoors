@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.*;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
-import org.dimdev.dimdoors.compat.create.CreateCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.ModFluidTypes;
@@ -121,14 +120,6 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
     @Override
     public RecipeBookType getTesselatingRecipeBookType() {
         return TESSELLATING.getValue();
-    }
-
-    @Override
-    public void checkCompat() {
-        IDimensionalDoorsSided.super.checkCompat();
-        if(getSided().isModLoaded("create")) {
-            CreateCompat.init();
-        }
     }
 
     @Override

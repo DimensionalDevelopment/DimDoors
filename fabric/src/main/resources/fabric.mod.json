@@ -39,10 +39,10 @@
         "modmenu": [ "org.dimdev.dimdoors.compat.modmenu.ModMenuCompat" ]
     },
     "mixins": [
-        "${mod_id}.mixins.json",
+        "dimdoors.mixins.json",
         "dimcore.mixins.json",
-        "${mod_id}.sable-compat.mixins.json",
-        "${mod_id}.fabric.mixins.json",
+        "dimdoors.sable-compat.mixins.json",
+        "dimdoors.fabric.mixins.json",
         "dimcore.fabric.mixins.json"
     ],
     "depends": {
@@ -53,8 +53,6 @@
     },
     "breaks": {
         "sable": ["<2.0.5", ">2.0.5"],
-        "simulated": "<1.3.1",
-        "aeronautics": ["<1.3.1", ">1.3.1"],
         "imguimc": ["<1.2.5", ">1.2.5"],
         "sodium": "<0.8.12",
         "iris": "<1.8.14-beta.1"

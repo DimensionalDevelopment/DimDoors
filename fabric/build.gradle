@@ -3,9 +3,21 @@ plugins {
     id 'fabric-loom'
 }
 
+// Bundled (jar-in-jar) libraries: compile against, run with, ship inside the jar,
+// but never publish — consumers get them from the nested jars, not the POM.
 def includeCompile(entry) {
     project.dependencies {
-        modImplementation(entry)
+        compileOnly(entry)
+        localRuntime(entry)
+        include(entry)
+    }
+}
+
+// Same, for a Fabric mod that needs Loom to remap it.
+def includeMod(entry) {
+    project.dependencies {
+        modCompileOnly(entry)
+        modLocalRuntime(entry)
         include(entry)
     }
 }
@@ -27,7 +39,7 @@ dependencies {
     includeCompile libs.jheaps
     includeCompile libs.jgrapht
     includeCompile libs.poly2tri
-    includeCompile libs.fabric.asm
+    includeMod libs.fabric.asm
 
     modLocalRuntime libs.wthit.fabric
     modLocalRuntime(libs.cloth.config.fabric, loaderExclude)
