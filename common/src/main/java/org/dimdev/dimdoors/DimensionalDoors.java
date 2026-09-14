@@ -2,8 +2,6 @@ package org.dimdev.dimdoors;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -12,8 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -86,7 +82,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 import static org.dimdev.dimdoors.network.ServerPacketHandler.PlayerSyncData.getPocket;
@@ -139,30 +134,30 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
 
         ModRecipeBookTypes.init();
 
-        registerRun(Registries.DATA_COMPONENT_TYPE, () -> ModDataComponentTypes.register());
-        registerRun(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, () -> ModEnchantmentEffects.init());
-        registerRun(Registries.LOOT_CONDITION_TYPE, () -> ModItemLootConditions.init());
+        registerRun(Registries.DATA_COMPONENT_TYPE, ModDataComponentTypes::register);
+        registerRun(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, ModEnchantmentEffects::init);
+        registerRun(Registries.LOOT_CONDITION_TYPE, ModItemLootConditions::init);
 
         registerRun(Registries.CHUNK_GENERATOR, () -> sided.register(Registries.CHUNK_GENERATOR, "blank", BlankChunkGenerator.CODEC));
-        registerRun(Registries.RECIPE_TYPE, () -> ModRecipeTypes.init());
-        registerRun(Registries.RECIPE_SERIALIZER, () -> ModRecipeSerializers.init());
-        registerRun(Registries.MENU, () -> ModScreenHandlerTypes.init());
-        registerRun(Registries.SOUND_EVENT, () -> ModSoundEvents.init());
-        registerRun(Registries.FLUID, () -> ModFluids.init());
-        registerRun(Registries.ENTITY_TYPE, () -> ModEntityTypes.init());
-        registerRun(Registries.ARMOR_MATERIAL, () -> ModArmorMaterials.init());
-        registerRun(Registries.BLOCK, () -> ModBlocks.init());
-        registerRun(Registries.ITEM, () -> ModItems.init());
-        registerRun(Registries.BLOCK_ENTITY_TYPE, () -> ModBlockEntityTypes.init());
-        registerRun(Registries.CARVER, () -> ModCarvers.init());
-        registerRun(Registries.BIOME, () -> ModBiomes.init());
-        registerRun(Registries.CUSTOM_STAT, () -> ModStats.init());
-        registerRun(Registries.PARTICLE_TYPE, () -> ModParticleTypes.init());
-        registerRun(Registries.TRIGGER_TYPE, () -> ModCriteria.init());
-        registerRun(Registries.STRUCTURE_PROCESSOR, () -> ModStructureProccessors.init());
-        registerRunDataValue(() -> ModDataValues.init());
-        registerRunDataValue(() -> PocketChunkClaims.init());
-        registerRunDataValue(() -> TranscendentProjectiles.init());
+        registerRun(Registries.RECIPE_TYPE, ModRecipeTypes::init);
+        registerRun(Registries.RECIPE_SERIALIZER, ModRecipeSerializers::init);
+        registerRun(Registries.MENU, ModScreenHandlerTypes::init);
+        registerRun(Registries.SOUND_EVENT, ModSoundEvents::init);
+        registerRun(Registries.FLUID, ModFluids::init);
+        registerRun(Registries.ENTITY_TYPE, ModEntityTypes::init);
+        registerRun(Registries.ARMOR_MATERIAL, ModArmorMaterials::init);
+        registerRun(Registries.BLOCK, ModBlocks::init);
+        registerRun(Registries.ITEM, ModItems::init);
+        registerRun(Registries.BLOCK_ENTITY_TYPE, ModBlockEntityTypes::init);
+        registerRun(Registries.CARVER, ModCarvers::init);
+        registerRun(Registries.BIOME, ModBiomes::init);
+        registerRun(Registries.CUSTOM_STAT, ModStats::init);
+        registerRun(Registries.PARTICLE_TYPE, ModParticleTypes::init);
+        registerRun(Registries.TRIGGER_TYPE, ModCriteria::init);
+        registerRun(Registries.STRUCTURE_PROCESSOR, ModStructureProccessors::init);
+        registerRunDataValue(ModDataValues::init);
+        registerRunDataValue(PocketChunkClaims::init);
+        registerRunDataValue(TranscendentProjectiles::init);
 
 
         ModGameRules.init();
@@ -193,14 +188,14 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
 
 //        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
-        sided.registerClientPacket(PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onPlayerInventorySlotUpdate(packet));
-        sided.registerClientPacket(SyncPocketAddonsS2CPacket.TYPE, SyncPocketAddonsS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onSyncPocketAddons(packet));
-        sided.registerClientPacket(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onMonolithAggroParticles(packet));
-        sided.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onMonolithTeleportParticles(packet));
-        sided.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onRenderBreakBlock(packet));
+        sided.registerClientPacket(PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, ClientPacketListener::onPlayerInventorySlotUpdate);
+        sided.registerClientPacket(SyncPocketAddonsS2CPacket.TYPE, SyncPocketAddonsS2CPacket.STREAM_CODEC, ClientPacketListener::onSyncPocketAddons);
+        sided.registerClientPacket(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithAggroParticles);
+        sided.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithTeleportParticles);
+        sided.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, ClientPacketListener::onRenderBreakBlock);
         sided.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onAttackBlock(player, packet));
-        sided.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onPortalColors(packet));
-        sided.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onClearPocket(packet));
+        sided.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, ClientPacketListener::onPortalColors);
+        sided.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, ClientPacketListener::onClearPocket);
         sided.onServerStarting(Decay.DecayLoader::populate);
 
         PlayerTeleportEvents.BEFORE.register((player, level, pos) -> {
@@ -239,9 +234,10 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
                     .findFirst()
                     .orElse(PortalColors.base());
         } else {
-            colors = PortalColors.levels(player.serverLevel().dimension());
-
+            ServerLevel level = player.serverLevel();
+            colors = PortalColors.levels(level.dimension());
             if (colors == null) colors = PortalColors.base();
+
         }
 
         getSided().sendPacket(player, new PortalColorsS2CPacket(colors));
@@ -331,7 +327,7 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
             return;
         }
 
-        if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
+        if (blockEntity instanceof EntranceRiftBlockEntity<?> riftBlockEntity) {
             if (state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
                 pos = pos.below();
             }
