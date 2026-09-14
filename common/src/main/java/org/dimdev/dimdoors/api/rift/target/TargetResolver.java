@@ -12,21 +12,29 @@ import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.util.LevelSpaceHelper;
 
+import java.util.function.BiFunction;
+
 public final class TargetResolver {
     private TargetResolver() {}
 
     public static <T extends Target> T target(Location location, Class<T> targetClazz) {
-        return location == null ? null : target(location.getWorld(), location.pos, targetClazz);
+        return location == null ? null : target(location.getWorld(), location.pos, targetClazz, null);
     }
 
     public static <T extends Target> T target(ServerLevel level, BlockPos pos, Class<T> targetClazz) {
+        return target(level, pos, targetClazz, null);
+    }
+
+    public static <T extends Target> T target(ServerLevel level, BlockPos pos, Class<T> targetClazz, BiFunction<ServerLevel, BlockPos, T> function) {
         if (level == null) {
             return null;
         }
 
         return BlockPosUtil.nearbyVertical(pos, p -> {
-            var target = castOrNull(LevelSpaceHelper.INSTANCE.getBlockEntity(level, p), targetClazz);
-            if(target == null) target = castOrNull(blockStateEntity(level, p), targetClazz);
+            var target = castOrNull(level, p, LevelSpaceHelper.INSTANCE::getBlockEntity, targetClazz);
+            if(target == null) target = castOrNull(level, p, (level1, pos1) -> LevelSpaceHelper.INSTANCE.getBlockState(level1, pos1).getBlock(), targetClazz);
+            if(target == null) target = castOrNull(level, p, function, targetClazz);
+
             return target;
         });
     }
@@ -36,7 +44,7 @@ public final class TargetResolver {
     }
 
     public static Target target(ServerLevel level, BlockPos pos) {
-        return target(level, pos, Target.class);
+        return target(level, pos, Target.class, null);
     }
 
     public static EntityTarget entity(Location location) {
@@ -44,12 +52,15 @@ public final class TargetResolver {
     }
 
     public static EntityTarget entity(ServerLevel level, BlockPos pos) {
-        return target(level, pos, EntityTarget.class);
+        return target(level, pos, EntityTarget.class, TargetResolver::blockStateEntity);
     }
 
+    public static <T, V> T castOrNull(ServerLevel level, BlockPos pos, BiFunction<ServerLevel, BlockPos, V> function, Class<T> tClass) {
+        return function != null ? castOrNull(function.apply(level, pos), tClass) : null;
+    }
 
     public static <T> T castOrNull(Object obj, Class<T> tClass) {
-        return tClass.isInstance(obj) ? (T) obj : null;
+        return tClass.isInstance(obj) ? tClass.cast(obj) : null;
     }
 
     public static EntityTarget blockStateEntity(ServerLevel level, BlockPos pos) {

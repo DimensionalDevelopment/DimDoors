@@ -2,21 +2,24 @@ package org.dimdev.dimdoors.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.dimdev.dimdoors.api.rift.target.RedstoneTarget;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -28,13 +31,15 @@ import org.jetbrains.annotations.Nullable;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
-public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements RiftProvider<DetachedRiftBlockEntity>, SimpleWaterloggedBlock {
+public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements RedstoneTarget, RiftProvider<DetachedRiftBlockEntity> {
     public static final MapCodec<DetachedRiftBlock> CODEC = simpleCodec(DetachedRiftBlock::new);
 
     public static final String ID = "rift";
 
     public DetachedRiftBlock(Properties settings) {
         super(settings);
+
+        registerDefaultState(defaultBlockState().setValue(BlockStateProperties.POWER, 0));
     }
 
     @Override
@@ -45,6 +50,35 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
     @Override
     public DetachedRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
         return world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).orElse(null);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(BlockStateProperties.POWER);
+    }
+
+    @Override
+    protected int getSignal(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        return state.getBlock() == this ? state.getValue(BlockStateProperties.POWER) : 0;
+    }
+
+    @Override
+    protected boolean isSignalSource(@NotNull BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean recieveSignal(int strength, Location location) {
+        var level = location.getWorld();
+        if(level == null) return false;
+        var pos = location.getBlockPos();
+
+        var state = level.getBlockState(pos).setValue(BlockStateProperties.POWER, strength);
+
+        level.setBlockAndUpdate(pos, state);
+
+        return true;
     }
 
     @Override

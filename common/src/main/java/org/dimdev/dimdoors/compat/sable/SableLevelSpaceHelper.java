@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -79,6 +80,16 @@ public class SableLevelSpaceHelper extends LevelSpaceHelper {
         ensureSableSubLevelLoaded(level, pos);
         return level.getBlockEntity(pos);
     }
+
+    /**
+     * Returns the block entity at {@code pos}, first loading the sub-level that contains it.
+     */
+    @Override
+    public BlockState getBlockState(ServerLevel level, BlockPos pos) {
+        ensureSableSubLevelLoaded(level, pos);
+        return level.getBlockState(pos);
+    }
+
 
     /** @see #ensureSableSubLevelLoaded(ServerLevel, Vec3) */
     private void ensureSableSubLevelLoaded(ServerLevel level, BlockPos pos) {

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -14,6 +15,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DialingDoor;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.PlaceOnlyOnRiftBlockItem;
 import org.dimdev.dimdoors.item.door.EntranceRiftBlockItem;
 
 import java.util.ArrayList;
@@ -137,6 +139,8 @@ public final class ModBlocks {
     public static final Block SOLID_STATIC = register("solid_static", new UnravelledFabricBlock(ofFullCopy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
     public static final Block TESSELATING_LOOM = register("tesselating_loom", new TesselatingLoomBlock(of(LOOM)));
+
+    public static final Block LIMINAL_TRANSMITTER = register("liminal_transmitter", new LiminalTransmitterBlock(of(IRON_BLOCK)), block -> new PlaceOnlyOnRiftBlockItem(block, new Item.Properties()));
 
     public static final Block REALITY_SPONGE = register("reality_sponge", new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
     public static final Block LIMBO_AIR = registerWithoutTabOrItem("limbo_air", new LimboAirBlock(BlockBehaviour.Properties.of().randomTicks().replaceable().noCollission().noLootTable().isSuffocating((state, world, pos) -> false).isViewBlocking((state, world, pos) -> false)));
@@ -264,6 +268,7 @@ public final class ModBlocks {
         ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM);
         ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(ModBlocks.DIMENSIONAL_PORTAL);
         ModBlockEntityTypes.DIALING_DOOR.addBlock(ModBlocks.DIALING_DOOR);
+        ModBlockEntityTypes.LIMINAL_TRANSMITTER.addBlock(ModBlocks.LIMINAL_TRANSMITTER);
     }
 
     private static <T extends Block> T registerWithoutTabOrItem(String name, T block) {

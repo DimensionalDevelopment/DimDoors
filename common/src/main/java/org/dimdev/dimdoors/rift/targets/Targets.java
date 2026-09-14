@@ -1,13 +1,17 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimcore.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.util.LevelSpaceHelper;
+import org.dimdev.dimdoors.util.RotationUtil;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
@@ -56,14 +60,22 @@ public final class Targets {
         });
 
         DefaultTargets.registerDefaultTarget(REDSTONE, new RedstoneTarget() {
-            @Override
-            public boolean addRedstonePower(Direction relativeFacing, int strength) {
-                return false;
-            }
 
             @Override
-            public void subtractRedstonePower(Direction relativeFacing, int strength) {
-                throw new RuntimeException("Subtracted redstone that was never accepted");
+            public boolean recieveSignal(int strength, Location location) {
+                if (location != null) {
+                    var targetLevel = location.getWorld();
+
+                    if (targetLevel == null) return false;
+
+                    RedstoneTarget target = TargetResolver.target(targetLevel, location.pos, REDSTONE);
+
+                    if (target != null) {
+                        return target.recieveSignal(strength, location);
+                    }
+                }
+
+                return false;
             }
         });
     }

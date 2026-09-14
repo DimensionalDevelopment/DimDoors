@@ -26,6 +26,7 @@ public class ModBlockEntityTypes {
             DialingDoorBlockEntity::new);
 
     public static final MutableBlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = registerMutable("tesselating_loom", TesselatingLoomBlockEntity::new);
+    public static final MutableBlockEntityType<LiminalTransmitterBlockEntity> LIMINAL_TRANSMITTER = registerMutable("liminal_transmitter", LiminalTransmitterBlockEntity::new);
 
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {

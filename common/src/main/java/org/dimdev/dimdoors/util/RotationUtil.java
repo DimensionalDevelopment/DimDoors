@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3;
 public final class RotationUtil {
     private static final double DEG_TO_RAD = Math.PI / 180.0;
     private static final double RAD_TO_DEG = 180.0 / Math.PI;
+    public static final Rotations ZERO = new Rotations(0, 0, 0);
 
     private RotationUtil() {
     }

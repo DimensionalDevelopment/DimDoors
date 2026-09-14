@@ -95,7 +95,6 @@ public final class ModItems {
 
     public static final ArmorSet WORLD_THREAD_ARMOR = registerArmorSet("world_thread", ModArmorMaterials.WORLD_THREAD, properties -> properties.stacksTo(1));
 
-    public static final Set<Item> DOOR_ITEMS = new HashSet<>();
 
     public static Item registerRegular(String name, Function<Item.Properties, Item> item) {
         return register(name, item.apply(new Item.Properties()), DIMENSIONAL_DOORS);

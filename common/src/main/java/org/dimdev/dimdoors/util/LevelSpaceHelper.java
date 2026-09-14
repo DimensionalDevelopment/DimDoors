@@ -5,6 +5,7 @@ import net.minecraft.core.Rotations;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.util.Location;
@@ -32,6 +33,16 @@ public class LevelSpaceHelper {
     public BlockEntity getBlockEntity(ServerLevel level, BlockPos pos) {
         return level.getBlockEntity(pos);
     }
+
+    /**
+     * Gets a block state, letting an implementation resolve or load its level space beforehand.
+     *
+     * @return the block state at {@code pos}
+     */
+    public BlockState getBlockState(ServerLevel level, BlockPos pos) {
+        return level.getBlockState(pos);
+    }
+
 
     /**
      * Validates that a teleport destination can be resolved and used. Implementations may reject

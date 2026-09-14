@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.api.rift.target;
 
 import net.minecraft.core.Direction;
+import org.dimdev.dimdoors.api.util.Location;
 
 public interface RedstoneTarget extends Target {
-    boolean addRedstonePower(Direction relativeFacing, int strength);
+    boolean recieveSignal(int strength, Location location);
 
-    void subtractRedstonePower(Direction relativeFacing, int strength);
+    default int getSignal(Location location) {
+        return 0;
+    }
 }
