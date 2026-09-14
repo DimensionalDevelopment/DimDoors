@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.criteria.ModCriteria;
@@ -327,7 +328,7 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<? exte
             return;
         }
 
-        if (blockEntity instanceof EntranceRiftBlockEntity<?> riftBlockEntity) {
+        if (blockEntity instanceof Rift riftBlockEntity) {
             if (state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
                 pos = pos.below();
             }
