@@ -3,8 +3,6 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
-// Bundled (jar-in-jar) libraries: compile against, run with, ship inside the jar,
-// but never publish — consumers get them from the nested jars, not the POM.
 def includeCompile(entry) {
     project.dependencies {
         compileOnly(entry)
@@ -34,6 +32,7 @@ dependencies {
     includeCompile libs.jheaps
     includeCompile libs.jgrapht
     includeCompile libs.poly2tri
+    includeCompile libs.molang
 
     compileOnly libs.wthit.api.neoforge
     compileOnly libs.wthit.neoforge

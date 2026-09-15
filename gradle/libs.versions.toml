@@ -1,9 +1,13 @@
+[versions]
+molang = "1.1.20"
+
 [libraries]
 apfloat = { group = "org.apfloat", name = "apfloat", version = "1.16.0" }
 jheaps = { group = "org.jheaps", name = "jheaps", version = "0.14" }
 jgrapht = { group = "org.jgrapht", name = "jgrapht-core", version = "1.6.0-SNAPSHOT" }
 poly2tri = { group = "com.github.DimensionalDevelopment", name = "poly2tri.java", version = "0.1.1" }
 fabric-asm = { group = "com.github.Chocohead", name = "Fabric-ASM", version = "v2.3" }
+molang = { group = "local.com.bedrockk", name = "molang", version.ref = "molang" }
 
 #compile tooling
 annotations = { group = "org.jetbrains", name = "annotations", version = "24.1.0" }

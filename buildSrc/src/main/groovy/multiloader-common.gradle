@@ -16,6 +16,18 @@ java {
 repositories {
     mavenLocal()
     mavenCentral()
+
+    // Jars vendored under libs/ in maven layout; `local` is the first segment of the group id.
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Vendored libs"
+                url = "${rootProject.projectDir}/libs"
+            }
+        }
+        filter { includeGroup("local.com.bedrockk") }
+    }
+
     maven {
         name = "Central Portal Snapshots"
         url = "https://central.sonatype.com/repository/maven-snapshots"

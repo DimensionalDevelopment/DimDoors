@@ -51,6 +51,8 @@ dependencies {
     compileOnly libs.iris.common
     sharedCompileOnly libs.sable.common
 
+    api libs.molang
+
     sharedCompileOnly libs.cloth.config.neoforge
 
     sharedCompileOnly libs.wthit.api.neoforge

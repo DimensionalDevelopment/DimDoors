@@ -3,8 +3,6 @@ plugins {
     id 'fabric-loom'
 }
 
-// Bundled (jar-in-jar) libraries: compile against, run with, ship inside the jar,
-// but never publish — consumers get them from the nested jars, not the POM.
 def includeCompile(entry) {
     project.dependencies {
         compileOnly(entry)
@@ -13,7 +11,6 @@ def includeCompile(entry) {
     }
 }
 
-// Same, for a Fabric mod that needs Loom to remap it.
 def includeMod(entry) {
     project.dependencies {
         modCompileOnly(entry)
@@ -39,6 +36,7 @@ dependencies {
     includeCompile libs.jheaps
     includeCompile libs.jgrapht
     includeCompile libs.poly2tri
+    includeCompile libs.molang
     includeMod libs.fabric.asm
 
     modLocalRuntime libs.wthit.fabric
@@ -46,7 +44,6 @@ dependencies {
 
     modLocalRuntime libs.worldedit
 
-    // Moonlight: only the datagen LanguageProvider compiles against it.
     modCompileOnly libs.moonlight
     modLocalRuntime libs.moonlight
     modCompileOnly libs.modmenu
