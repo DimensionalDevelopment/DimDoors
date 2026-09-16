@@ -14,20 +14,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.function.TriConsumer;
-import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class RiftBlockEntity<T extends RiftBlockEntity<T>> extends BlockEntity implements Rift, Target, EntityTarget {
-    @NotNull
-    protected RiftData data = new RiftData();
+public class RiftBlockEntity<T extends RiftBlockEntity<T>> extends BlockEntity implements Rift {
+    @NotNull protected RiftData data = new RiftData();
     protected boolean riftStateChanged;
     private boolean deleteRift = true;
 
-    public static final CodecRecord<RiftBlockEntity<?>, RiftData> RIFT_DATA_BUILDER = new CodecRecord<RiftBlockEntity<?>, RiftData>("data", RiftData.CODEC, RiftData::new, RiftBlockEntity::getData);
+    public static final CodecRecord<Rift, RiftData> RIFT_DATA_BUILDER = new CodecRecord<Rift, RiftData>("data", RiftData.CODEC, RiftData::new, Rift::getData);
 
-    public RiftBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public RiftBlockEntity(BlockEntityType<T> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
@@ -160,5 +157,11 @@ public abstract class RiftBlockEntity<T extends RiftBlockEntity<T>> extends Bloc
     @Override
     public Level getRiftLevel() {
         return getLevel();
+    }
+
+    public static class Impl extends EntranceRiftBlockEntity<Impl> {
+        public Impl(BlockPos pos, BlockState state) {
+            super(ModBlockEntityTypes.GENERIC_RIFT, pos, state);
+        }
     }
 }

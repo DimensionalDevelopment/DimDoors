@@ -12,22 +12,12 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public class ModBlockEntityTypes {
-    public static final MutableBlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = registerMutable(
-            "detached_rift",
-            DetachedRiftBlockEntity::new
-    );
-
-    public static final MutableBlockEntityType<EntranceRiftBlockEntity<?>> ENTRANCE_RIFT = registerMutable(
-            "entrance_rift",
-            EntranceRiftBlockEntity::new);
-
-    public static final MutableBlockEntityType<DialingDoorBlockEntity> DIALING_DOOR = registerMutable(
-            "dialing_door",
-            DialingDoorBlockEntity::new);
+    public static final MutableBlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = registerMutable("detached_rift", DetachedRiftBlockEntity::new);
+    public static final MutableBlockEntityType<EntranceRiftBlockEntity.Impl> ENTRANCE_RIFT = registerMutable("entrance_rift", EntranceRiftBlockEntity.Impl::new);
+    public static final MutableBlockEntityType<DialingDoorBlockEntity> DIALING_DOOR = registerMutable("dialing_door", DialingDoorBlockEntity::new);
 
     public static final MutableBlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = registerMutable("tesselating_loom", TesselatingLoomBlockEntity::new);
-    public static final MutableBlockEntityType<LiminalTransmitterBlockEntity> LIMINAL_TRANSMITTER = registerMutable("liminal_transmitter", LiminalTransmitterBlockEntity::new);
-
+    public static final MutableBlockEntityType<RiftBlockEntity.Impl> GENERIC_RIFT = registerMutable("generic_rift", RiftBlockEntity.Impl::new);
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
         return DimensionalDoors.getSided().registerBlockEntityType(id, BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).toArray(Block[]::new)).build(null));

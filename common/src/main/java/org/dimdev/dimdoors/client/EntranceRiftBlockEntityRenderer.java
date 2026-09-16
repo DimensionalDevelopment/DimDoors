@@ -3,39 +3,30 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Half;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 import java.util.List;
 
-public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<EntranceRiftBlockEntity<?>> {
+public class EntranceRiftBlockEntityRenderer<T extends EntranceRiftBlockEntity<T>> extends RiftBlockEntityRenderer<T> {
     public EntranceRiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(EntranceRiftBlockEntity<?> blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
+    public void render(T blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
         super.render(blockEntity, tickDelta, matrixStack, vertexConsumerProvider, light, overlay);
 
         var state = blockEntity.getRenderBlockState();

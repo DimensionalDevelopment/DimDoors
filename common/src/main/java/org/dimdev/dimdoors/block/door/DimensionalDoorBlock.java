@@ -16,7 +16,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -48,7 +47,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
-public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity<?>> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
+public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
     public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType, boolean addWaterlog) {
         super(settings.pushReaction(BLOCK), blockSetType, addWaterlog);
     }

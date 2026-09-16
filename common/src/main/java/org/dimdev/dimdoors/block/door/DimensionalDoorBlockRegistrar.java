@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.block.door;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -332,7 +331,7 @@ public class DimensionalDoorBlockRegistrar {
         return Collections.unmodifiableMap(mappedDoorBlocks);
     }
 
-    public static abstract class AutoGenDimensionalDoorBlock<T extends EntranceRiftBlockEntity<?>> extends DimensionalDoorBlock<T> {
+    public static abstract class AutoGenDimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalDoorBlock<T> {
 
 
         protected final Block originalBlock;
@@ -377,14 +376,14 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    public static class DefaultAutoGenDoorBlock extends AutoGenDimensionalDoorBlock<EntranceRiftBlockEntity<?>> {
+    public static class DefaultAutoGenDoorBlock extends AutoGenDimensionalDoorBlock<EntranceRiftBlockEntity.Impl> {
 
         public DefaultAutoGenDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
             super(settings, originalBlock);
         }
 
         @Override
-        public BlockEntityType<EntranceRiftBlockEntity<?>> getRiftBlockEnityType() {
+        public BlockEntityType<EntranceRiftBlockEntity.Impl> getRiftBlockEnityType() {
             return ModBlockEntityTypes.ENTRANCE_RIFT;
         }
 
@@ -394,7 +393,7 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    public static abstract class  AutoGenDimensionalTrapdoorBlock<T extends EntranceRiftBlockEntity<?>> extends DimensionalTrapDoorBlock<T> implements AutoGenTraversalRiftBlock<T> {
+    public static abstract class  AutoGenDimensionalTrapdoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalTrapDoorBlock<T> implements AutoGenTraversalRiftBlock<T> {
         private final Block originalBlock;
 
         public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
@@ -437,14 +436,14 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    public static class DefaultAutoGenTrapDoorBlock extends AutoGenDimensionalTrapdoorBlock<EntranceRiftBlockEntity<?>> {
+    public static class DefaultAutoGenTrapDoorBlock extends AutoGenDimensionalTrapdoorBlock<EntranceRiftBlockEntity.Impl> {
 
         public DefaultAutoGenTrapDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
             super(settings, originalBlock);
         }
 
         @Override
-        public BlockEntityType<EntranceRiftBlockEntity<?>> getRiftBlockEnityType() {
+        public BlockEntityType<EntranceRiftBlockEntity.Impl> getRiftBlockEnityType() {
             return ModBlockEntityTypes.ENTRANCE_RIFT;
         }
     }

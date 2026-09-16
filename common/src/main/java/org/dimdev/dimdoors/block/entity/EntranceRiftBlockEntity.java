@@ -36,16 +36,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> extends RiftBlockEntity<T> {
+public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> extends RiftBlockEntity<T> implements EntityTarget {
     private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
     protected BlockState doorBlockState;
     private RiftUtils.PortalPlane plane;
 
-    public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
-        this(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
-    }
-
-    protected EntranceRiftBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    protected EntranceRiftBlockEntity(BlockEntityType<T> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         updateState(pos, state);
     }
@@ -202,11 +198,6 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
         return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
     }
 
-    @Override
-    public boolean isDetached() {
-        return false;
-    }
-
     public void setPortalDestination(ServerLevel world) {
         if (ModDimensions.isLimboDimension(world)) {
             this.setDestination(ESCAPE_TARGET);
@@ -243,6 +234,12 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
 
             level.setBlockAndUpdate(worldPosition, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged));
             level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(a -> a.setData(this.getData()));
+        }
+    }
+
+    public static class Impl extends EntranceRiftBlockEntity<Impl> {
+        public Impl(BlockPos pos, BlockState state) {
+            super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
         }
     }
 }

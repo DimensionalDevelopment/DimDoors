@@ -10,15 +10,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.rift.target.Target;
-import org.dimdev.dimdoors.block.entity.LiminalTransmitterBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LiminalTransmitterBlock extends WaterLoggableBlockWithEntity implements RiftProvider<LiminalTransmitterBlockEntity> {
+public class LiminalTransmitterBlock extends WaterLoggableBlockWithEntity implements RiftProvider<RiftBlockEntity.Impl> {
     public static final MapCodec<LiminalTransmitterBlock> CODEC = simpleCodec(LiminalTransmitterBlock::new);
 
     public LiminalTransmitterBlock(BlockBehaviour.Properties properties) {
@@ -31,8 +31,8 @@ public class LiminalTransmitterBlock extends WaterLoggableBlockWithEntity implem
     }
 
     @Override
-    public BlockEntityType<LiminalTransmitterBlockEntity> getRiftBlockEnityType() {
-        return ModBlockEntityTypes.LIMINAL_TRANSMITTER;
+    public BlockEntityType<RiftBlockEntity.Impl> getRiftBlockEnityType() {
+        return ModBlockEntityTypes.GENERIC_RIFT;
     }
 
     @Override

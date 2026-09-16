@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.client.RiftCurves;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEntity> {
+public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEntity> implements EntityTarget {
     public static final float DECAY_RADIUS_DIVISOR = 40f;
     private static final CodecRecord<DetachedRiftBlockEntity, Integer> SPAWNED_ENDERMAN_ID_BUILDER = new CodecRecord<>("spawnedEnderManId", Codec.INT, 0, detachedRiftBlockEntity -> detachedRiftBlockEntity.spawnedEndermanId);
     private static final CodecRecord<DetachedRiftBlockEntity, Float> RIFT_YAW_BUILDER = new CodecRecord<>("rotation", Codec.FLOAT, (java.util.function.Supplier<Float>) () -> (float) (Math.random() * 360), detachedRiftBlockEntity -> detachedRiftBlockEntity.riftYaw);
@@ -109,6 +110,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlockEn
         weight = nbt.get(WEIGHT_BUILDER);
         updateTimer = nbt.get(UPDATE_TIMER_BUILDER);
     }
+
 
     @Override
     public void serialize(Serialize<Tag, DetachedRiftBlockEntity> serialize) {

@@ -26,7 +26,6 @@ public class DialingDoorBlockEntity extends EntranceRiftBlockEntity<DialingDoorB
     @Override
     public void serialize(Serialize<Tag, DialingDoorBlockEntity> serialize) {
         super.serialize(serialize);
-        serialize.put(DIALING_ADDRESS_BUILDER);
     }
 
     @Override

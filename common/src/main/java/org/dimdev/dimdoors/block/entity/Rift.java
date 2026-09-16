@@ -180,7 +180,10 @@ public interface Rift extends Target {
         this.setData(rift.getData().copy());
     }
 
-    boolean isDetached();
+    default boolean isDetached() {
+        return false;
+    }
+
 
     default void detach() {}
 

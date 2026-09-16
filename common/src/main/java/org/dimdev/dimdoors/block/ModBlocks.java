@@ -268,7 +268,7 @@ public final class ModBlocks {
         ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM);
         ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(ModBlocks.DIMENSIONAL_PORTAL);
         ModBlockEntityTypes.DIALING_DOOR.addBlock(ModBlocks.DIALING_DOOR);
-        ModBlockEntityTypes.LIMINAL_TRANSMITTER.addBlock(ModBlocks.LIMINAL_TRANSMITTER);
+        ModBlockEntityTypes.GENERIC_RIFT.addBlock(ModBlocks.LIMINAL_TRANSMITTER);
     }
 
     private static <T extends Block> T registerWithoutTabOrItem(String name, T block) {
