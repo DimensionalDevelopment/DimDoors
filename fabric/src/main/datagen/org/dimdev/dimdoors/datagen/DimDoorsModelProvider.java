@@ -143,8 +143,8 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         TextureMapping mapping = getTextureMapping(generator, Blocks.STONE);
         ResourceLocation fullBlockModel = ModelLocationUtils.getModelLocation(Blocks.STONE);
 
-        generateSlab(generator, ModBlocks.STONE_SLAB, mapping, fullBlockModel);
-        generateStairs(generator, ModBlocks.STONE_STAIRS, mapping);
+        generateSlab(generator, Blocks.STONE_SLAB, mapping, fullBlockModel);
+        generateStairs(generator, Blocks.STONE_STAIRS, mapping);
         generateWall(generator, ModBlocks.STONE_WALL, mapping);
     }
 

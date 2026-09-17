@@ -123,8 +123,8 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add(ModBlocks.DARK_SAND_LAYER);
         add(ModBlocks.DARK_SAND);
         add(ModBlocks.LINT_LAYER);
-        add(ModBlocks.STONE_SLAB);
-        add(ModBlocks.STONE_STAIRS);
+        add(Blocks.STONE_SLAB);
+        add(Blocks.STONE_STAIRS);
         add(ModBlocks.STONE_WALL);
 
         ModBlocks.DecayGroupSet.SETS.forEach(this::addBlockSet);

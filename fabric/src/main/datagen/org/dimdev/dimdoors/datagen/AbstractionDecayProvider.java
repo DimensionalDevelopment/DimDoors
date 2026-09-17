@@ -79,8 +79,8 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addConcretePowderPatterns(provider, consumer);
 
         addPattern(Blocks.STONE, ModBlockTags.DECAYS_TO_STONE).accept(consumer, provider);
-        addPattern(ModBlocks.STONE_SLAB, ModBlockTags.DECAYS_TO_STONE_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.STONE_STAIRS, ModBlockTags.DECAYS_TO_STONE_STAIRS).accept(consumer, provider);
+        addPattern(Blocks.STONE_SLAB, ModBlockTags.DECAYS_TO_STONE_SLAB).accept(consumer, provider);
+        addPattern(Blocks.STONE_STAIRS, ModBlockTags.DECAYS_TO_STONE_STAIRS).accept(consumer, provider);
         addPattern(ModBlocks.STONE_WALL, ModBlockTags.DECAYS_TO_STONE_WALL).accept(consumer, provider);
         addPattern(ModBlocks.AMALGAM_BLOCK, ModBlockTags.DECAYS_TO_AMALGAM).accept(consumer, provider);
         addPattern(ModBlocks.AMALGAM_ORE, ModBlockTags.DECAYS_TO_AMALGAM_ORE).accept(consumer, provider);
@@ -437,8 +437,8 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
 //        addPattern(ModBlocks.SAND_WALL, ModBlockTags.DECAYS_TO_SAND_WALL).accept(consumer, provider);
 //        addPattern(Blocks.SOUL_SAND, Blocks.SOUL_SOIL).accept(consumer, provider);
 //        addPattern(Blocks.STONE, ModBlockTags.DECAYS_TO_STONE).accept(consumer, provider);
-//        addPattern(ModBlocks.STONE_SLAB, ModBlockTags.DECAYS_TO_STONE_SLAB).accept(consumer, provider);
-//        addPattern(ModBlocks.STONE_STAIRS, ModBlockTags.DECAYS_TO_STONE_STAIRS).accept(consumer, provider);
+//        addPattern(Blocks.STONE_SLAB, ModBlockTags.DECAYS_TO_STONE_SLAB).accept(consumer, provider);
+//        addPattern(Blocks.STONE_STAIRS, ModBlockTags.DECAYS_TO_STONE_STAIRS).accept(consumer, provider);
 //        addPattern(ModBlocks.STONE_WALL, ModBlockTags.DECAYS_TO_STONE_WALL).accept(consumer, provider);
 //        addPattern(ModBlocks.STONE_DOOR, ModBlockTags.DECAYS_TO_STONE_DOOR).accept(consumer, provider);
 //        addPattern(ModBlocks.STONE_TRAPDOOR, ModBlockTags.DECAYS_TO_STONE_TRAPDOOR).accept(consumer, provider);

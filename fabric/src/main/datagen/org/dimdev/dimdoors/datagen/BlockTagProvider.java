@@ -180,11 +180,11 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(ModBlockTags.DECAYS_TO_DARK_SAND_BUTTON, ModBlocks.CLAY_SET.button());
         add(ModBlockTags.DECAYS_TO_DARK_SAND_SLAB,
                 ModBlocks.CLAY_SET.slab(),
-                ModBlocks.STONE_SLAB
+                Blocks.STONE_SLAB
         );
         add(ModBlockTags.DECAYS_TO_DARK_SAND_STAIRS,
                 ModBlocks.CLAY_SET.stairs(),
-                ModBlocks.STONE_STAIRS
+                Blocks.STONE_STAIRS
         );
         add(ModBlockTags.DECAYS_TO_DARK_SAND_WALL,
                 ModBlocks.CLAY_SET.wall(),
@@ -1136,8 +1136,8 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(ModBlocks.AMALGAM_ORE, ConventionalBlockTags.ORES, BlockTags.MINEABLE_WITH_PICKAXE);
         add(ModBlocks.AMALGAM_BLOCK, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.BEACON_BASE_BLOCKS);
         add(ModBlocks.AMALGAM_TRAPDOOR, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.TRAPDOORS);
-        add(ModBlocks.STONE_SLAB, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.SLABS);
-        add(ModBlocks.STONE_STAIRS, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.STAIRS);
+        add(Blocks.STONE_SLAB, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.SLABS);
+        add(Blocks.STONE_STAIRS, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.STAIRS);
         add(ModBlocks.STONE_WALL, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.WALLS);
 
         add(ModBlocks.GOLD_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);

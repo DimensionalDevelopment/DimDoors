@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.block.entity;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +40,8 @@ import java.util.Optional;
 
 public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> extends RiftBlockEntity<T> implements EntityTarget {
     private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
+    private static final CodecRecord<EntranceRiftBlockEntity, Integer> CLOSING_TICKS_BUILDER = new CodecRecord<>("closingTicks", Codec.INT, -1, entranceRiftBlockEntity -> entranceRiftBlockEntity.closingTicks);
+    protected int closingTicks;
     protected BlockState doorBlockState;
     private RiftUtils.PortalPlane plane;
 
@@ -204,6 +208,26 @@ public class EntranceRiftBlockEntity<T extends EntranceRiftBlockEntity<T>> exten
         } else {
             this.setDestination(DefaultDungeonDestinations.getGateway());
             this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+        }
+    }
+
+    @Override
+    public void deserialize(Deserialize<Tag> nbt) {
+        super.deserialize(nbt);
+        closingTicks = nbt.get(CLOSING_TICKS_BUILDER);
+    }
+
+    @Override
+    public void serialize(Serialize<Tag, T> serialize) {
+        super.serialize(serialize);
+        serialize.put(CLOSING_TICKS_BUILDER);
+    }
+
+    @Override
+    public void update(Level level, BlockPos pos, BlockState blockState) {
+        if (closingTicks > 0) {
+            closingTicks--;
+            if (closingTicks == 0) { unregister(); }
         }
     }
 

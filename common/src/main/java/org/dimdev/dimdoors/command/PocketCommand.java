@@ -25,12 +25,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModRegistryKeys;
+import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -59,7 +61,6 @@ public class PocketCommand {
     public static <T extends PocketCreator> ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, ResourceKey<Registry<T>> resourceKey) {
         return literal(name).then(
                 argument("id", ResourceLocationArgument.id())
-                        .requires(CommandSourceStack::isPlayer)
                         .suggests((ctx, builder) -> getSuggestions(ctx.getSource().registryAccess(), resourceKey, builder))
                         .executes(context -> placePocket(
                                 context.getSource(),
@@ -120,23 +121,23 @@ public class PocketCommand {
             return 0;
         }
 
-        ServerPlayer player = source.getPlayerOrException();
         ServerLevel sourceLevel;
         BlockPos sourcePos;
 
         if (selectedSourcePos != null) {
-            sourceLevel = player.serverLevel();
+            sourceLevel = (ServerLevel) source.getLevel();
             sourcePos = normalizeSourcePos(sourceLevel, selectedSourcePos);
         } else if (targetEntity != null) {
             sourceLevel = (ServerLevel) targetEntity.level();
             sourcePos = normalizeSourcePos(sourceLevel, targetEntity.blockPosition());
         } else {
-            sourceLevel = player.serverLevel();
-            sourcePos = normalizeSourcePos(sourceLevel, player.blockPosition());
+            Entity sourceEntity = source.getEntityOrException();
+            sourceLevel = (ServerLevel) sourceEntity.level();
+            sourcePos = normalizeSourcePos(sourceLevel, sourceEntity.blockPosition());
         }
 
         BlockState sourceState = sourceLevel.getBlockState(sourcePos);
-        if (!canUseSource(player, sourcePos, sourceState)) {
+        if (!canUseSource(sourcePos, sourceState)) {
             source.sendFailure(Component.literal("Source position must be a raw rift, a door/trapdoor/portal that can host a rift, or replaceable space."));
             return 0;
         }
@@ -185,7 +186,7 @@ public class PocketCommand {
 
         TemplateUtils.linkRifts(contextLocation, entrance);
         if (targetEntity != null
-            && !((EntranceRiftBlockEntity) contextLocation.getBlockEntity()).teleport(targetEntity)) { // This line does not feel safe but theoretically any block entity errors would happen inside linkRifts
+            && !((RiftBlockEntity) entrance.getBlockEntity()).receiveEntity(targetEntity, Vec3.ZERO, MathUtil.entityEulerAngle(targetEntity), targetEntity.getDeltaMovement(), null)) { // This line does not feel safe, if linkRifts fails such as because a spot is inaccessable this will throw errors
             source.sendFailure(Component.literal("Failed to teleport entity through created rift."));
             return 0;
         }
@@ -207,9 +208,8 @@ public class PocketCommand {
         return sourcePos;
     }
 
-    private static boolean canUseSource(ServerPlayer player, BlockPos sourcePos, BlockState sourceState) {
-        return (sourceState.canBeReplaced() || sourceState.getBlock() instanceof RiftVariantProvider)
-                && player.mayUseItemAt(sourcePos, Direction.UP, ItemStack.EMPTY);
+    private static boolean canUseSource(BlockPos sourcePos, BlockState sourceState) {
+        return (sourceState.canBeReplaced() || sourceState.getBlock() instanceof RiftVariantProvider); // mayUseItemAt might be important
     }
 
     public static <T extends PocketCreator> CompletableFuture<Suggestions> getSuggestions(RegistryAccess access, ResourceKey<Registry<T>> resourceKey, SuggestionsBuilder builder) {

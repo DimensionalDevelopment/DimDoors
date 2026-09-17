@@ -88,8 +88,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.PALE_SAND);
         this.dropSelf(ModBlocks.DARK_SAND_LAYER);
         this.dropSelf(ModBlocks.LINT_LAYER);
-        this.dropSelf(ModBlocks.STONE_SLAB);
-        this.dropSelf(ModBlocks.STONE_STAIRS);
+        this.dropSelf(Blocks.STONE_SLAB);
+        this.dropSelf(Blocks.STONE_STAIRS);
         this.dropSelf(ModBlocks.STONE_WALL);
 
         this.dropSelf(ModBlocks.GRAVEL_SET);

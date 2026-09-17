@@ -176,8 +176,6 @@ public final class ModBlocks {
     public static final Block PALE_SAND = registerDecay("pale_sand", new ColoredFallingBlock(new ColorRGBA(0xFFF2E9D1), ofFullCopy(SAND).mapColor(COLOR_LIGHT_GRAY).strength(0.5F).sound(SoundType.SAND)));
     public static final Block DARK_SAND_LAYER = registerDecay("dark_sand_layer", new CarpetBlock(ofFullCopy(MOSS_CARPET).mapColor(COLOR_BLACK).sound(SoundType.SAND)));
     public static final Block LINT_LAYER = registerDecay("lint_layer", new CarpetBlock(ofFullCopy(MOSS_CARPET).mapColor(COLOR_LIGHT_GRAY)));
-    public static final Block STONE_SLAB = registerDecay("stone_slab", new SlabBlock(of(STONE)));
-    public static final Block STONE_STAIRS = registerDecay("stone_stairs", new ModStairBlock(STONE.defaultBlockState(), of(STONE)));
     public static final Block STONE_WALL = registerDecay("stone_wall", new WallBlock(of(STONE)));
 
     public record DecayGroupSet(

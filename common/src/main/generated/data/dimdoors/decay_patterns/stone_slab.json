@@ -6,7 +6,7 @@
   },
   "result": {
     "type": "dimdoors:single_block",
-    "block": "dimdoors:stone_slab",
+    "block": "minecraft:stone_slab",
     "entropy": 1,
     "world_thread_chance": 0.0
   }
