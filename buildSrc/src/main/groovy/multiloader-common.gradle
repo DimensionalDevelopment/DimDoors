@@ -3,8 +3,19 @@ plugins {
     id 'maven-publish'
 }
 
+
+def modProps = new Properties()
+file("${projectDir.parentFile}/mod.properties").withInputStream { modProps.load(it) }
+modProps.each { k, v -> project.ext[k as String] = v }
+version = modProps.version
+description = modProps.getProperty('description', '')
+
+def (modPrefix, loaderName) = project.name.split('-', 2)
+ext.loader = loaderName          // common | fabric | neoforge
+ext.modProject = { String l -> project(":${modPrefix}-${l.replaceFirst('^:', '')}") }
+
 base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    archivesName = "${mod_id}-${loader}-${minecraft_version}"
 }
 
 java {
@@ -110,8 +121,9 @@ repositories {
 // Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
 ['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
     configurations."$variant".outgoing {
+        capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
-        capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+        capability("$group:$mod_id-${loader}-${minecraft_version}:$version")
         capability("$group:$mod_id:$version")
     }
     publishing.publications.configureEach {
@@ -135,7 +147,7 @@ jar {
                 'Specification-Title'   : mod_name,
                 'Specification-Vendor'  : mod_authors,
                 'Specification-Version' : project.jar.archiveVersion,
-                'Implementation-Title'  : project.name,
+                'Implementation-Title'  : mod_id + '-' + loader,
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : mod_authors,
                 'Built-On-Minecraft'    : minecraft_version

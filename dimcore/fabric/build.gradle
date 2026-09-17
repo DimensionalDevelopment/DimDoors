@@ -1,0 +1,39 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom'
+}
+
+dependencies {
+    minecraft libs.minecraft
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment(variantOf(libs.parchment) { artifactType("zip") })
+    }
+    modImplementation libs.fabric.api
+    modImplementation libs.fabric.loader
+}
+
+loom {
+    def aw = file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+        useLegacyMixinAp = true
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
+    }
+}

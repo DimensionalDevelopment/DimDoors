@@ -1,0 +1,77 @@
+modLoader = "javafml"
+loaderVersion = "${neoforge_loader_version_range}"
+# issueTrackerURL = ""
+license = "${license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+# updateJSONURL = "https://change.me.example.invalid/updates.json"
+# displayURL = "https://change.me.to.your.mods.homepage.example.invalid/"
+credits = "${credits}"
+authors = "${neoforge_mod_authors}"
+enumExtensions = "META-INF/${mod_id}.enumextensions.json"
+description = '''${description}'''
+logoFile = "${mod_id}.png"
+
+[[mixins]]
+config = "dimdoors.mixins.json"
+
+[[mixins]]
+config = "dimdoors.neoforge.mixins.json"
+
+[[mixins]]
+config = "dimdoors.sable-compat.mixins.json"
+
+[[dependencies.${mod_id}]]
+modId = "dimcore"
+type = "required"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "sable"
+type = "optional"
+versionRange = "[2.0.5]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "imguimc"
+type = "optional"
+versionRange = "[1.2.5+mc1.21.1]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "sodium"
+type = "optional"
+versionRange = "[0.8.12,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "iris"
+type = "optional"
+versionRange = "[1.8.14-beta.1,)"
+ordering = "NONE"
+side = "CLIENT"
+
+# [features.${mod_id}]
+# openGLVersion = "[3.2,)"

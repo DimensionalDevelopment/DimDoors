@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "org.dimdev.dimcore.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "refmap": "dimcore.refmap.json",
+  "client": [
+    "client.DimensionSpecialEffectsMixin",
+    "client.LevelRenderDimensionalEffectsMixin"
+  ],
+  "mixins": [
+    "DataAttachmentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

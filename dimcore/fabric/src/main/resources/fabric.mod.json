@@ -1,0 +1,33 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${fabric_mod_authors}"
+    ],
+    "contact": {
+        "homepage": "https://dimdev.org/",
+        "sources": "https://github.com/DimensionalDevelopment/DimDoors",
+        "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
+    },
+    "license": "${license}",
+    "environment": "*",
+    "accessWidener": "dimcore.accesswidener",
+    "entrypoints": {
+        "main": [
+            "org.dimdev.dimcore.DimCoreFabric"
+        ]
+    },
+    "mixins": [
+        "dimcore.mixins.json",
+        "dimcore.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": "${minecraft_version}",
+        "java": ">=${java_version}"
+    }
+}

@@ -1,0 +1,54 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+
+    def interfaces = file('src/main/resources/interfaces.json')
+    if (interfaces.exists()) {
+        interfaceInjectionData.from(interfaces.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+configurations {
+    sharedCompileOnly {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    compileClasspath.extendsFrom(sharedCompileOnly)
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+dependencies {
+    compileOnlyApi libs.annotations
+    compileOnlyApi libs.commons.lang3
+
+    compileOnly libs.mixin
+    compileOnly libs.asm.tree
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly libs.mixinextras.common
+    annotationProcessor libs.mixinextras.common
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}

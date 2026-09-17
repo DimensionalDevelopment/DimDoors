@@ -1,0 +1,81 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    accessTransformers.from(project(':dimcore-common').file('src/main/resources/META-INF/accesstransformer.cfg'))
+
+    def interfaces = file('src/main/resources/interfaces.json')
+    if (interfaces.exists()) {
+        interfaceInjectionData.from(interfaces.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+configurations {
+    sharedCompileOnly {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    compileClasspath.extendsFrom(sharedCompileOnly)
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+dependencies {
+    compileOnly(project(':dimcore-common')) {
+        capabilities {
+            requireCapability "$group:dimcore"
+        }
+    }
+
+    compileOnlyApi libs.annotations
+    compileOnlyApi libs.commons.lang3
+
+    compileOnly libs.mixin
+    compileOnly libs.asm.tree
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly libs.mixinextras.common
+    annotationProcessor libs.mixinextras.common
+
+    compileOnly libs.sodium.neoforge
+    compileOnly libs.iris.common
+    sharedCompileOnly libs.sable.common
+
+    sharedCompileOnly libs.cloth.config.neoforge
+
+    sharedCompileOnly libs.wthit.api.neoforge
+
+    compileOnly libs.jgrapht
+
+    compileOnly libs.poly2tri
+
+    compileOnly libs.rei.neoforge
+    compileOnly libs.rei.default.plugin.common
+
+    sharedCompileOnly libs.jei.lib
+    sharedCompileOnly libs.jei.api.common
+
+    sharedCompileOnly libs.imguimc.common
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}

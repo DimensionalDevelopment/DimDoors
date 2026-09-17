@@ -45,6 +45,10 @@ plugins {
 
 // This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)
 rootProject.name = 'Dimensional Doors'
-include('common')
-include('fabric')
-include('neoforge')
+['dimcore', 'dimdoors'].each { mod ->
+    ['common', 'fabric', 'neoforge'].each { loader ->
+        def name = "${mod}-${loader}"
+        include(name)
+        project(":${name}").projectDir = file("${mod}/${loader}")
+    }
+}
