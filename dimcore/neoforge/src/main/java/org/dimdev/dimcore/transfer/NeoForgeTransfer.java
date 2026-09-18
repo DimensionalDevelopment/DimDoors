@@ -2,12 +2,16 @@ package org.dimdev.dimcore.transfer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -20,37 +24,64 @@ import org.dimdev.dimcore.api.transfer.Unit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /** Bridges {@link Handle} to and from NeoForge's {@link IFluidHandler} and {@link IItemHandler}. */
 public final class NeoForgeTransfer implements TransferBridge {
-    @Override
-    @SuppressWarnings("unchecked")
-    public <U extends Unit<U>> @Nullable Handle<U> find(TransferType<U> type, Level level, BlockPos pos, @Nullable Direction side) {
-        if (type == TransferType.FLUID) {
-            IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
-            return handler == null ? null : (Handle<U>) of(handler);
-        }
-        if (type == TransferType.ITEM) {
-            IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
-            return handler == null ? null : (Handle<U>) of(handler);
-        }
-        return null;
+    private static final Map<TransferType<?>, Binding<?, ?>> BINDINGS = new HashMap<>();
+
+    static {
+        bind(TransferType.FLUID, Capabilities.FluidHandler.BLOCK, NeoForgeTransfer::of, NeoForgeTransfer::fluidHandler);
+        bind(TransferType.ITEM, Capabilities.ItemHandler.BLOCK, NeoForgeTransfer::of, NeoForgeTransfer::itemHandler);
     }
 
-    /** Exposes every {@link TransferType#declare declared} block entity type as the matching capability. */
+    /**
+     * Binds a type to a sided {@link BlockCapability}: {@link TransferType#find} answers through it,
+     * and every {@link TransferType#declare declared} block entity type is exposed on it.
+     */
+    public static <U extends Unit<U>, H> void bind(
+            TransferType<U> type, BlockCapability<H, @Nullable Direction> capability, Function<H, Handle<U>> toHandle, Function<Handle<U>, H> toHandler) {
+        BINDINGS.put(type, new Binding<>(type, capability, toHandle, toHandler));
+    }
+
+    @Override
+    public <U extends Unit<U>> @Nullable Handle<U> find(TransferType<U> type, Level level, BlockPos pos, @Nullable Direction side) {
+        Binding<U, ?> binding = binding(type);
+        return binding == null ? null : binding.find(level, pos, side);
+    }
+
+    @Override
+    public boolean interactWithFluid(Player player, InteractionHand hand, Level level, BlockPos pos, @Nullable Direction side) {
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, side);
+    }
+
+    /** Exposes every {@link TransferType#declare declared} block entity type of every bound type as its capability. */
     public static void registerExposed(RegisterCapabilitiesEvent event) {
-        for (BlockEntityType<?> type : TransferType.FLUID.declared()) {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (blockEntity, side) -> {
-                Handle<FluidUnit> handle = TransferType.FLUID.expose(blockEntity, side);
-                return handle == null ? null : fluidHandler(handle);
-            });
+        BINDINGS.values().forEach(binding -> binding.registerExposed(event));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <U extends Unit<U>> @Nullable Binding<U, ?> binding(TransferType<U> type) {
+        return (Binding<U, ?>) BINDINGS.get(type);
+    }
+
+    private record Binding<U extends Unit<U>, H>(
+            TransferType<U> type, BlockCapability<H, @Nullable Direction> capability, Function<H, Handle<U>> toHandle, Function<Handle<U>, H> toHandler) {
+        private @Nullable Handle<U> find(Level level, BlockPos pos, @Nullable Direction side) {
+            H handler = level.getCapability(capability, pos, side);
+            return handler == null ? null : toHandle.apply(handler);
         }
-        for (BlockEntityType<?> type : TransferType.ITEM.declared()) {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, (blockEntity, side) -> {
-                Handle<ItemUnit> handle = TransferType.ITEM.expose(blockEntity, side);
-                return handle == null ? null : itemHandler(handle);
-            });
+
+        private void registerExposed(RegisterCapabilitiesEvent event) {
+            for (BlockEntityType<?> blockEntityType : type.declared()) {
+                event.registerBlockEntity(capability, blockEntityType, (blockEntity, side) -> {
+                    Handle<U> handle = type.expose(blockEntity, side);
+                    return handle == null ? null : toHandler.apply(handle);
+                });
+            }
         }
     }
 

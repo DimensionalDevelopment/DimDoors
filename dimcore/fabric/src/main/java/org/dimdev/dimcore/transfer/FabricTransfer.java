@@ -2,6 +2,7 @@ package org.dimdev.dimcore.transfer;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -12,18 +13,24 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimcore.api.transfer.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /** Bridges {@link Handle} to and from Fabric's {@link Storage}{@code <FluidVariant>} / {@code <ItemVariant>}. */
 public final class FabricTransfer implements TransferBridge {
+    private static final Map<TransferType<?>, Binding<?, ?>> BINDINGS = new HashMap<>();
+
     private static final Codec<FluidUnit, FluidVariant> FLUID = new Codec<>(
             unit -> FluidVariant.of(unit.fluid(), unit.components()),
             (variant, amount) -> new FluidUnit(variant.getFluid(), variant.getComponents(), amount));
@@ -32,22 +39,42 @@ public final class FabricTransfer implements TransferBridge {
             unit -> ItemVariant.of(unit.item(), unit.components()),
             (variant, amount) -> new ItemUnit(variant.getItem(), variant.getComponents(), amount));
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <U extends Unit<U>> @Nullable Handle<U> find(TransferType<U> type, Level level, BlockPos pos, @Nullable Direction side) {
-        if (type == TransferType.FLUID) {
-            return (Handle<U>) find(FluidStorage.SIDED, FLUID, level, pos, side);
-        }
-        if (type == TransferType.ITEM) {
-            return (Handle<U>) find(ItemStorage.SIDED, ITEM, level, pos, side);
-        }
-        return null;
+    static {
+        bind(TransferType.FLUID, FluidStorage.SIDED, FLUID.toVariant(), FLUID.toUnit());
+        bind(TransferType.ITEM, ItemStorage.SIDED, ITEM.toVariant(), ITEM.toUnit());
     }
 
-    /** Exposes any block entity whose {@link TransferType#expose} answers as the matching sided storage. */
-    public static void registerExposed() {
-        registerExposed(TransferType.FLUID, FluidStorage.SIDED, FLUID);
-        registerExposed(TransferType.ITEM, ItemStorage.SIDED, ITEM);
+    /** Forces the built-in bindings to register; called from DimCore's entrypoint. */
+    public static void init() {
+    }
+
+    /**
+     * Binds a type to a sided {@link BlockApiLookup}: {@link TransferType#find} answers through it,
+     * and any block entity whose {@link TransferType#expose} answers is exposed on it as a storage.
+     */
+    public static <U extends Unit<U>, V extends TransferVariant<?>> void bind(
+            TransferType<U> type, BlockApiLookup<Storage<V>, Direction> lookup, Function<U, V> toVariant, BiFunction<V, Long, U> toUnit) {
+        Codec<U, V> codec = new Codec<>(toVariant, toUnit);
+        BINDINGS.put(type, new Binding<>(lookup, codec));
+        lookup.registerFallback((level, pos, state, blockEntity, side) -> {
+            if (blockEntity == null) {
+                return null;
+            }
+            Handle<U> handle = type.expose(blockEntity, side);
+            return handle == null ? null : new HandleStorage<>(handle, codec);
+        });
+    }
+
+    @Override
+    public <U extends Unit<U>> @Nullable Handle<U> find(TransferType<U> type, Level level, BlockPos pos, @Nullable Direction side) {
+        Binding<U, ?> binding = binding(type);
+        return binding == null ? null : binding.find(level, pos, side);
+    }
+
+    @Override
+    public boolean interactWithFluid(Player player, InteractionHand hand, Level level, BlockPos pos, @Nullable Direction side) {
+        Storage<FluidVariant> storage = FluidStorage.SIDED.find(level, pos, side);
+        return storage != null && FluidStorageUtil.interactWithFluidStorage(storage, player, hand);
     }
 
     public static Handle<FluidUnit> of(Storage<FluidVariant> storage) {
@@ -55,7 +82,7 @@ public final class FabricTransfer implements TransferBridge {
     }
 
     public static Storage<FluidVariant> fluidStorage(Handle<FluidUnit> handle) {
-        return new HandleStorage<>(handle, FLUID);
+        return storage(TransferType.FLUID, handle);
     }
 
     public static Handle<ItemUnit> ofItems(Storage<ItemVariant> storage) {
@@ -63,7 +90,22 @@ public final class FabricTransfer implements TransferBridge {
     }
 
     public static Storage<ItemVariant> itemStorage(Handle<ItemUnit> handle) {
-        return new HandleStorage<>(handle, ITEM);
+        return storage(TransferType.ITEM, handle);
+    }
+
+    /** The handle as a storage for whatever {@code type} is bound to; throws if it isn't bound. */
+    @SuppressWarnings("unchecked")
+    public static <U extends Unit<U>, V extends TransferVariant<?>> Storage<V> storage(TransferType<U> type, Handle<U> handle) {
+        Binding<U, V> binding = (Binding<U, V>) binding(type);
+        if (binding == null) {
+            throw new IllegalArgumentException(type + " is not bound to a Fabric storage");
+        }
+        return new HandleStorage<>(handle, binding.codec());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <U extends Unit<U>> @Nullable Binding<U, ?> binding(TransferType<U> type) {
+        return (Binding<U, ?>) BINDINGS.get(type);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,21 +114,12 @@ public final class FabricTransfer implements TransferBridge {
         return storage instanceof HandleStorage<?, ?> ours ? (Handle<U>) ours.handle() : new StorageHandle<>(storage, codec);
     }
 
-    private static <U extends Unit<U>, V extends TransferVariant<?>> @Nullable Handle<U> find(
-            BlockApiLookup<Storage<V>, Direction> lookup, Codec<U, V> codec, Level level, BlockPos pos, @Nullable Direction side) {
-        Storage<V> storage = lookup.find(level, pos, side);
-        return storage == null ? null : wrap(storage, codec);
-    }
-
-    private static <U extends Unit<U>, V extends TransferVariant<?>> void registerExposed(
-            TransferType<U> type, BlockApiLookup<Storage<V>, Direction> lookup, Codec<U, V> codec) {
-        lookup.registerFallback((level, pos, state, blockEntity, side) -> {
-            if (blockEntity == null) {
-                return null;
-            }
-            Handle<U> handle = type.expose(blockEntity, side);
-            return handle == null ? null : new HandleStorage<>(handle, codec);
-        });
+    private record Binding<U extends Unit<U>, V extends TransferVariant<?>>(
+            BlockApiLookup<Storage<V>, Direction> lookup, Codec<U, V> codec) {
+        private @Nullable Handle<U> find(Level level, BlockPos pos, @Nullable Direction side) {
+            Storage<V> storage = lookup.find(level, pos, side);
+            return storage == null ? null : wrap(storage, codec);
+        }
     }
 
     private static void finish(Transaction transaction, boolean simulate) {

@@ -2,6 +2,7 @@ package org.dimdev.dimcore.api.transfer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -9,8 +10,11 @@ import org.dimdev.dimcore.DimCore;
 import org.dimdev.dimcore.api.util.SimpleEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -22,14 +26,20 @@ import java.util.Set;
  * Listeners on both answer in registration order; the first non-null wins. {@link #find} falls
  * through to the loader's {@link TransferBridge} once every listener has passed, so mod listeners
  * always shadow the loader's capability / storage lookup regardless of registration order.
- * Exposure is hung by DimCore's own entrypoint; NeoForge needs {@link #declared()} up front for
- * that, Fabric answers through a fallback provider and ignores it.
+ * <p>
+ * Mods add their own kind with {@link #create}. Fluid and item are bound to the loader's native
+ * transfer API by DimCore; a mod type is bound by calling the loader bridge's {@code bind} from
+ * that mod's loader entry, and is DimCore-internal (events only) without one. Either way, the
+ * type's block entities are {@link #declare declared} during registration — NeoForge needs the
+ * set up front to hang capabilities, Fabric answers through a fallback provider and ignores it.
  */
 public final class TransferType<U extends Unit<U>> {
-    public static final TransferType<FluidUnit> FLUID = new TransferType<>("fluid");
-    public static final TransferType<ItemUnit> ITEM = new TransferType<>("item");
+    private static final Map<ResourceLocation, TransferType<?>> TYPES = new LinkedHashMap<>();
 
-    private final String name;
+    public static final TransferType<FluidUnit> FLUID = create(ResourceLocation.fromNamespaceAndPath("dimcore", "fluid"));
+    public static final TransferType<ItemUnit> ITEM = create(ResourceLocation.fromNamespaceAndPath("dimcore", "item"));
+
+    private final ResourceLocation id;
     private final Set<BlockEntityType<?>> declared = new LinkedHashSet<>();
 
     public final SimpleEvent<Lookup<U>> lookup = SimpleEvent.of(listeners -> (level, pos, side) -> {
@@ -52,12 +62,29 @@ public final class TransferType<U extends Unit<U>> {
         return null;
     });
 
-    private TransferType(String name) {
-        this.name = name;
+    private TransferType(ResourceLocation id) {
+        this.id = id;
     }
 
-    public String name() {
-        return name;
+    public static synchronized <U extends Unit<U>> TransferType<U> create(ResourceLocation id) {
+        if (TYPES.containsKey(id)) {
+            throw new IllegalStateException("Transfer type already registered: " + id);
+        }
+        TransferType<U> type = new TransferType<>(id);
+        TYPES.put(id, type);
+        return type;
+    }
+
+    public static @Nullable TransferType<?> get(ResourceLocation id) {
+        return TYPES.get(id);
+    }
+
+    public static Collection<TransferType<?>> all() {
+        return Collections.unmodifiableCollection(TYPES.values());
+    }
+
+    public ResourceLocation id() {
+        return id;
     }
 
     public @Nullable Handle<U> find(Level level, BlockPos pos, @Nullable Direction side) {
@@ -80,7 +107,7 @@ public final class TransferType<U extends Unit<U>> {
 
     @Override
     public String toString() {
-        return "TransferType[" + name + "]";
+        return "TransferType[" + id + "]";
     }
 
     @FunctionalInterface
