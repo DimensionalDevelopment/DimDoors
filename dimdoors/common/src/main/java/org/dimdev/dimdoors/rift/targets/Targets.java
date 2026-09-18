@@ -6,12 +6,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimcore.api.transfer.FluidUnit;
+import org.dimdev.dimcore.api.transfer.ItemUnit;
 import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.util.LevelSpaceHelper;
 import org.dimdev.dimdoors.util.RotationUtil;
+
+import java.util.List;
+import java.util.function.BiFunction;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
@@ -45,17 +50,37 @@ public final class Targets {
             return false;
         });
 
-        DefaultTargets.registerDefaultTarget(ITEM, stack -> false);
-
-        DefaultTargets.registerDefaultTarget(FLUID, new FluidTarget() {
+        DefaultTargets.registerDefaultTarget(ITEM, new ItemTarget() {
             @Override
-            public boolean addFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
-                return false;
+            public long insert(ItemUnit unit, boolean simulate) {
+                return 0;
             }
 
             @Override
-            public void subtractFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
-                throw new RuntimeException("Subtracted fluid flow that was never accepted");
+            public long extract(ItemUnit unit, boolean simulate) {
+                return 0;
+            }
+
+            @Override
+            public List<ItemUnit> contents() {
+                return List.of();
+            }
+        });
+
+        DefaultTargets.registerDefaultTarget(FLUID, new FluidTarget() {
+            @Override
+            public long insert(FluidUnit unit, boolean simulate) {
+                return 0;
+            }
+
+            @Override
+            public long extract(FluidUnit unit, boolean simulate) {
+                return 0;
+            }
+
+            @Override
+            public List<FluidUnit> contents() {
+                return List.of();
             }
         });
 

@@ -6,6 +6,6 @@ import org.dimdev.dimcore.transfer.FabricTransfer;
 public class DimCoreFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        FabricTransfer.registerExposed();
+        FabricTransfer.init();
     }
 }
