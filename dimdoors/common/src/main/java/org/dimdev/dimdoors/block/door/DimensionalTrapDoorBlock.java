@@ -110,7 +110,7 @@ public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity
 
     @Override
     public @Nullable <R extends BlockEntity> BlockEntityTicker<R> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<R> blockEntityType) {
-        return checkType(blockEntityType, getRiftBlockEnityType(), RiftProvider::tickRift);
+        return checkType(blockEntityType, riftBlockEnityType, RiftProvider::tickRift);
     }
 
     public Block baseBlock() {

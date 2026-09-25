@@ -29,6 +29,11 @@ tasks.named('compileJava', JavaCompile) {
     source(configurations.commonJava)
 }
 
+tasks.named('compileKotlin') {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
 processResources {
     dependsOn(configurations.commonResources)
     from(configurations.commonResources)

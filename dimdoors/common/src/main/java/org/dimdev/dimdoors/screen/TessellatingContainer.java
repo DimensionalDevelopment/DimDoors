@@ -101,7 +101,7 @@ public class TessellatingContainer extends RecipeBookMenu<CraftingInput, Tessela
 
     @Override
     public RecipeBookType getRecipeBookType() {
-    return DimensionalDoors.getSided().getTesselatingRecipeBookType();
+    return DimensionalDoors.getSided().tesselatingRecipeBookType;
     }
 
     @Override

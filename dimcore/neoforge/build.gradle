@@ -11,6 +11,10 @@ configurations {
     runtimeClasspath.extendsFrom(localRuntime)
 }
 
+dependencies {
+    implementation libs.kotlinforforge.neoforge
+}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -18,7 +22,6 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-
     parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version

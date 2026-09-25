@@ -22,12 +22,12 @@ public class PlayerListRespawnMixin {
             )
     )
     private void dimcore$beforeRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason reason, CallbackInfoReturnable<ServerPlayer> cir, @Local(ordinal = 1) ServerPlayer respawned) {
-        PlayerTeleportEvents.BEFORE.invoker().accept(respawned, respawned.serverLevel(), respawned.position());
+        PlayerTeleportEvents.BEFORE.invoker().invoke(respawned, respawned.serverLevel(), respawned.position());
     }
 
     @Inject(method = "respawn", at = @At("RETURN"))
     private void dimcore$afterRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason reason, CallbackInfoReturnable<ServerPlayer> cir) {
         ServerPlayer respawned = cir.getReturnValue();
-        PlayerTeleportEvents.AFTER.invoker().accept(respawned, respawned.serverLevel(), respawned.position());
+        PlayerTeleportEvents.AFTER.invoker().invoke(respawned, respawned.serverLevel(), respawned.position());
     }
 }

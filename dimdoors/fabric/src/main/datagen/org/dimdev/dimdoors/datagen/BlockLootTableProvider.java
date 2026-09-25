@@ -141,11 +141,11 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
 
     private void dropSelf(ModBlocks.DecayGroupSet set) {
-        dropSelf(set.fence());
-        dropSelf(set.gate());
-        dropSelf(set.button());
-        dropSelf(set.slab());
-        dropSelf(set.stairs());
-        dropSelf(set.wall());
+        dropSelf(set.fence);
+        dropSelf(set.gate);
+        dropSelf(set.button);
+        dropSelf(set.slab);
+        dropSelf(set.stairs);
+        dropSelf(set.wall);
     }
 }

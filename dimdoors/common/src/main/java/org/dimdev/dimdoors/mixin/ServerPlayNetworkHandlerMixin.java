@@ -44,7 +44,7 @@ public class ServerPlayNetworkHandlerMixin {
     protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
         var data = LevelSpaceHelper.INSTANCE.getAfterBlockData(this.player, this.player.getBoundingBox(), this.dimdoors$positionBeforeMove, this.player.position());
 
-        this.dimdoors$checkAfterMoveCollision(data.box(), data.previousPos(), data.currentPos());
+        this.dimdoors$checkAfterMoveCollision(data.box, data.previousPos, data.currentPos);
     }
 
     @Unique

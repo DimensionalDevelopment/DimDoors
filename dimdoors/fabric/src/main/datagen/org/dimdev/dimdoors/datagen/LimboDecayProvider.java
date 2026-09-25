@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen;
 
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -25,7 +24,7 @@ import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 import org.dimdev.dimdoors.world.decay.conditions.DecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.BlockDecayCondition;
 import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 import org.dimdev.dimdoors.world.decay.pattern.PaintingDecayPattern;
@@ -34,7 +33,6 @@ import org.dimdev.dimdoors.world.decay.results.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -90,12 +88,12 @@ abstract public class LimboDecayProvider implements DataProvider {
 
     protected DecayCondition getPredicate(Object object) {
         if (object instanceof TagKey<?> tag) {
-            if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
+            if (tag.isFor(Registries.BLOCK)) return BlockDecayCondition.of((TagKey<Block>) tag);
             else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
             else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
 
         } else if(object instanceof ResourceKey<?> key) {
-            if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
+            if (key.isFor(Registries.BLOCK)) return BlockDecayCondition.of((ResourceKey<Block>) key);
             else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
             else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
 
@@ -104,13 +102,13 @@ abstract public class LimboDecayProvider implements DataProvider {
             var obj = supplier.get();
 
             if(obj instanceof Block block) {
-                return SimpleDecayCondition.of(block.builtInRegistryHolder().key());
+                return BlockDecayCondition.of(block.builtInRegistryHolder().key());
             } else if(obj instanceof Fluid fluid) {
                 return FluidDecayCondition.of(fluid.builtInRegistryHolder().key());
             }
 
         } else if (object instanceof Block block) {
-            return SimpleDecayCondition.of(block.builtInRegistryHolder().key());
+            return BlockDecayCondition.of(block.builtInRegistryHolder().key());
         } else if (object instanceof Fluid fluid) {
             return FluidDecayCondition.of(fluid.builtInRegistryHolder().key());
         }

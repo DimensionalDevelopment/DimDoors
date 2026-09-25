@@ -39,7 +39,7 @@ configurations {
 }
 
 dependencies {
-    compileOnly(project(':dimcore-common')) {
+    sharedCompileOnly(project(':dimcore-common')) {
         capabilities {
             requireCapability "$group:dimcore"
         }

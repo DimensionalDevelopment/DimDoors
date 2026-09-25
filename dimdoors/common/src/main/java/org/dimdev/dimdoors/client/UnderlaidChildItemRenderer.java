@@ -35,7 +35,7 @@ public record UnderlaidChildItemRenderer(ItemStack underlay) {
         matrices.popPose();
 
         ItemStack originalItemStack = new ItemStack(
-                childItem.getOriginalItem(),
+                childItem.originalItem,
                 stack.getCount());
         originalItemStack.applyComponents(stack.getComponents());
 

@@ -29,7 +29,7 @@ public abstract class AbstractLanguageProvider extends FabricLanguageProvider {
     public void add(String key, String value, Runnable runnable) {
         add(value);
 
-        scope(key, runnable);
+        add(key, runnable);
     }
 
     public void add(String value) {
@@ -40,7 +40,7 @@ public abstract class AbstractLanguageProvider extends FabricLanguageProvider {
         builder.add(currentKeyPath.empty() ? key : currentKeyPath.peek() + "." + key, value);
     }
 
-    public void scope(String path, Runnable runnable) {
+    public void add(String path, Runnable runnable) {
         push(path);
         runnable.run();
         pop();

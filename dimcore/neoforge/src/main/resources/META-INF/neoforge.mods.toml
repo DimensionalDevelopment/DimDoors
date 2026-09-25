@@ -1,5 +1,5 @@
-modLoader = "javafml"
-loaderVersion = "${neoforge_loader_version_range}"
+modLoader = "kotlinforforge"
+loaderVersion = "[5,)"
 license = "${license}"
 
 [[mods]]
@@ -15,6 +15,13 @@ config = "dimcore.mixins.json"
 
 [[mixins]]
 config = "dimcore.neoforge.mixins.json"
+
+[[dependencies.${mod_id}]]
+modId = "kotlinforforge"
+type = "required"
+versionRange = "[5,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "neoforge"

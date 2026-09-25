@@ -9,7 +9,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimcore.DimCore;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.compat.decay.DecayDisplayData;
 import org.dimdev.dimdoors.world.decay.results.DecayResult;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ public final class DecayJeiUtil {
 
         Fluid fluid = asFluid(object);
         if (fluid != null) {
-            builder.addFluidStack(fluid, DimCore.platform().bucketAmount());
+            builder.addFluidStack(fluid, DimCore.getPlatform().bucketAmount());
         }
     }
 
@@ -52,7 +51,7 @@ public final class DecayJeiUtil {
 
         Fluid fluid = asFluid(result);
         if (fluid != null) {
-            builder.addFluidStack(fluid, DimCore.platform().bucketAmount() * result.amount());
+            builder.addFluidStack(fluid, DimCore.getPlatform().bucketAmount() * result.amount());
         }
     }
 

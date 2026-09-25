@@ -114,30 +114,30 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 Blocks.ICE
         );
         add(ModBlockTags.DECAYS_TO_CLAY_FENCE,
-                ModBlocks.MUD_SET.fence(),
-                ModBlocks.TERRACOTTA_SET.fence()
+                ModBlocks.MUD_SET.fence,
+                ModBlocks.TERRACOTTA_SET.fence
         );
         add(ModBlockTags.DECAYS_TO_CLAY_GATE,
-                ModBlocks.MUD_SET.gate(),
-                ModBlocks.TERRACOTTA_SET.gate()
+                ModBlocks.MUD_SET.gate,
+                ModBlocks.TERRACOTTA_SET.gate
         );
         add(ModBlockTags.DECAYS_TO_CLAY_BUTTON,
-                ModBlocks.MUD_SET.button(),
-                ModBlocks.TERRACOTTA_SET.button()
+                ModBlocks.MUD_SET.button,
+                ModBlocks.TERRACOTTA_SET.button
         );
         add(ModBlockTags.DECAYS_TO_CLAY_SLAB,
-                ModBlocks.MUD_SET.slab(),
-                ModBlocks.TERRACOTTA_SET.slab(),
+                ModBlocks.MUD_SET.slab,
+                ModBlocks.TERRACOTTA_SET.slab,
                 Blocks.BRICK_SLAB
         );
         add(ModBlockTags.DECAYS_TO_CLAY_STAIRS,
-                ModBlocks.MUD_SET.stairs(),
-                ModBlocks.TERRACOTTA_SET.stairs(),
+                ModBlocks.MUD_SET.stairs,
+                ModBlocks.TERRACOTTA_SET.stairs,
                 Blocks.BRICK_STAIRS
         );
         add(ModBlockTags.DECAYS_TO_CLAY_WALL,
-                ModBlocks.MUD_SET.wall(),
-                ModBlocks.TERRACOTTA_SET.wall(),
+                ModBlocks.MUD_SET.wall,
+                ModBlocks.TERRACOTTA_SET.wall,
                 Blocks.BRICK_WALL
         );
 
@@ -175,19 +175,19 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 Blocks.DEAD_FIRE_CORAL_BLOCK,
                 Blocks.DEAD_HORN_CORAL_BLOCK
         );
-        add(ModBlockTags.DECAYS_TO_DARK_SAND_FENCE, ModBlocks.CLAY_SET.fence());
-        add(ModBlockTags.DECAYS_TO_DARK_SAND_GATE, ModBlocks.CLAY_SET.gate());
-        add(ModBlockTags.DECAYS_TO_DARK_SAND_BUTTON, ModBlocks.CLAY_SET.button());
+        add(ModBlockTags.DECAYS_TO_DARK_SAND_FENCE, ModBlocks.CLAY_SET.fence);
+        add(ModBlockTags.DECAYS_TO_DARK_SAND_GATE, ModBlocks.CLAY_SET.gate);
+        add(ModBlockTags.DECAYS_TO_DARK_SAND_BUTTON, ModBlocks.CLAY_SET.button);
         add(ModBlockTags.DECAYS_TO_DARK_SAND_SLAB,
-                ModBlocks.CLAY_SET.slab(),
+                ModBlocks.CLAY_SET.slab,
                 ModBlocks.STONE_SLAB
         );
         add(ModBlockTags.DECAYS_TO_DARK_SAND_STAIRS,
-                ModBlocks.CLAY_SET.stairs(),
+                ModBlocks.CLAY_SET.stairs,
                 ModBlocks.STONE_STAIRS
         );
         add(ModBlockTags.DECAYS_TO_DARK_SAND_WALL,
-                ModBlocks.CLAY_SET.wall(),
+                ModBlocks.CLAY_SET.wall,
                 ModBlocks.STONE_WALL
         );
 
@@ -197,12 +197,12 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 ModBlocks.LINT_LAYER,
                 Blocks.WHITE_WOOL
         );
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_FENCE, ModBlocks.DARK_SAND_SET.fence());
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_GATE, ModBlocks.DARK_SAND_SET.gate());
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_BUTTON, ModBlocks.DARK_SAND_SET.button());
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_SLAB, ModBlocks.DARK_SAND_SET.slab());
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_STAIRS, ModBlocks.DARK_SAND_SET.stairs());
-        add(ModBlockTags.DECAYS_TO_UNRAVELED_WALL, ModBlocks.DARK_SAND_SET.wall());
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_FENCE, ModBlocks.DARK_SAND_SET.fence);
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_GATE, ModBlocks.DARK_SAND_SET.gate);
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_BUTTON, ModBlocks.DARK_SAND_SET.button);
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_SLAB, ModBlocks.DARK_SAND_SET.slab);
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_STAIRS, ModBlocks.DARK_SAND_SET.stairs);
+        add(ModBlockTags.DECAYS_TO_UNRAVELED_WALL, ModBlocks.DARK_SAND_SET.wall);
         add(ModBlockTags.DECAYS_TO_UNRAVELED_SPIKE,
                 Blocks.LIGHTNING_ROD,
                 Blocks.LANTERN,
@@ -1157,12 +1157,12 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
     }
 
     private void setupSet(ModBlocks.DecayGroupSet set, TagKey<Block> tag) {
-        add(set.button(), BlockTags.BUTTONS, tag);
-        add(set.wall(), BlockTags.WALLS, tag);
-        add(set.fence(), BlockTags.FENCES, tag);
-        add(set.gate(), BlockTags.FENCE_GATES, tag);
-        add(set.slab(), BlockTags.SLABS, tag);
-        add(set.stairs(), BlockTags.STAIRS, tag);
+        add(set.button, BlockTags.BUTTONS, tag);
+        add(set.wall, BlockTags.WALLS, tag);
+        add(set.fence, BlockTags.FENCES, tag);
+        add(set.gate, BlockTags.FENCE_GATES, tag);
+        add(set.slab, BlockTags.SLABS, tag);
+        add(set.stairs, BlockTags.STAIRS, tag);
     }
 
     @SafeVarargs
@@ -1187,12 +1187,12 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                     }
                 }
             } else if (object instanceof ModBlocks.DecayGroupSet set) {
-                appender.add(set.fence().builtInRegistryHolder().key());
-                appender.add(set.gate().builtInRegistryHolder().key());
-                appender.add(set.button().builtInRegistryHolder().key());
-                appender.add(set.slab().builtInRegistryHolder().key());
-                appender.add(set.stairs().builtInRegistryHolder().key());
-                appender.add(set.wall().builtInRegistryHolder().key());
+                appender.add(set.fence.builtInRegistryHolder().key());
+                appender.add(set.gate.builtInRegistryHolder().key());
+                appender.add(set.button.builtInRegistryHolder().key());
+                appender.add(set.slab.builtInRegistryHolder().key());
+                appender.add(set.stairs.builtInRegistryHolder().key());
+                appender.add(set.wall.builtInRegistryHolder().key());
             }
         }
 

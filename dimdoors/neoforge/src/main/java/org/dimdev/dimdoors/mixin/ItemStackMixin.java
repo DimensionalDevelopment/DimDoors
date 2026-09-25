@@ -12,11 +12,11 @@ public class ItemStackMixin {
 
     @ModifyArg(method = "getDestroySpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getDestroySpeed(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)F"), index = 1)
     public BlockState speed(BlockState state) {
-        return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
+        return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock<?> autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }
 
     @ModifyArg(method = "isCorrectToolForDrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isCorrectToolForDrops(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)Z"), index = 1)
     public BlockState isCorrect(ItemStack stack, BlockState state) {
-        return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
+        return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock<?> autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }
 }

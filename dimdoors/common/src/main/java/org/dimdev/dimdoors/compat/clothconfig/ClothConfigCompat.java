@@ -73,7 +73,7 @@ public class ClothConfigCompat {
                     .addEntry(createBoolean(entryBuilder, "monoliths", "monolithTeleportation", monoliths.monolithTeleportation, true, value -> monoliths.monolithTeleportation = value));
 
             var limbo = config.getLimboConfig();
-            var worldsLeadingToLimbo = limbo.getWorldsLeadingToLimbo();
+            var worldsLeadingToLimbo = limbo.worldsLeadingToLimbo;
             builder.getOrCreateCategory(Component.translatable("config.dimdoors.limbo.category"))
                     .addEntry(createBoolean(entryBuilder, "limbo", "worldsLeadingToLimbo.blacklist", worldsLeadingToLimbo.blacklist, false, value -> worldsLeadingToLimbo.blacklist = value))
                     .addEntry(createLevelKeyList(entryBuilder, "limbo", "worldsLeadingToLimbo.list", worldsLeadingToLimbo.list, List.of(), value -> {

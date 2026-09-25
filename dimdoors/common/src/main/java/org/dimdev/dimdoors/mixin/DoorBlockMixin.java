@@ -12,11 +12,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.Rift;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-import java.util.Optional;
 
 import static org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar.transferProperty;
 
@@ -37,13 +37,10 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
     }
 
     @Override
-    public Optional<? extends Rift> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
-        Optional<BlockState> providerState = this.getRiftProviderState(state);
-        if (providerState.isEmpty()) {
-            return Optional.empty();
-        }
+    public @Nullable Rift convertToRiftProvider(@NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull BlockState state) {
+        @Nullable BlockState blockState = this.getRiftProviderState(state);
+        if (blockState == null) return null;
 
-        BlockState blockState = providerState.get();
         world.setBlockAndUpdate(pos, blockState);
         world.setBlockAndUpdate(pos.above(), blockState.setValue(HALF, DoubleBlockHalf.UPPER));
 
@@ -51,20 +48,9 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
     }
 
     @Override
-    public Optional<BlockState> getRiftProviderState(BlockState state) {
+    public @Nullable BlockState getRiftProviderState(@NotNull BlockState state) {
         Block dimensionalDoor = DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this);
+        return dimensionalDoor instanceof RiftVariantProvider ? dimensionalDoor.withPropertiesOf(state) : null;
 
-        if (dimensionalDoor instanceof RiftVariantProvider) {
-            var baseState = dimensionalDoor.defaultBlockState();
-            return Optional.of(state.getProperties().stream()
-                    .filter(baseState::hasProperty)
-                    .reduce(
-                            baseState,
-                            (newState, property) -> transferProperty(state, newState, property),
-                            (a, b) -> b
-                    ));
-        }
-
-        return Optional.empty();
     }
 }

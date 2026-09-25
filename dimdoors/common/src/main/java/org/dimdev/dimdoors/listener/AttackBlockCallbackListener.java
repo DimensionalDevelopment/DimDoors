@@ -25,12 +25,12 @@ public class AttackBlockCallbackListener implements Platform.AttackBlockCallback
         }
 
         AttackBlockResult result = extendedItem.onAttackBlock(world, player, hand, pos, direction);
-        if (result.sendPacket()) {
+        if (result.sendPacket) {
             if (!ClientPacketListener.tryToSendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
                 return InteractionResult.FAIL;
             }
         }
 
-        return result.result();
+        return result.result;
     }
 }

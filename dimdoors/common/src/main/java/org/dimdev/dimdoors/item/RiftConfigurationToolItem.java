@@ -50,7 +50,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
             if (RaycastHelper.hitsRift(hit, world)) {
                 Rift rift = (Rift) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-                var destination = rift.getData().getDestination();
+                var destination = rift.data.getDestination();
 
 
                 if (destination instanceof IdMarker idMarker && idMarker.getId() < IdCounter.get(stack)) {
@@ -92,7 +92,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
                 if (blockEntity instanceof Rift rift) {
 
 
-                    if (!(rift.getData().getDestination() instanceof IdMarker idMarker) || idMarker.getId() != -1) {
+                    if (!(rift.data.getDestination() instanceof IdMarker idMarker) || idMarker.getId() != -1) {
                         rift.setDestination(new IdMarker(-1));
                         EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
                         return AttackBlockResult.success(false);

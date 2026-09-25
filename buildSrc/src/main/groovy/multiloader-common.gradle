@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
 }
 
@@ -24,6 +25,14 @@ java {
     withJavadocJar()
 }
 
+kotlin {
+    jvmToolchain(java_version as int)
+}
+
+dependencies {
+    compileOnly libs.kotlin.stdlib
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -42,6 +51,11 @@ repositories {
         name = "RyanHCode Maven"
         url = "https://maven.ryanhcode.dev/releases"
     }
+
+    maven {
+        name = "Kotlin for Forge"
+        url = "https://thedarkcolour.github.io/KotlinForForge/"
+    }.content { includeGroup("thedarkcolour") }
 
 
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel

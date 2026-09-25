@@ -54,17 +54,17 @@ public class DialingDoorBlockEntityRenderer implements BlockEntityRenderer<Diali
 
         matrixStack.pushPose();
         matrixStack.translate(-1.5 * VOXEL_SIZE, 10.1 * VOXEL_SIZE, 0);
-        renderText(String.valueOf(address.dial1()), matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial1), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(-1.5 * VOXEL_SIZE, 3.7 * VOXEL_SIZE, 0);
-        renderText(String.valueOf(address.dial2()), matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial2), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(-1.5 * VOXEL_SIZE, -3.3 * VOXEL_SIZE, 0);
-        renderText(String.valueOf(address.dial3()), matrixStack, vertexConsumerProvider, light, font);
+        renderText(String.valueOf(address.dial3), matrixStack, vertexConsumerProvider, light, font);
         matrixStack.popPose();
 
         matrixStack.popPose();

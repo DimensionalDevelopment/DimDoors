@@ -12,13 +12,14 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.item.RaycastHelper;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
     @Override
-    public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
+    public @NotNull InteractionResult useItemOnBlock(@NotNull Player player, @NotNull Level world, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         var result = RaycastHelper.findDetachRift(player, DETACH);
 
         if (!RaycastHelper.hitsDetachedRift(result, world)) return InteractionResult.PASS;

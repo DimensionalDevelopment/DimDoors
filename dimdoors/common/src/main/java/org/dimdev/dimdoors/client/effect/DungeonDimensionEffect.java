@@ -2,21 +2,18 @@ package org.dimdev.dimdoors.client.effect;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FogType;
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.dimdev.dimdoors.world.pocket.type.addon.sky.EnvironmentAddon;
-import org.dimdev.dimdoors.world.pocket.type.addon.sky.SkyData;
+import org.dimdev.dimdoors.world.pocket.type.addon.environment.EnvironmentAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData;
 import org.joml.Matrix4f;
 
 import java.util.Optional;

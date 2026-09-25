@@ -74,7 +74,7 @@ public class TemplateUtils {
         LOGGER.info("Registering {} rifts for pocket {}", rifts.size(), pocket.getId());
 
         for (Rift rift : rifts) {
-            if (rift.getData().getDestination() instanceof PocketEntranceMarker entranceMarker) {
+            if (rift.data.getDestination() instanceof PocketEntranceMarker entranceMarker) {
                 entranceWeights.put(rift, entranceMarker.getWeight());
             }
         }
@@ -85,16 +85,16 @@ public class TemplateUtils {
         }
 
         Rift selectedEntrance = MathUtil.weightedRandom(entranceWeights);
-        LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.getRiftBlockPos(), pocket.getId());
+        LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.riftBlockPos, pocket.getId());
 
         // Replace entrances with appropriate destinations
         for (Rift rift : rifts) {
-            if (rift.getData().getDestination() instanceof PocketEntranceMarker entranceMarker) {
+            if (rift.data.getDestination() instanceof PocketEntranceMarker entranceMarker) {
                 if (rift == selectedEntrance) {
                     rift.setDestination(entranceMarker.getIfDestination());
                     rift.register();
 
-                    Location entranceLocation = Location.ofWorld(world, rift.getRiftBlockPos());
+                    Location entranceLocation = Location.ofWorld(world, rift.riftBlockPos);
                     PocketRegistry.getInstance().addPocketEntrance(pocket, entranceLocation);
                     LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
@@ -104,20 +104,20 @@ public class TemplateUtils {
         }
 
         for (Rift rift : rifts) {
-            if (rift.getData().getDestination() instanceof PocketExitMarker) {
+            if (rift.data.getDestination() instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
 
                 VirtualTarget<?> exitDestination = rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE;
 
                 if (exitDestination == null) {
-                    LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.getRiftBlockPos(), pocket.getId());
+                    LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.riftBlockPos, pocket.getId());
                     exitDestination = VirtualTarget.NoneTarget.INSTANCE;
                 }
 
                 rift.setDestination(exitDestination);
 
                 if (exitDestination != VirtualTarget.NoneTarget.INSTANCE) {
-                    exitDestination.setLocation(Location.ofWorld(world, rift.getRiftBlockPos()));
+                    exitDestination.setLocation(Location.ofWorld(world, rift.riftBlockPos));
                 }
             }
         }
@@ -137,7 +137,7 @@ public class TemplateUtils {
         fromBe.setDestination(to.asTarget());
         fromBe.markStateChanged();
         if (toBe != null && toBe.getProperties() != null) {
-            toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
+            toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().linksRemaining - 1));
             toBe.updateProperties();
             toBe.markStateChanged();
         }

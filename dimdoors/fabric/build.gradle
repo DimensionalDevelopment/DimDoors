@@ -36,6 +36,7 @@ dependencies {
 
     modImplementation libs.fabric.api
     modImplementation libs.fabric.loader
+    modImplementation libs.fabric.language.kotlin
 
     modLocalRuntime(libs.sable.fabric, loaderExclude)
 
@@ -120,6 +121,9 @@ loom {
     sourceSets {
         main {
             java {
+                srcDir "src/main/datagen"
+            }
+            kotlin {
                 srcDir "src/main/datagen"
             }
             resources {

@@ -35,7 +35,7 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
     public void render(@NotNull DetachedRiftBlockEntity rift, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vcs, int breakProgress, int alpha) {
         super.render(rift, tickDelta, matrices, vcs, breakProgress, alpha);
 
-        float riftCoreVisibility = DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore ? 1 : RiftUtils.showRiftCoreUntil.getVisibility();
+        float riftCoreVisibility = DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore ? 1 : RiftUtils.showRiftTimer.getVisibility();
         if (riftCoreVisibility > 0) {
             this.renderTesseract(vcs.getBuffer(RenderType.entityTranslucent(TESSERACT_PATH)), rift, matrices, riftCoreVisibility);
         }
@@ -64,12 +64,12 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
             color = DEFAULT_COLOR;
         }
 
-        float alpha = DECAY_RADIUS_ALPHA * color.alpha();
+        float alpha = DECAY_RADIUS_ALPHA * color.alpha;
 
         matrices.pushPose();
         matrices.translate(0.5f, 0.5f, 0.5f);
 
-        RenderUtils.renderSolidColorSphere(renderType, vc, matrices, radius + 1, color.red(), color.green(), color.blue(), alpha, DECAY_RADIUS_LATITUDE_SEGMENTS, DECAY_RADIUS_LONGITUDE_SEGMENTS);
+        RenderUtils.renderSolidColorSphere(renderType, vc, matrices, radius + 1, color.red, color.green, color.blue, alpha, DECAY_RADIUS_LATITUDE_SEGMENTS, DECAY_RADIUS_LONGITUDE_SEGMENTS);
 
         matrices.popPose();
     }
@@ -78,7 +78,7 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
         matrices.pushPose();
         matrices.translate(0.5f, 0.5f, 0.5f);
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw));
-        RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, RiftCurves.CURVES.get(rift.getCurveID()), DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.getData().getSize() / 150, 0);//0xF1234568L * rift.hashCode());
+        RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, RiftCurves.CURVES.get(rift.curveID), DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.getData().getSize() / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.popPose();
     }
 
@@ -88,7 +88,7 @@ public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Det
         if (Objects.equals(color, RGBA.NONE)) {
             color = DEFAULT_COLOR;
         }
-        color = new RGBA(color.red(), color.green(), color.blue(), color.alpha() * alphaMultiplier);
+        color = new RGBA(color.red, color.green, color.blue, color.alpha * alphaMultiplier);
 
         matrices.pushPose();
 

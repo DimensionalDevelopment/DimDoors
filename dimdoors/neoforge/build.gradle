@@ -25,6 +25,8 @@ configurations {
 }
 
 dependencies {
+    implementation libs.kotlinforforge.neoforge
+
     compileOnly project(':dimcore-neoforge')
     localRuntime project(':dimcore-neoforge')
     jarJar(project(':dimcore-neoforge'))

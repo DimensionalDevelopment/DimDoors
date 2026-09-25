@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.BlockDecayCondition;
 import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern;
 
 import java.util.Arrays;
@@ -36,7 +36,7 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
                 .pattern(CompoundDecayPattern.builder()
                         .conditions(
                                 DimensionDecayCondition.of(ModDimensions.LIMBO_TYPE_KEY),
-                                SimpleDecayCondition.of(ModBlockTags.DECAYS_TO_SOLID_STATIC))
+                                BlockDecayCondition.of(ModBlockTags.DECAYS_TO_SOLID_STATIC))
                         .result(getProcessor(ModBlocks.SOLID_STATIC)))
                 .accept(consumer, provider);
 
@@ -44,12 +44,12 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addPattern(ModBlocks.DARK_SAND_LAYER, ModBlockTags.DECAYS_TO_DARK_SAND_LAYER).accept(consumer, provider);
         addPattern(ModBlocks.UNRAVELED_SPIKE, ModBlockTags.DECAYS_TO_UNRAVELED_SPIKE).accept(consumer, provider);
         addPattern(ModBlocks.UNRAVELLED_FABRIC, ModBlockTags.DECAYS_TO_UNRAVELED_FABRIC).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.fence(), ModBlockTags.DECAYS_TO_UNRAVELED_FENCE).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.gate(), ModBlockTags.DECAYS_TO_UNRAVELED_GATE).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.button(), ModBlockTags.DECAYS_TO_UNRAVELED_BUTTON).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.slab(), ModBlockTags.DECAYS_TO_UNRAVELED_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.stairs(), ModBlockTags.DECAYS_TO_UNRAVELED_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.UNRAVELED_SET.wall(), ModBlockTags.DECAYS_TO_UNRAVELED_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.fence, ModBlockTags.DECAYS_TO_UNRAVELED_FENCE).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.gate, ModBlockTags.DECAYS_TO_UNRAVELED_GATE).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.button, ModBlockTags.DECAYS_TO_UNRAVELED_BUTTON).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.slab, ModBlockTags.DECAYS_TO_UNRAVELED_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.stairs, ModBlockTags.DECAYS_TO_UNRAVELED_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.UNRAVELED_SET.wall, ModBlockTags.DECAYS_TO_UNRAVELED_WALL).accept(consumer, provider);
         addPattern(ModBlocks.DRIFTWOOD_LEAVES, ModBlockTags.DECAYS_TO_DRIFTWOOD_LEAVES).accept(consumer, provider);
         addPattern(ModBlocks.DRIFTWOOD_SAPLING, ModBlockTags.DECAYS_TO_DRIFTWOOD_SAPLING).accept(consumer, provider);
         addPattern(Blocks.WITHER_ROSE, ModBlockTags.DECAYS_TO_WITHER_ROSE).accept(consumer, provider);
@@ -58,23 +58,23 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addDoublePattern(DimensionalDoors.id("white_wool_from_beds"), Blocks.WHITE_WOOL, BlockTags.BEDS).accept(consumer, provider);
 
         addPattern(ModBlocks.DARK_SAND, ModBlockTags.DECAYS_TO_DARK_SAND).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.fence(), ModBlockTags.DECAYS_TO_DARK_SAND_FENCE).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.gate(), ModBlockTags.DECAYS_TO_DARK_SAND_GATE).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.button(), ModBlockTags.DECAYS_TO_DARK_SAND_BUTTON).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.slab(), ModBlockTags.DECAYS_TO_DARK_SAND_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.stairs(), ModBlockTags.DECAYS_TO_DARK_SAND_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.DARK_SAND_SET.wall(), ModBlockTags.DECAYS_TO_DARK_SAND_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.fence, ModBlockTags.DECAYS_TO_DARK_SAND_FENCE).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.gate, ModBlockTags.DECAYS_TO_DARK_SAND_GATE).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.button, ModBlockTags.DECAYS_TO_DARK_SAND_BUTTON).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.slab, ModBlockTags.DECAYS_TO_DARK_SAND_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.stairs, ModBlockTags.DECAYS_TO_DARK_SAND_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.DARK_SAND_SET.wall, ModBlockTags.DECAYS_TO_DARK_SAND_WALL).accept(consumer, provider);
 
         addPattern(Blocks.GLASS, ModBlockTags.DECAYS_TO_GLASS).accept(consumer, provider);
         addPattern(Blocks.REDSTONE_LAMP, Blocks.BEACON).accept(consumer, provider);
         addPatterns(provider, consumer, Blocks.RED_SAND, Blocks.RED_SANDSTONE, Blocks.REDSTONE_BLOCK);
-        addPattern(ModBlocks.RED_SAND_SET.slab(), ModBlockTags.DECAYS_TO_RED_SAND_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.RED_SAND_SET.stairs(), ModBlockTags.DECAYS_TO_RED_SAND_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.RED_SAND_SET.wall(), ModBlockTags.DECAYS_TO_RED_SAND_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.RED_SAND_SET.slab, ModBlockTags.DECAYS_TO_RED_SAND_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.RED_SAND_SET.stairs, ModBlockTags.DECAYS_TO_RED_SAND_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.RED_SAND_SET.wall, ModBlockTags.DECAYS_TO_RED_SAND_WALL).accept(consumer, provider);
         addPatterns(provider, consumer, Blocks.SAND, Blocks.SANDSTONE, Blocks.TNT);
-        addPattern(ModBlocks.SAND_SET.slab(), ModBlockTags.DECAYS_TO_SAND_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.SAND_SET.stairs(), ModBlockTags.DECAYS_TO_SAND_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.SAND_SET.wall(), ModBlockTags.DECAYS_TO_SAND_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.SAND_SET.slab, ModBlockTags.DECAYS_TO_SAND_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.SAND_SET.stairs, ModBlockTags.DECAYS_TO_SAND_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.SAND_SET.wall, ModBlockTags.DECAYS_TO_SAND_WALL).accept(consumer, provider);
         addPattern(Blocks.SOUL_SAND, Blocks.SOUL_SOIL).accept(consumer, provider);
         addConcretePowderPatterns(provider, consumer);
 
@@ -109,20 +109,20 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addPattern(Blocks.DROPPER, Blocks.DISPENSER).accept(consumer, provider);
 
         addPattern(Blocks.DEEPSLATE, ModBlockTags.DECAYS_TO_DEEPSLATE).accept(consumer, provider);
-        addPattern(ModBlocks.DEEPSLATE_SET.slab(), ModBlockTags.DECAYS_TO_DEEPSLATE_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.DEEPSLATE_SET.stairs(), ModBlockTags.DECAYS_TO_DEEPSLATE_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.DEEPSLATE_SET.wall(), ModBlockTags.DECAYS_TO_DEEPSLATE_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.DEEPSLATE_SET.slab, ModBlockTags.DECAYS_TO_DEEPSLATE_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.DEEPSLATE_SET.stairs, ModBlockTags.DECAYS_TO_DEEPSLATE_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.DEEPSLATE_SET.wall, ModBlockTags.DECAYS_TO_DEEPSLATE_WALL).accept(consumer, provider);
 
         addPattern(Blocks.END_STONE, ModBlockTags.DECAYS_TO_ENDSTONE).accept(consumer, provider);
-        addPattern(ModBlocks.END_STONE_SET.slab(), ModBlockTags.DECAYS_TO_ENDSTONE_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.END_STONE_SET.stairs(), ModBlockTags.DECAYS_TO_ENDSTONE_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.END_STONE_SET.wall(), ModBlockTags.DECAYS_TO_ENDSTONE_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.END_STONE_SET.slab, ModBlockTags.DECAYS_TO_ENDSTONE_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.END_STONE_SET.stairs, ModBlockTags.DECAYS_TO_ENDSTONE_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.END_STONE_SET.wall, ModBlockTags.DECAYS_TO_ENDSTONE_WALL).accept(consumer, provider);
 
         addPattern(Blocks.NETHERRACK, ModBlockTags.DECAYS_TO_NETHERRACK).accept(consumer, provider);
-        addPattern(ModBlocks.NETHERRACK_SET.fence(), ModBlockTags.DECAYS_TO_NETHERRACK_FENCE).accept(consumer, provider);
-        addPattern(ModBlocks.NETHERRACK_SET.slab(), ModBlockTags.DECAYS_TO_NETHERRACK_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.NETHERRACK_SET.stairs(), ModBlockTags.DECAYS_TO_NETHERRACK_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.NETHERRACK_SET.wall(), ModBlockTags.DECAYS_TO_NETHERRACK_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.NETHERRACK_SET.fence, ModBlockTags.DECAYS_TO_NETHERRACK_FENCE).accept(consumer, provider);
+        addPattern(ModBlocks.NETHERRACK_SET.slab, ModBlockTags.DECAYS_TO_NETHERRACK_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.NETHERRACK_SET.stairs, ModBlockTags.DECAYS_TO_NETHERRACK_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.NETHERRACK_SET.wall, ModBlockTags.DECAYS_TO_NETHERRACK_WALL).accept(consumer, provider);
 
         addPattern(Blocks.PRISMARINE, ModBlockTags.DECAYS_TO_PRISMARINE).accept(consumer, provider);
         addPattern(Blocks.PRISMARINE_SLAB, ModBlockTags.DECAYS_TO_PRISMARINE_SLAB).accept(consumer, provider);
@@ -158,12 +158,12 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addPattern(Blocks.PACKED_ICE, Blocks.BLUE_ICE).accept(consumer, provider);
 
         addPattern(Blocks.CLAY, ModBlockTags.DECAYS_TO_CLAY).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.fence(), ModBlockTags.DECAYS_TO_CLAY_FENCE).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.gate(), ModBlockTags.DECAYS_TO_CLAY_GATE).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.button(), ModBlockTags.DECAYS_TO_CLAY_BUTTON).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.slab(), ModBlockTags.DECAYS_TO_CLAY_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.stairs(), ModBlockTags.DECAYS_TO_CLAY_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.CLAY_SET.wall(), ModBlockTags.DECAYS_TO_CLAY_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.fence, ModBlockTags.DECAYS_TO_CLAY_FENCE).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.gate, ModBlockTags.DECAYS_TO_CLAY_GATE).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.button, ModBlockTags.DECAYS_TO_CLAY_BUTTON).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.slab, ModBlockTags.DECAYS_TO_CLAY_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.stairs, ModBlockTags.DECAYS_TO_CLAY_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.CLAY_SET.wall, ModBlockTags.DECAYS_TO_CLAY_WALL).accept(consumer, provider);
 
         addTerracottaPatterns(provider, consumer);
 
@@ -203,12 +203,12 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addPattern(ModBlocks.DRIFTWOOD_SLAB, ModBlockTags.DECAYS_TO_DRIFTWOOD_SLAB).accept(consumer, provider);
         addPattern(ModBlocks.DRIFTWOOD_STAIRS, ModBlockTags.DECAYS_TO_DRIFTWOOD_STAIRS).accept(consumer, provider);
 
-        addPattern(ModBlocks.MUD_SET.fence(), ModBlockTags.DECAYS_TO_MUD_FENCE).accept(consumer, provider);
-        addPattern(ModBlocks.MUD_SET.gate(), ModBlockTags.DECAYS_TO_MUD_GATE).accept(consumer, provider);
-        addPattern(ModBlocks.MUD_SET.button(), ModBlockTags.DECAYS_TO_MUD_BUTTON).accept(consumer, provider);
-        addPattern(ModBlocks.MUD_SET.slab(), ModBlockTags.DECAYS_TO_MUD_SLAB).accept(consumer, provider);
-        addPattern(ModBlocks.MUD_SET.stairs(), ModBlockTags.DECAYS_TO_MUD_STAIRS).accept(consumer, provider);
-        addPattern(ModBlocks.MUD_SET.wall(), ModBlockTags.DECAYS_TO_MUD_WALL).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.fence, ModBlockTags.DECAYS_TO_MUD_FENCE).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.gate, ModBlockTags.DECAYS_TO_MUD_GATE).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.button, ModBlockTags.DECAYS_TO_MUD_BUTTON).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.slab, ModBlockTags.DECAYS_TO_MUD_SLAB).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.stairs, ModBlockTags.DECAYS_TO_MUD_STAIRS).accept(consumer, provider);
+        addPattern(ModBlocks.MUD_SET.wall, ModBlockTags.DECAYS_TO_MUD_WALL).accept(consumer, provider);
 
         for (var key : ModPaintings.PAINTINGS_TO_DECAY_INTO) {
             var id = key.location().withPrefix("decays_into_");
@@ -322,12 +322,12 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
     }
 
     private void addSetPatterns(HolderLookup.Provider provider, Consumer<DecayPatternHolder> consumer, ModBlocks.DecayGroupSet to, ModBlocks.DecayGroupSet... from) {
-        addPatterns(provider, consumer, to.fence(), selectSetEntries(from, ModBlocks.DecayGroupSet::fence));
-        addPatterns(provider, consumer, to.gate(), selectSetEntries(from, ModBlocks.DecayGroupSet::gate));
-        addPatterns(provider, consumer, to.button(), selectSetEntries(from, ModBlocks.DecayGroupSet::button));
-        addPatterns(provider, consumer, to.slab(), selectSetEntries(from, ModBlocks.DecayGroupSet::slab));
-        addPatterns(provider, consumer, to.stairs(), selectSetEntries(from, ModBlocks.DecayGroupSet::stairs));
-        addPatterns(provider, consumer, to.wall(), selectSetEntries(from, ModBlocks.DecayGroupSet::wall));
+        addPatterns(provider, consumer, to.fence, selectSetEntries(from, ModBlocks.DecayGroupSet::fence));
+        addPatterns(provider, consumer, to.gate, selectSetEntries(from, ModBlocks.DecayGroupSet::gate));
+        addPatterns(provider, consumer, to.button, selectSetEntries(from, ModBlocks.DecayGroupSet::button));
+        addPatterns(provider, consumer, to.slab, selectSetEntries(from, ModBlocks.DecayGroupSet::slab));
+        addPatterns(provider, consumer, to.stairs, selectSetEntries(from, ModBlocks.DecayGroupSet::stairs));
+        addPatterns(provider, consumer, to.wall, selectSetEntries(from, ModBlocks.DecayGroupSet::wall));
     }
 
     private Object[] selectSetEntries(ModBlocks.DecayGroupSet[] sets, Function<ModBlocks.DecayGroupSet, ?> accessor) {

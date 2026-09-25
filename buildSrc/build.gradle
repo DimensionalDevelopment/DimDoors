@@ -1,3 +1,52 @@
 plugins {
     id 'groovy-gradle-plugin'
 }
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Fabric'
+                url = uri('https://maven.fabricmc.net')
+            }
+        }
+        filter {
+            includeGroupAndSubgroups('net.fabricmc')
+            includeGroup('fabric-loom')
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = uri('https://repo.spongepowered.org/repository/maven-public')
+            }
+        }
+        filter {
+            includeGroupAndSubgroups("org.spongepowered")
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Forge'
+                url = uri('https://maven.minecraftforge.net')
+            }
+        }
+        filter {
+            includeGroupAndSubgroups('net.minecraftforge')
+        }
+    }
+    maven {
+        name = 'NeoForge'
+        url = uri('https://maven.neoforged.net/releases')
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:2.4.0'
+    implementation 'fabric-loom:fabric-loom.gradle.plugin:1.16-SNAPSHOT'
+    implementation 'net.neoforged.moddev:net.neoforged.moddev.gradle.plugin:2.0.141'
+}

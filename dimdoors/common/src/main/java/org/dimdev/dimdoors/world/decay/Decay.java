@@ -122,7 +122,7 @@ public final class Decay {
         private static List<DecayPatternHolder> undiffernitatedPatterns = new ArrayList<>();
 
     public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
-            undiffernitatedPatterns = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern));
+            undiffernitatedPatterns = new ArrayList<>(ResourceUtil.loadResources(manager, "decay_patterns", ".json", (id, stream) -> loadPattern(ResourceUtil.readJson(stream), id)).values());
         }
 
     private static DecayPatternHolder loadPattern(JsonElement json, ResourceLocation id) {

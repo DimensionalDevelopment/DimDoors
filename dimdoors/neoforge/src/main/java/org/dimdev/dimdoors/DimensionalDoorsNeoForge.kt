@@ -1,0 +1,119 @@
+package org.dimdev.dimdoors
+
+import net.minecraft.core.Holder
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.inventory.RecipeBookType
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.enchantment.Enchantment
+import net.minecraft.world.level.GameRules
+import net.minecraft.world.level.chunk.LevelChunk
+import net.minecraft.world.level.material.FlowingFluid
+import net.minecraft.world.level.material.Fluid
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.common.asm.enumextension.EnumProxy
+import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.common.Tags
+import net.neoforged.neoforge.event.level.ChunkEvent
+import net.neoforged.neoforge.event.server.ServerStoppedEvent
+import net.neoforged.neoforge.fluids.FluidType
+import net.neoforged.neoforge.registries.NeoForgeRegistries
+import org.dimdev.dimcore.NeoForgeSided
+import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimdoors.api.event.ChunkServedCallback
+import org.dimdev.dimdoors.fluid.EternalFluid
+import org.dimdev.dimdoors.fluid.LeakFluid
+import org.dimdev.dimdoors.fluid.ModFluidTypes
+import org.dimdev.dimdoors.item.FarShotItem
+import org.dimdev.dimdoors.world.ModBiomeModifiers
+import java.util.function.Consumer
+
+@Mod(DimensionalDoors.MOD_ID)
+class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsNeoForge, DimensionalDoors>(bus, DimensionalDoors.INSTANCE), IDimensionalDoorsSided<DimensionalDoorsNeoForge> {
+    init {
+        ModFluidTypes.register()
+        ModBiomeModifiers.register()
+
+        NeoForge.EVENT_BUS.addListener { load: ChunkEvent.Load ->
+            if (load.isNewChunk) return@addListener
+            val level = load.level.castOrNull<ServerLevel>() ?: return@addListener
+            val chunk = load.chunk.castOrNull<LevelChunk>() ?: return@addListener
+            ChunkServedCallback.EVENT.invoker().onChunkServed(level, chunk)
+        }
+    }
+
+    override fun createFlowingEternalFluid(): Fluid {
+        return object : EternalFluid.Flowing() {
+            override fun getFluidType(): FluidType {
+                return ModFluidTypes.ETERNAL.value()
+            }
+        }
+    }
+
+    override fun createEternalFluid(): FlowingFluid {
+        return object : EternalFluid.Still() {
+            override fun getFluidType(): FluidType {
+                return ModFluidTypes.ETERNAL.value()
+            }
+        }
+    }
+
+    override fun createFlowingLeakFluid(): Fluid {
+        return object : LeakFluid.Flowing() {
+            override fun getFluidType(): FluidType = ModFluidTypes.LEAK.value()
+        }
+    }
+
+    override fun createLeakFluid(): FlowingFluid = object : LeakFluid.Still() {
+        override fun getFluidType(): FluidType = ModFluidTypes.LEAK.value()
+    }
+
+    override fun registerGameRule(
+        name: String,
+        category: GameRules.Category,
+        value: Boolean
+    ): GameRules.Key<GameRules.BooleanValue?> {
+        return GameRules.register<GameRules.BooleanValue?>(name, category, GameRules.BooleanValue.create(value))
+    }
+
+    override fun registerGameRule(
+        name: String,
+        category: GameRules.Category,
+        value: Int
+    ) = GameRules.register(name, category, GameRules.IntegerValue.create(value))
+
+    override fun createFarShot(properties: Item.Properties): FarShotItem {
+        return object : FarShotItem(properties) {
+            override fun isPrimaryItemFor(stack: ItemStack, enchantment: Holder<Enchantment>) = allowsEnchantment(enchantment) && enchantment.value().isPrimaryItem(stack)
+
+            override fun supportsEnchantment(stack: ItemStack, enchantment: Holder<Enchantment>) = allowsEnchantment(enchantment) && enchantment.value().isSupportedItem(stack)
+        }
+    }
+
+    override val tesselatingRecipeBookType: RecipeBookType? get() = TESSELLATING.getValue()
+
+    public override fun onServerStopped(consumer: Consumer<MinecraftServer?>) {
+        NeoForge.EVENT_BUS.addListener<ServerStoppedEvent?>(Consumer { event: ServerStoppedEvent? ->
+            consumer.accept(
+                event!!.getServer()
+            )
+        })
+    }
+
+    public override fun onServerStopping(consumer: Consumer<MinecraftServer?>) {
+        NeoForge.EVENT_BUS.addListener<ServerStoppedEvent?>(Consumer { event: ServerStoppedEvent? ->
+            consumer.accept(
+                event!!.getServer()
+            )
+        })
+    }
+
+    val enderPearlsTag: TagKey<Item?>
+        get() = Tags.Items.ENDER_PEARLS
+
+    companion object {
+        val TESSELLATING: EnumProxy<RecipeBookType?> = EnumProxy<RecipeBookType?>(RecipeBookType::class.java)
+    }
+}

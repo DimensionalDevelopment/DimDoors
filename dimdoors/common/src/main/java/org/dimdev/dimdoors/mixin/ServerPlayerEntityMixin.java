@@ -49,7 +49,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     public ServerPlayerGameMode gameMode;
 
     @Unique private List<AfterBlockRecord> afterBlockMoves = new ArrayList<>();
-    
+
     private static final float RANDOM_ACTION_CHANCE = 0.1F;
     private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
     private static final int CHUNK_SIZES = 25;

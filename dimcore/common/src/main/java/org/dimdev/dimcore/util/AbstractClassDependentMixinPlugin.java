@@ -8,6 +8,7 @@ import org.spongepowered.asm.service.MixinService;
 import java.util.List;
 import java.util.Set;
 
+//TODO: Check later if this being converted to kotlin won't cause issue. Staying pure java for now.
 public class AbstractClassDependentMixinPlugin implements IMixinConfigPlugin {
 
 	private final boolean loaded;

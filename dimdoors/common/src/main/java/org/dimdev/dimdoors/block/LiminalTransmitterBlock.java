@@ -62,7 +62,7 @@ public class LiminalTransmitterBlock extends WaterLoggableBlockWithEntity implem
     }
 
     public static boolean attemptRedstoneTransmission(int strength, Rift rift) {
-        rift.setStateDirty(false);
+        rift.isStateDirty = false;
 
         // Attempt a teleport
         try {

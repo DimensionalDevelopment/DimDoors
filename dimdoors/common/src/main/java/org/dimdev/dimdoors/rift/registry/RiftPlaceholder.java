@@ -21,7 +21,7 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 
     private RiftPlaceholder(UUID id, Location location) {
         this();
-        this.setId(id);
+        this.id = id;
         this.setLocation(location);
     }
 

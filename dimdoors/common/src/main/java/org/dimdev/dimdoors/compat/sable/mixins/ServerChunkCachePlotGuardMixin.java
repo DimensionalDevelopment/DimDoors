@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.compat.sable.mixins;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import org.dimdev.dimdoors.compat.sable.SableCompat;
+import org.dimdev.dimdoors.compat.sable.SableLevelSpaceHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,11 +17,9 @@ public class ServerChunkCachePlotGuardMixin {
     @Final
     private ServerLevel level;
 
-    // Must stay on the side-effect-free query: blockChanged runs for every block update, and the
-    // loading variant can reach a holding-region disk scan.
     @Inject(method = "blockChanged", at = @At("HEAD"), cancellable = true)
     private void dimdoors$ignoreMissingSablePlotHolderBlockChange(BlockPos pos, CallbackInfo ci) {
-        if (SableCompat.HELPER.isLevelSpaceUnavailableNow(this.level, pos)) {
+        if (SableLevelSpaceHelper.INSTANCE.isUnavailableNow(this.level, pos)) {
             ci.cancel();
         }
     }

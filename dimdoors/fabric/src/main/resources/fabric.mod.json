@@ -47,6 +47,7 @@
         "fabricloader": ">=${fabric_loader_version}",
         "dimcore": "*",
         "fabric-api": "*",
+        "fabric-language-kotlin": ">=1.14.1",
         "minecraft": "${minecraft_version}",
         "java": ">=${java_version}"
     },

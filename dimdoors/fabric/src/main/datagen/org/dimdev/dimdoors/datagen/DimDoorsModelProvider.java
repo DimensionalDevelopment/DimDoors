@@ -131,12 +131,12 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         TextureMapping mapping = getTextureMapping(generator, textureSource);
         ResourceLocation fullBlockModel = ModelLocationUtils.getModelLocation(textureSource);
 
-        generateButton(generator, set.button(), mapping);
-        generateSlab(generator, set.slab(), mapping, fullBlockModel);
-        generateStairs(generator, set.stairs(), mapping);
-        generateWall(generator, set.wall(), mapping);
-        generateFence(generator, set.fence(), mapping);
-        generateFenceGate(generator, set.gate(), mapping);
+        generateButton(generator, set.button, mapping);
+        generateSlab(generator, set.slab, mapping, fullBlockModel);
+        generateStairs(generator, set.stairs, mapping);
+        generateWall(generator, set.wall, mapping);
+        generateFence(generator, set.fence, mapping);
+        generateFenceGate(generator, set.gate, mapping);
     }
 
     private void generateStoneSet(BlockModelGenerators generator) {
@@ -249,7 +249,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
     }
 
     public void registerAutoGenDoor(BlockModelGenerators generator, DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock doorBlock) {
-        Block textureSource = doorBlock.getOriginalBlock();
+        Block textureSource = doorBlock.originalBlock;
 
         ResourceLocation identifier = getBlockTexture(textureSource, "_bottom_left");
         ResourceLocation identifier2 = getBlockTexture(textureSource, "_bottom_left_open");
@@ -273,10 +273,10 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.CLOD, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.boots(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.chestplate(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.helmet(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.leggings(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.boots, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.chestplate, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.helmet, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.leggings, ModelTemplates.FLAT_ITEM);
 
         generateFarshot(itemModelGenerator);
     }

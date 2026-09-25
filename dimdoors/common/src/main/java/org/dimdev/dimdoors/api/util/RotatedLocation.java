@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 
 public class RotatedLocation extends Location {
     public static final Codec<RotatedLocation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(location -> location.world),
-            BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos),
+            Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(location -> location.worldId),
+            BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.blockPos),
             Codec.FLOAT.fieldOf("yaw").forGetter(location -> location.yaw),
             Codec.FLOAT.fieldOf("pitch").forGetter(location -> location.pitch)
     ).apply(instance, RotatedLocation::new));
@@ -37,7 +37,7 @@ public class RotatedLocation extends Location {
 
     public static CompoundTag serialize(RotatedLocation location) {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("world", location.world.location().toString());
+        nbt.putString("world", location.worldId.location().toString());
         nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
         nbt.putFloat("yaw", location.pitch);
         nbt.putFloat("pitch", location.pitch);

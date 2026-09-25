@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
+import org.jetbrains.annotations.NotNull;
 
 public class IdMarker extends VirtualTarget<IdMarker> implements EntityTarget {
     public static final MapCodec<IdMarker> CODEC = Codec.INT.xmap(IdMarker::new, IdMarker::getId).fieldOf("id");
@@ -34,7 +35,7 @@ public class IdMarker extends VirtualTarget<IdMarker> implements EntityTarget {
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    public boolean receiveEntity(@NotNull Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
         EntityUtils.chat(entity, Component.literal("This rift is configured for pocket dungeons. Its id is " + this.id));
         return false;
     }

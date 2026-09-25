@@ -1,5 +1,5 @@
-modLoader = "javafml"
-loaderVersion = "${neoforge_loader_version_range}"
+modLoader = "kotlinforforge"
+loaderVersion = "[5,)"
 # issueTrackerURL = ""
 license = "${license}"
 
@@ -29,6 +29,13 @@ modId = "dimcore"
 type = "required"
 versionRange = "*"
 ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "kotlinforforge"
+type = "required"
+versionRange = "[5,)"
+ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]

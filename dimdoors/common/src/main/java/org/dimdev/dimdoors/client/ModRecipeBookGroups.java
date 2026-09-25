@@ -29,7 +29,7 @@ public final class ModRecipeBookGroups {
 
         initialized = true;
         RegisterRecipeBookCategoriesEvent.EVENT.register(event -> {
-            event.registerBookCategories(DimensionalDoors.getSided().getTesselatingRecipeBookType(), List.of(TESSELATING_GENERAL.get(), TESSELATING_SEARCH.get()));
+            event.registerBookCategories(DimensionalDoors.getSided().tesselatingRecipeBookType, List.of(TESSELATING_GENERAL.get(), TESSELATING_SEARCH.get()));
             event.registerAggregateCategory(TESSELATING_SEARCH.get(), List.of(TESSELATING_GENERAL.get()));
             event.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING, recipeHolder -> TESSELATING_GENERAL.get());
         });

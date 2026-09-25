@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class FarShotItem extends BowItem {
-    public static final Predicate<ItemStack> PEARLS_ONLY = (p_43017_) -> p_43017_.is(DimensionalDoors.getSided().getEnderPearlsTag());
+    public static final Predicate<ItemStack> PEARLS_ONLY = (p_43017_) -> p_43017_.is(DimensionalDoors.getSided().enderPearlsTag);
 
     public FarShotItem(Properties properties) {
         super(properties);

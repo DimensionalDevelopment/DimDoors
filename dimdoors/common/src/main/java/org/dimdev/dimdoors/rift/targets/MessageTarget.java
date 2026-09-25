@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimcore.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageTarget implements EntityTarget {
     private final Target forwardTo;
@@ -25,7 +26,7 @@ public class MessageTarget implements EntityTarget {
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    public boolean receiveEntity(@NotNull Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
     EntityUtils.chat(entity, Component.translatable(this.message, this.messageParams));
 
     if (this.forwardTo != null) {

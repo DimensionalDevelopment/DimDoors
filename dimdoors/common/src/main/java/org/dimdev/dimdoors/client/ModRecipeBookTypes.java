@@ -4,7 +4,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public final class ModRecipeBookTypes {
-    public static final RecipeBookType TESSELLATING = DimensionalDoors.getSided().getTesselatingRecipeBookType();
+    public static final RecipeBookType TESSELLATING = DimensionalDoors.getSided().tesselatingRecipeBookType;
 
     private ModRecipeBookTypes() {
     }
