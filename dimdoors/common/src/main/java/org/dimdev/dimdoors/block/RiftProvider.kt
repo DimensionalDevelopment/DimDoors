@@ -10,17 +10,16 @@ import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.entity.Rift
-import java.util.function.Supplier
 
 interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEntity where T : BlockEntity, T : Rift {
     fun getRift(world: Level, pos: BlockPos, state: BlockState): T? {
         val rifPos = getRiftPos(world, pos, state)
 
         return world.getBlockEntity(rifPos, this.riftBlockEnityType)
-            .orElseGet(Supplier {
+            .orElseGet {
                 DimensionalDoors.LOGGER.warn("{} at {} in world {} contained no rift.", providerType(), rifPos, world)
                 null
-            })
+            }
     }
 
     fun getRiftPos(world: Level, pos: BlockPos, state: BlockState): BlockPos = pos

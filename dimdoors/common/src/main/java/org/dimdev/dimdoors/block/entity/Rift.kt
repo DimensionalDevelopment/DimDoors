@@ -165,7 +165,7 @@ interface Rift : Target {
         }
     }
 
-    fun copyFrom(rift: org.dimdev.dimdoors.block.entity.Rift) {
+    fun <T : org.dimdev.dimdoors.block.entity.Rift> copyFrom(rift: T) {
         this.data = rift.data.copy()
     }
 

@@ -9,7 +9,8 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.key
 
 object ModCarvers : PlatformRegistry.ConfiguredCarverPlatformRegistry(DimensionalDoors.getSided()) {
-    val LIMBO_CARVER = create("limbo") { LimboCarver(CaveCarverConfiguration.CODEC) }
+    @JvmField val LIMBO_CARVER = create("limbo") { LimboCarver(CaveCarverConfiguration.CODEC) }
 
     val LIMBO: ResourceKey<ConfiguredWorldCarver<*>> = Registries.CONFIGURED_CARVER.key("limbo")
 }
+

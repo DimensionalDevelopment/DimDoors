@@ -25,7 +25,9 @@ class DimensionDecayCondition private constructor(
     companion object {
         var CODEC= createCodec(::DimensionDecayCondition, Registries.DIMENSION_TYPE)
 
+        @JvmStatic @JvmOverloads
         fun of(tag: TagKey<DimensionType>, invert: Boolean = false) = DimensionDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.DIMENSION_TYPE), invert)
+        @JvmStatic @JvmOverloads
         fun of(key: ResourceKey<DimensionType>, invert: Boolean = false) = DimensionDecayCondition(CodecUtils.TagOrElementLocation.of(key, Registries.DIMENSION_TYPE), invert)
     }
 }

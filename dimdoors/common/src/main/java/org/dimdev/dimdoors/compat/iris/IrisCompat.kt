@@ -16,7 +16,7 @@ class IrisCompat : ShaderPackDetector {
         if (IrisApi.getInstance().isShaderPackInUse) {
             val state = CapturedRenderingState.INSTANCE
             val previous = state.currentRenderedBlockEntity
-            val id = WorldRenderingSettings.INSTANCE.blockStateIds?.let { it[ModBlocks.DIMENSIONAL_PORTAL.value().defaultBlockState()] } ?: -1
+            val id = WorldRenderingSettings.INSTANCE.blockStateIds?.let { it[ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState()] } ?: -1
 
 
             try {

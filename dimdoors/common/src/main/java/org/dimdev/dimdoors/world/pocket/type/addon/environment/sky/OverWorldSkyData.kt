@@ -86,7 +86,7 @@ interface OverWorldSkyData : SkyData {
     val rainLevel: Float
     val thunderLevel: Float
 
-    override val type : SkyDataHolder get() = SkyDatum.OVERWORLD
+    override val type get() = SkyDatum.OVERWORLD
 
     companion object {
         fun timeOfDay(dayTime: Long): Float {

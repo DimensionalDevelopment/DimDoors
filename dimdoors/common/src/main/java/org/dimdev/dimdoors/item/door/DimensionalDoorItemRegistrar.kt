@@ -151,44 +151,38 @@ object DimensionalDoorItemRegistrar {
             mappedDoorItems
         )
 
-    private open class AutoGenDimensionalDoorBlockItem(
-        block: Block?,
-        settings: Properties?,
-        private val originalItem: Item?
-    ) : EntranceRiftBlockItem(block, settings, null), ChildItem {
+    private open class AutoGenDimensionalDoorBlockItem(block: Block, settings: Properties, override val originalItem: Item) : EntranceRiftBlockItem(block, settings, null), ChildItem {
+
         override fun setupRift(entranceRift: EntranceRiftBlockEntity<*>) {
             val access = entranceRift.getLevel()!!.registryAccess()
 
             DoorRiftDataLoader.getRiftData(access, originalItem).ifPresentOrElse(Consumer { data: RiftDataList? ->
                 val riftData = data!!.getRiftData(entranceRift)
                 entranceRift.setDestination(riftData.getDestination())
-                riftData.getProperties().ifPresent(entranceRift::properties)
+                riftData.properties.ifPresent { entranceRift.properties }
             }, Runnable { entranceRift.setDestination(org.dimdev.dimdoors.rift.targets.PublicPocketTarget()) })
-        }
-
-        override fun getOriginalItem(): Item? {
-            return originalItem
         }
 
         override fun appendHoverText(
             itemStack: ItemStack,
             world: TooltipContext?,
-            list: MutableList<Component?>,
+            list: MutableList<Component>,
             tooltipContext: TooltipFlag
         ) {
-            ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info")
+            ToolTipHelper.processTranslation(list, this.descriptionId + ".info")
         }
     }
 
-    private class AutoGenDimensionalDoorTrapDoorItem(block: Block?, settings: Properties?, originalItem: Item?) :
+    private class AutoGenDimensionalDoorTrapDoorItem(block: Block, settings: Properties, originalItem: Item) :
         AutoGenDimensionalDoorBlockItem(block, settings, originalItem) {
+
         override fun transformOverlay(matrices: PoseStack) {
             matrices.translate(0.0, 0.0, 0.5 - (1 / 16f))
             matrices.mulPose(Axis.XP.rotationDegrees(90f))
         }
 
         override fun setupRift(entranceRift: EntranceRiftBlockEntity<*>) {
-            DoorRiftDataLoader.getRiftData(entranceRift.getLevel()!!.registryAccess(), getOriginalItem())
+            DoorRiftDataLoader.getRiftData(entranceRift.getLevel()!!.registryAccess(), originalItem)
                 .ifPresentOrElse(
                     Consumer { data: RiftDataList? ->
                         val riftData = data!!.getRiftData(entranceRift)
@@ -199,8 +193,7 @@ object DimensionalDoorItemRegistrar {
     }
 
     interface ChildItem {
-        @JvmField
-        val originalItem: Item?
+        val originalItem: Item
 
         fun transformOverlay(matrices: PoseStack?) {
         }

@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import org.dimdev.dimcore.mixin.accessor.BlockEntityTypeAccessor
-import java.util.*
 
 class MutableBlockEntityType<T : BlockEntity>(
     factory: BlockEntityFactory<out T>,
@@ -33,12 +32,13 @@ class MutableBlockEntityType<T : BlockEntity>(
         fun build(type: Type<*>): MutableBlockEntityType<T> = MutableBlockEntityType(this.factory, this.blocks, type)
 
         companion object {
-            fun <T : BlockEntity> create(factory: BlockEntityFactory<out T>, vararg blocks: Block) = Builder(factory, HashSet<Block>(mutableListOf(*blocks)))
+            fun <T : BlockEntity> create(factory: BlockEntityFactory<out T>, vararg blocks: Block?) = Builder(factory, blocks.filterNotNull().toMutableSet())
+
+
         }
     }
 
-    @FunctionalInterface
-    interface BlockEntityFactory<T : BlockEntity> : BlockEntitySupplier<T>
+    fun interface BlockEntityFactory<T : BlockEntity> : BlockEntitySupplier<T>
     companion object {
         fun getBlocks(type: BlockEntityType<*>): MutableSet<Block> {
             return (type as BlockEntityTypeAccessor).getBlocks()

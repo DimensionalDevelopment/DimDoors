@@ -7,21 +7,20 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimcore.api.BuilderType
 import org.dimdev.dimcore.api.BuilderTypeHasHolder
-import org.dimdev.dimdoors.util.CodecUtils.imutableList
 import org.dimdev.dimdoors.util.CodecUtils.mutableList
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
-typealias PocketAddonType = BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>
+typealias PocketAddonType<T> = BuilderType<T, PocketAddon.PocketBuilderAddon<T, *>>
 
 interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>> {
     fun applicable(pocket: Pocket<*, *>): Boolean = true
 
-    fun addAddon(addons: MutableMap<Holder<out PocketAddonType>, PocketAddon>) {
+    fun addAddon(addons: MutableMap<PocketAddonType<*>, PocketAddon>) {
         addons[this.type] = this
     }
 
     interface PocketBuilderExtension<T : Pocket<T, P>, P : Pocket.PocketBuilder<T, P>> {
-        fun <C : PocketBuilderAddon<*, *>> getAddon(id: Holder<out PocketAddonType>): C?
+        fun <C : PocketBuilderAddon<*, *>> getAddon(id: Holder<out PocketAddonType<*>>): C?
 
         val self: P
     }
@@ -32,7 +31,7 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
         }
 
         // makes it possible for addons themselves to control how they are added
-        fun addAddon(addons: MutableMap<Holder<out PocketAddonType>, PocketBuilderAddon<*, *>>) {
+        fun addAddon(addons: MutableMap<PocketAddonType, PocketBuilderAddon<*, *>>) {
             addons[this.type] = this
         }
 
@@ -44,7 +43,7 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
         val LIST_CODEC = CODEC.mutableList()
         val BUILDER_CODEC = PocketAddons.builderCodec
         val LIST_BUILDER_CODEC = BUILDER_CODEC.mutableList()
-        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, PocketAddon> = PocketAddons.streamCodec.dispatch({ it.type.value() }, { it.streamCodec!! })
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, PocketAddon> = PocketAddons.streamCodec.dispatch({ it.type }, { it.streamCodec!! })
         val LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list())
     }
 }

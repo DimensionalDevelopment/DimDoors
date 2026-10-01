@@ -21,7 +21,7 @@ class TesselatingShapelessRecipe(
     override val weavingTime: Int
 ) : TesselatingRecipe {
     override fun getSerializer(): RecipeSerializer<*> {
-        return ModRecipeSerializers.SHAPELESS_TESSELATING.value()
+        return ModRecipeSerializers.SHAPELESS_TESSELATING
     }
 
     override fun getGroup() = this.group

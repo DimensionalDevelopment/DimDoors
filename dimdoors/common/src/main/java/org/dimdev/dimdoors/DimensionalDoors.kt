@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.packs.PackType
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.Mob
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DoorBlock
@@ -17,21 +18,10 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.dimdev.dimcore.DimCore.platform
-import org.dimdev.dimcore.api.EntityAttributeProvider
-import org.dimdev.dimcore.api.EntityAttributeRegister
-import org.dimdev.dimcore.api.Hooks
-import org.dimdev.dimcore.api.PackProvider
-import org.dimdev.dimcore.api.PackRegister
-import org.dimdev.dimcore.api.PacketProvider
-import org.dimdev.dimcore.api.RegistrationHooks
-import org.dimdev.dimcore.api.ServerReloadListenerProvider
-import org.dimdev.dimcore.api.ServerReloadListenerRegister
-import org.dimdev.dimcore.api.ModCommon
-import org.dimdev.dimcore.api.PacketRegister
+import org.dimdev.dimcore.api.*
 import org.dimdev.dimcore.api.event.PlayerTeleportEvents
 import org.dimdev.dimdoors.ModRegistries.register
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback
-import org.dimdev.dimdoors.api.util.LocationCondition
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock
@@ -44,7 +34,6 @@ import org.dimdev.dimdoors.enchantment.ModEnchantmentEffects
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.entity.ModEntityTypes.MASK
 import org.dimdev.dimdoors.entity.ModEntityTypes.MONOLITH
-import org.dimdev.dimdoors.entity.MonolithEntity
 import org.dimdev.dimdoors.entity.stat.ModStats
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.item.ModArmorMaterials
@@ -62,10 +51,8 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket
 import org.dimdev.dimdoors.network.packet.s2c.*
 import org.dimdev.dimdoors.particle.ModParticleTypes
 import org.dimdev.dimdoors.pockets.PocketLoader
-import org.dimdev.dimdoors.pockets.generator.PocketGeneratorType
 import org.dimdev.dimdoors.pockets.generator.PocketGenerators
 import org.dimdev.dimdoors.pockets.modifier.Modifiers
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
@@ -77,24 +64,22 @@ import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.sound.ModSoundEvents
+import org.dimdev.dimdoors.world.DataValues
 import org.dimdev.dimdoors.world.ModBiomes
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.ModStructureProccessors
 import org.dimdev.dimdoors.world.carvers.ModCarvers
 import org.dimdev.dimdoors.world.decay.Decay
-import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType
-import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType
-import org.dimdev.dimdoors.world.decay.results.DecayResultType
-import org.dimdev.dimdoors.world.DataValues
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
-import org.dimdev.dimdoors.world.pocket.type.Pockets
+import org.dimdev.dimdoors.world.decay.conditions.DecayConditions
+import org.dimdev.dimdoors.world.decay.pattern.DecayPatterns
+import org.dimdev.dimdoors.world.decay.results.DecayResults
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
 import org.dimdev.dimdoors.world.pocket.type.addon.PortalColorProvider
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon
 import org.slf4j.Logger
-import java.util.*
 
 class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsSided<*>>>, EntityAttributeProvider, PacketProvider, RegistrationHooks, PackProvider, ServerReloadListenerProvider {
 
@@ -106,39 +91,39 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
 
         registerRegistries()
 
-        ModRecipeBookTypes.init()
+        ModRecipeBookTypes.register()
 
         ModDataComponentTypes.register()
-        ModEnchantmentEffects.init()
-        ModItemLootConditions.init()
+        ModEnchantmentEffects.register()
+        ModItemLootConditions.register()
 
         ModCarvers.register()
-        ModRecipeTypes.init()
+        ModRecipeTypes.register()
         ModRecipeSerializers.register()
         ModScreenHandlerTypes.init()
-        ModSoundEvents.init()
+        ModSoundEvents.register()
         ModFluids.register()
         ModEntityTypes.register()
         ModItems.register()
         ModArmorMaterials.init()
         ModBlocks.init()
-        ModBlockEntityTypes.init()
+        ModBlockEntityTypes.register()
         ModCarvers.register()
         ModBiomes.register()
         ModStats.register()
-        ModParticleTypes.init()
-        ModCriteria.init()
-        ModStructureProccessors.init()
+        ModParticleTypes.register()
+        ModCriteria.register()
+        ModStructureProccessors.register()
 
         DataValues.register()
 
 
-        ModGameRules.init()
+        ModGameRules.register()
 
         ModCommands.register()
         ModDimensions.register()
         sided.checkCompat()
-        ModItems.DIMENSIONAL_DOORS.addAllAfter({ ModBlocks.REALITY_SPONGE.value() }) { DimensionalDoorItemRegistrar.autogeneratedItems }
+        ModItems.DIMENSIONAL_DOORS.addAllAfter({ ModBlocks.REALITY_SPONGE }) { DimensionalDoorItemRegistrar.autogeneratedItems }
 
         //        ModRecipeBookTypes.init();
         platform.onServerStarting(Decay.DecayLoader::populate)
@@ -194,8 +179,8 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
     override val modId: String get() = "dimdoors"
 
     override fun registerEntityAttributes(register: EntityAttributeRegister) {
-        register.register(MONOLITH, MonolithEntity::createMobAttributes)
-        register.register(MASK, MonolithEntity::createMobAttributes)
+        register.register(MONOLITH, Mob::createMobAttributes)
+        register.register(MASK, Mob::createMobAttributes)
     }
 
     override fun registerPacks(register: PackRegister) {
@@ -223,7 +208,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         packetRegister.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithTeleportParticles)
         packetRegister.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, ClientPacketListener::onRenderBreakBlock)
 
-        packetRegister.registerServerPacket<HitBlockWithItemC2SPacket>(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, ) { packet, player -> ServerPacketHandler.onAttackBlock(player, packet) }
+        packetRegister.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC) { packet, player -> ServerPacketHandler.onAttackBlock(player, packet) }
 
         packetRegister.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, ClientPacketListener::onPortalColors)
         packetRegister.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, ClientPacketListener::onClearPocket)
@@ -262,8 +247,6 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             config = ModConfig.type.load(sided.configPath().resolve("-config.json"))
         }
 
-
-
         fun registerRegistries() {
             Targets.registerDefaultTargets()
             VirtualTargets.register()
@@ -275,10 +258,9 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             PocketAddons.register()
             SubsystemTypes.register()
             Conditions.register()
-            DecayConditionType.register()
-            DecayResultType.register()
-            DecayPatternType.register()
-            LocationCondition.LocationConditionType.register()
+            DecayConditions.register()
+            DecayResults.register()
+            DecayPatterns.register()
             register()
         }
 
@@ -323,25 +305,19 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         @JvmStatic
         fun afterBlockBreak(world: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?) {
             var pos = pos
-            if (player.isCreative() && !config.doorsConfig.placeRiftsInCreativeMode) {
-                return
-            }
+            if (player.isCreative && !config.doorsConfig.placeRiftsInCreativeMode) return
 
             if (blockEntity is Rift) {
-                if (state.getBlock() is DoorBlock && state.getValue<DoubleBlockHalf?>(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
-                    pos = pos.below()
-                }
+                if (state.block is DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) { pos = pos.below() }
 
-                var detachedState = ModBlocks.DETACHED_RIFT.value().defaultBlockState()
+                var detachedState = ModBlocks.DETACHED_RIFT.defaultBlockState()
                 if (state.hasProperty(WaterLoggableDoorBlock.WATERLOGGED)) detachedState =
                     detachedState.setValue(
                         WaterLoggableDoorBlock.WATERLOGGED, state.getValue(WaterLoggableDoorBlock.WATERLOGGED)
                     )
 
                 world.setBlockAndUpdate(pos, detachedState)
-                world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { rift ->
-                    rift.data = blockEntity.data
-                }
+                world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { rift -> rift.data = blockEntity.data }
             }
         }
 

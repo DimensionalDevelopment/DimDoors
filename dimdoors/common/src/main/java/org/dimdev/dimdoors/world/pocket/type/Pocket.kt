@@ -24,7 +24,7 @@ import java.util.function.Consumer
 import kotlin.streams.asSequence
 
 abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : AbstractPocket<T, V>, AddonProvider {
-    protected val addons = mutableMapOf<Holder<out PocketAddonType>, PocketAddon>()
+    protected val addons = mutableMapOf<PocketAddonType, PocketAddon>()
     private var range = -1
     lateinit var box: BoundingBox
         protected set
@@ -57,7 +57,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     protected constructor()
 
-    override fun hasAddon(id: Holder<out PocketAddonType>): Boolean {
+    override fun hasAddon(id: PocketAddonType): Boolean {
         return addons.containsKey(id)
     }
 
@@ -69,7 +69,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         return false
     }
 
-    fun removeAddon(type: Holder<out PocketAddonType>): Boolean {
+    fun removeAddon(type: PocketAddonType): Boolean {
         return addons.remove(type) != null
     }
 
@@ -77,7 +77,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     fun streamAddon(): MutableCollection<PocketAddon> = addons.values
 
-    fun <T : PocketAddon> getAddon(type: Holder<out PocketAddonType>): T? = addons[type]?.cast()
+    fun <T : PocketAddon> getAddon(type: PocketAddonType): T? = addons[type]?.cast()
 
     fun isInBounds(pos: BlockPos): Boolean = this.box.isInside(pos)
 
@@ -91,6 +91,8 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
     fun offsetOrigin(x: Int, y: Int, z: Int) {
         this.box.move(x, y, z)
     }
+
+    fun setSize(size: Vec3i) = setSize(size.x, size.y, size.z)
 
     fun setSize(x: Int, y: Int, z: Int) {
         this.box = BoundingBox.fromCorners(

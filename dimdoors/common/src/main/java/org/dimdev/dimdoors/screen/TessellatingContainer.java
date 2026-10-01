@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class TessellatingContainer extends RecipeBookMenu<CraftingInput, Tessela
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public @NotNull ItemStack quickMoveStack(Player player, int index) {
     ItemStack itemStack = ItemStack.EMPTY;
     Slot slot = this.slots.get(index);
     if (slot.hasItem()) {

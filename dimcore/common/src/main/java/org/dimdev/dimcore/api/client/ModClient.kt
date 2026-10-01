@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
-import net.minecraft.core.Holder
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.network.chat.Component
@@ -36,7 +35,7 @@ interface ModClient<T : IClientSided<*>> {
 
     fun initParticles(regularParticleRegister: RegularParticleRegister, specialParticleRegister: SpecialParticleRegister) {}
 
-    fun initFluids(register: (Holder<FlowingFluid>, Holder<Fluid>, FluidDetails) -> Unit) {}
+    fun initFluids(register: (FlowingFluid, Fluid, FluidDetails) -> Unit) {}
 
     fun initScreens(screenRegister: ScreenRegister) {}
 

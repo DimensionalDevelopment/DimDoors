@@ -5,14 +5,12 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import foundry.imgui.api.ImGuiMCEvents
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
-import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.renderer.DimensionSpecialEffects
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
-import net.minecraft.core.Holder
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
@@ -20,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.CrossbowItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.clientPlatform
@@ -54,8 +53,6 @@ import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
 import org.lwjgl.glfw.GLFW
-import java.util.function.Consumer
-import kotlin.jvm.optionals.getOrNull
 
 class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
     var renderTick: Float = 0f
@@ -86,8 +83,8 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
             ModParticleTypes.MONOLITH
         ) { _, clientLevel, x, y, z, _, _, _ -> MonolithParticle(clientLevel, x, y, z) }
         regularParticleRegister.register<RiftParticleOptions>(ModParticleTypes.RIFT) { spriteProvider -> RiftParticle.Factory(spriteProvider) }
-        regularParticleRegister.register<SimpleParticleType>(ModParticleTypes.LIMBO_ASH) { spriteProvider: SpriteSet? -> LimboAshParticle.Factory(spriteProvider)
-        }
+        regularParticleRegister.register<SimpleParticleType>(ModParticleTypes.LIMBO_ASH) { spriteProvider -> LimboAshParticle.Factory(spriteProvider) }
+
     }
 
 
@@ -125,7 +122,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         Timer.update(ticks, deltaTick)
     }
 
-    override fun initFluids(register: (Holder<FlowingFluid>, Holder<Fluid>, FluidDetails) -> Unit) {
+    override fun initFluids(register: (FlowingFluid, Fluid, FluidDetails) -> Unit) {
         register.invoke(ModFluids.LEAK, ModFluids.FLOWING_LEAK, ModFluids.LEAK_DETAILS)
         register.invoke(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, ModFluids.ETERNAL_FLUID_DETAILS)
     }
@@ -176,7 +173,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
             val registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar()
 
             val generatedBlocks =
-                registrar.gennedIds.mapNotNull { resourceLocation -> BuiltInRegistries.BLOCK.getHolder(resourceLocation) }.mapNotNull { it.getOrNull() }.toTypedArray()
+                registrar.gennedIds.mapNotNull<ResourceLocation?, Block>(BuiltInRegistries.BLOCK::get).toTypedArray()
             if (generatedBlocks.isNotEmpty()) { clientPlatform.register(RenderType.cutout(), *generatedBlocks) }
         }
 

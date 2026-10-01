@@ -2,11 +2,9 @@ package org.dimdev.dimdoors.world.pocket.type.addon.environment
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.Holder
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.codec.StreamCodec.composite
-import org.dimdev.dimcore.api.Type
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.EmptyCloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.EmptySkyData
@@ -19,7 +17,7 @@ data class ComplexEnvironment(
     override val weather: WeatherData = EmptyWeatherData,
     override val cloud: CloudData = EmptyCloudData
 ) : Environment {
-    override val type: Holder<out Type<Environment>> get() = Environments.COMPLEX
+    override val type get() = Environments.COMPLEX
 
     companion object {
         val CODEC: MapCodec<ComplexEnvironment> = RecordCodecBuilder.mapCodec { instance ->
@@ -31,9 +29,9 @@ data class ComplexEnvironment(
         }
 
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, ComplexEnvironment> = composite(
-                SkyData.STREAM_CODEC, ComplexEnvironment::sky,
-                WeatherData.STREAM_CODEC, ComplexEnvironment::weather,
-                CloudData.STREAM_CODEC, ComplexEnvironment::cloud,
+            SkyData.STREAM_CODEC, ComplexEnvironment::sky,
+            WeatherData.STREAM_CODEC, ComplexEnvironment::weather,
+            CloudData.STREAM_CODEC, ComplexEnvironment::cloud,
             ::ComplexEnvironment)
     }
 }

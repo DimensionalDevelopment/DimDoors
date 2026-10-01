@@ -26,7 +26,7 @@ public enum DetachedRiftProvider implements IBlockComponentProvider {
         DetachedRiftBlockEntity blockEntity = accessor.getBlockEntity();
         VirtualTarget destination = Objects.requireNonNull(blockEntity).getData().getDestination();
         if (destination instanceof IdMarker id) {
-            tooltip.addLine(Component.literal(String.valueOf(id.getId())));
+            tooltip.addLine(Component.literal(String.valueOf(id.id)));
         }
     }
 }

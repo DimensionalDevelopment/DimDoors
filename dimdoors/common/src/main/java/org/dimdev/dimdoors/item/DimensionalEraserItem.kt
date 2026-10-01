@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 
-class DimensionalEraserItem(settings: Properties?) : DimDoorsItem(settings) {
+class DimensionalEraserItem(settings: Properties) : DimDoorsItem(settings) {
     override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack?> {
         val stack = player.getItemInHand(hand)
 

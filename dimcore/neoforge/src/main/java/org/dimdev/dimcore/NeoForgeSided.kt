@@ -2,7 +2,6 @@ package org.dimdev.dimcore
 
 import com.mojang.serialization.Codec
 import net.minecraft.core.Holder
-import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -20,8 +19,6 @@ import net.minecraft.server.packs.PathPackResources
 import net.minecraft.server.packs.repository.KnownPack
 import net.minecraft.server.packs.repository.Pack
 import net.minecraft.server.packs.repository.PackSource
-import net.minecraft.server.packs.repository.RepositorySource
-import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.neoforged.bus.api.EventPriority
@@ -39,11 +36,9 @@ import net.neoforged.neoforge.network.handling.IPayloadHandler
 import net.neoforged.neoforge.network.registration.PayloadRegistrar
 import net.neoforged.neoforge.registries.*
 import net.neoforged.neoforge.registries.callback.AddCallback
-import org.apache.commons.lang3.tuple.Triple
 import org.dimdev.dimcore.api.EntityAttributeProvider
 import org.dimdev.dimcore.api.Hooks
 import org.dimdev.dimcore.api.ICreativeTabHandler
-import org.dimdev.dimcore.api.IRegister
 import org.dimdev.dimcore.api.ModCommon
 import org.dimdev.dimcore.api.PackProvider
 import org.dimdev.dimcore.api.PacketProvider
@@ -72,13 +67,14 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             private val deferredRegister = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, modId()).also { it.register(bus) }
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> {
-                val type = supplier() as DataValueType<Any?>
+            override fun <V : T> register(name: String, supplier: () -> V): V {
+                val type = supplier() as DataValueType<Any>
                 val builder = AttachmentType.builder(Supplier { type.defaultValue() }).serialize(type.codec)
                 type.streamCodec?.let(builder::sync)
                 val attachment = builder.build()
-                deferredRegister.register(name, Supplier { attachment })
-                return Holder.direct(attachment).cast()
+                val holder = deferredRegister.register(name, Supplier { attachment })
+                val value: V by lazy { holder.value().cast() }
+                return value;
             }
 
             override fun createRegistry(): Registry<T> = NeoForgeRegistries.ATTACHMENT_TYPES.cast()
@@ -87,9 +83,12 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         if (resourceKey == PlatformRegistry.CreativeTabPlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             private val deferredRegister = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modId()).also { it.register(bus) }
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> {
+            override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as CreativeTabType
-                return deferredRegister.register(name, Supplier { CreativeModeTab.builder().apply(type.block).build() }).cast()
+                val holder = deferredRegister.register(name, Supplier { CreativeModeTab.builder().apply(type.block).build() })
+                val value: V by lazy { holder.value().cast() }
+
+                return value
             }
 
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
@@ -98,7 +97,13 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         return object : PlatformRegistry.EntryRegister<T>() {
             private val deferredRegister = DeferredRegister.create(resourceKey, modId()).also { it.register(bus) }
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> = deferredRegister.register(name, supplier).cast()
+            override fun <V : T> register(name: String, supplier: () -> V): V {
+                val holder = deferredRegister.register(name, supplier)
+
+                val value: V by lazy { holder.value() }
+
+                return value;
+            }
 
             override fun createRegistry(): Registry<T> = registry ?: deferredRegister.makeRegistry {}
         }
@@ -238,11 +243,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
                 activeKey = previousKey
             }
         })
-    }
-
-    public override fun registerRunnable(key: ResourceKey<out Registry<*>>, runnable: () -> Unit) {
-        registerRunnables.computeIfAbsent(key) { ignored: net.minecraft.resources.ResourceKey<*>? -> java.util.ArrayList<java.lang.Runnable?>() }!!
-            .add(runnable)
     }
 
 

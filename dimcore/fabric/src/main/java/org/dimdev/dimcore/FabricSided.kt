@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
@@ -19,9 +18,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.chat.Component
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -31,7 +28,6 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import org.dimdev.dimcore.api.*
-import java.util.function.*
 
 abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S) : SidedImpl<V, S>(common), ModInitializer {
     override fun onInitialize() {
@@ -83,8 +79,6 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         }
     }
 
-    override fun registerRunnable(key: ResourceKey<out Registry<*>>, runnable: () -> Unit) = runnable.invoke()
-
     private fun registerServerLoader(name: String, loadAfterTags: Boolean, consumer: (HolderLookup.Provider, ResourceManager) -> Unit) {
         val id = ResourceLocation.fromNamespaceAndPath(common.modId, name)
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(id) { provider ->
@@ -94,22 +88,6 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
                 if (loadAfterTags) mutableListOf(ResourceReloadListenerKeys.TAGS) else mutableListOf()
             )
         }
-    }
-
-    override fun <T> createRegistry(
-        key: ResourceKey<Registry<T>>,
-        defaultId: ResourceLocation?,
-        sync: Boolean
-    ): Registry<T> {
-        val builder =
-            if (defaultId != null) FabricRegistryBuilder.createDefaulted(
-                key,
-                defaultId
-            ) else FabricRegistryBuilder.createSimple(key)
-
-        if (sync) builder.attribute(RegistryAttribute.SYNCED)
-
-        return builder.buildAndRegister().cast<Registry<T>>()
     }
 
     override fun <T> createDynamicRegistry(key: ResourceKey<Registry<T>>, codec: Codec<T>, networkCodec: Codec<T>?) = if (networkCodec != null) DynamicRegistries.registerSynced<T>(key, codec, networkCodec) else DynamicRegistries.register<T>(key, codec)
@@ -131,8 +109,8 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
             override fun createRegistry(): Registry<T> =
                 (BuiltInRegistries.REGISTRY.get(resourceKey.location()) ?: FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister()).cast()
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> {
-                val type = supplier() as DataValueType<Any?>
+            override fun <V : T> register(name: String, supplier: () -> V): V {
+                val type = supplier() as DataValueType<Any>
                 val attachment = AttachmentRegistry.create<Any?>(ResourceLocation.fromNamespaceAndPath(common.modId, name)) { builder ->
                     builder.initializer(type.defaultValue)
                     builder.persistent(type.codec)
@@ -145,9 +123,9 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         if (resourceKey == PlatformRegistry.CreativeTabPlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> {
+            override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as CreativeTabType
-                return Registry.registerForHolder(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
+                return Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
             }
         }
 
@@ -156,8 +134,11 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
 
             override fun createRegistry(): Registry<T> = target
 
-            override fun <V : T> holder(name: String, supplier: () -> V): Holder<V> =
-                Registry.registerForHolder(target, ResourceLocation.fromNamespaceAndPath(common.modId, name), supplier()).cast()
+            override fun <V : T> register(name: String, supplier: () -> V): V {
+                val value = supplier()
+                Registry.register(target, ResourceLocation.fromNamespaceAndPath(common.modId, name), value)
+                return value
+            }
         }
     }
 }

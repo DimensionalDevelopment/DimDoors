@@ -19,7 +19,7 @@ import java.util.function.Function
 
 class LimboCarver(codec: Codec<CaveCarverConfiguration>) : CaveWorldCarver(codec) {
     init {
-        this.liquids = setOf(ModFluids.ETERNAL_FLUID.value())
+        this.liquids = setOf(ModFluids.ETERNAL_FLUID)
     }
 
     override fun getCaveBound(): Int {
@@ -43,7 +43,7 @@ class LimboCarver(codec: Codec<CaveCarverConfiguration>) : CaveWorldCarver(codec
     ): Boolean {
         if (this.canReplaceBlock(caveCarverConfiguration, chunkAccess.getBlockState(mutableBlockPos))) {
             val blockState: BlockState =
-                if (mutableBlockPos.y <= carvingContext.minGenY + 31) ModBlocks.ETERNAL_FLUID.value().defaultBlockState() else ModBlocks.LIMBO_AIR.value().defaultBlockState()
+                if (mutableBlockPos.y <= carvingContext.minGenY + 31) ModBlocks.ETERNAL_FLUID.defaultBlockState() else ModBlocks.LIMBO_AIR.defaultBlockState()
             chunkAccess.setBlockState(mutableBlockPos, blockState, false)
             if (!blockState.fluidState.isEmpty) {
                 chunkAccess.markPosForPostprocessing(mutableBlockPos)

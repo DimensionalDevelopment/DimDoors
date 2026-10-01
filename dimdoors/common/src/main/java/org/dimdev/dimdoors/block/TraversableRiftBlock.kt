@@ -59,16 +59,13 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>
         return InteractionResult.SUCCESS
     }
 
-    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) {
-    }
+    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) {}
 
     fun validStateForTraversal(state: BlockState): Boolean = true
 
     fun getPortalPlane(state: BlockState, pos: BlockPos): RiftUtils.PortalPlane
 
-    fun getVisualBlockState(state: BlockState): BlockState {
-        return state
-    }
+    fun getVisualBlockState(state: BlockState): BlockState = state
 
     fun closeRift(level: Level, pos: BlockPos, state: BlockState)
 

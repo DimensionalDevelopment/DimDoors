@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.item
 
-import net.minecraft.core.Holder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.*
@@ -16,7 +15,7 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     private val creativeTabs = CreativeTabPlatformRegistry(DimensionalDoors.getSided())
 
     val DIMENSIONAL_DOORS: CreativeTab = creativeTabs.create("dimensional_doors") {
-        icon { RIFT_BLADE.value().defaultInstance }
+        icon { RIFT_BLADE.defaultInstance }
         title("itemGroup.dimdoors.dimensional_doors".translate())
     }
 
@@ -77,7 +76,7 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     }
 
     @JvmField
-    val MONOLITH_SPAWNER = registerRegular("monolith_spawner", { SpawnEggItem(ModEntityTypes.MONOLITH.value(), 0xffffff, 0xffffff, it) })
+    val MONOLITH_SPAWNER = registerRegular("monolith_spawner", { SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, it) })
 
     @JvmField val MASK_WAND = registerRegular("mask_wand", ::MaskWandItem) {
         stacksTo(1)
@@ -100,10 +99,10 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     }
 
     @JvmField
-    val ETERNAL_FLUID_BUCKET = registerBucket("eternal_fluid_bucket", ModFluids.ETERNAL_FLUID)
+    val ETERNAL_FLUID_BUCKET = registerBucket("eternal_fluid_bucket", { ModFluids.ETERNAL_FLUID })
 
     @JvmField
-    val LEAK_BUCKET = registerBucket("leak_bucket", ModFluids.LEAK)
+    val LEAK_BUCKET = registerBucket("leak_bucket", { ModFluids.LEAK })
 
     @JvmField val MASK_SHARD = registerRegular("mask_shard")
     @JvmField val FUZZY_FIREBALL = registerRegular("fuzzy_fireball")
@@ -116,10 +115,10 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val GARMENT_OF_REALITY_ARMOR: ArmorSet = registerArmorSet("garment_of_reality", ModArmorMaterials.GARMENT_OF_REALITY) { stacksTo(1) }
     @JvmField val WORLD_THREAD_ARMOR: ArmorSet = registerArmorSet("world_thread", ModArmorMaterials.WORLD_THREAD) { stacksTo(1) }
 
-    fun registerRegular(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Holder<Item> = register(name, item, DIMENSIONAL_DOORS, block)
-    fun registerDecay(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Holder<Item> = register(name, item, DECAY, block)
+    fun registerRegular(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Item = register(name, item, DIMENSIONAL_DOORS, block)
+    fun registerDecay(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Item = register(name, item, DECAY, block)
 
-    private fun registerBucket(name: String, fluid: Holder<out Fluid>, block: Item.Properties.() -> Unit = {}): Holder<Item> = registerRegular(name, { BucketItem(fluid.value(), it) }) {
+    private fun registerBucket(name: String, fluid: () -> Fluid, block: Item.Properties.() -> Unit = {}): Item = registerRegular(name, { BucketItem(fluid.invoke(), it) }) {
         craftRemainder(Items.BUCKET)
         stacksTo(1)
         block(this)
@@ -142,7 +141,7 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
         return ArmorSet(helmet, chestplate, leggings, boots)
     }
 
-    fun register(name: String, item: (Item.Properties) -> Item, tab: CreativeTab, block: Item.Properties.() -> Unit): Holder<Item> = create(name) { item.invoke(Item.Properties().also(block)) }.also { tab.add(it::value) }
+    fun register(name: String, item: (Item.Properties) -> Item, tab: CreativeTab, block: Item.Properties.() -> Unit): Item = create(name) { item.invoke(Item.Properties().also(block)) }.also { tab.add { it } }
 
     override fun register() {
         super.register()

@@ -19,8 +19,8 @@ import org.dimdev.dimdoors.item.PlaceOnlyOnRiftBlockItem
 import org.dimdev.dimdoors.item.door.EntranceRiftBlockItem
 
 object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
-    @JvmField val FABRIC_BLOCKS = mutableMapOf<DyeColor, Holder<Block>>()
-    private val ANCIENT_FABRIC_BLOCKS = mutableMapOf<DyeColor, Holder<Block>>()
+    @JvmField val FABRIC_BLOCKS = mutableMapOf<DyeColor, Block>()
+    private val ANCIENT_FABRIC_BLOCKS = mutableMapOf<DyeColor, Block>()
 
     @JvmField val STONE_PLAYER = create("stone_player") {
         blockProperties(Blocks.STONE) {
@@ -188,7 +188,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val AMALGAM_DOOR = decay("amalgam_door") {
-        block { ModDoorBlock(BlockSetType.IRON, it) }
+        block { DoorBlock(BlockSetType.IRON, it) }
         blockProperties(Blocks.IRON_BLOCK) {
             mapColor(MapColor.COLOR_LIGHT_GRAY)
             requiresCorrectToolForDrops()
@@ -199,7 +199,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val AMALGAM_TRAPDOOR = decay("amalgam_trapdoor") {
-        block { ModTrapDoorBlock(BlockSetType.IRON, it) }
+        block { TrapDoorBlock(BlockSetType.IRON, it) }
         blockProperties(Blocks.IRON_BLOCK) {
             requiresCorrectToolForDrops()
             strength(5.0f)
@@ -214,7 +214,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val AMALGAM_STAIRS = decay("amalgam_stairs") {
-        block { ModStairBlock(AMALGAM_BLOCK.value().defaultBlockState(), it) }
+        block { StairBlock(AMALGAM_BLOCK.defaultBlockState(), it) }
         blockProperties(AMALGAM_BLOCK)
     }
 
@@ -275,7 +275,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val DRIFTWOOD_BUTTON = decay("driftwood_button") {
-        block { ModButtonBlock(BlockSetType.STONE, 20, it) }
+        block { ButtonBlock(BlockSetType.STONE, 20, it) }
         blockProperties(DRIFTWOOD_PLANKS) {
             noCollission()
             strength(0.5f)
@@ -288,12 +288,12 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val DRIFTWOOD_STAIRS = decay("driftwood_stairs") {
-        block { ModStairBlock(DRIFTWOOD_PLANKS.value().defaultBlockState(), it) }
+        block { StairBlock(DRIFTWOOD_PLANKS.defaultBlockState(), it) }
         blockProperties(DRIFTWOOD_PLANKS)
     }
 
     @JvmField val DRIFTWOOD_DOOR = decay("driftwood_door") {
-        block { ModDoorBlock(BlockSetType.OAK, it) }
+        block { DoorBlock(BlockSetType.OAK, it) }
         blockProperties(Blocks.OAK_WOOD) {
             mapColor(MapColor.COLOR_GRAY)
             strength(3.0f)
@@ -303,7 +303,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val DRIFTWOOD_TRAPDOOR = decay("driftwood_trapdoor") {
-        block { ModTrapDoorBlock(BlockSetType.OAK, it) }
+        block { TrapDoorBlock(BlockSetType.OAK, it) }
         blockProperties(Blocks.OAK_WOOD) {
             mapColor(MapColor.COLOR_GRAY)
             strength(3.0f)
@@ -351,7 +351,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val STONE_STAIRS = decay("stone_stairs") {
-        block { ModStairBlock(Blocks.STONE.defaultBlockState(), it) }
+        block { StairBlock(Blocks.STONE.defaultBlockState(), it) }
         blockProperties(Blocks.STONE)
     }
 
@@ -416,31 +416,31 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     @JvmField val GRITTY_STONE = decay("gritty_stone") { blockProperties(Blocks.STONE) }
 
     fun init() {
-        ModBlockEntityTypes.DETACHED_RIFT.addBlock(DETACHED_RIFT.value())
-        ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM.value())
-        ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(DIMENSIONAL_PORTAL.value())
-        ModBlockEntityTypes.DIALING_DOOR.addBlock(DIALING_DOOR.value())
-        ModBlockEntityTypes.GENERIC_RIFT.addBlock(LIMINAL_TRANSMITTER.value())
+        ModBlockEntityTypes.DETACHED_RIFT.addBlock(DETACHED_RIFT)
+        ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM)
+        ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(DIMENSIONAL_PORTAL)
+        ModBlockEntityTypes.DIALING_DOOR.addBlock(DIALING_DOOR)
+        ModBlockEntityTypes.GENERIC_RIFT.addBlock(LIMINAL_TRANSMITTER)
     }
 
     @JvmStatic
-    fun ancientFabricFromDye(color: DyeColor): Block? = ANCIENT_FABRIC_BLOCKS[color]?.value()
+    fun ancientFabricFromDye(color: DyeColor): Block? = ANCIENT_FABRIC_BLOCKS[color]
 
     @JvmStatic
-    fun fabricFromDye(color: DyeColor): Block? = FABRIC_BLOCKS[color]?.value()
+    fun fabricFromDye(color: DyeColor): Block? = FABRIC_BLOCKS[color]
 
-    private fun regular(name: String, block: Builder.() -> Unit): Holder<Block> = create(name) {
+    private fun regular(name: String, block: Builder.() -> Unit): Block = create(name) {
         tab(DIMENSIONAL_DOORS)
         block(this)
     }
 
-    private fun decay(name: String, block: Builder.() -> Unit): Holder<Block> = create(name) {
+    private fun decay(name: String, block: Builder.() -> Unit): Block = create(name) {
         tab(DECAY)
         block(this)
     }
 
-    private fun door(name: String, from: Block, set: BlockSetType, properties: BlockBehaviour.Properties.() -> Unit = {}): Holder<Block> = regular(name) {
-        block { ModDoorBlock(set, it) }
+    private fun door(name: String, from: Block, set: BlockSetType, properties: BlockBehaviour.Properties.() -> Unit = {}): Block = regular(name) {
+        block { DoorBlock(set, it) }
         blockProperties(from) {
             strength(5.0f)
             requiresCorrectToolForDrops()
@@ -448,28 +448,28 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         }
     }
 
-    private fun unravelled(name: String, block: Builder.() -> Unit = {}): Holder<Block> = create(name) {
+    private fun unravelled(name: String, block: Builder.() -> Unit = {}): Block = create(name) {
         block(::UnravelledFabricBlock)
         blockProperties(Blocks.STONE, UNRAVELLED_FABRIC_BLOCK_SETTINGS)
         block(this)
     }
 
-    fun DyeColor.fabric(): Holder<Block> = regular("${serializedName}_fabric") {
+    fun DyeColor.fabric(): Block = regular("${serializedName}_fabric") {
         block { FabricBlock(this@fabric) }
     }.also { FABRIC_BLOCKS[this] = it }
 
-    fun DyeColor.ancientFabric(): Holder<Block> = regular("${serializedName}_ancient_fabric") {
+    fun DyeColor.ancientFabric(): Block = regular("${serializedName}_ancient_fabric") {
         block { AncientFabricBlock(this@ancientFabric) }
     }.also { ANCIENT_FABRIC_BLOCKS[this] = it }
 
     @JvmRecord
     data class DecayGroupSet(
-        @JvmField val fence: Holder<Block>,
-        @JvmField val gate: Holder<Block>,
-        @JvmField val button: Holder<Block>,
-        @JvmField val slab: Holder<Block>,
-        @JvmField val stairs: Holder<Block>,
-        @JvmField val wall: Holder<Block>
+        @JvmField val fence: Block,
+        @JvmField val gate: Block,
+        @JvmField val button: Block,
+        @JvmField val slab: Block,
+        @JvmField val stairs: Block,
+        @JvmField val wall: Block
     ) {
         companion object {
             @JvmField
@@ -490,12 +490,12 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
                 val set = DecayGroupSet(
                     part("fence", ::FenceBlock),
                     part("gate", { FenceGateBlock(WoodType.OAK, it) }),
-                    part("button", { ModButtonBlock(BlockSetType.STONE, 20, it) }) {
+                    part("button", { ButtonBlock(BlockSetType.STONE, 20, it) }) {
                         noCollission()
                         strength(0.5f)
                     },
                     part("slab", ::SlabBlock),
-                    part("stairs", { ModStairBlock(from().defaultBlockState(), it) }),
+                    part("stairs", { StairBlock(from().defaultBlockState(), it) }),
                     part("wall", ::WallBlock)
                 )
 

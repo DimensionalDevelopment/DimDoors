@@ -21,7 +21,7 @@ sealed interface PocketTemplate {
 
         override fun place(pocket: Pocket<*, *>) {
             pocket.setSize(schematic.width.toInt(), schematic.height.toInt(), schematic.length.toInt())
-            SchematicPlacer.place(schematic, DimensionalDoors.getWorld(pocket.getWorld())!!, pocket.getOrigin())
+            SchematicPlacer.place(schematic, DimensionalDoors.getWorld(pocket.world)!!, pocket.origin)
         }
 
         companion object {
@@ -35,8 +35,8 @@ sealed interface PocketTemplate {
 
         override fun place(pocket: Pocket<*, *>) {
             pocket.setSize(template.size)
-            val world = DimensionalDoors.getWorld(pocket.getWorld())!!
-            template.placeInWorld(world, BlockPos.ZERO, pocket.getOrigin(), SETTINGS, world.random, 0)
+            val world = DimensionalDoors.getWorld(pocket.world)!!
+            template.placeInWorld(world, BlockPos.ZERO, pocket.origin, SETTINGS, world.random, 0)
         }
 
         companion object {

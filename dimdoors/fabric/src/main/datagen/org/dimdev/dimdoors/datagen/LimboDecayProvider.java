@@ -55,8 +55,8 @@ abstract public class LimboDecayProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
 
             Consumer<DecayPatternHolder> consumer = (patternHolder) -> {
-                JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(patternHolder.value()).getOrThrow();
-                Path outputPath = decayPatternPathResolver.json(patternHolder.id());
+                JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(patternHolder.getValue()).getOrThrow();
+                Path outputPath = decayPatternPathResolver.json(patternHolder.getId());
                 list.add(DataProvider.saveStable(cache, object, outputPath));
             };
 

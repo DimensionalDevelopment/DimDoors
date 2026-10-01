@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Inventory
@@ -69,7 +68,7 @@ open class NeoForgeClientSided<V : NeoForgeClientSided<V, T>, T : ModClient<in V
         }
 
         bus.addListener<RegisterClientExtensionsEvent> { event ->
-            client.initFluids { _, fluid, details -> event.registerFluidType(FluidExtension(details), fluid.fluidType) }
+            client.initFluids { _, fluid, details -> event.registerFluidType(FluidExtension(details), fluid.value().fluidType) }
         }
         bus.addListener<EntityRenderersEvent.RegisterRenderers> { event ->
             client.initEntityRenderers(object : ModClient.EntityRegister {

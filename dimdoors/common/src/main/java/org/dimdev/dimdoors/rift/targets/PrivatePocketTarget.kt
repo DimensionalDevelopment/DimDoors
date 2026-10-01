@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.castOrNull
-import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.pockets.PocketGenerator
@@ -43,7 +42,7 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
                 if (dyeableAddon == null) {
                     return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null)
                 } else {
-                    val remaining = dyeableAddon.addDye(pocket, entity.owner, dye, stack.getCount())
+                    val remaining = dyeableAddon.addDye(pocket, entity.owner!!, dye, stack.count)
 
                     if (remaining <= 0) {
                         entity.discard()
@@ -84,7 +83,7 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
             )
         )
 
-        return pocket.castOrNull<PrivatePocket>()
+        return pocket?.castOrNull<PrivatePocket>()
     }
 
     val codec = MapCodec.unit(PrivatePocketTarget)

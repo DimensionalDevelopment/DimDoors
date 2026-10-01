@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.listener.pocket
 
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Holder
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.network.client.ClientPacketListener
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
@@ -11,7 +10,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddonType
 
 object PocketListenerUtil {
     fun <T : PocketAddon> getAddon(
-        holder: Holder<out PocketAddonType>,
+        holder: PocketAddonType<T>,
         world: Level,
         pos: BlockPos
     ): T? {
@@ -23,7 +22,7 @@ object PocketListenerUtil {
     }
 
     fun <T : PocketAddon> getAddonCommon(
-        clazz: Holder<out PocketAddonType>,
+        clazz: PocketAddonType<T>,
         world: Level,
         pos: BlockPos
     ): T? {

@@ -56,7 +56,7 @@ open class LevelSpaceHelper {
      * 
      * @return `true` when rift creation may continue
      */
-    open fun prepareRiftCreation(level: ServerLevel?, pos: BlockPos?): Boolean {
+    open fun prepareRiftCreation(level: ServerLevel, pos: BlockPos): Boolean {
         return true
     }
 
@@ -95,11 +95,11 @@ open class LevelSpaceHelper {
     /**
      * Converts entity after-block collision data into the coordinate space DimDoors expects.
      */
-    open fun getAfterBlockData(entity: Entity?, box: AABB?, previousPos: Vec3?, currentPos: Vec3?): AfterBlockData {
+    open fun getAfterBlockData(entity: Entity, box: AABB, previousPos: Vec3, currentPos: Vec3): AfterBlockData {
         return AfterBlockData(box, previousPos, currentPos)
     }
 
-    open fun onRiftAdded(rift: Rift?) {
+    open fun onRiftAdded(rift: Rift) {
     }
 
     /**
@@ -109,7 +109,7 @@ open class LevelSpaceHelper {
      * @param previousPos the entity's position before the move
      * @param currentPos the entity's position after it
      */
-    data class AfterBlockData(@JvmField val box: AABB?, @JvmField val previousPos: Vec3?, @JvmField val currentPos: Vec3?)
+    data class AfterBlockData(@JvmField val box: AABB, @JvmField val previousPos: Vec3, @JvmField val currentPos: Vec3)
 
     /**
      * Position, rotation, and velocity for one teleport.

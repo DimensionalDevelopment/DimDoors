@@ -80,8 +80,8 @@ object Targets {
         })
 
         DefaultTargets.registerDefaultTarget(REDSTONE, object : RedstoneTarget {
-            override fun recieveSignal(strength: Int, location: Location): Boolean {
-                val targetLevel = location.world
+            override fun recieveSignal(strength: Int, location: Location?): Boolean {
+                val targetLevel = location?.world ?: return false
 
                 return TargetResolver.target<RedstoneTarget>(targetLevel, location.blockPos)?.recieveSignal(strength, location) ?: false
             }

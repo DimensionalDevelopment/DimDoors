@@ -6,14 +6,12 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
+import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimcore.api.util.SimpleEvent
 import org.dimdev.dimdoors.world.decay.Decay
-import java.util.function.Function
 import java.util.stream.Stream
 
-interface DecayPattern {
-    val type: DecayPatternType<out DecayPattern>
-
+interface DecayPattern : MapCodecHasHolder<DecayPattern> {
     fun test(context: Decay.DecayContext): Boolean
 
     fun process(context: Decay.DecayContext): Int
@@ -31,8 +29,10 @@ interface DecayPattern {
     }
 
     companion object {
-        val CODEC: Codec<DecayPattern> = DecayPatternType.CODEC.dispatch<DecayPattern>(Function { obj: DecayPattern -> obj.type }, DecayPatternType::codec)
+        @JvmField
+        val CODEC: Codec<DecayPattern> = DecayPatterns.codec
 
+        @JvmField
         val ENTROPY_EVENT: SimpleEvent<EntropyEvent> = SimpleEvent.of { entropyEvents -> { world, pos, entorpy -> for (event in entropyEvents) event.entropy(world, pos, entorpy) } }
     }
 }

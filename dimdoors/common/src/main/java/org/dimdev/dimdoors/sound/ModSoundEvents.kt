@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.sound
 
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.sounds.SoundEvent
+import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 
-object ModSoundEvents {
+object ModSoundEvents : PlatformRegistry<SoundEvent>(Registries.SOUND_EVENT, BuiltInRegistries.SOUND_EVENT, getSided()) {
     @JvmField
     val CRACK: SoundEvent = register("crack")
     @JvmField
@@ -40,12 +42,9 @@ object ModSoundEvents {
     val THEY_STARE_BACK: SoundEvent = register("they_stare_back")
 
     private fun register(id: String): SoundEvent {
-        return getSided().register<SoundEvent, SoundEvent>(
-            Registries.SOUND_EVENT,
-            id,
+        return create(id) {
             SoundEvent.createVariableRangeEvent(DimensionalDoors.id(id))
-        )
-    }
+        }
 
-    fun init() {}
+    }
 }

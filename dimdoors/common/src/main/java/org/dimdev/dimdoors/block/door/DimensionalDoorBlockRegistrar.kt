@@ -42,7 +42,7 @@ typealias TagMap<T> = MutableMap<TagKey<T>, MutableList<Holder<T>>>
 typealias BlockTagMap = TagMap<Block>
 typealias ItemTagMap = TagMap<Item>
 
-class DimensionalDoorBlockRegistrar {
+object DimensionalDoorBlockRegistrar {
     private val mappedDoorBlocks = HashBiMap.create<ResourceLocation, ResourceLocation>()
 
     private val customDoorProductions = mutableMapOf<ResourceLocation, DoorProduction>()
@@ -241,10 +241,8 @@ class DimensionalDoorBlockRegistrar {
         }
     }
 
-    class DefaultAutoGenDoorBlock(settings: Properties, originalBlock: DoorSoundProvider) :
-        AutoGenDimensionalDoorBlock<EntranceRiftBlockEntity.Impl>(settings, originalBlock) {
-        override val riftBlockEnityType: BlockEntityType<EntranceRiftBlockEntity.Impl>
-            get() = ModBlockEntityTypes.ENTRANCE_RIFT
+    class DefaultAutoGenDoorBlock(settings: Properties, originalBlock: DoorSoundProvider) : AutoGenDimensionalDoorBlock<EntranceRiftBlockEntity.Impl>(settings, originalBlock) {
+        override val riftBlockEnityType: BlockEntityType<EntranceRiftBlockEntity.Impl> get() = ModBlockEntityTypes.ENTRANCE_RIFT
 
         override fun useWithoutItem(
             state: BlockState,
@@ -252,9 +250,7 @@ class DimensionalDoorBlockRegistrar {
             pos: BlockPos,
             player: Player,
             hitResult: BlockHitResult
-        ): InteractionResult {
-            return super.useWithoutItem(state, world, pos, player, hitResult)
-        }
+        ) = super.useWithoutItem(state, world, pos, player, hitResult)
     }
 
     abstract class AutoGenDimensionalTrapdoorBlock<T : EntranceRiftBlockEntity<*>>(

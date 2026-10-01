@@ -26,8 +26,6 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry
 import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.LevelSpaceHelper
-import org.dimdev.dimdoors.util.LevelSpaceHelper.AfterBlockData
-import org.dimdev.dimdoors.util.LevelSpaceHelper.TeleportFrame
 import org.joml.Matrix4d
 
 object SableLevelSpaceHelper : LevelSpaceHelper() {

@@ -1,20 +1,18 @@
 package org.dimdev.dimdoors.rift
 
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.Half
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.castOrNull
-import org.dimdev.dimdoors.DimensionalDoors.Companion.getConfig
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.util.Timer.Companion.create
-import java.util.function.Consumer
 import kotlin.math.abs
 
 object RiftUtils {
@@ -22,7 +20,7 @@ object RiftUtils {
 
     @JvmStatic
     fun triggerRiftCoreHighlight() {
-        val highlightMillis = getConfig().graphicsConfig.highlightRiftCoreFor
+        val highlightMillis = DimensionalDoors.config.graphicsConfig.highlightRiftCoreFor
         if (highlightMillis < 0) {
             showRiftTimer.reset()
             return

@@ -8,6 +8,7 @@ import org.spongepowered.asm.service.MixinService;
 import java.util.List;
 import java.util.Set;
 
+//TODO Conver to kotlin once sure this won't explode if I do
 public class SableMixinPlugin implements IMixinConfigPlugin {
     private boolean isSableLoaded = false;
 

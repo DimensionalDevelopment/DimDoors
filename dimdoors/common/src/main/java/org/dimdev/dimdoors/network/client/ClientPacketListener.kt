@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.network.client
 
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Holder
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceKey
@@ -37,7 +36,7 @@ object ClientPacketListener {
         private set
     var area: BoundingBox? = null
         private set
-    var addons = mutableMapOf<Holder<out BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>>, PocketAddon>()
+    var addons = mutableMapOf<BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>, PocketAddon>()
         private set
 
     fun <T : CustomPacketPayload> sendPacket(packet: T) = platform.sendPacket(packet)
@@ -98,12 +97,12 @@ object ClientPacketListener {
         }
     }
 
-    fun onMonolithTeleportParticles(packet: MonolithTeleportParticlesPacket?) {
+    fun onMonolithTeleportParticles(packet: MonolithTeleportParticlesPacket) {
         Minecraft.getInstance().apply {
             execute {
                 particleEngine.add(
                     MonolithParticle(
-                        level,
+                        level!!,
                         player!!.x,
                         player!!.y,
                         player!!.z
@@ -123,7 +122,7 @@ object ClientPacketListener {
         }
     }
 
-    fun <T : PocketAddon> getAddonClient(type: Holder<out PocketAddonType>, world: Level, pos: BlockPos): T? {
+    fun <T : PocketAddon> getAddonClient(type: PocketAddonType<T>, world: Level, pos: BlockPos): T? {
         if (world.dimension() != pocketWorld) return null
 
         if (!area!!.isInside(pos.x, pos.y, pos.z)) return null

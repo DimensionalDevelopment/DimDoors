@@ -3,6 +3,7 @@ package org.dimdev.dimdoors
 import net.minecraft.core.Holder
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.tags.TagKey
 import net.minecraft.world.inventory.RecipeBookType
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -19,7 +20,6 @@ import net.neoforged.neoforge.common.Tags
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.server.ServerStoppedEvent
 import net.neoforged.neoforge.fluids.FluidType
-import net.neoforged.neoforge.registries.NeoForgeRegistries
 import org.dimdev.dimcore.NeoForgeSided
 import org.dimdev.dimcore.api.castOrNull
 import org.dimdev.dimdoors.api.event.ChunkServedCallback
@@ -28,7 +28,6 @@ import org.dimdev.dimdoors.fluid.LeakFluid
 import org.dimdev.dimdoors.fluid.ModFluidTypes
 import org.dimdev.dimdoors.item.FarShotItem
 import org.dimdev.dimdoors.world.ModBiomeModifiers
-import java.util.function.Consumer
 
 @Mod(DimensionalDoors.MOD_ID)
 class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsNeoForge, DimensionalDoors>(bus, DimensionalDoors.INSTANCE), IDimensionalDoorsSided<DimensionalDoorsNeoForge> {
@@ -74,15 +73,13 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
         name: String,
         category: GameRules.Category,
         value: Boolean
-    ): GameRules.Key<GameRules.BooleanValue?> {
-        return GameRules.register<GameRules.BooleanValue?>(name, category, GameRules.BooleanValue.create(value))
-    }
+    ): GameRules.Key<GameRules.BooleanValue> = GameRules.register(name, category, GameRules.BooleanValue.create(value))
 
     override fun registerGameRule(
         name: String,
         category: GameRules.Category,
         value: Int
-    ) = GameRules.register(name, category, GameRules.IntegerValue.create(value))
+    ): GameRules.Key<GameRules.IntegerValue> = GameRules.register(name, category, GameRules.IntegerValue.create(value))
 
     override fun createFarShot(properties: Item.Properties): FarShotItem {
         return object : FarShotItem(properties) {
@@ -92,28 +89,16 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
         }
     }
 
-    override val tesselatingRecipeBookType: RecipeBookType? get() = TESSELLATING.getValue()
+    override val tesselatingRecipeBookType: RecipeBookType get() = TESSELLATING.getValue()
 
-    public override fun onServerStopped(consumer: Consumer<MinecraftServer?>) {
-        NeoForge.EVENT_BUS.addListener<ServerStoppedEvent?>(Consumer { event: ServerStoppedEvent? ->
-            consumer.accept(
-                event!!.getServer()
-            )
-        })
-    }
+    public override fun onServerStopped(server: (MinecraftServer) -> Unit) =
+        NeoForge.EVENT_BUS.addListener<ServerStoppedEvent> { event -> event.server.run(server) }
 
-    public override fun onServerStopping(consumer: Consumer<MinecraftServer?>) {
-        NeoForge.EVENT_BUS.addListener<ServerStoppedEvent?>(Consumer { event: ServerStoppedEvent? ->
-            consumer.accept(
-                event!!.getServer()
-            )
-        })
-    }
+    override fun onServerStopping(server: (MinecraftServer) -> Unit) = NeoForge.EVENT_BUS.addListener<ServerStoppedEvent> { event -> event.server.run(server) }
 
-    val enderPearlsTag: TagKey<Item?>
-        get() = Tags.Items.ENDER_PEARLS
+    override val enderPearlsTag: TagKey<Item> get() = Tags.Items.ENDER_PEARLS
 
     companion object {
-        val TESSELLATING: EnumProxy<RecipeBookType?> = EnumProxy<RecipeBookType?>(RecipeBookType::class.java)
+        val TESSELLATING = EnumProxy(RecipeBookType::class.java)
     }
 }

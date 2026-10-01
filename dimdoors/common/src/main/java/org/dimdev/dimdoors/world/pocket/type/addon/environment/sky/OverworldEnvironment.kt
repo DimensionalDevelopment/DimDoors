@@ -1,22 +1,18 @@
 package org.dimdev.dimdoors.world.pocket.type.addon.environment.sky
 
-import com.mojang.datafixers.util.Function8
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.Holder
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.Type
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environment
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environments
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.OverworldCloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.OverworldWeatherData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
-import java.util.function.Function
 
 class OverworldEnvironment(
     private val dayTime: Long,
@@ -31,49 +27,34 @@ class OverworldEnvironment(
 
     private val sunriseColors: FloatArray = FloatArray(4)
 
-    private val skyData: OverworldSkyDataImpl = OverworldEnvironment.OverworldSkyDataImpl()
-    private val cloudData: OverworldCloudDataImpl = OverworldEnvironment.OverworldCloudDataImpl()
-    private val weatherData: OverworldWeatherDataImpl = OverworldEnvironment.OverworldWeatherDataImpl()
+    private val skyData = OverworldSkyDataImpl()
+    private val cloudData = OverworldCloudDataImpl()
+    private val weatherData = OverworldWeatherDataImpl()
 
     override val sky: SkyData get() = skyData
 
     override val cloud: CloudData get() = cloudData
     override val weather: WeatherData get() = weatherData
 
-    override val type: Holder<out Type<Environment>> get() = Environments.OVERWORLD
+    override val type get() = Environments.OVERWORLD
 
     private inner class OverworldSkyDataImpl : OverWorldSkyData {
         override val dayTime: Long get() = this@OverworldEnvironment.dayTime
-
         override val moonPhase: Int get() = this@OverworldEnvironment.moonPhase
-
         override val sunriseColors: FloatArray get() = this@OverworldEnvironment.sunriseColors
-
         override val skyColor: Vec3 get() = this@OverworldEnvironment.skyColor
-
         override val rainLevel: Float get() = this@OverworldEnvironment.rainLevel
-
         override val thunderLevel: Float get() = this@OverworldEnvironment.thunderLevel
     }
 
-    internal class OverworldCloudDataImpl : OverworldCloudData {
-        override fun getCloudHeight(): Float {
-            return this@OverworldEnvironment.cloudHeight
-        }
-
-        override fun getCloudColor(): Vec3 {
-            return this@OverworldEnvironment.cloudColor
-        }
+    private inner class OverworldCloudDataImpl : OverworldCloudData {
+        override val cloudHeight: Float get() = this@OverworldEnvironment.cloudHeight
+        override val cloudColor: Vec3 get() = this@OverworldEnvironment.cloudColor
     }
 
     private inner class OverworldWeatherDataImpl : OverworldWeatherData {
-        override fun getPrecepitation(): Biome.Precipitation {
-            return this@OverworldEnvironment.precipitation
-        }
-
-        override fun getRainLevel(): Float {
-            return this@OverworldEnvironment.rainLevel
-        }
+        override val precepitation: Biome.Precipitation get() = this@OverworldEnvironment.precipitation
+        override val rainLevel: Float get() = this@OverworldEnvironment.rainLevel
     }
 
     companion object {

@@ -47,7 +47,7 @@ class DestinationDataModifier(val destinations: Map<Int, Tag>) :
         return tag
     }
 
-    public override fun getType(): StructureProcessorType<*> = ModStructureProccessors.DESTINATION_DATA
+    public override fun getType(): StructureProcessorType<*> = ModStructureProccessors.DESTINATION_DATA.value()
 
     private fun getMarkerId(data: CompoundTag): Int {
         val destination = data.getCompound("destination")

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Rotations
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d
 import org.dimdev.dimdoors.api.util.math.inverse
 import org.dimdev.dimdoors.api.util.math.transform
 import org.dimdev.dimdoors.api.util.math.transformDirection

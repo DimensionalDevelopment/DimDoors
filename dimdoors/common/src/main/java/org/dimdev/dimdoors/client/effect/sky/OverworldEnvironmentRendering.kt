@@ -149,15 +149,15 @@ object OverworldEnvironmentRendering {
 
     fun renderCloud(
         data: OverworldCloudData,
-        level: ClientLevel?,
+        level: ClientLevel,
         ticks: Int,
         partialTick: Float,
-        poseStack: PoseStack?,
+        poseStack: PoseStack,
         camX: Double,
         camY: Double,
         camZ: Double,
-        modelViewMatrix: Matrix4f?,
-        projectionMatrix: Matrix4f?
+        modelViewMatrix: Matrix4f,
+        projectionMatrix: Matrix4f
     ) {
         (Minecraft.getInstance().levelRenderer as CloudRenderBuffer).renderCloudBuffer(
             poseStack,

@@ -13,12 +13,13 @@ import org.dimdev.dimdoors.rift.targets.DialingTarget
 import org.dimdev.dimdoors.rift.targets.DialingTargetImpl
 import org.dimdev.dimdoors.util.Copyable
 
-class DialingDoorBlockEntity(pos: BlockPos?, state: BlockState?) : EntranceRiftBlockEntity<DialingDoorBlockEntity>(
-    ModBlockEntityTypes.DIALING_DOOR, pos, state
-), DialingTarget, Copyable<DialingTarget> {
+class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, pos, state), DialingTarget, Copyable<DialingTarget> {
     override var address = DialingAddress.DEFAULT
 
-    override fun serialize(serialize: Serialize<Tag, DialingDoorBlockEntity>) = super.serialize(serialize)
+    override fun serialize(serialize: Serialize<Tag, DialingDoorBlockEntity>) {
+        super.serialize(serialize)
+        serialize.put(DIALING_ADDRESS_BUILDER)
+    }
 
     override fun deserialize(nbt: Deserialize<Tag>) {
         super.deserialize(nbt)

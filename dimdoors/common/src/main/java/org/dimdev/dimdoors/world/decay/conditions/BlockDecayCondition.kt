@@ -26,9 +26,13 @@ class BlockDecayCondition(tagOrElementLocation: CodecUtils.TagOrElementLocation<
 
 
 
+        @JvmStatic @JvmOverloads
         fun of(tag: TagKey<Block>, invert: Boolean = false): BlockDecayCondition = BlockDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.BLOCK), invert)
+        @JvmStatic @JvmOverloads
         fun of(key: ResourceKey<Block>, invert: Boolean = false): BlockDecayCondition = BlockDecayCondition(CodecUtils.TagOrElementLocation.of(key, Registries.BLOCK), invert)
+        @JvmStatic @JvmOverloads
         fun of(block: Block, invert: Boolean = false): BlockDecayCondition = of(block.builtInRegistryHolder().key(), invert)
+        @JvmStatic @JvmOverloads
         fun of(block: Supplier<Block?>, invert: Boolean = false): BlockDecayCondition = of(block.get()!!, invert)
     }
 }

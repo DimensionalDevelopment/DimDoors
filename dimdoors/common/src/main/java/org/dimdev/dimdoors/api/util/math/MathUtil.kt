@@ -10,7 +10,7 @@ import kotlin.math.asin
 import kotlin.math.atan2
 
 object MathUtil {
-    fun <T> weightedRandom(weights: MutableMap<T?, Float>): T? {
+    fun <T> weightedRandom(weights: MutableMap<T, Float>): T? {
         if (weights.isEmpty()) return null
         var totalWeight = 0
         for (weight in weights.values) {
@@ -30,7 +30,7 @@ object MathUtil {
         var upwards = upwards
         val pitch = pitch(direction)
         val yaw = yaw(direction)
-        upwards = TransformationMatrix3d.builder().rotate(Rotations(pitch, yaw, 0f)).buildReverse().transform(upwards)
+        upwards = Rotations(pitch, yaw, 0f).toMatrix().inverse().transform(upwards)
         val roll = Math.toDegrees(-atan2(upwards.x, upwards.y)).toFloat()
 
         return Rotations(pitch, yaw, roll)

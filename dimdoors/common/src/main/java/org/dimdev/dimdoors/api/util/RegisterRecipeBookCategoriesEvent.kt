@@ -25,6 +25,7 @@ data class RegisterRecipeBookCategoriesEvent(
         recipeCategoryFinder.invoke(type, categoriesFunction)
 
     companion object {
-        val EVENT = consumerLoop<Consumer<RegisterRecipeBookCategoriesEvent>>()
+        @JvmField
+        val EVENT: SimpleEvent<Consumer<RegisterRecipeBookCategoriesEvent>> = SimpleEvent.of { listeners -> Consumer { event -> listeners.forEach { it.accept(event) } } }
     }
 }

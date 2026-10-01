@@ -14,22 +14,20 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
+import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.castOrNull
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimdoors.ModGameRules
-import org.dimdev.dimdoors.api.item.has
 import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.world.ModDimensions
-import java.util.*
 import java.util.function.Consumer
-import java.util.function.Function
+import kotlin.jvm.optionals.getOrNull
 
 open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : Item(settings) {
     override fun isFoil(stack: ItemStack): Boolean = stack.has(ModDataComponentTypes.DESTINATION)
@@ -87,14 +85,9 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
             val source = RotatedLocation(world.dimension(), pos, player!!.getYRot(), 0f)
 
             val target = rotatedLocation.asTarget()
-            org.dimdev.dimdoors.item.RiftSignatureItem.Companion.getOrCreateRift(
-                world as net.minecraft.server.level.ServerLevel,
-                pos
-            )!!.ifPresent { a: Rift? -> a!!.setDestination(target) }
-            org.dimdev.dimdoors.item.RiftSignatureItem.Companion.getOrCreateRift(
-                rotatedLocation.world,
-                rotatedLocation.blockPos
-            )!!.ifPresent { a: Rift? -> a!!.setDestination(source.asTarget()) }
+
+            getOrCreateRift(world as ServerLevel, pos)?.setDestination(target)
+            getOrCreateRift(rotatedLocation.world, rotatedLocation.blockPos)?.setDestination(source.asTarget())
 
             val serverPlayer = player as ServerPlayer
 
@@ -117,14 +110,14 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
     override fun appendHoverText(
         itemStack: ItemStack,
         context: TooltipContext,
-        list: MutableList<Component?>,
+        list: MutableList<Component>,
         tooltipContext: TooltipFlag
     ) {
         val transform: RotatedLocation? = getSource(itemStack)
         if (transform != null) {
             list.add(
                 Component.translatable(
-                    this.getDescriptionId() + ".bound.info0",
+                    this.descriptionId + ".bound.info0",
                     transform.x,
                     transform.y,
                     transform.z,
@@ -166,39 +159,35 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
         }
 
         fun setSource(itemStack: ItemStack, destination: RotatedLocation?) {
-            itemStack.set<T?>(ModDataComponentTypes.DESTINATION, destination)
+            itemStack.set(ModDataComponentTypes.DESTINATION, destination)
         }
 
-        fun clearSource(itemStack: ItemStack) {
-            itemStack.remove<T?>(ModDataComponentTypes.DESTINATION)
-        }
+        fun clearSource(itemStack: ItemStack) = itemStack.remove(ModDataComponentTypes.DESTINATION)
 
-        fun getSource(itemStack: ItemStack): RotatedLocation? {
-            return itemStack.get<T?>(ModDataComponentTypes.DESTINATION)
-        }
+        fun getSource(itemStack: ItemStack) = itemStack.get(ModDataComponentTypes.DESTINATION)
 
-        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): Optional<out Rift?>? {
+        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): Rift? {
             var pos = pos
-            val rift: Optional<out Rift?>?
 
             pos = normalizeRiftProviderPos(world, pos)
 
             if (!LevelSpaceHelper.INSTANCE.prepareRiftCreation(world, pos)) {
-                return Optional.empty<Rift?>()
+                return null
             }
 
             val state = world.getBlockState(pos)
 
-            if (state.getBlock() is RiftVariantProvider) rift = variantProvider.convertToRiftProvider(world, pos, state)
-                .map({ obj: RiftUtils?, rift: T? -> obj!!.registerFunction(rift) })
-            else if (state.canBeReplaced()) {
-                world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState())
-                rift = world.getBlockEntity<DetachedRiftBlockEntity?>(pos, ModBlockEntityTypes.DETACHED_RIFT)
-                    .map<DetachedRiftBlockEntity?>(
-                        Function { obj: DetachedRiftBlockEntity? -> obj.registerFunction() })
-            } else rift = Optional.empty<Rift?>()
+            return when {
+                state.block is RiftVariantProvider -> state.block.castOrNull<RiftVariantProvider>()
+                    ?.convertToRiftProvider(world, pos, state)?.also { it.register() }
 
-            return rift
+                state.canBeReplaced() -> run {
+                    world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState())
+                    return world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).map { it.register() }.getOrNull()?.cast()
+                }
+
+                else -> null
+            }
         }
     }
 }

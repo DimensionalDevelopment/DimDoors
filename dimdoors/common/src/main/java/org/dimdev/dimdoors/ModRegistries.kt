@@ -6,27 +6,27 @@ import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.item.door.data.RiftDataList
 import org.dimdev.dimdoors.item.door.data.condition.Conditions
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
+import org.dimdev.dimdoors.pockets.generator.PocketGenerators
 import org.dimdev.dimdoors.pockets.modifier.Modifiers
-import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
+import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.rift.registry.RegistryVertices
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.world.pocket.type.Pockets
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environment
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environments
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyDatum
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherDatum
 
 object ModRegistries {
-    @JvmField val POCKET_GENERATOR_TYPE = ModRegistryKeys.POCKET_GENERATOR_TYPE.createRegistry()
+    @JvmField val POCKET_GENERATOR_TYPE = PocketGenerators.registry
     @JvmField val POCKET_TYPE = Pockets.registry
     @JvmField val VIRTUAL_POCKET_TYPE = VirtualPockets.registry
     @JvmField val VIRTUAL_TYPE = VirtualTargets.registry
     @JvmField val MODIFIER_TYPE = Modifiers.registry
     @JvmField val CONDITION_TYPE = Conditions.registry
-    @JvmField val SUBSYTEM_TYPE = ModRegistryKeys.SUBSYSTEM_TYPE.createRegistry()
+    @JvmField val SUBSYTEM_TYPE = SubsystemTypes.registry
     @JvmField val REGISTRY_VERTEX_TYPE = RegistryVertices.registry
     val ENVIRONMENT_TYPE = Environments.registry
     val WEATHER_DATA_TYPE = WeatherDatum.registry

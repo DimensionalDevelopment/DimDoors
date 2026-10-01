@@ -65,6 +65,8 @@ object DimensionalPortalRenderer {
 
     }
 
+    
+
     private val SOUTH_AABB: VoxelShape = Block.box(0.0, 0.0, 0.0, 16.0, 32.0, 3.0)
     private val NORTH_AABB: VoxelShape = Block.box(0.0, 0.0, 13.0, 16.0, 32.0, 16.0)
     private val WEST_AABB: VoxelShape = Block.box(13.0, 0.0, 0.0, 16.0, 32.0, 16.0)

@@ -20,7 +20,7 @@ public abstract class LevelMixin {
     private void dimdoors$restoreLimboAir(BlockPos pos, BlockState state, int flags, int recursionLeft, CallbackInfoReturnable<Boolean> cir) {
         Level level = (Level) (Object) this;
         if (cir.getReturnValue() && !level.isClientSide() && ModDimensions.isLimboDimension(level) && state.isAir()) {
-            level.setBlock(pos, ModBlocks.LIMBO_AIR.value().defaultBlockState(), flags, recursionLeft);
+            level.setBlock(pos, ModBlocks.LIMBO_AIR.defaultBlockState(), flags, recursionLeft);
         }
     }
 

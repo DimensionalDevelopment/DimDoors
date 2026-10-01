@@ -46,8 +46,11 @@ class FluidDecayCondition(
                 )
         }
 
+        @JvmStatic @JvmOverloads
         fun of(tag: TagKey<Fluid>, invert: Boolean = false, type: Type = Type.BOTH): FluidDecayCondition = FluidDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.FLUID), invert, type)
+        @JvmStatic @JvmOverloads
         fun of(key: ResourceKey<Fluid>, invert: Boolean = false, type: Type = Type.BOTH): FluidDecayCondition = FluidDecayCondition(CodecUtils.TagOrElementLocation.of(key, Registries.FLUID), invert, type)
+        @JvmStatic @JvmOverloads
         fun of(fluid: Fluid, invert: Boolean = false, type: Type = Type.BOTH): FluidDecayCondition = of(fluid.builtInRegistryHolder().key(), invert, type)
     }
 }

@@ -1,22 +1,17 @@
 package org.dimdev.dimdoors.client.effect.sky
 
 import com.mojang.blaze3d.vertex.PoseStack
-import me.shedaniel.rei.impl.common.util.Weather
 import net.minecraft.client.Camera
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.core.Holder
 import org.dimdev.dimcore.api.Type
-import org.dimdev.dimcore.api.cast
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.OverworldCloudData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.EndSkyData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.OverWorldSkyData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.OverworldWeatherData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
+import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherDatum
 import org.joml.Matrix4f
 
 
@@ -52,20 +47,7 @@ object EnvironmentAddonClient {
     fun init() {
         registerSkyRendrer(SkyDatum.OVERWORLD, OverworldEnvironmentRendering::renderSky)
         registerCloudRendrer(CloudDatum.OVERWORLD, OverworldEnvironmentRendering::renderCloud)
-        registerWeatherRendrer(
-            WeatherDatum.OVERWORLD,
-            EnvironmentAddonClient.WeatherRenderer { data: T?, level: ClientLevel?, ticks: Int, partialTick: Float, lightTexture: LightTexture?, camX: Double, camY: Double, camZ: Double ->
-                OverworldEnvironmentRendering.renderWeather(
-                    data,
-                    level,
-                    ticks,
-                    partialTick,
-                    lightTexture,
-                    camX,
-                    camY,
-                    camZ
-                )
-            })
+        registerWeatherRendrer(WeatherDatum.OVERWORLD, OverworldEnvironmentRendering::renderWeather)
         registerSkyRendrer(SkyDatum.END, EndEnvironmentRendering::renderSky)
     }
 

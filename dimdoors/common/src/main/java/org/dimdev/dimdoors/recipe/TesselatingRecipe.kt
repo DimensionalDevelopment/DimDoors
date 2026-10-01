@@ -11,5 +11,5 @@ interface TesselatingRecipe : Recipe<CraftingInput> {
 
     override fun getType(): RecipeType<TesselatingRecipe> = ModRecipeTypes.TESSELATING
 
-    override fun getToastSymbol(): ItemStack = ModBlocks.TESSELATING_LOOM.value().asItem().defaultInstance
+    override fun getToastSymbol(): ItemStack = ModBlocks.TESSELATING_LOOM.asItem().defaultInstance
 }

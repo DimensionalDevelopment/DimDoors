@@ -4,7 +4,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
 
-@JvmRecord
 data class DecaySourceCondition(val source: DecaySource) : DecayCondition {
     override val type get() = DecayConditions.DECAY_SOURCE
 

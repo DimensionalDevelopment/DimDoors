@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.levelgen.carver.WorldCarver
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.util.DataValue
 
@@ -65,7 +67,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
     val registry: Registry<T> = register.createRegistry()
     val modid = sided.modId()
 
-    protected val queue = mutableListOf<Holder<T>>()
+    protected val queue = mutableListOf<T>()
 
     /**
      * Creates a new entry in this registry.
@@ -75,8 +77,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
      * @param entry The entry being added.
      * @return The entry created.
      */
-    open fun <V : T> create(name: String, entry: () -> V): Holder<V> =
-        register.holder(name, entry).also { queue.add(it.cast()) }
+    open fun <V : T> create(name: String, entry: () -> V): V = register.register(name, entry).also { queue.add(it.cast()) }
 
     /**
      * Handles the registration of this registry into the platform specific one.
@@ -85,19 +86,15 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
      */
     open fun register() {}
 
-    open fun allHolders(): Collection<Holder<T>> = this.queue.toList()
-
-
-    /**
-     * Returns a collection of every entry in this registry.
-     *
-     * @return The entries of this registry.
-     */
-    open fun all(): Collection<T> = allHolders().map { it.value() }.toList()
+    open fun allHolders(): Collection<T> = this.queue.toList()
 
     abstract class EntryRegister<T> {
         abstract fun createRegistry(): Registry<T>
-        abstract fun <V : T> holder(name: String, supplier: () -> V): Holder<V>
+        abstract fun <V : T> register(name: String, supplier: () -> V): V
+    }
+
+    open class StructureProcessorPlatformRegistry(sided: ISided<*>) : PlatformRegistry<StructureProcessorType<*>>(Registries.STRUCTURE_PROCESSOR, BuiltInRegistries.STRUCTURE_PROCESSOR, sided) {
+        fun <E : StructureProcessor> create(name: String, codec: MapCodec<E>) = create(name) { return@create StructureProcessorType { codec } }
     }
 
     open class BlockPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Block>(Registries.BLOCK, BuiltInRegistries.BLOCK, sided)
@@ -120,7 +117,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
             factory: EntityType.EntityFactory<E>,
             category: MobCategory,
             block: EntityType.Builder<E>.() -> Unit,
-        ): Holder<EntityType<E>> = create(id) {
+        ): EntityType<E> = create(id) {
             EntityType.Builder.of(factory, category).also(block).build(id)
         }
 
@@ -131,7 +128,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
             name: String,
             codec: V,
             streamCodec: U? = null
-        ): Holder<DataComponentType<T>> {
+        ): DataComponentType<T> {
             val builder = DataComponentType.builder<T>().persistent(codec)
             if (streamCodec != null) builder.networkSynchronized(streamCodec)
             builder.cacheEncoding()
@@ -141,29 +138,28 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
 
     open class FluidPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Fluid>(Registries.FLUID, BuiltInRegistries.FLUID, sided)
     open class DataValuePlatformRegistry(sided: ISided<*>) : PlatformRegistry<Any>(KEY, sided) {
-        fun <T> create(name: String, defaultValue: () -> T, codec: Codec<T>, streamCodec: StreamCodec<in RegistryFriendlyByteBuf, T>? = null): DataValue<T> =
-            (create(name) { DataValueType(defaultValue, codec, streamCodec) } as Holder<*>).value() as DataValue<T>
+        fun <T> create(name: String, defaultValue: () -> T, codec: Codec<T>, streamCodec: StreamCodec<in RegistryFriendlyByteBuf, T>? = null): DataValue<T> = create(name) { DataValueType(defaultValue, codec, streamCodec) as DataValue<T> }
 
         companion object {
             val KEY: ResourceKey<Registry<Any>> = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("dimcore", "data_value"))
         }
     }
     open class MapCodecPlatformRegistry<B : MapCodecHasHolder<B>>(registryKey: ResourceKey<Registry<MapCodec<out B>>>, sided: ISided<*>) : PlatformRegistry<MapCodec<out B>>(registryKey, sided) {
-        val codec: Codec<B> = this.registry.byNameCodec().dispatch({ it.type.value() }, { it })
+        val codec: Codec<B> = this.registry.byNameCodec().dispatch({ it.type }, { it })
     }
     open class TypePlatformRegistry<B : TypeHasHolder<B>>(registryKey: ResourceKey<Registry<Type<B>>>, sided: ISided<*>) : PlatformRegistry<Type<B>>(registryKey, sided) {
-        fun <T : B> create(id: String, codec: MapCodec<T>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): Holder<Type<T>> = create(id) { Type(codec, streamCodec) }
-        fun <T : B> create(id: String, codec: MapCodec<B>): Holder<Type<B>> = create(id) { Type(codec, null) }
+        fun <T : B> create(id: String, codec: MapCodec<T>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): Type<T> = create(id) { Type(codec, streamCodec) }
+        fun <T : B> create(id: String, codec: MapCodec<B>): Type<B> = create(id) { Type(codec, null) }
 
-        val codec = this.registry.byNameCodec().dispatch({ it.type.value() }, { it.codec })
-        val streamCodec = ByteBufCodecs.registry(registryKey).dispatch({ it.type.value() }, { it.streamCodec })
+        val codec = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
+        val streamCodec = ByteBufCodecs.registry(registryKey).dispatch({ it.type }, { it.streamCodec })
     }
 
     open class BuilderTypePlatformRegistry<B : BuilderTypeHasHolder<B, C>, C : BuilderTypeHasHolder<B, C>>(registryKey: ResourceKey<Registry<BuilderType<B, C>>>, sided: ISided<*>) : PlatformRegistry<BuilderType<B, C>>(registryKey, sided) {
-        fun <T : B, V: C> create(id: String, codec: MapCodec<T>, builderCodec: MapCodec<V>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): Holder<BuilderType<T, V>> = create(id) { BuilderType(codec, builderCodec, streamCodec) }
+        fun <T : B, V: C> create(id: String, codec: MapCodec<T>, builderCodec: MapCodec<V>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): BuilderType<T, V> = create(id) { BuilderType(codec, builderCodec, streamCodec) }
 
-        val codec = this.registry.byNameCodec().dispatch({ it.type.value() }, { it.codec })
-        val builderCodec = this.registry.byNameCodec().dispatch({ it.type.value() }, { it.builderCodec })
+        val codec = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
+        val builderCodec = this.registry.byNameCodec().dispatch({ it.type }, { it.builderCodec })
         val streamCodec = ByteBufCodecs.registry(registryKey)
     }
 
@@ -205,21 +201,29 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
             }
         }
 
-        fun create(name: String, block: Builder.() -> Unit = {}): Holder<Block> {
+        fun create(name: String, block: Builder.() -> Unit = {}): Block {
             val builder = Builder(name).apply(block)
             val blockHolder = blocks.create(name) { builder.blockFunction(builder.blockProperties()) }
 
             builder.itemFunction?.let { function ->
-                val itemHolder = items.create(name) { function(blockHolder.value(), Item.Properties().apply(builder.itemProperties)) }
-                builder.tab?.add { itemHolder.value() }
+                val itemHolder = items.create(name) { function(blockHolder, Item.Properties().apply(builder.itemProperties)) }
+                builder.tab?.add { itemHolder }
             }
 
             return blockHolder
         }
 
-        fun createWithItem(name: String, block: Builder.() -> Unit = {}): Holder<Block> = create(name) {
+        fun createWithItem(name: String, block: Builder.() -> Unit = {}): Block = create(name) {
             itemFunction = ::BlockItem
             block(this)
         }
+    }
+
+    inline fun <reified T> Holder<T>.lazy(): T {
+        val lazy : T by lazy {
+            this.value()
+        }
+
+        return lazy
     }
 }

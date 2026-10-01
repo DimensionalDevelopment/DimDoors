@@ -120,7 +120,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
 
         fun <E : BlockEntity, A : BlockEntity> checkType(
             givenType: BlockEntityType<A>,
-            expectedType: BlockEntityType<E?>,
+            expectedType: BlockEntityType<E>,
             ticker: BlockEntityTicker<in E>
         ) = createTickerHelper(givenType, expectedType, ticker)
     }
