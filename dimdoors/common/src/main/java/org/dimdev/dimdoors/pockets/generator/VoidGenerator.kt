@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
@@ -9,6 +10,7 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import kotlin.jvm.optionals.getOrNull
 
 class VoidGenerator(
     builder: AbstractPocket.AbstractPocketBuilder<*, *>?,
@@ -48,11 +50,13 @@ class VoidGenerator(
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> commonFields(instance)
+        val CODEC: MapCodec<VoidGenerator> = RecordCodecBuilder.mapCodec<VoidGenerator> { instance -> commonFields(instance)
                     .and(Equation.CODEC.fieldOf("height").forGetter(VoidGenerator::height))
                     .and(Equation.CODEC.fieldOf("width").forGetter(VoidGenerator::width))
                     .and(Equation.CODEC.fieldOf("length").forGetter(VoidGenerator::length))
-                    .apply(instance, ::VoidGenerator)
+                    .apply(instance) { builder, weight, setupLoot, modifiers, tags, height, width, length ->
+                        VoidGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, tags, height, width, length)
+                    }
             }
 
         const val KEY: String = "void"

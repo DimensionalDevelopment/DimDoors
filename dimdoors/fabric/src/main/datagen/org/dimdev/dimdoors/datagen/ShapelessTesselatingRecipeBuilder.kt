@@ -58,10 +58,6 @@ class ShapelessTesselatingRecipeBuilder(result: ItemStack) :
     }
 
     companion object {
-        fun shapeless(result: Holder<out ItemLike>): ShapelessTesselatingRecipeBuilder {
-            return shapeless(result.value())
-        }
-
         /**
          * Creates a new builder for a shapeless recipe.
          */

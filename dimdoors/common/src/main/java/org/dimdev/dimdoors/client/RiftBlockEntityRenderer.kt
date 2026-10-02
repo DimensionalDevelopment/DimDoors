@@ -16,26 +16,19 @@ import org.dimdev.dimdoors.item.ModItems
 import java.util.function.Consumer
 
 abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : Rift {
-    override fun render(rift: T, f: Float, matrices: PoseStack, multiBufferSource: MultiBufferSource, i: Int, j: Int) {
+
+
+    override fun render(rift: T, tickDelta: Float, matrices: PoseStack, multiBufferSource: MultiBufferSource, breakingProgress: Int, alpha: Int) {
         val minecraft = Minecraft.getInstance()
 
-        if (minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND)
-                .`is`(ModItems.RIFT_CONFIGURATION_TOOL)
-        ) {
+        if (minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).`is`(ModItems.RIFT_CONFIGURATION_TOOL)) {
             matrices.pushPose()
 
             matrices.translate(0.5, 1.25, 0.5)
             matrices.mulPose(minecraft.getBlockEntityRenderDispatcher().camera.rotation())
             matrices.scale(0.025f, -0.025f, 0.025f)
-
-            renderTextLines(
-                Util.make<ArrayList<Component?>?>(
-                    ArrayList<Component?>(),
-                    Consumer { list: ArrayList<Component?>? ->
-                        rift!!.gatherDebug(
-                            Consumer { e: Component? -> list!!.add(e) })
-                    }), matrices, multiBufferSource, context.getFont(), LightTexture.FULL_BRIGHT
-            )
+            val texts = mutableListOf<Component>().also{ rift.gatherDebug(it::add) }
+            renderTextLines(texts, matrices, multiBufferSource, context.getFont(), LightTexture.FULL_BRIGHT)
 
             matrices.popPose()
         }

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.registry
 
-import com.mojang.serialization.Codec.unboundedMap
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
@@ -61,7 +60,7 @@ class PocketRegistry(
     override fun collectVertices(): MutableList<out RegistryVertex> = this.pocketEntrancePointers.values.toMutableList()
 
     public override fun type(): Type<PocketRegistry> {
-        return SubsystemTypes.POCKET.value()
+        return SubsystemTypes.POCKET
     }
 
     fun <T : Pocket<*, *>> getPocket(info: PocketInfo, clazz: Class<T>): T? =
@@ -136,12 +135,12 @@ class PocketRegistry(
         val CODEC = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
                     Level.RESOURCE_KEY_CODEC.unboundedMap(PocketDirectory.CODEC).fieldOf("directories").forGetter(PocketRegistry::directories),
-                    unboundedMap(PocketInfo.STRING_CODEC, PocketEntrancePointer.CODEC).fieldOf("entrance_pointers").forGetter(
+                    PocketInfo.STRING_CODEC.unboundedMap(PocketEntrancePointer.CODEC).fieldOf("entrance_pointers").forGetter(
                         PocketRegistry::pocketEntrancePointers)
                 ).apply(instance, ::PocketRegistry)
             }
 
         @JvmStatic
-        val instance: PocketRegistry get() = getInstance(SubsystemTypes.POCKET.value())!!
+        val instance: PocketRegistry get() = getInstance(SubsystemTypes.POCKET)!!
     }
 }

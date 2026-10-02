@@ -9,5 +9,5 @@ import org.dimdev.dimdoors.recipe.TesselatingRecipe
 object ModRecipeTypes {
     val TESSELATING =
         RecipeType.createFromVanilla<TesselatingRecipe>(ModRecipeTypes.TESSELATING)
-    val DECAY = RecipeType.create<DecayDisplayData?>(DimensionalDoors.MOD_ID, "decays_into", DecayDisplayData::class.java)
+    val DECAY = RecipeType.create(DimensionalDoors.MOD_ID, "decays_into", DecayDisplayData::class.java)
 }

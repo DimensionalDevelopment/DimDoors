@@ -17,7 +17,7 @@ class EarlyRiser : Runnable {
             val recipeBookGroup = remapper.mapClassName("intermediary", "net.minecraft.class_314")
             val itemStackArray = "[L" + remapper.mapClassName("intermediary", "net.minecraft.class_1799") + ";"
             ClassTinkerers.enumBuilder(recipeBookGroup, itemStackArray)
-                .addEnum("TESSELATING_GENERAL") { arrayOf<Any>(arrayOf<ItemStack>(ModItems.WORLD_THREAD.value().defaultInstance)) }
+                .addEnum("TESSELATING_GENERAL") { arrayOf<Any>(arrayOf<ItemStack>(ModItems.WORLD_THREAD.defaultInstance)) }
                 .addEnum("TESSELATING_SEARCH") { arrayOf<Any>(arrayOf<ItemStack>(Items.COMPASS.defaultInstance)) }
                 .build()
         }

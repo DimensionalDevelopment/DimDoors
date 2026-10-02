@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Explosion
@@ -38,13 +39,13 @@ import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofTrapdoor
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
-abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<*>>(
+abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
     settings: Properties,
     blockSetType: BlockSetType
 ) : TrapDoorBlock(blockSetType, settings.pushReaction(PushReaction.BLOCK)), TraversableRiftBlock<T> {
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)
 
-    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super.onBlockExploded(state, level, pos, explosion)
+    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
     override fun getPortalPlane(state: BlockState, pos: BlockPos) = ofTrapdoor(state, pos)
 
@@ -67,9 +68,9 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<*>>(
         return InteractionResult.SUCCESS
     }
 
-    public override fun canBeReplaced(blockState: BlockState, blockPlaceContext: BlockPlaceContext) = super.canBeReplaced(blockState, blockPlaceContext) || blockState.block === ModBlocks.DETACHED_RIFT.value()
+    public override fun canBeReplaced(blockState: BlockState, blockPlaceContext: BlockPlaceContext) = super.canBeReplaced(blockState, blockPlaceContext) || blockState.block === ModBlocks.DETACHED_RIFT
 
-    public override fun getDrops(state: BlockState, params: LootParams.Builder) = getEffectiveBlockState(state).getDrops(params)
+    public override fun getDrops(state: BlockState, params: LootParams.Builder): List<ItemStack> = getEffectiveBlockState(state).getDrops(params)
 
     public override fun getInteractionShape(
         blockState: BlockState,
@@ -91,7 +92,7 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<*>>(
         return checkType(blockEntityType, riftBlockEnityType) { level, pos, state, rift -> RiftProvider.tickRift(level, pos, state, rift) }
     }
 
-    fun baseBlock() = BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)))
+    fun baseBlock() = BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar()[BuiltInRegistries.BLOCK.getKey(this)])
 
     override fun getRenderShape(blockState: BlockState) = RenderShape.MODEL
 

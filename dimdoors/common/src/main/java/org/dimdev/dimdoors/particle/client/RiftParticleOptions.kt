@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.particle.client
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
@@ -9,8 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimdoors.particle.ModParticleTypes
-import java.util.function.BiFunction
-import java.util.function.Function
 
 @JvmRecord
 data class RiftParticleOptions(val color: Float, val averageAge: Int) : ParticleOptions {
@@ -18,32 +15,22 @@ data class RiftParticleOptions(val color: Float, val averageAge: Int) : Particle
         return ModParticleTypes.RIFT
     }
 
-    public override fun color(): Float {
-        return color
-    }
-
-    public override fun averageAge(): Int {
-        return averageAge
-    }
-
     companion object {
-        fun of(isOutsidePocket: Boolean): RiftParticleOptions? {
+        fun of(isOutsidePocket: Boolean): RiftParticleOptions {
             return if (isOutsidePocket) OUTSIDE else INSIDE
         }
 
-        fun of(isOutsidePocket: Boolean, stablized: Boolean): RiftParticleOptions {
-            if (isOutsidePocket) {
-                if (stablized) {
-                    return OUTSIDE_STABLE
-                } else {
-                    return OUTSIDE_UNSTABLE
-                }
+        fun of(isOutsidePocket: Boolean, stablized: Boolean) = if (isOutsidePocket) {
+            if (stablized) {
+                OUTSIDE_STABLE
             } else {
-                if (stablized) {
-                    return INSIDE_STABLE
-                } else {
-                    return INSIDE_UNSTABLE
-                }
+                OUTSIDE_UNSTABLE
+            }
+        } else {
+            if (stablized) {
+                INSIDE_STABLE
+            } else {
+                INSIDE_UNSTABLE
             }
         }
 
@@ -54,25 +41,15 @@ data class RiftParticleOptions(val color: Float, val averageAge: Int) : Particle
         private val OUTSIDE_STABLE = RiftParticleOptions(0.0f, 750)
         private val INSIDE_STABLE = RiftParticleOptions(0.7f, 750)
 
-        val CODEC: MapCodec<RiftParticleOptions?> =
-            RecordCodecBuilder.mapCodec<RiftParticleOptions?>(Function { instance: RecordCodecBuilder.Instance<RiftParticleOptions?>? ->
-                instance!!.group<Float?, Int?>(
-                    Codec.FLOAT.fieldOf("color")
-                        .forGetter<RiftParticleOptions?>(Function { obj: RiftParticleOptions? -> obj!!.color() }),
-                    Codec.INT.fieldOf("averageAge")
-                        .forGetter<RiftParticleOptions?>(Function { obj: RiftParticleOptions? -> obj!!.averageAge() })
-                )
-                    .apply<RiftParticleOptions?>(
-                        instance,
-                        BiFunction { color: Float?, averageAge: Int? -> RiftParticleOptions(color!!, averageAge!!) })
-            })
+        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+                Codec.FLOAT.fieldOf("color").forGetter(RiftParticleOptions::color),
+                Codec.INT.fieldOf("averageAge").forGetter(RiftParticleOptions::averageAge)
+            ).apply(instance, ::RiftParticleOptions)
+        }
 
-        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf?, RiftParticleOptions?> =
-            StreamCodec.composite<RegistryFriendlyByteBuf?, RiftParticleOptions?, Float?, Int?>(
-                ByteBufCodecs.FLOAT,
-                Function { obj: RiftParticleOptions? -> obj!!.color() },
-                ByteBufCodecs.VAR_INT,
-                Function { obj: RiftParticleOptions? -> obj!!.averageAge() },
-                BiFunction { color: Float?, averageAge: Int? -> RiftParticleOptions(color!!, averageAge!!) })
+        val STREAM_CODEC = StreamCodec.composite<RegistryFriendlyByteBuf, RiftParticleOptions, Float, Int>(
+                ByteBufCodecs.FLOAT, RiftParticleOptions::color,
+                ByteBufCodecs.VAR_INT, RiftParticleOptions::averageAge,
+            ::RiftParticleOptions)
     }
 }

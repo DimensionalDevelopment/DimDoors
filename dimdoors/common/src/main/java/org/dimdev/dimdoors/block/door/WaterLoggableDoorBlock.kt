@@ -74,36 +74,36 @@ abstract class WaterLoggableDoorBlock(
     //    }
 
     override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
-        val fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos())
-        val bl = fluidState.getType() === Fluids.WATER
+        val fluidState = ctx.level.getFluidState(ctx.clickedPos)
+        val bl = fluidState.type === Fluids.WATER
         var state = super.getStateForPlacement(ctx)
-        if (state != null) state = state.setValue<Boolean?, Boolean?>(WATERLOGGED, bl)
+        if (state != null) state = state.setValue(WATERLOGGED, bl)
 
         return state
     }
 
     override fun updateShape(
-        blockState: BlockState,
+        state: BlockState,
         direction: Direction,
-        blockState2: BlockState,
-        levelAccessor: LevelAccessor,
-        blockPos: BlockPos,
-        blockPos2: BlockPos
+        neighborState: BlockState,
+        world: LevelAccessor,
+        pos: BlockPos,
+        neighborPos: BlockPos
     ): BlockState {
-        if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor))
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world))
         }
 
-        var result = super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2)
-        if (result.hasProperty(WATERLOGGED) && blockState.hasProperty(WATERLOGGED)) {
-            result = result.setValue(WATERLOGGED, blockState.getValue(WATERLOGGED))
+        var result = super.updateShape(state, direction, neighborState, world, pos, neighborPos)
+        if (result.hasProperty(WATERLOGGED) && state.hasProperty(WATERLOGGED)) {
+            result = result.setValue(WATERLOGGED, state.getValue(WATERLOGGED))
         }
         return result
     }
 
     override fun getFluidState(blockState: BlockState): FluidState = if (blockState.getValue(WATERLOGGED) as Boolean) Fluids.WATER.getSource(false) else super.getFluidState(blockState)
 
-    override fun playerWillDestroy(world: Level, pos: BlockPos, state: BlockState, player: Player) = super.playerWillDestroy(world, pos, state, player)
+    override fun playerWillDestroy(world: Level, pos: BlockPos, state: BlockState, player: Player): BlockState = super.playerWillDestroy(world, pos, state, player)
 
     companion object {
         val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED

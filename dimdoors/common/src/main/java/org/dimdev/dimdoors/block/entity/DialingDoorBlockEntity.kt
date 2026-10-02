@@ -27,7 +27,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
     }
 
     fun turnDial(type: DialingAddress.DialType) {
-        setAddress(address.turnDial(type))
+        updateAddress(address.turnDial(type))
     }
 
     override val target: Target get() = this
@@ -52,7 +52,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
             blockPos
         )
 
-    fun setAddress(address: DialingAddress) {
+    fun updateAddress(address: DialingAddress) {
         this.address = address
         sync()
     }

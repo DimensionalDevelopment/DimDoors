@@ -13,6 +13,6 @@ object EndEnvironment : Environment, SingletonInstance<EndEnvironment>() {
     override val cloud: CloudData get() = EmptyCloudData
     override val weather: WeatherData get() = EmptyWeatherData
 
-    override val type = Environments.END
+    override val type get() = Environments.END
 }
 

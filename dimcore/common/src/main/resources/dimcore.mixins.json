@@ -5,7 +5,6 @@
   "minVersion": "0.8",
   "refmap": "dimcore.refmap.json",
   "mixins": [
-    "ItemStackMixin",
     "PlayerListRespawnMixin",
     "ServerPlayerTeleportMixin",
     "accessor.BlockEntityTypeAccessor"

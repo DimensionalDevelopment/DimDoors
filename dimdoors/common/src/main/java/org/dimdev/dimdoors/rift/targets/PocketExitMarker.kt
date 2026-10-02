@@ -25,7 +25,7 @@ object PocketExitMarker : VirtualTarget<PocketExitMarker>(), EntityTarget {
         return false
     }
 
-    override val type = VirtualTargets.POCKET_EXIT
+    override val type get() = VirtualTargets.POCKET_EXIT
 
     override fun copy(): PocketExitMarker = PocketExitMarker
 

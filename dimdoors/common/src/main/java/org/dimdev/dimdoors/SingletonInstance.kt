@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimcore.api.cast
 
-open class SingletonInstance<T> {
-    val codec: MapCodec<T> = MapCodec.unit(this.cast())
-    val streamCodec: StreamCodec<RegistryFriendlyByteBuf, T> = StreamCodec.unit<RegistryFriendlyByteBuf, T>(this.cast())
+open class SingletonInstance<T : Any> {
+    val codec: MapCodec<T> = MapCodec.unit(this.cast<T>())
+    val streamCodec: StreamCodec<RegistryFriendlyByteBuf, T> = StreamCodec.unit(this.cast<T>())
 }

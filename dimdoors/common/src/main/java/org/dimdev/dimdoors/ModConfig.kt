@@ -33,7 +33,7 @@ data class ModConfig(
     ) {
 
         companion object {
-            val codec: MapCodec<General> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<General> = RecordCodecBuilder.mapCodec<General> { builder -> builder.group(
                 Codec.DOUBLE.fieldOf("teleportOffset").forGetter(General::teleportOffset),
                 Codec.BOOL.fieldOf("riftBoundingBoxInCreative").forGetter(General::riftBoundingBoxInCreative),
                 Codec.DOUBLE.fieldOf("riftCloseSpeed").forGetter(General::riftCloseSpeed),
@@ -69,21 +69,21 @@ data class ModConfig(
             }
 
             companion object {
-                val codec: MapCodec<DoorList> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+                val codec: MapCodec<DoorList> = RecordCodecBuilder.mapCodec<DoorList> { builder -> builder.group(
                     Codec.STRING.xmap(Mode::valueOf, Mode::name).fieldOf("mode").forGetter(DoorList::mode),
                     ResourceLocation.CODEC.mutableList().fieldOf("doors").forGetter(DoorList::doors)
-                ).apply(builder) { mode, doors -> DoorList().also { it.mode = mode; it.doors = doors } } }
+                ).apply(builder) { mode: Mode, doors: MutableList<ResourceLocation> -> DoorList().also { it.mode = mode; it.doors = doors } } }
             }
         }
 
         fun isAllowed(id: ResourceLocation): Boolean = doorList.run { doors.contains(id) == mode.enabled }
 
         companion object {
-            val codec: MapCodec<Doors> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Doors> = RecordCodecBuilder.mapCodec<Doors> { builder -> builder.group(
                 Codec.BOOL.fieldOf("closeDoorBehind").forGetter(Doors::closeDoorBehind),
                 DoorList.codec.codec().fieldOf("doorList").forGetter(Doors::doorList),
                 Codec.BOOL.fieldOf("placeRiftsInCreativeMode").forGetter(Doors::placeRiftsInCreativeMode)
-            ).apply(builder) { closeDoorBehind, doorList, placeRiftsInCreativeMode -> Doors().also {
+            ).apply(builder) { closeDoorBehind: Boolean, doorList: DoorList, placeRiftsInCreativeMode: Boolean -> Doors().also {
                 it.closeDoorBehind = closeDoorBehind
                 it.doorList = doorList
                 it.placeRiftsInCreativeMode = placeRiftsInCreativeMode
@@ -99,7 +99,7 @@ data class ModConfig(
         var blocksColoredPerDye: Int = 100
     ) {
         companion object {
-            val codec: MapCodec<Pockets> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Pockets> = RecordCodecBuilder.mapCodec<Pockets> { builder -> builder.group(
                 Codec.INT.fieldOf("pocketGridSize").forGetter(Pockets::pocketGridSize),
                 Codec.INT.fieldOf("maxPocketSize").forGetter(Pockets::maxPocketSize),
                 Codec.INT.fieldOf("privatePocketSize").forGetter(Pockets::privatePocketSize),
@@ -115,7 +115,7 @@ data class ModConfig(
         @JvmField var gatewayDimBlacklist: MutableList<String> = mutableListOf()
     ) {
         companion object {
-            val codec: MapCodec<World> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<World> = RecordCodecBuilder.mapCodec<World> { builder -> builder.group(
                 Codec.DOUBLE.fieldOf("clusterGenChance").forGetter(World::clusterGenChance),
                 Codec.STRING.mutableList().fieldOf("clusterDimBlacklist").forGetter(World::clusterDimBlacklist),
                 Codec.STRING.mutableList().fieldOf("gatewayDimBlacklist").forGetter(World::gatewayDimBlacklist)
@@ -127,7 +127,7 @@ data class ModConfig(
         @JvmField var maxDungeonDepth: Int = 50
     ) {
         companion object {
-            val codec: MapCodec<Dungeons> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Dungeons> = RecordCodecBuilder.mapCodec<Dungeons> { builder -> builder.group(
                 Codec.INT.fieldOf("maxDungeonDepth").forGetter(Dungeons::maxDungeonDepth)
             ).apply(builder, ::Dungeons) }
         }
@@ -138,7 +138,7 @@ data class ModConfig(
         @JvmField var monolithTeleportation: Boolean = true
     ) {
         companion object {
-            val codec: MapCodec<Monoliths> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Monoliths> = RecordCodecBuilder.mapCodec<Monoliths> { builder -> builder.group(
                 Codec.BOOL.fieldOf("dangerousLimboMonoliths").forGetter(Monoliths::dangerousLimboMonoliths),
                 Codec.BOOL.fieldOf("monolithTeleportation").forGetter(Monoliths::monolithTeleportation)
             ).apply(builder, ::Monoliths) }
@@ -179,7 +179,7 @@ data class ModConfig(
             @JvmField var blacklist: Boolean = false
         ) {
             companion object {
-                val codec: MapCodec<WorldList> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+                val codec: MapCodec<WorldList> = RecordCodecBuilder.mapCodec<WorldList> { builder -> builder.group(
                     Level.RESOURCE_KEY_CODEC.listOf().xmap({ it.toMutableList() }, { it }).fieldOf("list").forGetter(WorldList::list),
                     Codec.BOOL.fieldOf("blacklist").forGetter(WorldList::blacklist)
                 ).apply(builder, ::WorldList) }
@@ -187,7 +187,7 @@ data class ModConfig(
         }
 
         companion object {
-            val codec: MapCodec<Limbo> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Limbo> = RecordCodecBuilder.mapCodec<Limbo> { builder -> builder.group(
                 Codec.BOOL.fieldOf("genericDeathMessages").forGetter(Limbo::genericDeathMessages),
                 WorldList.codec.codec().fieldOf("worldsLeadingToLimbo").forGetter(Limbo::worldsLeadingToLimbo),
                 Codec.BOOL.fieldOf("hardcoreLimbo").forGetter(Limbo::hardcoreLimbo),
@@ -198,8 +198,8 @@ data class ModConfig(
                 Codec.BOOL.fieldOf("defaultToWorldSpawn").forGetter(Limbo::defaultToWorldSpawn),
                 Codec.FLOAT.fieldOf("limboBlocksCorruptingExitWorldAmount").forGetter(Limbo::limboBlocksCorruptingExitWorldAmount),
                 Level.RESOURCE_KEY_CODEC.fieldOf("escapeTargetWorld").forGetter(Limbo::escapeTargetWorld)
-            ).apply(builder) { genericDeathMessages, worldsLeadingToLimbo, hardcoreLimbo, limboReturnDistanceMax, limboReturnDistanceMin,
-                               decaySurroundings, tryPlayerBedSpawn, defaultToWorldSpawn, limboBlocksCorruptingExitWorldAmount, escapeTargetWorld ->
+            ).apply(builder) { genericDeathMessages: Boolean, worldsLeadingToLimbo: WorldList, hardcoreLimbo: Boolean, limboReturnDistanceMax: Int, limboReturnDistanceMin: Int,
+                               decaySurroundings: Boolean, tryPlayerBedSpawn: Boolean, defaultToWorldSpawn: Boolean, limboBlocksCorruptingExitWorldAmount: Float, escapeTargetWorld: ResourceKey<Level> ->
                 Limbo().also {
                     it.genericDeathMessages = genericDeathMessages
                     it.worldsLeadingToLimbo.list = worldsLeadingToLimbo.list
@@ -223,7 +223,7 @@ data class ModConfig(
         @JvmField var decaysIntoAir: Boolean = true
     ) {
         companion object {
-            val codec: MapCodec<Decay> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Decay> = RecordCodecBuilder.mapCodec<Decay> { builder -> builder.group(
                 Codec.DOUBLE.fieldOf("decaySpreadChance").forGetter(Decay::decaySpreadChance),
                 Codec.INT.fieldOf("decayDelay").forGetter(Decay::decayDelay),
                 Codec.BOOL.fieldOf("decaysIntoAir").forGetter(Decay::decaysIntoAir)
@@ -238,7 +238,7 @@ data class ModConfig(
         @JvmField var riftJitter: Double = 1.0
     ) {
         companion object {
-            val codec: MapCodec<Graphics> = RecordCodecBuilder.mapCodec { builder -> builder.group(
+            val codec: MapCodec<Graphics> = RecordCodecBuilder.mapCodec<Graphics> { builder -> builder.group(
                 Codec.BOOL.fieldOf("showRiftCore").forGetter(Graphics::showRiftCore),
                 Codec.INT.fieldOf("highlightRiftCoreFor").forGetter(Graphics::highlightRiftCoreFor),
                 Codec.DOUBLE.fieldOf("riftSize").forGetter(Graphics::riftSize),
@@ -248,7 +248,7 @@ data class ModConfig(
     }
 
     companion object {
-        val codec = RecordCodecBuilder.create<ModConfig> { instance -> instance.group(
+        val codec: Codec<ModConfig> = RecordCodecBuilder.create<ModConfig> { instance -> instance.group(
             General.codec.codec().fieldOf("general").forGetter(ModConfig::generalConfig),
             Pockets.codec.codec().fieldOf("pockets").forGetter(ModConfig::pocketsConfig),
             World.codec.codec().fieldOf("world").forGetter(ModConfig::worldConfig),
@@ -260,6 +260,6 @@ data class ModConfig(
             Decay.codec.codec().fieldOf("decay").forGetter(ModConfig::decayConfig)
         ).apply(instance, ::ModConfig) }
 
-        val type = ConfigType<ModConfig>(codec, ::ModConfig)
+        val type = ConfigType<ModConfig>(codec) { ModConfig() }
     }
 }

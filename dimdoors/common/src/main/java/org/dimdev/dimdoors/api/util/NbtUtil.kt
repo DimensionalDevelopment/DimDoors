@@ -17,6 +17,7 @@ object NbtUtil {
 
     fun <T> serialize(data: T, codec: Codec<T>): Tag = NbtOps.INSTANCE.withEncoder<T>(codec).apply(data).getOrThrow()
 
+    @JvmName("asNbtCompoundExt")
     fun Tag?.asNbtCompound(error: String?): CompoundTag = asNbtCompound(this, error)
 
     fun asNbtCompound(nbt: Tag?, error: String?): CompoundTag {

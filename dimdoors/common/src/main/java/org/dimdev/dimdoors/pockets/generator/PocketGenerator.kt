@@ -18,8 +18,9 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.pockets.modifier.RiftManager
+import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.util.CodecUtils.mutableList
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
@@ -93,8 +94,18 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
                 }
             }
 
-        manager.rifts.forEach { rift -> rift.data.destination.location = ofWorld(world, rift.riftBlockPos) }
-        TemplateUtils.registerRifts(manager.rifts, parameters.linkTo, parameters.linkProperties, pocket)
+        manager.rifts.forEach { rift ->
+            val destination = rift.data.destination
+            if (destination === VirtualTarget.NoneTarget) {
+                LOGGER.warn(
+                    "Pocket {} in {}: rift at {} (relative {}) has no destination. Its schematic block entity is missing rift data, or no modifier assigned it an id.",
+                    pocket.id, world.dimension().location(), rift.riftBlockPos.toShortString(), rift.riftBlockPos.subtract(pocket.origin).toShortString()
+                )
+            } else {
+                destination.location = ofWorld(world, rift.riftBlockPos)
+            }
+        }
+        TemplateUtils.registerRifts(manager.rifts, parameters.linkTo!!, parameters.linkProperties, pocket)
     }
 
     fun getRiftManager(pocket: Pocket<*, *>): RiftManager {
@@ -136,9 +147,9 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         val CODEC = PocketGenerators.codec
 
         fun <T : PocketGenerator<T>> commonFields(instance: RecordCodecBuilder.Instance<T>) = instance.group(
-            AbstractPocket.BUILDER_CODEC.optionalFieldOf("builder").nullable().forGetter { it.builder },
+            AbstractPocket.BUILDER_CODEC.optionalFieldOf("builder").nullableForGetter { it.builder },
             Equation.CODEC.optionalFieldOf("weight", Equation.FIVE).forGetter { it.weight },
-            Codec.BOOL.optionalFieldOf("setup_loot").nullable().forGetter { it.setupLoot },
+            Codec.BOOL.optionalFieldOf("setup_loot").nullableForGetter { it.setupLoot },
             Modifier.HOLDER_CODEC.mutableList().fieldOf("modifiers").forGetter { it.modifiers },
             Codec.STRING.mutableList().optionalFieldOf("tags", mutableListOf()).forGetter { it.tags }
         )

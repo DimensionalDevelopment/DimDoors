@@ -23,16 +23,16 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         rift: DetachedRiftBlockEntity,
         tickDelta: Float,
         matrices: PoseStack,
-        vcs: MultiBufferSource,
-        breakProgress: Int,
+        multiBufferSource: MultiBufferSource,
+        breakingProgress: Int,
         alpha: Int
     ) {
-        super.render(rift, tickDelta, matrices, vcs, breakProgress, alpha)
+        super.render(rift, tickDelta, matrices, multiBufferSource, breakingProgress, alpha)
 
         val riftCoreVisibility = if (config.graphicsConfig.showRiftCore) 1f else RiftUtils.showRiftTimer.visibility
         if (riftCoreVisibility > 0) {
             this.renderTesseract(
-                vcs.getBuffer(RenderType.entityTranslucent(TESSERACT_PATH)),
+                multiBufferSource.getBuffer(RenderType.entityTranslucent(TESSERACT_PATH)),
                 rift,
                 matrices,
                 riftCoreVisibility
@@ -41,10 +41,10 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
 
         if (this.shouldRenderDecayRadiusDebug()) {
             val renderType = RenderType.debugStructureQuads()
-            this.renderDecayRadius(renderType, vcs.getBuffer(renderType), rift, matrices)
+            this.renderDecayRadius(renderType, multiBufferSource.getBuffer(renderType), rift, matrices)
         }
 
-        this.renderCrack(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift)
+        this.renderCrack(multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift)
     }
 
     private fun shouldRenderDecayRadiusDebug(): Boolean {
@@ -89,7 +89,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices.popPose()
     }
 
-    private fun renderCrack(vc: VertexConsumer?, matrices: PoseStack, rift: DetachedRiftBlockEntity) {
+    private fun renderCrack(vc: VertexConsumer, matrices: PoseStack, rift: DetachedRiftBlockEntity) {
         matrices.pushPose()
         matrices.translate(0.5f, 0.5f, 0.5f)
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw))

@@ -14,6 +14,7 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import kotlin.jvm.optionals.getOrNull
 
 class SchematicGenerator(
     builder: AbstractPocket.AbstractPocketBuilder<*, *>?,
@@ -26,7 +27,6 @@ class SchematicGenerator(
 
     override fun prepareAndPlacePocket(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>): Pocket<*, *> {
         val world = parameters.world
-        val variableMap = parameters.toVariableMap(HashMap<String?, Double?>())
 
         val template: PocketTemplate = PocketLoader.getTemplates()[templateID] ?: throw RuntimeException("Pocket template of id $templateID not found!")
 
@@ -40,14 +40,16 @@ class SchematicGenerator(
         return pocket
     }
 
-    override val type: Holder<out MapCodec<out PocketGenerator<*>>> get() = PocketGenerators.SCHEMATIC
+    override val type get() = PocketGenerators.SCHEMATIC
 
     override fun getSize(parameters: PocketGenerationContext) = PocketLoader.getTemplates()[templateID]?.size ?: throw RuntimeException("Pocket template of id $templateID not found!")
 
     companion object {
         val CODEC: MapCodec<SchematicGenerator> = RecordCodecBuilder.mapCodec { instance -> commonFields(instance)
             .and(ResourceLocation.CODEC.fieldOf("id").forGetter { it.templateID })
-            .apply(instance, ::SchematicGenerator)
+            .apply(instance) { builder, weight, setupLoot, modifiers, tags, id ->
+                SchematicGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, tags, id)
+            }
         }
 
         private val LOGGER: Logger = LogManager.getLogger()

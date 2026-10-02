@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type.addon.environment
 
+import com.mojang.serialization.Codec
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimcore.api.TypeHasHolder
-import org.dimdev.dimdoors.ModRegistries
-import org.dimdev.dimdoors.util.CodecUtils.holderCodec
-import org.dimdev.dimdoors.util.holderStreamCodec
-import org.dimdev.dimdoors.util.streamCodec
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.EmptyEnvironment.codec
+
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
@@ -17,8 +16,8 @@ interface Environment : TypeHasHolder<Environment> {
     val weather: WeatherData
 
     companion object {
-        val CODEC = Environments.codec
-        val STREAM_CODEC = Environments.streamCodec
+        val CODEC: Codec<Environment> = Environments.codec
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Environment> = Environments.streamCodec
     }
 
 }

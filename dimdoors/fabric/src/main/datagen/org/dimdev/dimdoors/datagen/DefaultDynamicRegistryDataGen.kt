@@ -103,8 +103,8 @@ object DefaultDynamicRegistryDataGen {
                     listOf<OreConfiguration.TargetBlockState>(
                         OreConfiguration.target(
                             BlockMatchTest(
-                                ModBlocks.UNRAVELLED_FABRIC.value()
-                            ), ModBlocks.DECAYED_BLOCK.value().defaultBlockState()
+                                ModBlocks.UNRAVELLED_FABRIC
+                            ), ModBlocks.DECAYED_BLOCK.defaultBlockState()
                         )
                     ), 64, 0.0f
                 )
@@ -118,8 +118,8 @@ object DefaultDynamicRegistryDataGen {
                     listOf<OreConfiguration.TargetBlockState>(
                         OreConfiguration.target(
                             BlockMatchTest(
-                                ModBlocks.UNRAVELLED_FABRIC.value()
-                            ), ModBlocks.SOLID_STATIC.value().defaultBlockState()
+                                ModBlocks.UNRAVELLED_FABRIC
+                            ), ModBlocks.SOLID_STATIC.defaultBlockState()
                         )
                     ), 4, 0.0f
                 )
@@ -130,16 +130,16 @@ object DefaultDynamicRegistryDataGen {
             ConfiguredFeature(
                 Feature.SPRING,
                 SpringConfiguration(
-                    ModFluids.ETERNAL_FLUID.value().defaultFluidState(),
+                    ModFluids.ETERNAL_FLUID.defaultFluidState(),
                     true,
                     1,
                     4,
                     blockSet(
                         entries,
-                        ModBlocks.UNRAVELLED_FABRIC.value(),
-                        ModBlocks.UNRAVELLED_BLOCK.value(),
-                        ModBlocks.UNFOLDED_BLOCK.value(),
-                        ModBlocks.UNWARPED_BLOCK.value()
+                        ModBlocks.UNRAVELLED_FABRIC,
+                        ModBlocks.UNRAVELLED_BLOCK,
+                        ModBlocks.UNFOLDED_BLOCK,
+                        ModBlocks.UNWARPED_BLOCK
                     )
                 )
             )
@@ -149,9 +149,9 @@ object DefaultDynamicRegistryDataGen {
             ConfiguredFeature(
                 Feature.TREE,
                 TreeConfiguration.TreeConfigurationBuilder(
-                    BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LOG.value()),
+                    BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LOG),
                     StraightTrunkPlacer(4, 2, 0),
-                    BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LEAVES.value()),
+                    BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LEAVES),
                     BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                     TwoLayersFeatureSize(1, 0, 1)
                 ).ignoreVines().build()
@@ -305,7 +305,7 @@ object DefaultDynamicRegistryDataGen {
                     MobSpawnSettings.Builder()
                         .addSpawn(
                             MobCategory.MONSTER, MobSpawnSettings.SpawnerData(
-                                ModEntityTypes.MONOLITH.value(),
+                                ModEntityTypes.MONOLITH,
                                 100,
                                 1,
                                 10
@@ -372,7 +372,7 @@ object DefaultDynamicRegistryDataGen {
                     ConstantFloat.of(0.5f),
                     VerticalAnchor.aboveBottom(10),
                     CarverDebugSettings.DEFAULT,
-                    blockSet(entries, ModBlocks.UNRAVELLED_FABRIC.value()),
+                    blockSet(entries, ModBlocks.UNRAVELLED_FABRIC),
                     ConstantFloat.of(1f),
                     ConstantFloat.of(1f),
                     ConstantFloat.of(-0.7f)

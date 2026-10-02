@@ -16,7 +16,6 @@ data class ConfigType<T: Any>(val codec: Codec<T>, val supplier: () -> T) {
     fun load(path: Path) : T {
         if (path.notExists()) {
             val config = supplier.invoke()
-            path.createDirectories()
             save(path,config)
             return config
         }
@@ -29,7 +28,7 @@ data class ConfigType<T: Any>(val codec: Codec<T>, val supplier: () -> T) {
     }
 
     fun save(path: Path, config: T) {
-        path.createDirectories()
+        path.parent.createDirectories()
 
         path.bufferedWriter().use { writer ->
             val obj = JsonOps.INSTANCE.withEncoder(codec).apply(config).result().getOrNull() ?: return

@@ -141,7 +141,7 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
 
     private fun trackRiftsIn(level: ServerLevel, subLevel: SubLevel) {
         if (!level.server.isReady) return
-        val registry = SubSystem.getInstance(level.server, SubsystemTypes.RIFT.value()) ?: return
+        val registry = SubSystem.getInstance(level.server, SubsystemTypes.RIFT) ?: return
 
         for (rift in registry.rifts) {
             if (rift.location.worldId != level.dimension() || rift.levelSpaceId == subLevel.uniqueId) continue

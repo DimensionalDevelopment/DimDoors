@@ -2,9 +2,11 @@ package org.dimdev.dimdoors.compat.jei
 
 import mezz.jei.api.IModPlugin
 import mezz.jei.api.JeiPlugin
-import mezz.jei.api.registration.*
+import mezz.jei.api.registration.IGuiHandlerRegistration
+import mezz.jei.api.registration.IRecipeCatalystRegistration
+import mezz.jei.api.registration.IRecipeCategoryRegistration
+import mezz.jei.api.registration.IRecipeRegistration
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.item.crafting.RecipeHolder
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
@@ -12,12 +14,11 @@ import org.dimdev.dimdoors.compat.jei.decay.DecayCategory
 import org.dimdev.dimdoors.compat.jei.decay.DecayRecipes.decays
 import org.dimdev.dimdoors.compat.jei.tesselating.DimDoorsRecipes
 import org.dimdev.dimdoors.compat.jei.tesselating.TesselatingRecipeCategory
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
 
 @JeiPlugin
 class DimDoorsJeiCompatClient : IModPlugin {
-    private var tesselatingCategory: TesselatingRecipeCategory? = null
-    private var decayCategory: DecayCategory? = null
+    private lateinit var tesselatingCategory: TesselatingRecipeCategory
+    private lateinit var decayCategory: DecayCategory
 
 
     override fun getPluginUid(): ResourceLocation {
@@ -35,18 +36,12 @@ class DimDoorsJeiCompatClient : IModPlugin {
             ).also { this.decayCategory = it })
     }
 
-
-
-    override fun registerVanillaCategoryExtensions(registration: IVanillaCategoryExtensionRegistration) {
-        super.registerVanillaCategoryExtensions(registration)
-    }
-
     override fun registerRecipes(registration: IRecipeRegistration) {
-        val ingredientManager = registration.getIngredientManager()
+        val ingredientManager = registration.ingredientManager
         val dimDoorsRecipes = DimDoorsRecipes(ingredientManager)
 
         val tesselatingRecipes = dimDoorsRecipes.getTesselating(tesselatingCategory)
-        val handledTesselatingRecipes: MutableList<RecipeHolder<TesselatingRecipe?>?> = tesselatingRecipes.get(true)!!
+        val handledTesselatingRecipes = tesselatingRecipes[true]!!
 
         registration.addRecipes(
             ModRecipeTypes.TESSELATING,
@@ -56,7 +51,7 @@ class DimDoorsJeiCompatClient : IModPlugin {
     }
 
     override fun registerGuiHandlers(registration: IGuiHandlerRegistration) {
-        registration.addRecipeClickArea<TesselatingLoomScreen?>(
+        registration.addRecipeClickArea(
             TesselatingLoomScreen::class.java,
             88,
             32,

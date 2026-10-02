@@ -6,10 +6,11 @@
   "minVersion": "0.8",
   "client": [
     "client.BlockStateModelLoaderMixin",
-    "client.NeoForgeLanguageMixin",
-    "client.ModelBakeryMIxin"
+    "client.ModelBakeryMIxin",
+    "client.NeoForgeLanguageMixin"
   ],
   "mixins": [
+    "ItemStackMixin",
     "ServerPlayerGameModeMixin"
   ],
   "injectors": {

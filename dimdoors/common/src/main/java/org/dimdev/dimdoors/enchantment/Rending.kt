@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern
 import org.dimdev.dimdoors.world.decay.results.DecayResult
 
 object Rending {
+    @JvmStatic
     fun replaceBlockDrops(
         level: ServerLevel,
         pos: BlockPos,

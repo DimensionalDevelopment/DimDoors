@@ -34,7 +34,7 @@ sealed interface PocketTemplate {
         override val size: Vec3i get() = template.size
 
         override fun place(pocket: Pocket<*, *>) {
-            pocket.setSize(template.size)
+            pocket.size = template.size
             val world = DimensionalDoors.getWorld(pocket.world)!!
             template.placeInWorld(world, BlockPos.ZERO, pocket.origin, SETTINGS, world.random, 0)
         }

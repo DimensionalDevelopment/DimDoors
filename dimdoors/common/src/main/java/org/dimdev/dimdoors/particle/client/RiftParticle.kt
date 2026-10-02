@@ -53,7 +53,7 @@ class RiftParticle(
             riftParticleOptions: RiftParticleOptions, clientWorld: ClientLevel,
             x: Double, y: Double, z: Double,
             velocityX: Double, velocityY: Double, velocityZ: Double
-        ): Particle? {
+        ): Particle {
             return RiftParticle(
                 clientWorld, x, y, z,
                 velocityX, velocityY, velocityZ,

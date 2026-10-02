@@ -17,7 +17,7 @@ class TagBlockBreakCriteria : SimpleCriterionTrigger<TagBlockBreakCriteria.Trigg
     override fun codec() = TriggerInstance.CODEC
 
     @JvmRecord
-    data class TriggerInstance(val player: Optional<ContextAwarePredicate>, val blockTagKey: TagKey<Block>) : SimpleInstance {
+    data class TriggerInstance(private val player: Optional<ContextAwarePredicate>, val blockTagKey: TagKey<Block>) : SimpleInstance {
         override fun player() = player
 
         companion object {

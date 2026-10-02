@@ -24,7 +24,7 @@ abstract class AbstractPocket<V : AbstractPocket<V, T>, T : AbstractPocket.Abstr
 
     protected constructor()
 
-    open fun toVariableMap(variableMap: MutableMap<String, Double>): MutableMap<String, Double> {
+    open fun toVariableMap(variableMap: MutableMap<String, Double> = mutableMapOf()): MutableMap<String, Double> {
         variableMap["id"] = this.id.toDouble()
         return variableMap
     }
@@ -38,7 +38,7 @@ abstract class AbstractPocket<V : AbstractPocket<V, T>, T : AbstractPocket.Abstr
     abstract class AbstractPocketBuilder<T : AbstractPocket<T, P>, P : AbstractPocketBuilder<T, P>> : BuilderTypeHasHolder<AbstractPocket<*, *>, AbstractPocketBuilder<*, *>> {
         protected constructor()
         protected var id: Int = 0
-        protected lateinit var world: ResourceKey<Level>
+        protected var world: ResourceKey<Level>? = null
 
         open val expectedSize: Vec3i
             get() = Vec3i(1, 1, 1)
@@ -47,7 +47,7 @@ abstract class AbstractPocket<V : AbstractPocket<V, T>, T : AbstractPocket.Abstr
             val instance = pocket()
 
             instance.id = id
-            instance.world = world
+            instance.world = world!!
 
             return instance
         }

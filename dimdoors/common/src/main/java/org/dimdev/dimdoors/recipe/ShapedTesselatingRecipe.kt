@@ -12,13 +12,13 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.level.Level
 
 class ShapedTesselatingRecipe(
-    val group: String,
+    private val group: String,
     val pattern: ShapedRecipePattern,
     val result: ItemStack,
     override val weavingTime: Int,
     val showNotification: Boolean
 ) : TesselatingRecipe {
-    override fun getSerializer() = ModRecipeSerializers.SHAPED_TESSELATING.value()
+    override fun getSerializer() = ModRecipeSerializers.SHAPED_TESSELATING
 
     override fun getGroup() = this.group
 

@@ -24,7 +24,7 @@ class DecayCategory(private val guiHelper: IGuiHelper) : AbstractRecipeCategory<
         for (i in recipe.outputs.indices) {
             val x = 94 + (i % 2) * 20
             val y = 10 + (i / 2) * 20
-            DecayJeiUtil.addOutput(builder.addOutputSlot(x, y).setStandardSlotBackground(), recipe.outputs.get(i))
+            DecayJeiUtil.addOutput(builder.addOutputSlot(x, y).setStandardSlotBackground(), recipe.outputs[i])
         }
     }
 
@@ -35,8 +35,8 @@ class DecayCategory(private val guiHelper: IGuiHelper) : AbstractRecipeCategory<
         mouseX: Double,
         mouseY: Double
     ) {
-        val recipeArrow = guiHelper.getRecipeArrow()
-        recipeArrow.draw(guiGraphics, 60, (HEIGHT - recipeArrow.getHeight()) / 2)
+        val recipeArrow = guiHelper.recipeArrow
+        recipeArrow.draw(guiGraphics, 60, (HEIGHT - recipeArrow.height) / 2)
     }
 
     companion object {

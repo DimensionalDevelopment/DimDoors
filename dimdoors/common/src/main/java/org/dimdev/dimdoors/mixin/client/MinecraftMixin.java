@@ -3,10 +3,9 @@ package org.dimdev.dimdoors.mixin.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.Music;
-import net.minecraft.sounds.Musics;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.world.pocket.type.addon.MusicAddon;
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.function.Consumer;
+import java.util.Optional;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
@@ -33,7 +32,7 @@ public class MinecraftMixin {
     )
     public void checkPocketMusic(CallbackInfoReturnable<Music> cir) {
         if(this.player != null) {
-            PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.MUSIC_ADDON, this.player.level(), this.player.blockPosition()).map(MusicAddon::music).ifPresent(cir::setReturnValue);
+            Optional.ofNullable(PocketListenerUtil.getAddon(PocketAddons.MUSIC_ADDON, this.player.level(), this.player.blockPosition())).map(MusicAddon::music).ifPresent(cir::setReturnValue);
         }
     }
 }

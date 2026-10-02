@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import static org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar.transferProperty;
-
 @Mixin(DoorBlock.class)
 public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantProvider {
 

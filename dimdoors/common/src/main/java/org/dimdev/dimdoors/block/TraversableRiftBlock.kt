@@ -74,7 +74,7 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>
         val entity = level.getBlockEntity(pos)
 
         if (entity is EntranceRiftBlockEntity<*>) {
-            level.setBlock(pos, ModBlocks.DETACHED_RIFT.value().defaultBlockState(), 3)
+            level.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState(), 3)
 
             level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(entity) }
         }

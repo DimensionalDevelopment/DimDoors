@@ -39,7 +39,7 @@ object Utils {
         }
     }
 
-    fun <K, V> mergeMaps(target: MutableMap<K?, V?>, source: MutableMap<K?, V?>) {
-        source.forEach { (key: K?, value: V?) -> target.putIfAbsent(key, value) }
+    fun <K, V> mergeMaps(target: MutableMap<K, V>, source: MutableMap<K, V>) {
+        source.forEach { (key: K, value: V) -> target.putIfAbsent(key, value) }
     }
 }

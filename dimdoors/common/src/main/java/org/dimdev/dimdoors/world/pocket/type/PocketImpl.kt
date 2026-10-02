@@ -37,12 +37,12 @@ class PocketImpl : Pocket<PocketImpl, PocketImpl.Builder> {
         }
 
         companion object {
-            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec { instance -> commonFields(instance).apply(instance, ::Builder) }
+            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec<Builder> { instance -> commonFields<Builder>(instance).apply(instance, ::Builder) }
         }
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> commonPocketFields(instance).apply(instance, ::PocketImpl) }
+        val CODEC: MapCodec<PocketImpl> = RecordCodecBuilder.mapCodec<PocketImpl> { instance -> commonPocketFields<PocketImpl>(instance).apply(instance, ::PocketImpl) }
 
         @JvmStatic
         fun builder(): Builder {

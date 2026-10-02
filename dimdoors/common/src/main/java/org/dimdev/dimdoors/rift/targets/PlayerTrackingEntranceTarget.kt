@@ -59,7 +59,7 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
         if (target == null) {
             DimensionalDoors.LOGGER.error(
                 "Could not enter private pocket {} for {} because no valid entrance is registered.",
-                pocket.getId(),
+                pocket.id,
                 uuid
             )
             this.sendMissingEntranceHint(entity, pocket)
@@ -101,7 +101,7 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
             if (entrance == null) {
                 DimensionalDoors.LOGGER.error(
                     "Could not create dialing pocket {} for {} because no entrance was registered.",
-                    pocket.getId(),
+                    pocket.id,
                     uuid
                 )
                 return null

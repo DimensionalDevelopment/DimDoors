@@ -140,7 +140,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
         val waterlogged = blockState.getOptionalValue(BlockStateProperties.WATERLOGGED).orElse(false)
         level.setBlockAndUpdate(
             worldPosition,
-            ModBlocks.DETACHED_RIFT.value().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged)
+            ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged)
         )
         level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { a -> a.data = this.data }
     }
@@ -156,8 +156,8 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
             // Attempt a teleport
             try {
                 var relativePos = Vec3(0.0, 0.0, 0.0)
-                var relativeAngle = Rotations(entity.getXRot(), entity.getYRot(), 0f)
-                var relativeVelocity = entity.getDeltaMovement()
+                var relativeAngle = Rotations(entity.xRot, entity.yRot, 0f)
+                var relativeVelocity = entity.deltaMovement
 
                 val target = rift.target
                 val location = if (target is LocationProvider) target.location else null
@@ -174,7 +174,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                     relativeVelocity = block.rotateTo(rotatorBuilder, sourceFrame.velocity)
                 }
 
-                val entityTarget = target.`as`<EntityTarget>(Targets.ENTITY)
+                val entityTarget = target.`as`(Targets.ENTITY)
                 if (entityTarget!!.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
                     val vLoc = fromLocation(ofWorld(entity.level() as ServerLevel, entity.blockPosition()))
                     if (config.generalConfig.enableDebugMessages) chat(
@@ -207,12 +207,12 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
             var relativePos = relativePos
             var relativeAngle = relativeAngle
             var relativeVelocity = relativeVelocity
-            val block = state.getBlock()
-            val direction: Direction = getOrientation(state).getOpposite()
+            val block = state.block
+            val direction: Direction = getOrientation(state).opposite
 
             // compute offset once — used whether or not it's a transformer block
             val offset = config.generalConfig.teleportOffset + 0.01
-            val offsetVec = Vec3.atLowerCornerOf(direction.getNormal()).scale(offset)
+            val offsetVec = Vec3.atLowerCornerOf(direction.normal).scale(offset)
 
             var targetPos = Vec3.atCenterOf(blockPos).add(offsetVec)
 
@@ -235,9 +235,9 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
             }
 
             targetPos = targetPos.add(
-                direction.getNormal().getX() / 2.0,
-                direction.getNormal().getY() / 2.0,
-                direction.getNormal().getZ() / 2.0
+                direction.normal.x / 2.0,
+                direction.normal.y / 2.0,
+                direction.normal.z / 2.0
             )
 
             val frame = LevelSpaceHelper.INSTANCE.projectTeleportFrame(
@@ -253,7 +253,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
         }
 
         private fun getOrientation(state: BlockState): Direction {
-            return if (state.hasProperty<Direction?>(HorizontalDirectionalBlock.FACING)) state.getValue<Direction>(
+            return if (state.hasProperty(HorizontalDirectionalBlock.FACING)) state.getValue(
                 HorizontalDirectionalBlock.FACING
             ) else Direction.NORTH
         }

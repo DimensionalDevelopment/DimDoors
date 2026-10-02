@@ -2,6 +2,7 @@ package org.dimdev.dimdoors
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
+import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.util.GsonHelper
@@ -16,9 +17,9 @@ import java.util.stream.IntStream
 import java.util.stream.Stream
 
 object PortalColors {
-    val STRING_INT_CODEC = Codec.STRING.xmap(Integer::decode, Integer::toHexString)
+    val STRING_INT_CODEC: Codec<Int> = Codec.STRING.xmap(Integer::decode, Integer::toHexString)
 
-    val INTEGER = Codec.withAlternative(STRING_INT_CODEC, Codec.INT)
+    val INTEGER: Codec<Int> = Codec.withAlternative(STRING_INT_CODEC, Codec.INT)
 
     var COLORS_CODEC: Codec<IntArray> = INTEGER
         .listOf(16, 16)
@@ -26,10 +27,10 @@ object PortalColors {
         .xmap(StreamUtils::toIntStream, IntStream::boxed)
         .xmap(IntStream::toArray, Arrays::stream)
 
-    val DYE_COLORS_CODEC = DyeColor.CODEC.unboundedMap(COLORS_CODEC).fieldOf("dyes")
+    val DYE_COLORS_CODEC: MapCodec<MutableMap<DyeColor, IntArray>> = DyeColor.CODEC.unboundedMap(COLORS_CODEC).fieldOf("dyes")
 
-    val LEVEL_COLORS_CODEC = Level.RESOURCE_KEY_CODEC.unboundedMap(COLORS_CODEC).fieldOf("levels")
-    val BASE_COLOR_CODEC = COLORS_CODEC.fieldOf("base_color")
+    val LEVEL_COLORS_CODEC: MapCodec<MutableMap<ResourceKey<Level>, IntArray>> = Level.RESOURCE_KEY_CODEC.unboundedMap(COLORS_CODEC).fieldOf("levels")
+    val BASE_COLOR_CODEC: MapCodec<IntArray> = COLORS_CODEC.fieldOf("base_color")
 
     private var baseColor = intArrayOf(
         0X05191C, 0X031816, 0X071919, 0X0B1C1D,
@@ -43,7 +44,7 @@ object PortalColors {
 
     private val PORTAL_COLORS = DimensionalDoors.id("portal_colors.json")
 
-    fun dye(color: DyeColor) = dyes[color]
+    fun dye(color: DyeColor?) = dyes[color]
 
     fun levels(level: ResourceKey<Level>) = levels[level]
 

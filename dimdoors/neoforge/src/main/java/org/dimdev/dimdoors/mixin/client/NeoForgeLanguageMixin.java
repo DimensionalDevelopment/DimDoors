@@ -25,6 +25,6 @@ public class NeoForgeLanguageMixin {
 
     @Inject(method = "loadFromJson(Ljava/io/InputStream;Ljava/util/function/BiConsumer;Ljava/util/function/BiConsumer;)V", at = @At("TAIL"), remap = false)
     private static void dimdoors$loadFromJson(InputStream stream, BiConsumer<String, String> output, BiConsumer<String, Component> componentOutput, CallbackInfo ci) {
-        AutoGenDoorTranslations.apply(output);
+        AutoGenDoorTranslations.INSTANCE.apply(output);
     }
 }

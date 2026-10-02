@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.pocket.type.addon
 
 import com.mojang.serialization.Codec
-import net.minecraft.core.Holder
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
@@ -20,7 +19,7 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
     }
 
     interface PocketBuilderExtension<T : Pocket<T, P>, P : Pocket.PocketBuilder<T, P>> {
-        fun <C : PocketBuilderAddon<*, *>> getAddon(id: Holder<out PocketAddonType<*>>): C?
+        fun <C : PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*>): C?
 
         val self: P
     }
@@ -31,7 +30,7 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
         }
 
         // makes it possible for addons themselves to control how they are added
-        fun addAddon(addons: MutableMap<PocketAddonType, PocketBuilderAddon<*, *>>) {
+        fun addAddon(addons: MutableMap<PocketAddonType<*>, PocketBuilderAddon<*, *>>) {
             addons[this.type] = this
         }
 
@@ -40,10 +39,10 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
 
     companion object {
         val CODEC: Codec<PocketAddon> = PocketAddons.codec
-        val LIST_CODEC = CODEC.mutableList()
-        val BUILDER_CODEC = PocketAddons.builderCodec
-        val LIST_BUILDER_CODEC = BUILDER_CODEC.mutableList()
+        val LIST_CODEC: Codec<MutableList<PocketAddon>> = CODEC.mutableList()
+        val BUILDER_CODEC: Codec<PocketBuilderAddon<*, *>> = PocketAddons.builderCodec
+        val LIST_BUILDER_CODEC: Codec<MutableList<PocketBuilderAddon<*, *>>> = BUILDER_CODEC.mutableList()
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, PocketAddon> = PocketAddons.streamCodec.dispatch({ it.type }, { it.streamCodec!! })
-        val LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list())
+        val LIST_STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf?, List<PocketAddon>> = STREAM_CODEC.apply(ByteBufCodecs.list())
     }
 }

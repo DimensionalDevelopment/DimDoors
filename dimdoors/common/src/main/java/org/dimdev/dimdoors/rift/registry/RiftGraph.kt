@@ -29,7 +29,7 @@ class RiftGraph : SubSystem<RiftGraph> {
     }
 
     override fun type(): Type<RiftGraph> {
-        return SubsystemTypes.GRAPH.value()
+        return SubsystemTypes.GRAPH
     }
 
     fun clear() {
@@ -158,6 +158,6 @@ class RiftGraph : SubSystem<RiftGraph> {
 
         val CODEC: MapCodec<RiftGraph> = EDGE_CODEC.listOf().fieldOf("edges").xmap(::RiftGraph) { it.edges().toList() }
 
-        fun getInstance(): RiftGraph = getInstance(SubsystemTypes.GRAPH.value())!!
+        fun getInstance(): RiftGraph = getInstance(SubsystemTypes.GRAPH)!!
     }
 }

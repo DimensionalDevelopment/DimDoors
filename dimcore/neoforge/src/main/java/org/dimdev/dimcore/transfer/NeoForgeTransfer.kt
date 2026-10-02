@@ -6,12 +6,9 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.neoforged.neoforge.capabilities.BlockCapability
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
-import net.neoforged.neoforge.energy.EnergyStorage
 import net.neoforged.neoforge.energy.IEnergyStorage
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.FluidUtil
@@ -57,13 +54,16 @@ class NeoForgeTransfer : TransferBridgeImpl() {
 
     companion object {
         val IFluidHandler.handle: Handle<FluidUnit> get() = if (this is HandleFluidHandler) handle else FluidHandlerHandle(this)
+        @get:JvmName("fluidHandler")
         val Handle<FluidUnit>.handler: IFluidHandler get() = if (this is FluidHandlerHandle) handler else HandleFluidHandler(this)
 
         val IItemHandler.handle: Handle<ItemUnit> get() = if (this is HandleItemHandler) handle else ItemHandlerHandle(this)
+        @get:JvmName("itemHandler")
         val Handle<ItemUnit>.handler: IItemHandler get() = if (this is ItemHandlerHandle) handler else HandleItemHandler(this)
 
-        val EnergyStorage.handle: Handle<EnergyUnit> get() = if (this is HandleItemHandler) handle else ItemHandlerHandle(this)
-        val Handle<EnergyUnit>.handler: EnergyStorage get() = if (this is ItemHandlerHandle) handler else HandleItemHandler(this)
+        val IEnergyStorage.handle: Handle<EnergyUnit> get() = if (this is HandleEnergyStorage) handle else EnergyStorageHandle(this)
+        @get:JvmName("energyStorage")
+        val Handle<EnergyUnit>.handler: IEnergyStorage get() = if (this is EnergyStorageHandle) handler else HandleEnergyStorage(this)
 
         fun FluidUnit.toStack(): FluidStack = FluidStack(fluid.builtInRegistryHolder(), clamp(amount), components)
 
@@ -159,53 +159,25 @@ class NeoForgeTransfer : TransferBridgeImpl() {
         }
     }
 
-    private class ItemHandlerHandle(val handler: IItemHandler) : Handle<ItemUnit> {
-        override fun insert(unit: ItemUnit, simulate: Boolean): Long {
-            val stack = unit.toStack()
-            val remainder = ItemHandlerHelper.insertItem(handler, stack, simulate)
-            return (stack.count - remainder.count).toLong()
-        }
+    private class EnergyStorageHandle(val handler: IEnergyStorage) : Handle<EnergyUnit> {
+        override fun insert(unit: EnergyUnit, simulate: Boolean): Long = handler.receiveEnergy(clamp(unit.amount), simulate).toLong()
 
-        override fun extract(unit: ItemUnit, simulate: Boolean): Long {
-            var remaining = unit.amount
-            for (slot in 0..<handler.slots) {
-                if (remaining <= 0) break
-                val inSlot = handler.getStackInSlot(slot)
-                if (inSlot.isEmpty || !unit.sameResource(inSlot.unit)) continue
-                remaining -= handler.extractItem(slot, clamp(remaining), simulate).count.toLong()
-            }
-            return unit.amount - remaining
-        }
+        override fun extract(unit: EnergyUnit, simulate: Boolean): Long = handler.extractEnergy(clamp(unit.amount), simulate).toLong()
 
-        override fun contents(): List<ItemUnit> = (0..<handler.slots)
-            .map { handler.getStackInSlot(it) }
-            .filter { !it.isEmpty }
-            .map { it.unit }
+        override fun contents(): List<EnergyUnit> = handler.energyStored.takeIf { it > 0 }?.let { listOf(EnergyUnit(it.toLong())) } ?: emptyList()
     }
 
     private class HandleEnergyStorage(val handle: Handle<EnergyUnit>) : IEnergyStorage {
-        override fun receiveEnergy(p0: Int, p1: Boolean): Int {
-            TODO("Not yet implemented")
-        }
+        override fun receiveEnergy(toReceive: Int, simulate: Boolean): Int = clamp(handle.insert(EnergyUnit(toReceive.toLong()), simulate))
 
-        override fun extractEnergy(p0: Int, p1: Boolean): Int {
-            TODO("Not yet implemented")
-        }
+        override fun extractEnergy(toExtract: Int, simulate: Boolean): Int = clamp(handle.extract(EnergyUnit(toExtract.toLong()), simulate))
 
-        override fun getEnergyStored(): Int {
-            TODO("Not yet implemented")
-        }
+        override fun getEnergyStored(): Int = clamp(handle.contents().sumOf { it.amount })
 
-        override fun getMaxEnergyStored(): Int {
-            TODO("Not yet implemented")
-        }
+        override fun getMaxEnergyStored(): Int = Int.MAX_VALUE
 
-        override fun canExtract(): Boolean {
-            TODO("Not yet implemented")
-        }
+        override fun canExtract(): Boolean = true
 
-        override fun canReceive(): Boolean {
-            TODO("Not yet implemented")
-        }
+        override fun canReceive(): Boolean = true
     }
 }

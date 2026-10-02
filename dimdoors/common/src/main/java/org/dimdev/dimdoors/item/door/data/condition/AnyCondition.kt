@@ -11,6 +11,6 @@ class AnyCondition(conditions: List<Condition>) : MultipleCondition(conditions) 
     override fun matches(rift: EntranceRiftBlockEntity<*>) = this.conditions.any { it.matches(rift) }
 
     companion object {
-        var CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(LIST.forGetter(MultipleCondition::conditions)).apply(instance, ::AnyCondition) }
+        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(LIST.forGetter(MultipleCondition::conditions)).apply(instance, ::AnyCondition) }
     }
 }

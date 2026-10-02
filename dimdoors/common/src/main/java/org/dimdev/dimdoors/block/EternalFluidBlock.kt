@@ -14,11 +14,11 @@ import org.dimdev.dimdoors.entity.limbo.LimboExitReason
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.rift.targets.EscapeTarget
 
-class EternalFluidBlock(settings: Properties) : LiquidBlock(ModFluids.ETERNAL_FLUID.value(), settings) {
+class EternalFluidBlock(settings: Properties) : LiquidBlock(ModFluids.ETERNAL_FLUID, settings) {
     public override fun entityInside(blockState: BlockState, level: Level, blockPos: BlockPos, entity: Entity) {
         if (!level.isClientSide()) {
             try {
-                if (TARGET.receiveEntity(entity, Vec3.ZERO, entityEulerAngle(entity), entity.getDeltaMovement(), null)) {
+                if (TARGET.receiveEntity(entity, Vec3.ZERO, entityEulerAngle(entity), entity.deltaMovement, null)) {
                     if (entity is Player) LimboExitReason.ETERNAL_FLUID.broadcast(entity)
                 }
             } catch (e: Throwable) {

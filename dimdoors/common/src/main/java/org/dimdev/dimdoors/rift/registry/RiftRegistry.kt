@@ -1,15 +1,12 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.core.Holder
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.util.CodecUtils.mutableList
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import java.util.*
-import java.util.function.Function
-import java.util.stream.Collectors
 
 class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
     @JvmField
@@ -27,7 +24,7 @@ class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
 
     override fun collectVertices(): MutableList<out RegistryVertex> = this.locationMap.values.toMutableList()
 
-    override fun type(): Type<RiftRegistry> = SubsystemTypes.RIFT.value()
+    override fun type(): Type<RiftRegistry> = SubsystemTypes.RIFT
 
 
     private fun verticesForCodec(): MutableList<RegistryVertex> = this.locationMap.values.toMutableList()
@@ -58,9 +55,7 @@ class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
         var rift = this.locationMap[location]
         if (rift == null) {
             LOGGER.debug("Creating a rift placeholder at {}", location)
-            rift = RiftPlaceholder()
-            rift.world = location.worldId
-            rift.location = location
+            rift = RiftPlaceholder(location)
             this.locationMap[location] = rift
             RiftGraph.getInstance().addVertex(rift)
 
@@ -88,15 +83,13 @@ class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
 
         val riftGraph = RiftGraph.getInstance()
 
-        oldLocations.associateWith {
-            locationMap.remove(it)
-            getRift(it)
-        }.forEach { (location, rift) ->
+        oldLocations.associateWith { locationMap.remove(it)!! }.forEach { (location, rift) ->
+
             val newLocation = filteredMovements[location]!!
 
             this.locationMap[newLocation] = rift
             rift.world = newLocation.worldId
-            rift.setLocation(newLocation)
+            rift.location = newLocation
 
             riftGraph.sources(rift).mapNotNull(this::findRift).forEach { it.targetMoved(rift) }
             riftGraph.targets(rift).mapNotNull(this::findRift).forEach { it.sourceMoved(rift) }
@@ -204,7 +197,7 @@ class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
     fun getTargets(location: Location) = RiftGraph.getInstance()
         .targets(this.getRift(location))
         .mapNotNull { id: UUID -> this.findRift(id) }
-        .map { obj -> obj.getLocation() }
+        .map { obj -> obj.location }
         .toSet()
 
     fun getSources(location: Location): Set<Location> = RiftGraph.getInstance()
@@ -222,7 +215,7 @@ class RiftRegistry : SubSystem<RiftRegistry>, VertexProvider {
             .xmap(::RiftRegistry, RiftRegistry::verticesForCodec)
 
         val instance: RiftRegistry
-            get() = getInstance(SubsystemTypes.RIFT.value())!!
+            get() = getInstance(SubsystemTypes.RIFT)!!
 
     }
 }

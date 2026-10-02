@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.pocket
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
@@ -9,7 +10,6 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import java.util.*
 
 class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon.DyeablePocket {
     lateinit var address: DialingAddress
@@ -47,9 +47,8 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
 
         override fun build(): DialingPocket {
             val pocket = super.build()
-            if (address != null) {
-                pocket.address = address
-            }
+            address?.let { pocket.address = it }
+            
             return pocket
         }
 
@@ -58,8 +57,8 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
         override fun pocket() = DialingPocket()
 
         companion object {
-            val CODEC = RecordCodecBuilder.mapCodec { instance ->
-                commonFields(instance).apply(instance, ::Builder)
+            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec<Builder> { instance ->
+                commonFields<Builder>(instance).apply(instance, ::Builder)
             }
         }
     }
@@ -67,7 +66,7 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
     override val type get() = Pockets.DIALING
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> commonPocketFields(instance)
+        val CODEC: MapCodec<DialingPocket> = RecordCodecBuilder.mapCodec<DialingPocket> { instance -> commonPocketFields<DialingPocket>(instance)
             .and(DialingAddress.MAP_CODEC.forGetter(DialingPocket::address))
             .apply(instance, ::DialingPocket)
         }

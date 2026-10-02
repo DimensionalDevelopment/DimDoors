@@ -138,7 +138,7 @@ repositories {
         capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
         capability("$group:$mod_id-${loader}-${minecraft_version}:$version")
-        capability("$group:$mod_id:$version")
+        if (loader == 'common') capability("$group:$mod_id:$version")
     }
     publishing.publications.configureEach {
         suppressPomMetadataWarningsFor(variant)

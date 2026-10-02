@@ -17,7 +17,7 @@ interface PocketCreator {
     data class GenerationKey(val type: String, val world: ResourceKey<Level>, val pos: BlockPos) {
         companion object {
             fun from(parameters: PocketGenerationContext): GenerationKey {
-                val location = (parameters.linkTo as? LocationProvider)?.location
+                val location = parameters.linkTo?.takeIf { it is LocationProvider }?.locationOrNull
                 if (location != null) {
                     return GenerationKey("source", location.worldId, location.blockPos)
                 }

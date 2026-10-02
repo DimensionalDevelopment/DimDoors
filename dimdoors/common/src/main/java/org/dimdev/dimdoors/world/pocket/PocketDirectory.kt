@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.pocket
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.Codec.unboundedMap
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.cast
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.DimensionalDoors.Companion.getConfig
 import org.dimdev.dimdoors.api.util.math.GridUtil
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.util.CodecUtils
@@ -30,7 +28,7 @@ class PocketDirectory {
     private val nextIDMap: Int2IntAVLTreeMap
 
     constructor() {
-        this.gridSize = getConfig().pocketsConfig.pocketGridSize
+        this.gridSize = DimensionalDoors.config.pocketsConfig.pocketGridSize
         this.nextIDMap = Int2IntAVLTreeMap()
         this.pockets = Int2ObjectAVLTreeMap<AbstractPocket<*, *>>()
     }
@@ -271,12 +269,12 @@ class PocketDirectory {
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.create { instance ->
+        val CODEC: Codec<PocketDirectory> = RecordCodecBuilder.create { instance ->
                 instance.group(
                     Codec.INT.fieldOf("grid_size").forGetter(PocketDirectory::gridSize),
                     Codec.INT.fieldOf("private_pocket_size").forGetter (PocketDirectory::privatePocketSize),
                     Codec.INT.fieldOf("public_pocket_size").forGetter(PocketDirectory::publicPocketSize),
-                    unboundedMap(CodecUtils.STRING_INT, AbstractPocket.CODEC).fieldOf("pockets").forGetter(PocketDirectory::pockets),
+                    CodecUtils.STRING_INT.unboundedMap(AbstractPocket.CODEC).fieldOf("pockets").forGetter(PocketDirectory::pockets),
                     unboundedMap(CodecUtils.STRING_INT, Codec.INT, ::Int2IntAVLTreeMap).fieldOf("next_id_map").forGetter(PocketDirectory::nextIDMap)
                 ).apply(instance, ::PocketDirectory)
             }

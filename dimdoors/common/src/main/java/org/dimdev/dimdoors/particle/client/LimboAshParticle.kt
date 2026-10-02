@@ -41,10 +41,10 @@ class LimboAshParticle(world: ClientLevel, x: Double, y: Double, z: Double, velo
             return LimboAshParticle(clientLevel, d, e, f, j, k, l, 1.0f, this.spriteProvider)
         }
 
-        override fun equals(obj: Any?): Boolean {
-            if (obj === this) return true
-            if (obj == null || obj.javaClass != this.javaClass) return false
-            val that = obj as Factory
+        override fun equals(other: Any?): Boolean {
+            if (other === this) return true
+            if (other == null || other.javaClass != this.javaClass) return false
+            val that = other as Factory
             return this.spriteProvider == that.spriteProvider
         }
 
@@ -52,9 +52,6 @@ class LimboAshParticle(world: ClientLevel, x: Double, y: Double, z: Double, velo
             return Objects.hash(spriteProvider)
         }
 
-        override fun toString(): String {
-            return "Factory[" +
-                    "spriteProvider=" + spriteProvider + ']'
-        }
+        override fun toString() = "Factory[spriteProvider=$spriteProvider]"
     }
 }

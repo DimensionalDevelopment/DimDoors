@@ -81,7 +81,7 @@ class NeoForgePlatform : Platform {
 
     override fun onPlayerQuit(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 
-    override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<LevelTickEvent.Pre> { it.level.cast<ServerLevel>().also(consumer) }
+    override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<LevelTickEvent.Pre> { it.level.castOrNull<ServerLevel>()?.run(consumer) }
 
     override fun onPlayerChangeWorld(consumer: (ServerPlayer, ServerLevel, ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerEvent.PlayerChangedDimensionEvent> { event ->
         val player = event.entity.castOrNull<ServerPlayer>() ?: return@addListener

@@ -2,11 +2,8 @@ package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.nbt.CompoundTag
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.dimdev.dimdoors.util.Copyable
-import java.util.*
-import java.util.function.Function
 import java.util.stream.Collectors
 
 data class LinkProperties(// TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
@@ -95,41 +92,17 @@ data class LinkProperties(// TODO: depend on rift properties (ex. size, stabilit
         val NONE: LinkProperties = builder {}
         private val GROUPS_CODEC = Codec.INT_STREAM.xmap({ stream -> stream.boxed().collect(Collectors.toSet()) }, { groups -> groups.stream().mapToInt { it } })
 
-        val CODEC =
-            RecordCodecBuilder.create<LinkProperties?>(Function { instance: RecordCodecBuilder.Instance<LinkProperties?>? ->
-                instance!!.group(
+        val CODEC: Codec<LinkProperties> = RecordCodecBuilder.create{ instance -> instance.group(
                     Codec.FLOAT.optionalFieldOf("floatingWeight", 0.0f).forGetter(LinkProperties::floatingWeight),
                     Codec.FLOAT.optionalFieldOf("entranceWeight", 0.0f).forGetter(LinkProperties::entranceWeight),
                     GROUPS_CODEC.optionalFieldOf("groups", mutableSetOf()).forGetter(LinkProperties::groups),
                     Codec.INT.optionalFieldOf("linksRemaining", 0).forGetter(LinkProperties::linksRemaining),
                     Codec.BOOL.optionalFieldOf("oneWay", false).forGetter(LinkProperties::isOneWay)
-                ).apply(
-                    instance, ::LinkProperties)
-            })
+                ).apply(instance, ::LinkProperties)
+            }
 
         @JvmStatic
         fun builder(block: LinkPropertiesBuilder.() -> Unit): LinkProperties = LinkPropertiesBuilder().also(block).build()
 
-        @JvmStatic
-        fun toNbt(properties: LinkProperties): CompoundTag {
-            val nbt = CompoundTag()
-            nbt.putFloat("floatingWeight", properties.floatingWeight)
-            nbt.putFloat("entranceWeight", properties.entranceWeight)
-            nbt.putIntArray("groups", ArrayList(properties.groups))
-            nbt.putInt("linksRemaining", properties.linksRemaining)
-            nbt.putBoolean("oneWay", properties.isOneWay)
-            return nbt
-        }
-
-        @JvmStatic
-        fun fromNbt(nbt: CompoundTag): LinkProperties {
-            return builder {
-                floatingWeight(nbt.getFloat("floatingWeight"))
-                entranceWeight(nbt.getFloat("entranceWeight"))
-                groups(Arrays.stream(nbt.getIntArray("groups")).boxed().collect(Collectors.toSet()))
-                linksRemaining(nbt.getInt("linksRemaining"))
-                oneWay(nbt.getBoolean("oneWay"))
-            }
-        }
     }
 }

@@ -21,8 +21,7 @@ class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
         } else {
             rifts = pocket.blockEntities.values.filterIsInstance<Rift>().toMutableList()
 
-            map = rifts
-                .filter { a -> (a.data.destination.castOrNull<IdMarker>()?.id ?: 0) >= 0 }.associateBy { it.data.destination.cast<IdMarker>().id }.toMutableMap()
+            map = rifts.mapNotNull { rift -> rift.data.destination.castOrNull<IdMarker>()?.id?.takeIf { it >= 0 }?.let { it to rift } }.toMap().toMutableMap()
             maxId = map.keys.maxByOrNull { it } ?: -1
         }
     }
@@ -31,7 +30,7 @@ class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
     fun add(rift: Rift): Boolean {
         rifts.add(rift)
 
-        val id = rift.data.castOrNull<IdMarker>()?.id?.takeIf { it < 0 } ?: return false
+        val id = rift.data.destination.castOrNull<IdMarker>()?.id?.takeIf { it >= 0 } ?: return false
 
         map[id] = rift
 

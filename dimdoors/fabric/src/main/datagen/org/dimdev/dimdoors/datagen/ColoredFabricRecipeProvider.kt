@@ -1,0 +1,26 @@
+package org.dimdev.dimdoors.datagen
+
+import net.minecraft.advancements.critereon.InventoryChangeTrigger
+import net.minecraft.data.recipes.RecipeCategory
+import net.minecraft.data.recipes.RecipeOutput
+import net.minecraft.data.recipes.ShapedRecipeBuilder
+import net.minecraft.world.item.DyeItem
+import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.item.ModItems
+
+object ColoredFabricRecipeProvider {
+    fun generate(exporter: RecipeOutput) {
+        for ((dyeColor, block) in ModBlocks.FABRIC_BLOCKS) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+                .group("colored_fabric")
+                .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD))
+                .pattern(" X ")
+                .pattern("XDX")
+                .pattern(" X ")
+                .define('X', ModItems.WORLD_THREAD)
+                .define('D', DyeItem.byColor(dyeColor))
+                .save(exporter, DimensionalDoors.id(dyeColor.getName() + "_fabric"))
+        }
+    }
+}

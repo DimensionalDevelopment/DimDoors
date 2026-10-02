@@ -21,7 +21,7 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
 
     @JvmField
     val DECAY: CreativeTab = creativeTabs.create("decay") {
-        icon { ModBlocks.UNRAVELED_SET.fence.value().asItem().defaultInstance }
+        icon { ModBlocks.UNRAVELED_SET.fence.asItem().defaultInstance }
         title("itemGroup.dimdoors.decay".translate())
     }
 

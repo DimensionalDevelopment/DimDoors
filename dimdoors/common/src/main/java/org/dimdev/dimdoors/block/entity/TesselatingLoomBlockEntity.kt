@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block.entity
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -29,7 +28,7 @@ import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import kotlin.jvm.optionals.getOrNull
 
-class TesselatingLoomBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntityTypes.TESSELATING_LOOM.value(), pos, state), MenuProvider, WorldlyContainer {
+class TesselatingLoomBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntityTypes.TESSELATING_LOOM, pos, state), MenuProvider, WorldlyContainer {
     var weaveTime: Int = 0
     var weaveTimeTotal: Int = 0
 
@@ -57,9 +56,7 @@ class TesselatingLoomBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
     var inventory: NonNullList<ItemStack> = NonNullList.withSize(9, ItemStack.EMPTY)
     var output: ItemStack = ItemStack.EMPTY
     private var cachedRecipe: RecipeHolder<TesselatingRecipe>? = null
-    private val openContainers: MutableList<TessellatingContainer> = ArrayList<TessellatingContainer>()
-
-    private val recipesUsed = Object2IntOpenHashMap<ResourceLocation?>()
+    private val openContainers = mutableListOf<TessellatingContainer>()
 
     override fun saveAdditional(nbt: CompoundTag, provider: HolderLookup.Provider) {
         super.saveAdditional(nbt, provider)
@@ -293,9 +290,9 @@ class TesselatingLoomBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
         return false
     }
 
-    override fun getUpdatePacket() = ClientboundBlockEntityDataPacket.create(this)
+    override fun getUpdatePacket(): ClientboundBlockEntityDataPacket = ClientboundBlockEntityDataPacket.create(this)
 
-    override fun getUpdateTag(provider: HolderLookup.Provider) = this.saveWithFullMetadata(provider)
+    override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag = this.saveWithFullMetadata(provider)
 
     companion object {
         const val DATA_WEAVING_TIME: Int = 0

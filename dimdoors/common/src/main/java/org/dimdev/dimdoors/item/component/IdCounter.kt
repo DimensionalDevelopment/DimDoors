@@ -5,11 +5,11 @@ import org.dimdev.dimdoors.item.ModDataComponentTypes
 
 object IdCounter {
     @JvmStatic
-    operator fun get(provider: ItemStack): Int = provider.getOrDefault(ModDataComponentTypes.COUNT.value(), 0)
+    operator fun get(provider: ItemStack): Int = provider.getOrDefault(ModDataComponentTypes.COUNT, 0)
 
     @JvmStatic
     operator fun set(provider: ItemStack, value: Int) {
-        provider.set(ModDataComponentTypes.COUNT.value(), value)
+        provider.set(ModDataComponentTypes.COUNT, value)
     }
 
 

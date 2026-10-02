@@ -12,7 +12,7 @@ data class DecaySourceCondition(val source: DecaySource) : DecayCondition {
     }
 
     companion object {
-        var CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group<DecaySource>(
+        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group<DecaySource>(
                     DecaySource.CODEC.fieldOf("source").forGetter<DecaySourceCondition>(DecaySourceCondition::source)
                 ).apply(instance, ::DecaySourceCondition)
             }

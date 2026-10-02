@@ -31,6 +31,7 @@ import org.dimdev.dimcore.api.*
 
 abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S) : SidedImpl<V, S>(common), ModInitializer {
     override fun onInitialize() {
+        common.initRegistries(self())
         common.init(self())
 
         val mod: Any = common
@@ -45,23 +46,6 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         val registry = BuiltInRegistries.REGISTRY.get(key.location())!!.cast<Registry<T>>()
         registry.entrySet().toList().forEach { (entryKey, value) -> handlers.forEach { it(entryKey.location(), value) } }
         RegistryEntryAddedCallback.event(registry).register { _, id, value -> handlers.forEach { it(id, value) } }
-    }
-
-    override fun <T: Any, V : T> register(key: ResourceKey<Registry<T>>, id: ResourceLocation, obj: V): V {
-        val registry = BuiltInRegistries.REGISTRY.get(key.location())!!.cast<Registry<T>>()
-        Registry.register(registry, id, obj)
-        return obj
-    }
-
-    override fun <U: Any, R : U> registerHolder(
-        key: ResourceKey<Registry<U>>,
-        id: ResourceLocation,
-        obj: R
-    ): Holder<U> {
-        val registry = BuiltInRegistries.REGISTRY.get(key.location())?.cast<Registry<U>>()
-        requireNotNull(registry) { "Unknown registry: " + key.location() }
-
-        return Registry.registerForHolder<U>(registry, id, obj)
     }
 
     private data class PlayPayloadHandlerReturnable<T : CustomPacketPayload>(val packetFunction: (T, ServerPlayer) -> CustomPacketPayload?) : ServerPlayNetworking.PlayPayloadHandler<T> {
@@ -116,7 +100,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
                     builder.persistent(type.codec)
                     type.streamCodec?.let { builder.syncWith(it, AttachmentSyncPredicate.all()) }
                 }
-                return Holder.direct(attachment).cast()
+                return attachment.cast()
             }
         }
 
@@ -125,7 +109,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as CreativeTabType
-                return Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
+                return Registry.registerForHolder(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
             }
         }
 

@@ -11,7 +11,7 @@ data class RGBA(val red: Float, val green: Float, val blue: Float, val alpha: Fl
     override fun copy() = RGBA(red, green, blue, alpha)
 
     companion object {
-        var CODEC = RecordCodecBuilder.create { instance ->
+        val CODEC = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.FLOAT.fieldOf("red").forGetter(RGBA::red),
                 Codec.FLOAT.fieldOf("green").forGetter(RGBA::green),

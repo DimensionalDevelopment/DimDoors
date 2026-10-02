@@ -45,7 +45,7 @@ object RenderUtils {
         }
 
         val format = renderType.format()
-        if (!format.contains(VertexFormatElement.POSITION) || (format.getElementsMask() and SUPPORTED_VERTEX_ELEMENTS.inv()) != 0) {
+        if (!format.contains(VertexFormatElement.POSITION) || (format.elementsMask and SUPPORTED_VERTEX_ELEMENTS.inv()) != 0) {
             return
         }
 
@@ -121,15 +121,13 @@ object RenderUtils {
     }
 
     fun renderTextLines(
-        lines: MutableList<Component?>?,
+        lines: MutableList<Component>,
         poseStack: PoseStack,
         buffer: MultiBufferSource,
         font: Font,
         packedLight: Int
     ) {
-        if (lines == null || lines.isEmpty()) {
-            return
-        }
+        if (lines.isEmpty()) return
 
         val matrix4f = poseStack.last().pose()
 
@@ -139,11 +137,8 @@ object RenderUtils {
         val lineHeight = font.lineHeight
         val startY = -((lines.size - 1) * lineHeight) / 2.0f
 
-        for (lineIndex in lines.indices) {
-            val line = lines.get(lineIndex)
-            if (line == null) {
-                continue
-            }
+
+        lines.forEachIndexed { lineIndex, line ->
 
             val textX = (-font.width(line) / 2).toFloat()
             val textY = startY + lineIndex * lineHeight
@@ -177,17 +172,15 @@ object RenderUtils {
     }
 
     fun renderCube(shape: VoxelShape, matrixStack: PoseStack, buffer: VertexConsumer, light: Int, overlay: Int) {
-        val consumer: Shapes.DoubleLineConsumer? = object : Shapes.DoubleLineConsumer {
-            override fun consume(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double) {
-                renderCube(
-                    minX.toFloat(), minY.toFloat(), minZ.toFloat(),
-                    maxX.toFloat(), maxY.toFloat(), maxZ.toFloat(),
-                    matrixStack,
-                    buffer,
-                    light,
-                    overlay
-                )
-            }
+        val consumer: Shapes.DoubleLineConsumer = Shapes.DoubleLineConsumer { minX, minY, minZ, maxX, maxY, maxZ ->
+            renderCube(
+                minX.toFloat(), minY.toFloat(), minZ.toFloat(),
+                maxX.toFloat(), maxY.toFloat(), maxZ.toFloat(),
+                matrixStack,
+                buffer,
+                light,
+                overlay
+            )
         }
 
         shape.forAllBoxes(consumer)

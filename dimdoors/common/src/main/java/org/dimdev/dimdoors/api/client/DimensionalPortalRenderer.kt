@@ -22,7 +22,7 @@ import org.dimdev.dimdoors.client.ModShaders
 import org.dimdev.dimdoors.client.RenderUtils
 
 object DimensionalPortalRenderer {
-    private val DIMENSIONAL_PORTAL_SHADER = RenderStateShard.ShaderStateShard { ModShaders.getDimensionalPortal() }
+    private val DIMENSIONAL_PORTAL_SHADER = RenderStateShard.ShaderStateShard { ModShaders.dimensionalPortal }
 
     private val PORTAL_LAYERING = RenderStateShard.LayeringStateShard(
         "dimensional_portal_offset",

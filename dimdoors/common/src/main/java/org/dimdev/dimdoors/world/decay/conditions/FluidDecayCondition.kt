@@ -18,10 +18,10 @@ class FluidDecayCondition(
     invert: Boolean,
     val fluidType: Type
 ) : GenericDecayCondition<Fluid>(tagOrElementLocation, invert) {
-    override val type: Holder<out MapCodec<out DecayCondition>> get() = DecayConditions.FLUID
+    override val type get() = DecayConditions.FLUID
 
 
-    public override fun test(context: Decay.DecayContext): Boolean = super.test(context) && (fluidType == Type.BOTH || (context.targetFluidState.isSource && fluidType == Type.SOURCE))
+    override fun test(context: Decay.DecayContext): Boolean = super.test(context) && (fluidType == Type.BOTH || (context.targetFluidState.isSource && fluidType == Type.SOURCE))
 
     override fun getHolder(context: Decay.DecayContext): Holder<Fluid> = context.targetFluidState.holder()
 
@@ -36,14 +36,10 @@ class FluidDecayCondition(
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<FluidDecayCondition> = RecordCodecBuilder.mapCodec { instance ->
             CodecUtils.decayConditionFields(instance, Registries.FLUID)
-                .and(
-                    StringRepresentable.fromEnum(Type.entries::toTypedArray).optionalFieldOf("state", Type.BOTH)
-                        .forGetter(FluidDecayCondition::fluidType)
-                ).apply(
-                    instance, ::FluidDecayCondition
-                )
+                .and(StringRepresentable.fromEnum(Type.entries::toTypedArray).optionalFieldOf("state", Type.BOTH).forGetter(FluidDecayCondition::fluidType)
+                ).apply(instance, ::FluidDecayCondition)
         }
 
         @JvmStatic @JvmOverloads

@@ -20,10 +20,6 @@ class ShapedTesselatingRecipeJsonBuilder(result: ItemStack) :
         return this.define(c, Ingredient.of(tag))
     }
 
-    fun define(c: Char, itemProvider: Holder<out ItemLike>): ShapedTesselatingRecipeJsonBuilder {
-        return define(c, itemProvider.value())
-    }
-
     fun define(c: Char, itemProvider: ItemLike): ShapedTesselatingRecipeJsonBuilder {
         return this.define(c, Ingredient.of(itemProvider))
     }
@@ -57,7 +53,5 @@ class ShapedTesselatingRecipeJsonBuilder(result: ItemStack) :
     companion object {
         @JvmOverloads
         fun shaped(output: ItemLike, outputCount: Int = 1): ShapedTesselatingRecipeJsonBuilder = ItemStack(output, outputCount).let(::ShapedTesselatingRecipeJsonBuilder)
-
-        fun shaped(output: Holder<out ItemLike>) = shaped(output.value())
     }
 }

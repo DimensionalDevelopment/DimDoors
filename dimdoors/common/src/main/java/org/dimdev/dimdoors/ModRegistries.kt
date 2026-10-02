@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors
 
-import net.minecraft.core.Registry
-import net.minecraft.resources.ResourceKey
 import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.item.door.data.RiftDataList
 import org.dimdev.dimdoors.item.door.data.condition.Conditions
@@ -41,5 +39,3 @@ object ModRegistries {
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC)
     }
 }
-
-private fun <T> ResourceKey<Registry<T>>.createRegistry(): Registry<T> = DimensionalDoors.getSided().createRegistry(this)

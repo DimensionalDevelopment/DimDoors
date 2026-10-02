@@ -5,10 +5,10 @@ import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe
 
 class DefaultTesselatingShapedDisplay(recipe: RecipeHolder<ShapedTesselatingRecipe>) : DefaultTesselatingDisplay<ShapedTesselatingRecipe>(recipe) {
     override fun getWidth(): Int {
-        return optionalRecipe.value().width
+        return recipe.value().width
     }
 
     override fun getHeight(): Int {
-        return optionalRecipe.value().height
+        return recipe.value().height
     }
 }

@@ -14,7 +14,7 @@ data class WorldMatchCondition(val world: ResourceKey<Level>) : Condition {
     override val type get() = Conditions.WORLD_MATCH
 
     companion object {
-        var CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 Level.RESOURCE_KEY_CODEC.fieldOf("world")
                     .forGetter(WorldMatchCondition::world)
             ).apply(

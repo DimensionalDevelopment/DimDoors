@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
@@ -110,8 +111,8 @@ data class ShellModifier(val layers: MutableList<Layer>, val boxToDrawAround: Bo
         val CODEC: MapCodec<ShellModifier> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Layer.CODEC.listOf().optionalFieldOf("layers", emptyList()).forGetter(ShellModifier::layers),
-                BoundingBox.CODEC.optionalFieldOf("box_to_draw_around").nullable().forGetter(ShellModifier::boxToDrawAround)
-            ).apply(instance, ::ShellModifier)
+                BoundingBox.CODEC.optionalFieldOf("box_to_draw_around").nullableForGetter(ShellModifier::boxToDrawAround)
+            ).apply(instance) { layers, box -> ShellModifier(layers, box.getOrNull()) }
         }
 
         //TODO: use boxToDrawAround as an alternate cube to generate around in a pocket.

@@ -2,11 +2,7 @@ package org.dimdev.dimdoors.util.schematic
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.DoubleTag
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.NbtOps
-import net.minecraft.nbt.Tag
+import net.minecraft.nbt.*
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.WorldGenLevel
@@ -14,7 +10,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore
 import java.nio.ByteBuffer
-import java.util.Objects
+import java.util.*
 import java.util.stream.Stream
 
 object SchematicPlacer {
@@ -25,7 +21,7 @@ object SchematicPlacer {
     fun place(schematic: Schematic, world: ServerLevel, origin: BlockPos) {
         LOGGER.debug("Placing schematic: {}", schematic.metadata.name)
         for (id in schematic.metadata.requiredMods) {
-            if (!DimCore.getPlatform().isModLoaded(id)) {
+            if (!DimCore.platform.isModLoaded(id)) {
                 LOGGER.warn("Schematic \"" + schematic.metadata.name + "\" depends on mod \"" + id + "\", which is missing!")
             }
         }
@@ -100,15 +96,11 @@ object SchematicPlacer {
             processPos(nbtList, origin, schematic.offset, nbt)
 
             val entityType = EntityType.by(fixEntityId(nbt)).orElseThrow { AssertionError() }
-            val e = entityType.create(world.level)
-            // TODO: fail with an exception
-            if (e != null) {
-                e.load(nbt)
+            val e = entityType.create(world.level) ?: continue
 
-                e.selfAndPassengers.forEach { e1 -> println("Blep: " + e.displayName.string + " " + world.addFreshEntity(e1)) }
+            e.load(nbt)
 
-                world.addFreshEntityWithPassengers(e)
-            }
+            world.addFreshEntityWithPassengers(e)
         }
     }
 

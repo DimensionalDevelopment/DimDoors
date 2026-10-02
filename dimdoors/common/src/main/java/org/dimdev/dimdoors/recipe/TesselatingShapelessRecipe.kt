@@ -15,9 +15,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer
 import net.minecraft.world.level.Level
 
 class TesselatingShapelessRecipe(
-    val group: String,
+    private val group: String,
     val result: ItemStack,
-    val ingredients: NonNullList<Ingredient>,
+    private val ingredients: NonNullList<Ingredient>,
     override val weavingTime: Int
 ) : TesselatingRecipe {
     override fun getSerializer(): RecipeSerializer<*> {

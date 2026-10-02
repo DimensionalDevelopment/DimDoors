@@ -181,13 +181,13 @@ interface Rift : Target {
 
     val riftBlockState: BlockState
 
-    fun tick(level: Level, pos: BlockPos?, blockState: BlockState?) {
+    fun tick(level: Level, pos: BlockPos, blockState: BlockState) {
         if (level.isClientSide) return
 
         update(level, pos, blockState)
     }
 
-    fun update(level: Level?, pos: BlockPos?, blockState: BlockState?) {
+    fun update(level: Level, pos: BlockPos, blockState: BlockState) {
     }
 
     fun asRift(): Rift {
@@ -208,7 +208,7 @@ interface Rift : Target {
         }
     }
 
-    fun gatherDebug(textConsumer: Consumer<Component?>) {
+    fun gatherDebug(textConsumer: Consumer<Component>) {
         textConsumer.accept(Component.literal("Size: ${this.data.size}"))
     }
 

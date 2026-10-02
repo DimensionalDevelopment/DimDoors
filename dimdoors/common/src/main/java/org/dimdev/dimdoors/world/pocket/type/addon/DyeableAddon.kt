@@ -32,7 +32,7 @@ class DyeableAddon(
         val innerWall = fabricFromDye(dyeColor)!!.defaultBlockState()
         val outerWall = ancientFabricFromDye(dyeColor)!!.defaultBlockState()
 
-        val box = pocket.getBox()
+        val box = pocket.box
         val minX = box.minX()
         val minChunkX = minX shr 4
         val minZ = box.minZ()
@@ -186,7 +186,7 @@ class DyeableAddon(
         }
 
         private fun amountOfDyeRequiredToColor(pocket: Pocket<*, *>): Int {
-            val outerVolume = pocket.getBox().ySpan * pocket.getBox().zSpan * pocket.getBox().xSpan
+            val outerVolume = pocket.box.ySpan * pocket.box.zSpan * pocket.box.xSpan
 
             return max(outerVolume / DimensionalDoors.config.pocketsConfig.blocksColoredPerDye, 1)
         }

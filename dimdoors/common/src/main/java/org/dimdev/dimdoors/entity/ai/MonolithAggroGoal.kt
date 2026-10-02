@@ -32,17 +32,17 @@ open class MonolithAggroGoal(protected val mob: MonolithEntity, protected val ra
         this.targetPredicate = TargetingConditions.forNonCombat().range(this.range.toDouble()).ignoreInvisibilityTesting().selector(EntitySelector.NO_CREATIVE_OR_SPECTATOR::test)
     }
 
-    private fun getTarget(): Player? {
+    private fun findTarget(): Player? {
         val playerEntity = this.mob.level().getNearestPlayer(this.targetPredicate, this.mob, this.mob.x, this.mob.eyeY, this.mob.z)
         return if (playerEntity != null && this.mob.hasLineOfSight(playerEntity) && playerEntity.distanceTo(this.mob) < 50) playerEntity else null
     }
 
     override fun canUse(): Boolean {
-        return (this.getTarget().also { this.target = it }) != null && this.target!!.distanceTo(this.mob) <= 50
+        return (this.findTarget().also { this.target = it }) != null && this.target!!.distanceTo(this.mob) <= 50
     }
 
     override fun canContinueToUse(): Boolean {
-        return (this.getTarget().also { this.target = it }) != null && this.target!!.distanceTo(this.mob) <= 50
+        return (this.findTarget().also { this.target = it }) != null && this.target!!.distanceTo(this.mob) <= 50
     }
 
     override fun start() {

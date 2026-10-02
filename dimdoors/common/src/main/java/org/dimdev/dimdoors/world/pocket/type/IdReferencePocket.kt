@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
@@ -62,7 +63,7 @@ class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.Id
         }
 
         companion object {
-            val CODEC = RecordCodecBuilder.mapCodec<IdReferencePocketBuilder>(
+            val CODEC: MapCodec<IdReferencePocketBuilder> = RecordCodecBuilder.mapCodec<IdReferencePocketBuilder>(
                 Function { instance -> instance.group(
                         Codec.INT.optionalFieldOf("referenced_id", Int.MIN_VALUE).forGetter(IdReferencePocketBuilder::referencedId)
                     ).apply(instance, ::IdReferencePocketBuilder)
@@ -71,7 +72,7 @@ class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.Id
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> commonFields(instance).and(
+        val CODEC: MapCodec<IdReferencePocket> = RecordCodecBuilder.mapCodec<IdReferencePocket> { instance -> commonFields<IdReferencePocket>(instance).and(
                     Codec.INT.fieldOf("referenced_id").forGetter(IdReferencePocket::referencedId)
                 ).apply(instance, ::IdReferencePocket)
             }

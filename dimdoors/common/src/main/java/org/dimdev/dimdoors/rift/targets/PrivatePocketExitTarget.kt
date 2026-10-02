@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry
 
 object PrivatePocketExitTarget : PlayerTrackingExitTarget<PrivatePocketExitTarget, PrivateRegistry>() {
-    val type get() = VirtualTargets.PRIVATE_POCKET_EXIT
+    override val type get() = VirtualTargets.PRIVATE_POCKET_EXIT
 
     override fun copy(): PrivatePocketExitTarget {
         return this
@@ -15,5 +15,5 @@ object PrivatePocketExitTarget : PlayerTrackingExitTarget<PrivatePocketExitTarge
 
     override val subsystem: PrivateRegistry get() = PrivateRegistry.instance
 
-    val codec = MapCodec.unit(PrivatePocketExitTarget)
+    val codec: MapCodec<PrivatePocketExitTarget> = MapCodec.unit(PrivatePocketExitTarget)
 }

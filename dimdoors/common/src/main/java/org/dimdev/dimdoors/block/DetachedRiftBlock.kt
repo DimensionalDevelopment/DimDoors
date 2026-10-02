@@ -38,7 +38,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
 
     override fun codec(): MapCodec<out BaseEntityBlock> = CODEC
 
-    override fun getRift(world: Level, pos: BlockPos, state: BlockState): DetachedRiftBlockEntity? = world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.value()).getOrNull()
+    override fun getRift(world: Level, pos: BlockPos, state: BlockState): DetachedRiftBlockEntity? = world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).getOrNull()
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block?, BlockState?>) {
         super.createBlockStateDefinition(builder)
@@ -115,11 +115,11 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
     ): BlockEntityTicker<T>? {
         return checkType(
             type,
-            ModBlockEntityTypes.DETACHED_RIFT.value()
+            ModBlockEntityTypes.DETACHED_RIFT
         ) { _, blockPos, blockState, blockEntity -> blockEntity.tick(world, blockPos, blockState) }
     }
 
-    override val riftBlockEnityType: BlockEntityType<DetachedRiftBlockEntity> get() = ModBlockEntityTypes.DETACHED_RIFT.value()
+    override val riftBlockEnityType: BlockEntityType<DetachedRiftBlockEntity> get() = ModBlockEntityTypes.DETACHED_RIFT
 
     override fun onProjectileHit(level: Level, state: BlockState, hit: BlockHitResult, projectile: Projectile) {
         if (!level.isClientSide() && projectile is FarShotEnderPearlEntity) {
@@ -136,7 +136,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
     }
 
     companion object {
-        val CODEC = simpleCodec(::DetachedRiftBlock)
+        val CODEC: MapCodec<DetachedRiftBlock> = simpleCodec(::DetachedRiftBlock)
 
         const val ID: String = "rift"
     }

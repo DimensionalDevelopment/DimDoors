@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
-import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem.PlayerRiftConnection
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
@@ -35,7 +34,7 @@ class PrivateRegistry(
 
     override fun getKeyFromPlayer(playerUUID: UUID?): UUID? = playerUUID
 
-    override fun type(): Type<PrivateRegistry> = SubsystemTypes.PRIVATE.value()
+    override fun type(): Type<PrivateRegistry> = SubsystemTypes.PRIVATE
 
     override fun getPocketFromPlayer(uuid: UUID?): PrivatePocket? {
         requireNotNull(uuid) { "playerUUID" }
@@ -45,7 +44,7 @@ class PrivateRegistry(
     override fun getPocketFromKey(uuid: UUID?): PrivatePocket? = getPocketFromPlayer(uuid)
 
     fun setPrivatePocketID(playerUUID: UUID, pocket: PrivatePocket) {
-        val info = PocketInfo(pocket.world, pocket.getId())
+        val info = PocketInfo(pocket.world, pocket.id)
 
         val existingOwner = privatePockets.inverse()[info]
         check(existingOwner == null || existingOwner == playerUUID) { "Private pocket ${info.world.location()}:${info.id} is already assigned to $existingOwner, cannot assign to $playerUUID" }
@@ -58,7 +57,7 @@ class PrivateRegistry(
         setPrivatePocketID(playerUUID, pocket)
     }
 
-    fun removePrivatePocket(pocket: Pocket<*, *>): Boolean = removePrivatePocket(pocket.world, pocket.getId())
+    fun removePrivatePocket(pocket: Pocket<*, *>): Boolean = removePrivatePocket(pocket.world, pocket.id)
 
     fun removePrivatePocket(world: ResourceKey<Level>, id: Int): Boolean {
         privatePockets.inverse().remove(PocketInfo(world, id)) ?: return false
@@ -66,7 +65,7 @@ class PrivateRegistry(
         return true
     }
 
-    fun getPrivatePocketOwner(pocket: Pocket<*, *>): UUID? = privatePockets.inverse()[PocketInfo(pocket.world, pocket.getId())]
+    fun getPrivatePocketOwner(pocket: Pocket<*, *>): UUID? = privatePockets.inverse()[PocketInfo(pocket.world, pocket.id)]
 
     fun removePrivatePocketOwner(playerUUID: UUID): Boolean {
         privatePockets.remove(playerUUID) ?: return false
@@ -103,6 +102,6 @@ class PrivateRegistry(
         }
 
         @JvmStatic
-        val instance: PrivateRegistry get() = getInstance(SubsystemTypes.PRIVATE.value())!!
+        val instance: PrivateRegistry get() = getInstance(SubsystemTypes.PRIVATE)!!
     }
 }

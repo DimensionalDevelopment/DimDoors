@@ -38,7 +38,7 @@ object TesselatingRecipeProvider {
             .save(exporter, DimensionalDoors.id("enduring_fibers"))
         ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.RIFT_PEARL)
             .pattern("XO")
-            .define('X', Ingredient.of(ModItems.STABLE_FABRIC.value())).define('O', Items.ENDER_PEARL)
+            .define('X', Ingredient.of(ModItems.STABLE_FABRIC)).define('O', Items.ENDER_PEARL)
             .unlockedBy("stable_fabric", ModItems.STABLE_FABRIC.hasItems())
             .save(exporter, DimensionalDoors.id("rift_pearl"))
         ShapedTesselatingRecipeJsonBuilder.shaped(ModBlocks.BLACK_FABRIC)
@@ -131,5 +131,4 @@ object TesselatingRecipeProvider {
     }
 
     fun ItemLike.hasItems() = InventoryChangeTrigger.TriggerInstance.hasItems(this)
-    fun Holder<out ItemLike>.hasItems() = InventoryChangeTrigger.TriggerInstance.hasItems(this.value())
 }

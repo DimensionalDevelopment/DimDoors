@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world.structure.processors
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Dynamic
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
@@ -47,7 +48,7 @@ class DestinationDataModifier(val destinations: Map<Int, Tag>) :
         return tag
     }
 
-    public override fun getType(): StructureProcessorType<*> = ModStructureProccessors.DESTINATION_DATA.value()
+    public override fun getType(): StructureProcessorType<*> = ModStructureProccessors.DESTINATION_DATA
 
     private fun getMarkerId(data: CompoundTag): Int {
         val destination = data.getCompound("destination")
@@ -69,7 +70,7 @@ class DestinationDataModifier(val destinations: Map<Int, Tag>) :
         }
 
         @JvmField
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<DestinationDataModifier> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 Codec.unboundedMap(
                     CodecUtils.STRING_INT, Codec.PASSTHROUGH.xmap(
                         { a -> a.convert(NbtOps.INSTANCE).getValue() },

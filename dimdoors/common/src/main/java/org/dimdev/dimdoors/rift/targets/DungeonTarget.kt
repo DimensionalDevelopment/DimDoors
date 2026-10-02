@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import org.dimdev.dimdoors.ModRegistryKeys
@@ -78,7 +79,7 @@ class DungeonTarget(
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> Products.and(
+        val CODEC: MapCodec<DungeonTarget> = RecordCodecBuilder.mapCodec<DungeonTarget> { instance -> Products.and(
                 common(instance),
                 ResourceKey.codec(ModRegistryKeys.POCKET_GROUPS).fieldOf("dungeonGroup").forGetter(DungeonTarget::dungeonGroup)
             ).apply(

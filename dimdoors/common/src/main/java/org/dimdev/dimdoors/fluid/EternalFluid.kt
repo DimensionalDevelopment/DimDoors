@@ -20,11 +20,11 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.item.ModItems
 
 abstract class EternalFluid : FlowingFluid() {
-    override fun getFlowing(): Fluid = ModFluids.FLOWING_ETERNAL_FLUID.value()
+    override fun getFlowing(): Fluid = ModFluids.FLOWING_ETERNAL_FLUID
 
-    override fun getSource(falling: Boolean): FluidState = ModFluids.ETERNAL_FLUID.value().defaultFluidState().setValue(FALLING, falling)
+    override fun getSource(falling: Boolean): FluidState = ModFluids.ETERNAL_FLUID.defaultFluidState().setValue(FALLING, falling)
 
-    override fun getBucket(): Item = ModItems.ETERNAL_FLUID_BUCKET.value()
+    override fun getBucket(): Item = ModItems.ETERNAL_FLUID_BUCKET
 
     override fun randomTick(level: Level, blockPos: BlockPos, fluidState: FluidState, randomSource: RandomSource) {}
 
@@ -36,7 +36,7 @@ abstract class EternalFluid : FlowingFluid() {
     override fun getDropOff(levelReader: LevelReader) = if (levelReader.dimensionType().ultraWarm()) 4 else 2
 
     override fun createLegacyBlock(fluidState: FluidState): BlockState =
-        ModBlocks.ETERNAL_FLUID.value().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState))
+        ModBlocks.ETERNAL_FLUID.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState))
 
     override fun isSame(fluid: Fluid): Boolean = fluid === ModFluids.ETERNAL_FLUID || fluid === ModFluids.FLOWING_ETERNAL_FLUID
 
@@ -79,7 +79,7 @@ abstract class EternalFluid : FlowingFluid() {
         if (direction == Direction.DOWN) {
             if (levelAccessor.getFluidState(blockPos).`is`(FluidTags.WATER)) {
                 if (blockState.block is LiquidBlock) {
-                    levelAccessor.setBlock(blockPos, ModBlocks.BLACK_ANCIENT_FABRIC.value().defaultBlockState(), 3)
+                    levelAccessor.setBlock(blockPos, ModBlocks.BLACK_ANCIENT_FABRIC.defaultBlockState(), 3)
                 }
 
                 return
@@ -100,7 +100,7 @@ abstract class EternalFluid : FlowingFluid() {
             builder.add(LEVEL)
         }
 
-        override fun getSource() = ModFluids.ETERNAL_FLUID.value()
+        override fun getSource() = ModFluids.ETERNAL_FLUID
 
         override fun isSource(fluidState: FluidState): Boolean = false
 
@@ -108,7 +108,7 @@ abstract class EternalFluid : FlowingFluid() {
     }
 
     open class Still : EternalFluid() {
-        override fun getSource() = ModFluids.ETERNAL_FLUID.value().defaultFluidState().type
+        override fun getSource() = ModFluids.ETERNAL_FLUID.defaultFluidState().type
 
         override fun isSource(fluidState: FluidState) = true
 

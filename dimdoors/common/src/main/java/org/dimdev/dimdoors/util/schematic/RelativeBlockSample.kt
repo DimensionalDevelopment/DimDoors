@@ -53,6 +53,7 @@ class RelativeBlockSample(@JvmField val schematic: Schematic) {
 
         for (blockEntityNbt in schematic.blockEntities) {
             val arr = blockEntityNbt.getIntArray("Pos")
+            if (arr.size < 3) continue
             val position = BlockPos(arr[0], arr[1], arr[2])
 
             blockDataContainer.computeIfAbsent(position) { BlockData() }.blockEntity = toVanilla(blockEntityNbt)

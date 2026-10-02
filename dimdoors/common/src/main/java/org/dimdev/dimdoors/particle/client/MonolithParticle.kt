@@ -27,8 +27,8 @@ class MonolithParticle(world: ClientLevel, x: Double, y: Double, z: Double) : Pa
         matrices.scale(-1.0f, -1.0f, 1.0f)
         matrices.translate(0.0, -1.1009999513626099, 1.5)
         val immediate = Minecraft.getInstance().renderBuffers().bufferSource()
-        val vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().renderType(DimensionalDoors.id("textures/mob/monolith/solid/monolith_14.png")))
-        MonolithRenderer.getInstance().renderToBuffer(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.NO_OVERLAY, -0x1)
+        val vertexConsumer2 = immediate.getBuffer(MonolithRenderer.instance.renderType(DimensionalDoors.id("textures/mob/monolith/solid/monolith_14.png")))
+        MonolithRenderer.instance.renderToBuffer(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.NO_OVERLAY, -0x1)
         immediate.endBatch()
     }
 

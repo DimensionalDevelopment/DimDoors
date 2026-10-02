@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.core.Holder
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
@@ -20,5 +19,5 @@ object SubsystemTypes : PlatformRegistry<SubSystem.Type<*>>(ModRegistryKeys.SUBS
         name: String,
         supplier: () -> T,
         codec: MapCodec<T>
-    ): Holder<SubSystem.Type<T>> = create(name) { SubSystem.Type("$modid/$name", supplier, codec) }
+    ): SubSystem.Type<T> = create(name) { SubSystem.Type("$modid/$name", supplier, codec) }
 }

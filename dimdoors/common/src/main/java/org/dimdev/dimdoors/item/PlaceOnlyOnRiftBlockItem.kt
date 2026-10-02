@@ -36,22 +36,13 @@ class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem
     }
 
     override fun place(ctx: BlockPlaceContext): InteractionResult {
-        if (ctx.getPlayer() == null) {
-            return InteractionResult.FAIL
-        }
+        val player = ctx.player ?: return InteractionResult.FAIL
 
-        val context = if (ctx is DimDoorBlockPlaceContext) ctx else DimDoorBlockPlaceContext(
-            ctx,
-            RaycastHelper.findDetachRift(ctx.getPlayer()!!, RaycastHelper.DETACH)
-        )
+        val context = ctx as? DimDoorBlockPlaceContext ?: DimDoorBlockPlaceContext(ctx, findDetachRift(player, RaycastHelper.DETACH))
 
-        if (!context.getLevel().getBlockState(context.getClickedPos()).`is`(ModBlocks.DETACHED_RIFT)) {
-            return InteractionResult.FAIL
-        }
+        if (!context.level.getBlockState(context.clickedPos).`is`(ModBlocks.DETACHED_RIFT)) return InteractionResult.FAIL
 
-        if (context.getLevel().isClientSide) {
-            return super.place(context)
-        }
+        if (context.level.isClientSide) return super.place(context)
 
         val detachedRiftBlockEntity = context.level.getBlockEntity(context.clickedPos)?.castOrNull<DetachedRiftBlockEntity>() ?: return InteractionResult.FAIL
 
@@ -66,7 +57,7 @@ class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem
         return result
     }
 
-    private fun placeOnDetachedRift(player: Player, hand: InteractionHand?, stack: ItemStack?): InteractionResult {
+    private fun placeOnDetachedRift(player: Player, hand: InteractionHand, stack: ItemStack): InteractionResult {
         val hitResult = findDetachRift(player, RaycastHelper.DETACH)
         if (!hitsDetachedRift(hitResult, player.level())) {
             return InteractionResult.FAIL

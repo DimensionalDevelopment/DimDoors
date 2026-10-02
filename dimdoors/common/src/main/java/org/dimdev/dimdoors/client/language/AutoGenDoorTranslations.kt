@@ -62,7 +62,7 @@ object AutoGenDoorTranslations {
 
     private fun applyMappings(
         output: BiConsumer<String, String>,
-        mappings: MutableMap<ResourceLocation?, ResourceLocation?>,
+        mappings: Map<ResourceLocation, ResourceLocation>,
         type: String,
         prefixKey: String?,
         fallbackPrefix: String?,

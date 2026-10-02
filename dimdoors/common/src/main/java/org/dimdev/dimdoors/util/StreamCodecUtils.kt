@@ -2,20 +2,14 @@ package org.dimdev.dimdoors.util
 
 import io.netty.buffer.ByteBuf
 import io.netty.handler.codec.EncoderException
-import net.minecraft.core.Holder
-import net.minecraft.core.Registry
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.Music
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.Type
-import org.dimdev.dimcore.api.TypeHasHolder
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
@@ -63,7 +57,5 @@ class StreamCodecUtils {
         }
     }
 }
-fun <T : Any> Registry<T>.holderStreamCodec(): StreamCodec<RegistryFriendlyByteBuf, Holder<out T>> = ResourceLocation.STREAM_CODEC.cast<RegistryFriendlyByteBuf>().map({ this.getHolderOrThrow(ResourceKey.create(this.key(), it)) }, { it.unwrapKey().orElseThrow().location() })
-fun <T : TypeHasHolder<T>> StreamCodec<RegistryFriendlyByteBuf, Holder<out Type<T>>>.streamCodec(): StreamCodec<RegistryFriendlyByteBuf, T> = this.dispatch({ it.type }, { it.value().streamCodec!! })
 
 fun <B : ByteBuf, T : Any> StreamCodec<B, T>.nullable(): StreamCodec<B, T?> = ByteBufCodecs.optional(this).map<T?>(Optional<T>::getOrNull, Optional<T>::ofNullable)

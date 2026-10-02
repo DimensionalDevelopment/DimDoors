@@ -18,7 +18,6 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.CrossbowItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.clientPlatform
@@ -48,7 +47,6 @@ import org.dimdev.dimdoors.particle.ModParticleTypes
 import org.dimdev.dimdoors.particle.client.LimboAshParticle
 import org.dimdev.dimdoors.particle.client.MonolithParticle
 import org.dimdev.dimdoors.particle.client.RiftParticle
-import org.dimdev.dimdoors.particle.client.RiftParticleOptions
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
@@ -62,7 +60,6 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         clientSided = sided
         clientPlatform.onClientPlayerJoin(ClientPacketListener::clearPocketAddons)
         registerCompats()
-        EnvironmentAddonClient.init()
 
         sided.onPreRender(this::preRender)
 
@@ -82,7 +79,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         specialParticleRegister.register<SimpleParticleType>(
             ModParticleTypes.MONOLITH
         ) { _, clientLevel, x, y, z, _, _, _ -> MonolithParticle(clientLevel, x, y, z) }
-        regularParticleRegister.register<RiftParticleOptions>(ModParticleTypes.RIFT) { spriteProvider -> RiftParticle.Factory(spriteProvider) }
+        regularParticleRegister.register(ModParticleTypes.RIFT) { spriteProvider -> RiftParticle.Factory(spriteProvider) }
         regularParticleRegister.register<SimpleParticleType>(ModParticleTypes.LIMBO_ASH) { spriteProvider -> LimboAshParticle.Factory(spriteProvider) }
 
     }
@@ -114,7 +111,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
     }
 
     override fun initModelLayers(consumer: (ModelLayerLocation, () -> LayerDefinition) -> Unit) {
-        consumer.invoke(ModEntityModelLayers.MONOLITH, MonolithModel::getTexturedModelData)
+        consumer.invoke(ModEntityModelLayers.MONOLITH, MonolithModel::texturedModelData)
     }
 
     fun preRender(ticks: Long, deltaTick: Float) {
@@ -143,6 +140,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
     }
 
     override fun delayedInit() {
+        EnvironmentAddonClient.init()
         initGeneratedDoorCutouts()
         clientPlatform.register(
             RenderType.cutout(),
@@ -173,7 +171,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
             val registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar()
 
             val generatedBlocks =
-                registrar.gennedIds.mapNotNull<ResourceLocation?, Block>(BuiltInRegistries.BLOCK::get).toTypedArray()
+                registrar.gennedIds.mapNotNull(BuiltInRegistries.BLOCK::get).toTypedArray()
             if (generatedBlocks.isNotEmpty()) { clientPlatform.register(RenderType.cutout(), *generatedBlocks) }
         }
 

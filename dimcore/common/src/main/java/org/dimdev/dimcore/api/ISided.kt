@@ -1,15 +1,12 @@
 package org.dimdev.dimcore.api
 
 import com.mojang.serialization.Codec
-import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
-import net.minecraft.server.packs.PackType
-import net.minecraft.server.packs.resources.ResourceManager
 import org.dimdev.dimcore.DimCore.platform
 import java.nio.file.Path
 
-interface ISided<T : ISided<T>> : IRegister, ICreativeTabHandler {
+interface ISided<T : ISided<T>> : ICreativeTabHandler {
     fun self(): T = this.cast()
 
     fun modId(): String

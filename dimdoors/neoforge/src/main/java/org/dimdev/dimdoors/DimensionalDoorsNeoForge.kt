@@ -46,7 +46,7 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
     override fun createFlowingEternalFluid(): Fluid {
         return object : EternalFluid.Flowing() {
             override fun getFluidType(): FluidType {
-                return ModFluidTypes.ETERNAL.value()
+                return ModFluidTypes.ETERNAL
             }
         }
     }
@@ -54,19 +54,19 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
     override fun createEternalFluid(): FlowingFluid {
         return object : EternalFluid.Still() {
             override fun getFluidType(): FluidType {
-                return ModFluidTypes.ETERNAL.value()
+                return ModFluidTypes.ETERNAL
             }
         }
     }
 
     override fun createFlowingLeakFluid(): Fluid {
         return object : LeakFluid.Flowing() {
-            override fun getFluidType(): FluidType = ModFluidTypes.LEAK.value()
+            override fun getFluidType(): FluidType = ModFluidTypes.LEAK
         }
     }
 
     override fun createLeakFluid(): FlowingFluid = object : LeakFluid.Still() {
-        override fun getFluidType(): FluidType = ModFluidTypes.LEAK.value()
+        override fun getFluidType(): FluidType = ModFluidTypes.LEAK
     }
 
     override fun registerGameRule(
@@ -99,6 +99,6 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
     override val enderPearlsTag: TagKey<Item> get() = Tags.Items.ENDER_PEARLS
 
     companion object {
-        val TESSELLATING = EnumProxy(RecipeBookType::class.java)
+        @JvmField val TESSELLATING = EnumProxy(RecipeBookType::class.java)
     }
 }

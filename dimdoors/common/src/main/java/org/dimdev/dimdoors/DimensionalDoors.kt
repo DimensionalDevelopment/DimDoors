@@ -64,10 +64,7 @@ import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.world.DataValues
-import org.dimdev.dimdoors.world.ModBiomes
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.ModStructureProccessors
+import org.dimdev.dimdoors.world.*
 import org.dimdev.dimdoors.world.carvers.ModCarvers
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.conditions.DecayConditions
@@ -84,13 +81,15 @@ import org.slf4j.Logger
 class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsSided<*>>>, EntityAttributeProvider, PacketProvider, RegistrationHooks, PackProvider, ServerReloadListenerProvider {
 
 
-    override fun init(sided: IDimensionalDoorsSided<*>) {
+    override fun initRegistries(sided: IDimensionalDoorsSided<*>) {
         Companion.sided = sided
 
         reloadConfig()
 
         registerRegistries()
+    }
 
+    override fun init(sided: IDimensionalDoorsSided<*>) {
         ModRecipeBookTypes.register()
 
         ModDataComponentTypes.register()
@@ -100,7 +99,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         ModCarvers.register()
         ModRecipeTypes.register()
         ModRecipeSerializers.register()
-        ModScreenHandlerTypes.init()
+        ModScreenHandlerTypes.register()
         ModSoundEvents.register()
         ModFluids.register()
         ModEntityTypes.register()
@@ -110,10 +109,12 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         ModBlockEntityTypes.register()
         ModCarvers.register()
         ModBiomes.register()
+        ModChunkGenerators.register()
         ModStats.register()
         ModParticleTypes.register()
         ModCriteria.register()
         ModStructureProccessors.register()
+        ModStructuresPieces.register()
 
         DataValues.register()
 
@@ -197,8 +198,8 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
     }
 
     override fun registrationHooks(hooks: Hooks) {
-        hooks.onEachEntry(Registries.BLOCK, dimensionalDoorBlockRegistrar::handleEntry)
-        hooks.onEachEntry(Registries.ITEM, dimensionalDoorItemRegistrar::handleEntry)
+        hooks.onEachEntry(Registries.BLOCK, DimensionalDoorBlockRegistrar::handleEntry)
+        hooks.onEachEntry(Registries.ITEM, DimensionalDoorItemRegistrar::handleEntry)
     }
 
     override fun registerPackets(packetRegister: PacketRegister) {
@@ -223,13 +224,11 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         @JvmField
         val LOGGER: Logger = LogUtils.getLogger()
 
-        private lateinit var dimensionalDoorItemRegistrar: DimensionalDoorItemRegistrar
-        private lateinit var dimensionalDoorBlockRegistrar: DimensionalDoorBlockRegistrar
 
         private lateinit var sided: IDimensionalDoorsSided<*>
 
         @JvmStatic fun id(id: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, id)
-        @JvmStatic fun String.id(): ResourceLocation = id(this)
+        @JvmStatic @JvmName("idOf") fun String.id(): ResourceLocation = id(this)
 
         @JvmStatic
         val server: MinecraftServer get() = platform.server
@@ -293,14 +292,10 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         private fun shouldCancelBlockModification(level: Level, pos: BlockPos, actor: Entity?): Boolean = !(actor is Player && actor.isCreative) && PocketListenerUtil.getAddon<PreventBlockModificationAddon>(PocketAddons.PREVENT_BLOCK_MODIFICATION_ADDON, level, pos) != null
 
         @JvmStatic
-        fun getDimensionalDoorItemRegistrar(): DimensionalDoorItemRegistrar {
-            return dimensionalDoorItemRegistrar
-        }
+        fun getDimensionalDoorItemRegistrar(): DimensionalDoorItemRegistrar = DimensionalDoorItemRegistrar
 
         @JvmStatic
-        fun getDimensionalDoorBlockRegistrar(): DimensionalDoorBlockRegistrar {
-            return dimensionalDoorBlockRegistrar
-        }
+        fun getDimensionalDoorBlockRegistrar(): DimensionalDoorBlockRegistrar = DimensionalDoorBlockRegistrar
 
         @JvmStatic
         fun afterBlockBreak(world: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?) {

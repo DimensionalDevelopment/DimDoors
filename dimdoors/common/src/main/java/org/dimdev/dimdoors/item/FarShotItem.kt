@@ -26,8 +26,8 @@ open class FarShotItem(properties: Properties) : BowItem(properties) {
         ammo: ItemStack,
         isCrit: Boolean
     ): Projectile {
-        val enchantments = weapon.getEnchantments()
-        val registry = level.registryAccess().asGetterLookup().lookupOrThrow<Enchantment?>(Registries.ENCHANTMENT)
+        val enchantments = weapon.enchantments
+        val registry = level.registryAccess().asGetterLookup().lookupOrThrow(Registries.ENCHANTMENT)
 
         val hasFlaming = enchantments.getLevel(registry.getOrThrow(Enchantments.FLAME)) > 0
         val punchLevel = enchantments.getLevel(registry.getOrThrow(Enchantments.PUNCH))
@@ -35,7 +35,7 @@ open class FarShotItem(properties: Properties) : BowItem(properties) {
         return FarShotEnderPearlEntity(level, shooter, hasFlaming, punchLevel)
     }
 
-    override fun getAllSupportedProjectiles(): Predicate<ItemStack?> {
+    override fun getAllSupportedProjectiles(): Predicate<ItemStack> {
         return PEARLS_ONLY
     }
 

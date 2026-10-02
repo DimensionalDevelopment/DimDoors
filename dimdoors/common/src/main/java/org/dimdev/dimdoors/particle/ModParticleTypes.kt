@@ -9,6 +9,6 @@ import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 
 object ModParticleTypes : PlatformRegistry<ParticleType<*>>(Registries.PARTICLE_TYPE, BuiltInRegistries.PARTICLE_TYPE, getSided()) {
     val MONOLITH = create("monolith") { object : SimpleParticleType(true) {} }
-    val RIFT = create("rift") { RiftParticleType() }
+    val RIFT = create("rift") { RiftParticleType }
     val LIMBO_ASH = create("limbo_ash") { object : SimpleParticleType(false) {} }
 }

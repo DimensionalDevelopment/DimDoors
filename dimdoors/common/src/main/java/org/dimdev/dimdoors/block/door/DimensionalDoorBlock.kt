@@ -53,7 +53,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
 ) : WaterLoggableDoorBlock(settings.pushReaction(PushReaction.BLOCK), blockSetType, addWaterlog), TraversableRiftBlock<T> {
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)
 
-    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super.onBlockExploded(state, level, pos, explosion)
+    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
     override fun validStateForTraversal(state: BlockState) = state.block === this && state.getValue(OPEN)
 
@@ -63,7 +63,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
     }
 
     protected fun closeDoorBehind(world: Level, pos: BlockPos) {
-        world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue<Boolean?, Boolean?>(OPEN, false))
+        world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(OPEN, false))
     }
 
     public override fun useWithoutItem(
@@ -81,7 +81,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
         return InteractionResult.SUCCESS
     }
 
-    public override fun canBeReplaced(blockState: BlockState, blockPlaceContext: BlockPlaceContext) = super.canBeReplaced(blockState, blockPlaceContext) || blockState.block === ModBlocks.DETACHED_RIFT.value()
+    public override fun canBeReplaced(blockState: BlockState, blockPlaceContext: BlockPlaceContext) = super.canBeReplaced(blockState, blockPlaceContext) || blockState.block === ModBlocks.DETACHED_RIFT
 
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = if (state.getValue(HALF) == DoubleBlockHalf.UPPER) null else riftBlockEnityType.create(pos, state)
 
@@ -114,7 +114,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
             }
             return Blocks.AIR.defaultBlockState()
         } else {
-            return if (doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos)) ModBlocks.DETACHED_RIFT.value().defaultBlockState() else state
+            return if (doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos)) ModBlocks.DETACHED_RIFT.defaultBlockState() else state
         }
     }
 
@@ -142,7 +142,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
 
     override fun stateContainsRift(oldState: BlockState): Boolean = oldState.getValue(HALF) == DoubleBlockHalf.LOWER
 
-    fun baseBlock() = BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)))
+    fun baseBlock() = BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar()[BuiltInRegistries.BLOCK.getKey(this)])
 
     //    @Override
     //    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
@@ -152,7 +152,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState) = getRift(world, pos, state)
 
     override fun revertToBaseVariant(world: ServerLevel, pos: BlockPos, state: BlockState) {
-        var state = getVisualBlockState(state)
+        val state = getVisualBlockState(state)
 
         val upperPos: BlockPos?
         val upperState: BlockState?

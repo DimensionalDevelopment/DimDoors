@@ -103,7 +103,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
     open class CreativeTabPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Any>(KEY, sided) {
         fun create(name: String, block: CreativeModeTab.Builder.() -> Unit): CreativeTab {
             val tab = CreativeTab()
-            tab.holder = (create(name) { CreativeTabType { block(); displayItems { _, output -> tab.fill(output) } } } as Holder<*>).cast()
+            tab.holder = (create<Any>(name) { CreativeTabType { block(); displayItems { _, output -> tab.fill(output) } } } as Holder<*>).cast()
             return tab
         }
 
@@ -138,7 +138,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
 
     open class FluidPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Fluid>(Registries.FLUID, BuiltInRegistries.FLUID, sided)
     open class DataValuePlatformRegistry(sided: ISided<*>) : PlatformRegistry<Any>(KEY, sided) {
-        fun <T> create(name: String, defaultValue: () -> T, codec: Codec<T>, streamCodec: StreamCodec<in RegistryFriendlyByteBuf, T>? = null): DataValue<T> = create(name) { DataValueType(defaultValue, codec, streamCodec) as DataValue<T> }
+        fun <T> create(name: String, defaultValue: () -> T, codec: Codec<T>, streamCodec: StreamCodec<in RegistryFriendlyByteBuf, T>? = null): DataValue<T> = create<Any>(name) { DataValueType(defaultValue, codec, streamCodec) } as DataValue<T>
 
         companion object {
             val KEY: ResourceKey<Registry<Any>> = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("dimcore", "data_value"))

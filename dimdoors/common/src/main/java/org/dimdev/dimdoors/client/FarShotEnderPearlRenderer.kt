@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.world.item.ItemDisplayContext
 import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity
 
-open class FarShotEnderPearlRenderer protected constructor(context: EntityRendererProvider.Context) :
+open class FarShotEnderPearlRenderer(context: EntityRendererProvider.Context) :
     ThrownItemRenderer<FarShotEnderPearlEntity>(context) {
     private val itemRenderer = context.itemRenderer
 

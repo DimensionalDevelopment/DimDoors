@@ -10,7 +10,6 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.sounds.Music
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.tags.TagKey
@@ -21,7 +20,8 @@ import java.util.function.Function
 import kotlin.jvm.optionals.getOrNull
 
 object CodecUtils {
-    fun <T : Any> MapCodec<Optional<T>>.nullable(): MapCodec<T?> = xmap({ it.getOrNull() }, { Optional.ofNullable(it) })
+
+    fun <O, T : Any> MapCodec<Optional<T>>.nullableForGetter(getter: (O) -> T?): RecordCodecBuilder<O, Optional<T>> = forGetter { Optional.ofNullable(getter(it)) }
 
     private fun createMusic(sound: Holder<SoundEvent?>): Music {
         return Music(sound, 0, 0, true)
@@ -31,9 +31,7 @@ object CodecUtils {
     val GAME_MUSIC: Codec<Music> = Codec.withAlternative(Music.CODEC, SoundEvent.CODEC, ::createMusic)
 
     @JvmField
-    val STRING_INT = Codec.STRING.xmap<Int>( { s -> s.toInt() }, { it.toString()})
-
-    var manager: ResourceManager? = null
+    val STRING_INT = Codec.STRING.xmap( { s -> s.toInt() }, { it.toString()})
 
     fun <T : GenericDecayCondition<*>, V> decayConditionFields(
         instance: RecordCodecBuilder.Instance<T>,

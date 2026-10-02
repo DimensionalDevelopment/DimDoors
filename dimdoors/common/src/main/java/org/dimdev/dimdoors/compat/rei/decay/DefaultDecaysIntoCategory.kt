@@ -5,17 +5,20 @@ import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
+import me.shedaniel.rei.api.common.entry.EntryStack
 import me.shedaniel.rei.api.common.util.EntryStacks
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
+import net.minecraft.world.item.ItemStack
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient
 
 class DefaultDecaysIntoCategory : DisplayCategory<DecayPatternDisplay> {
     override fun getCategoryIdentifier() = TesselatingReiCompatClient.DECAYS_INTO
 
-    override fun getTitle() = Component.translatable("category.dimdoors.decays_into")
+    override fun getTitle(): MutableComponent = Component.translatable("category.dimdoors.decays_into")
 
-    override fun getIcon() = EntryStacks.of(ModBlocks.DRIFTWOOD_FENCE)
+    override fun getIcon(): EntryStack<ItemStack> = EntryStacks.of(ModBlocks.DRIFTWOOD_FENCE)
 
     override fun setupDisplay(display: DecayPatternDisplay, bounds: Rectangle): MutableList<Widget> {
         val startPoint = Point(bounds.centerX - 58, bounds.centerY - 27)

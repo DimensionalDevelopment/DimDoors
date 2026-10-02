@@ -18,7 +18,6 @@ import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.OverworldCl
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.OverWorldSkyData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.OverworldWeatherData
 import org.joml.Matrix4f
-import java.util.function.Supplier
 
 object OverworldEnvironmentRendering {
     fun renderSky(
@@ -42,14 +41,14 @@ object OverworldEnvironmentRendering {
         val tesselator = Tesselator.getInstance()
         RenderSystem.depthMask(false)
         RenderSystem.setShaderColor(g, h, i, 1.0f)
-        val shaderInstance = RenderSystem.getShader()
+        val shaderInstance = RenderSystem.getShader()!!
         levelRenderer.skyBuffer!!.bind()
         levelRenderer.skyBuffer!!.drawWithShader(poseStack.last().pose(), projectionMatrix, shaderInstance)
         VertexBuffer.unbind()
         RenderSystem.enableBlend()
         val fs = info.getSunriseColor(info.timeOfDay)
         if (fs != null) {
-            RenderSystem.setShader(Supplier { GameRenderer.getPositionColorShader() })
+            RenderSystem.setShader { GameRenderer.getPositionColorShader() }
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
             poseStack.pushPose()
             poseStack.mulPose(Axis.XP.rotationDegrees(90.0f))
@@ -62,7 +61,6 @@ object OverworldEnvironmentRendering {
             val matrix4f3 = poseStack.last().pose()
             val bufferBuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR)
             bufferBuilder.addVertex(matrix4f3, 0.0f, 100.0f, 0.0f).setColor(k, l, m, fs[3])
-            val n = 16
 
             for (o in 0..16) {
                 val p = o.toFloat() * (Math.PI.toFloat() * 2f) / 16.0f
@@ -89,7 +87,7 @@ object OverworldEnvironmentRendering {
         poseStack.mulPose(Axis.XP.rotationDegrees(info.timeOfDay * 360.0f))
         val matrix4f4 = poseStack.last().pose()
         var l = 30.0f
-        RenderSystem.setShader(Supplier { GameRenderer.getPositionTexShader() })
+        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
         RenderSystem.setShaderTexture(0, LevelRenderer.SUN_LOCATION)
         var bufferBuilder2 = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
         bufferBuilder2.addVertex(matrix4f4, -l, 100.0f, -l).setUv(0.0f, 0.0f)
@@ -120,7 +118,7 @@ object OverworldEnvironmentRendering {
             levelRenderer.starBuffer!!.drawWithShader(
                 poseStack.last().pose(),
                 projectionMatrix,
-                GameRenderer.getPositionShader()
+                GameRenderer.getPositionShader()!!
             )
             VertexBuffer.unbind()
             skyFogSetup.run()

@@ -34,7 +34,7 @@ class FarShotEnderPearlEntity : ThrowableItemProjectile {
 
     @JvmOverloads
     constructor(level: Level, shooter: LivingEntity, hasFlaming: Boolean = false, punchLevel: Int = 0) : super(
-        ModEntityTypes.FARSHOT_ENDER_PEARL.value(), shooter, level
+        ModEntityTypes.FARSHOT_ENDER_PEARL, shooter, level
     ) {
         this.setTargetOnFire = hasFlaming
         this.punchLevel = punchLevel

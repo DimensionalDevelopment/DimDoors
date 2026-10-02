@@ -40,9 +40,10 @@ interface Equation {
                 return when {
                     !toParse.matches("[a-zA-Z_][a-zA-Z0-9_]*".toRegex()) -> null
                     else -> newEquation({ map ->
-                        if (map.containsKey(toParse)) map[toParse]
-                        LOGGER.error("Variable \"$toParse\" was not passed to equation! Returning 0 as fallback.")
-                        0.0
+                        map[toParse] ?: run {
+                            LOGGER.error("Variable \"$toParse\" was not passed to equation! Returning 0 as fallback.")
+                            0.0
+                        }
                     }) { stringBuilder -> stringBuilder.append(toParse) }
                 }
             }
@@ -269,11 +270,11 @@ interface Equation {
             function("max", 2, -1) { stringDoubleMap, equations -> equations.maxOf { it.apply(stringDoubleMap) } }
 
             // min
-            function("max", 2, -1) { stringDoubleMap, equations -> equations.minOf { it.apply(stringDoubleMap) } }
+            function("min", 2, -1) { stringDoubleMap, equations -> equations.minOf { it.apply(stringDoubleMap) } }
 
             // clamp
             function("clamp", 3, 3) { func -> Mth.clamp(
-                func.invoke(1),
+                func.invoke(0),
                 func.invoke(1),
                 func.invoke(2))
             }
@@ -320,9 +321,9 @@ interface Equation {
         val CODEC= Codec.withAlternative(Codec.STRING, Codec.INT, Int::toString).xmap(::parseOrCrash, Equation::asString)
 
 
-        val ZERO: Equation = parseOrCrash("0")
-        val FIVE: Equation = parseOrCrash("5")
-        val ONE: Equation = parseOrCrash("1")
+        val ZERO: Equation by lazy { parseOrCrash("0") }
+        val FIVE: Equation by lazy { parseOrCrash("5") }
+        val ONE: Equation by lazy { parseOrCrash("1") }
 
         const val FALSE: Double = 0.0
     }

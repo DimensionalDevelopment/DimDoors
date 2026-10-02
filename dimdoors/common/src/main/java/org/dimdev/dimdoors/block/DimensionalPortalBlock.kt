@@ -47,15 +47,15 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
         builder.add(FACING)
     }
 
-    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = Shapes.empty()
+    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
 
     public override fun getOcclusionShape(state: BlockState, level: BlockGetter, pos: BlockPos): VoxelShape = Shapes.empty()
 
-    public override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = Shapes.empty()
+    public override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
 
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)
 
-    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super.onBlockExploded(state, level, pos, explosion)
+    override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
     override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) = rift.detach()
 
@@ -74,9 +74,9 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
         return Matrix4d().inverseRotateLocal(facing.eulerAngle)
     }
 
-    override fun rotate(state: BlockState, rotation: Rotation) = state.setValue(FACING, rotation.rotate(state.getValue(FACING)))
+    override fun rotate(state: BlockState, rotation: Rotation): BlockState = state.setValue(FACING, rotation.rotate(state.getValue(FACING)))
 
-    override fun mirror(state: BlockState, mirror: Mirror) = if (mirror == Mirror.NONE) state else state.rotate(mirror.getRotation(state.getValue(FACING)))
+    override fun mirror(state: BlockState, mirror: Mirror): BlockState = if (mirror == Mirror.NONE) state else state.rotate(mirror.getRotation(state.getValue(FACING)))
 
     override fun isExitFlipped() = true
 
@@ -101,7 +101,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
     }
 
     fun baseBlock(): Block {
-        return BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)))
+        return BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar()[BuiltInRegistries.BLOCK.getKey(this)])
     }
 
     override fun getRenderShape(blockState: BlockState): RenderShape {
@@ -113,7 +113,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
     }
 
     companion object {
-        val CODEC = simpleCodec(::DimensionalPortalBlock)
+        val CODEC: MapCodec<DimensionalPortalBlock> = simpleCodec(::DimensionalPortalBlock)
 
         @JvmField
         var FACING: DirectionProperty = HorizontalDirectionalBlock.FACING

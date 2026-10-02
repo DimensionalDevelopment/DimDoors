@@ -20,9 +20,9 @@ import java.util.function.Predicate
 object RaycastHelper {
     const val REACH_DISTANCE: Int = 16
     @JvmField
-    var DETACH: Predicate<BlockEntity> = { blockEntity -> blockEntity is DetachedRiftBlockEntity }
+    var DETACH: Predicate<BlockEntity?> = Predicate { blockEntity -> blockEntity is DetachedRiftBlockEntity }
     @JvmField
-    var RIFT: Predicate<BlockEntity> = { blockEntity: BlockEntity -> blockEntity is Rift }
+    var RIFT: Predicate<BlockEntity?> = Predicate { blockEntity -> blockEntity is Rift }
 
     var transformFunction: BiConsumer<Level?, Vector3d?> = BiConsumer { level: Level, pos: Vector3d? -> }
 
@@ -53,7 +53,7 @@ object RaycastHelper {
         return ProjectileUtil.getEntityHitResult(entity, vec3d, vec3d3, box, predicate, maxDistance)
     }
 
-    fun findDetachRift(entity: Entity, predicate: Predicate<BlockEntity>?): BlockHitResult {
+    fun findDetachRift(entity: Entity, predicate: Predicate<BlockEntity?>?): BlockHitResult {
         val eye = entity.getEyePosition(0f)
         val viewVec = entity.getViewVector(0f)
         val dest = eye.add(viewVec.x * REACH_DISTANCE, viewVec.y * REACH_DISTANCE, viewVec.z * REACH_DISTANCE)
@@ -66,7 +66,7 @@ object RaycastHelper {
     }
 
     @JvmField
-    var predicate: Predicate<BlockEntity>? = null
+    var predicate: Predicate<BlockEntity?>? = null
 
     fun projectileCast(entity: Entity, predicate: Predicate<Entity?>): HitResult {
         RaycastHelper.predicate = DETACH

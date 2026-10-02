@@ -8,7 +8,8 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 class RiftDataModifier(private val doorData: Holder<RiftData>?, private val ids: MutableList<Int>) : Modifier {
@@ -18,7 +19,7 @@ class RiftDataModifier(private val doorData: Holder<RiftData>?, private val ids:
         val riftConsumer: (Rift) -> Unit = if (doorData == null) {
             { rift -> rift.setDestination(VirtualTarget.NoneTarget) }
         } else {
-            { rift -> rift.data = doorData.value() }
+            { rift -> rift.data = doorData.value().copy() }
         }
 
         manager.foreachConsume { id, rift ->
@@ -36,13 +37,13 @@ class RiftDataModifier(private val doorData: Holder<RiftData>?, private val ids:
     companion object {
         val CODEC: MapCodec<RiftDataModifier> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                RiftData.HOLDER_CODEC.optionalFieldOf("rift_data").nullable().forGetter(RiftDataModifier::doorData),
+                RiftData.HOLDER_CODEC.optionalFieldOf("rift_data").nullableForGetter(RiftDataModifier::doorData),
                 Codec.INT_STREAM.xmap(
                     { a -> a.boxed().toList() },
                     { integers ->
                         integers.stream().mapToInt { obj -> obj.toInt() }
                     }).fieldOf("ids").forGetter(RiftDataModifier::ids)
-            ).apply(instance, ::RiftDataModifier)
+            ).apply(instance) { doorData, ids -> RiftDataModifier(doorData.getOrNull(), ids) }
         }
 
 

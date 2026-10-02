@@ -16,6 +16,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 
 object TargetResolver {
+    @JvmName("targetAs")
     fun <T : Target> target(location: Location?): T? {
         return location?.run { target<T>(this.world, this.blockPos, null) }
     }

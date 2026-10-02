@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.Util
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.ChunkPos
@@ -24,7 +23,7 @@ import java.util.function.Consumer
 import kotlin.streams.asSequence
 
 abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : AbstractPocket<T, V>, AddonProvider {
-    protected val addons = mutableMapOf<PocketAddonType, PocketAddon>()
+    protected val addons = mutableMapOf<PocketAddonType<*>, PocketAddon>()
     private var range = -1
     lateinit var box: BoundingBox
         protected set
@@ -57,7 +56,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     protected constructor()
 
-    override fun hasAddon(id: PocketAddonType): Boolean {
+    override fun hasAddon(id: PocketAddonType<*>): Boolean {
         return addons.containsKey(id)
     }
 
@@ -69,7 +68,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         return false
     }
 
-    fun removeAddon(type: PocketAddonType): Boolean {
+    fun removeAddon(type: PocketAddonType<*>): Boolean {
         return addons.remove(type) != null
     }
 
@@ -77,7 +76,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     fun streamAddon(): MutableCollection<PocketAddon> = addons.values
 
-    fun <T : PocketAddon> getAddon(type: PocketAddonType): T? = addons[type]?.cast()
+    fun <T : PocketAddon> getAddon(type: PocketAddonType<*>): T? = addons[type]?.cast()
 
     fun isInBounds(pos: BlockPos): Boolean = this.box.isInside(pos)
 
@@ -91,8 +90,6 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
     fun offsetOrigin(x: Int, y: Int, z: Int) {
         this.box.move(x, y, z)
     }
-
-    fun setSize(size: Vec3i) = setSize(size.x, size.y, size.z)
 
     fun setSize(x: Int, y: Int, z: Int) {
         this.box = BoundingBox.fromCorners(
@@ -164,12 +161,12 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     // TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
     abstract class PocketBuilder<T : Pocket<T, P>, P : PocketBuilder<T, P>> : AbstractPocketBuilder<T, P> {
-        protected var addons = mutableMapOf<Holder<out PocketAddonType>, PocketAddon.PocketBuilderAddon<*, *>>()
+        protected var addons = mutableMapOf<PocketAddonType<*>, PocketAddon.PocketBuilderAddon<*, *>>()
 
         protected var origin: Vec3i = Vec3i(0, 0, 0)
         protected var size: Vec3i = Vec3i(0, 0, 0)
         protected var expected: Vec3i = Vec3i(0, 0, 0)
-        protected lateinit var virtualLocation: VirtualLocation
+        protected var virtualLocation: VirtualLocation? = null
         protected var range: Int = -1
 
         constructor(addons: MutableList<PocketAddon.PocketBuilderAddon<*, *>>) {
@@ -188,7 +185,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         open fun initAddons() {
         }
 
-        fun hasAddon(id: Holder<out PocketAddonType>): Boolean {
+        fun hasAddon(id: PocketAddonType<*>): Boolean {
             return addons.containsKey(id)
         }
 
@@ -198,7 +195,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             }
         }
 
-        fun <C : PocketAddon.PocketBuilderAddon<*, *>> getAddon(id: Holder<out PocketAddonType>): C? = addons[id]?.cast()
+        fun <C : PocketAddon.PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*>): C? = addons[id]?.cast()
 
         override val expectedSize: Vec3i
             get() = expected
@@ -217,7 +214,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
                     origin.getZ() + size.getZ() - 1
                 )
             )
-            instance.virtualLocation = virtualLocation
+            virtualLocation?.let { instance.virtualLocation = it }
 
             addons.values.forEach(Consumer { addon: PocketAddon.PocketBuilderAddon<*, *>? -> addon!!.apply(instance) })
 
@@ -245,9 +242,9 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             this.size =
                 Vec3i(size.x + expander.x, size.y + expander.y, size.z + expander.z)
             this.expected = Vec3i(
-                expected.getX() + expander.getX(),
-                expected.getY() + expander.getY(),
-                expected.getZ() + expander.getZ()
+                expected.getX() + expander.x,
+                expected.getY() + expander.y,
+                expected.getZ() + expander.z
             )
             return self
         }
@@ -272,7 +269,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         }
 
         companion object {
-            protected fun <T : PocketBuilder<*, *>> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, MutableList<PocketAddon.PocketBuilderAddon<*, *>>> {
+            fun <T : PocketBuilder<*, *>> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, MutableList<PocketAddon.PocketBuilderAddon<*, *>>> {
                 return instance.group(
                     PocketAddon.LIST_BUILDER_CODEC.optionalFieldOf("addons", mutableListOf()).forGetter<T> { t -> t.addons.values.toMutableList() }
                 )

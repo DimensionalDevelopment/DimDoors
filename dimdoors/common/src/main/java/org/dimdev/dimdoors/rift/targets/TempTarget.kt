@@ -6,11 +6,7 @@ import org.dimdev.dimcore.api.castOrNull
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.block.RiftVariantProvider.revertToBaseVariant
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.block.entity.Rift.setDestination
-import java.util.function.BiFunction
-import java.util.function.Function
 
 class TempTarget(private val temp: VirtualTarget<*>, private val original: VirtualTarget<*>) : VirtualTarget<TempTarget>() {
     override val type get() = VirtualTargets.TEMP
@@ -31,7 +27,7 @@ class TempTarget(private val temp: VirtualTarget<*>, private val original: Virtu
     override fun copy() = TempTarget(temp, original)
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<TempTarget> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 VirtualTarget.CODEC.fieldOf("temp").forGetter(TempTarget::temp),
                 VirtualTarget.CODEC.fieldOf("original").forGetter(TempTarget::original)
             ).apply(instance, ::TempTarget)

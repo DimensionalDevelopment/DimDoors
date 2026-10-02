@@ -48,43 +48,43 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
 
         var ingredient: Ingredient = ModItems.AMALGAM_LUMP.ingredient()
         var trigger = ModItems.AMALGAM_LUMP.hasItems()
-        doorBuilder(ModBlocks.AMALGAM_DOOR.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        doorBuilder(ModBlocks.AMALGAM_DOOR, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        trapdoorBuilder(ModBlocks.AMALGAM_TRAPDOOR.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        trapdoorBuilder(ModBlocks.AMALGAM_TRAPDOOR, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        slabBuilder(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMALGAM_SLAB.value(), ingredient)
+        slabBuilder(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMALGAM_SLAB, ingredient)
             .unlockedBy("inventory_changed", trigger).save(exporter)
-        stairBuilder(ModBlocks.AMALGAM_STAIRS.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        stairBuilder(ModBlocks.AMALGAM_STAIRS, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
 
         ingredient = ModBlocks.DRIFTWOOD_PLANKS.ingredient()
         trigger = ModBlocks.DRIFTWOOD_PLANKS.hasItems()
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_WOOD.value(), 3)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_WOOD, 3)
             .define('#', ModBlocks.DRIFTWOOD_LOG)
             .pattern("##")
             .pattern("##")
             .unlockedBy("inventory_changed", ModBlocks.DRIFTWOOD_LOG.hasItems())
             .save(exporter)
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_PLANKS.value(), 4)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_PLANKS, 4)
             .requires(ModItemTags.DRIFTWOOD_LOGS)
             .unlockedBy("inventory_changed", has(ModItemTags.DRIFTWOOD_LOGS))
             .save(exporter)
 
-        fenceBuilder(ModBlocks.DRIFTWOOD_FENCE.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        fenceBuilder(ModBlocks.DRIFTWOOD_FENCE, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        fenceGateBuilder(ModBlocks.DRIFTWOOD_GATE.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        fenceGateBuilder(ModBlocks.DRIFTWOOD_GATE, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        buttonBuilder(ModBlocks.DRIFTWOOD_BUTTON.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        buttonBuilder(ModBlocks.DRIFTWOOD_BUTTON, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        slabBuilder(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_SLAB.value(), ingredient)
+        slabBuilder(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_SLAB, ingredient)
             .unlockedBy("inventory_changed", trigger).save(exporter)
-        stairBuilder(ModBlocks.DRIFTWOOD_STAIRS.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        stairBuilder(ModBlocks.DRIFTWOOD_STAIRS, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        doorBuilder(ModBlocks.DRIFTWOOD_DOOR.value(), ingredient).unlockedBy("inventory_changed", trigger)
+        doorBuilder(ModBlocks.DRIFTWOOD_DOOR, ingredient).unlockedBy("inventory_changed", trigger)
             .save(exporter)
-        trapdoorBuilder(ModBlocks.DRIFTWOOD_TRAPDOOR.value(), ingredient)
+        trapdoorBuilder(ModBlocks.DRIFTWOOD_TRAPDOOR, ingredient)
             .unlockedBy("inventory_changed", trigger).save(exporter)
 
         shaped(RecipeCategory.MISC, ModItems.RIFT_REMOVER)
@@ -95,7 +95,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             .define('X', ConventionalItemTags.ENDER_PEARLS)
             .unlockedBy("inventory_changed", ModItems.RIFT_BLADE.hasItems())
             .save(exporter, DimensionalDoors.id("rift_remover"))
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE.value())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE)
             .pattern(" # ")
             .pattern("#X#")
             .pattern(" # ")
@@ -103,7 +103,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             .define('X', ConventionalItemTags.ENDER_PEARLS)
             .unlockedBy("inventory_changed", ModItems.RIFT_BLADE.hasItems())
             .save(exporter, DimensionalDoors.id("rift_signature"))
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.value())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER)
             .pattern(" # ")
             .pattern("#X#")
             .pattern(" # ")
@@ -120,7 +120,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             .unlockedBy("inventory_changed", ModItems.RIFT_SIGNATURE.hasItems())
             .save(exporter, DimensionalDoors.id("stabilized_rift_signature"))
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.value())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM)
             .pattern("XOX")
             .pattern("ALA")
             .pattern("XAX")
@@ -313,12 +313,8 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
 
     private fun shaped(
         misc: RecipeCategory,
-        item: Holder<out ItemLike>
-    ) = ShapedRecipeBuilder.shaped(misc, item.value())
-
-    private fun doorBuilder(door: Holder<Block>, material: Ingredient) = doorBuilder(door.value(), material)
-
-    private fun dimDoorRecipe(block: Holder<Block>, exporter: RecipeOutput) = dimDoorRecipe(block.value(), exporter)
+        item: ItemLike
+    ) = ShapedRecipeBuilder.shaped(misc, item)
 
     private fun dimDoorRecipe(block: Block, exporter: RecipeOutput) {
         val id = block.builtInRegistryHolder().key().location()
@@ -353,17 +349,13 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
         dyedRecipe(ModBlocks.TERRACOTTA_SET.wall, baseSet.wall, color, exporter)
     }
 
-    private fun dyedRecipe(base: Holder<Block>, glazed: Holder<Block>, color: DyeColor, exporter: RecipeOutput) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, glazed.value())
+    private fun dyedRecipe(base: Block, glazed: Block, color: DyeColor, exporter: RecipeOutput) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, glazed)
             .group("stained_terracotta")
             .unlockedBy("inventory_changed", base.hasItems())
-            .requires(base.value())
+            .requires(base)
             .requires(DyeItem.byColor(color))
-            .save(exporter, glazed.key().location().withSuffix("_dyed"))
-    }
-
-    private fun blockSetRecipes(set: ModBlocks.DecayGroupSet, craftingInput: Holder<out ItemLike>, exporter: RecipeOutput) {
-        blockSetRecipes(set, craftingInput.value(), exporter)
+            .save(exporter, BuiltInRegistries.BLOCK.getKey(glazed).withSuffix("_dyed"))
     }
 
     private fun blockSetRecipes(set: ModBlocks.DecayGroupSet, craftingInput: ItemLike, exporter: RecipeOutput) {
@@ -371,19 +363,19 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
 
         val ingredient = Ingredient.of(craftingInput)
 
-        fenceBuilder(set.fence.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
-        fenceGateBuilder(set.gate.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
-        buttonBuilder(set.button.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
-        slabBuilder(RecipeCategory.BUILDING_BLOCKS, set.slab.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
-        stairBuilder(set.stairs.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
-        wallBuilder(RecipeCategory.BUILDING_BLOCKS, set.wall.value(), ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        fenceBuilder(set.fence, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        fenceGateBuilder(set.gate, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        buttonBuilder(set.button, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        slabBuilder(RecipeCategory.BUILDING_BLOCKS, set.slab, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        stairBuilder(set.stairs, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
+        wallBuilder(RecipeCategory.BUILDING_BLOCKS, set.wall, ingredient).unlockedBy("inventory_changed", craftingTrigger).save(exporter)
 
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.fence.value())
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.gate.value())
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.button.value())
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.slab.value())
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.stairs.value())
-        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.wall.value())
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.fence)
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.gate)
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.button)
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.slab)
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.stairs)
+        stonecutterResultFromBase(exporter, RecipeCategory.BUILDING_BLOCKS, craftingInput, set.wall)
     }
 
     private fun decaySmeltSet(from: ModBlocks.DecayGroupSet, to: ModBlocks.DecayGroupSet, exporter: RecipeOutput) {
@@ -394,7 +386,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             0.0f,
             200
         ).unlockedBy("inventory_changed", from.fence.hasItems())
-            .save(exporter, from.fence.key().location().withSuffix("_smelting"))
+            .save(exporter, BuiltInRegistries.BLOCK.getKey(from.fence).withSuffix("_smelting"))
         smelting(
             from.gate.ingredient(),
             RecipeCategory.BUILDING_BLOCKS,
@@ -402,21 +394,21 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             0.0f,
             200
         ).unlockedBy("inventory_changed", from.gate.hasItems())
-            .save(exporter, from.gate.key().location().withSuffix("_smelting"))
+            .save(exporter, BuiltInRegistries.BLOCK.getKey(from.gate).withSuffix("_smelting"))
         smelting(
             from.button.ingredient(),
             RecipeCategory.BUILDING_BLOCKS,
             to.button,
             0.0f,
             200
-        ).unlockedBy("inventory_changed", from.button.hasItems()).save(exporter, from.button.key().location().withSuffix("_smelting"))
+        ).unlockedBy("inventory_changed", from.button.hasItems()).save(exporter, BuiltInRegistries.BLOCK.getKey(from.button).withSuffix("_smelting"))
         smelting(
             from.slab.ingredient(),
             RecipeCategory.BUILDING_BLOCKS,
             to.slab,
             0.0f,
             200
-        ).unlockedBy("inventory_changed", from.slab.hasItems()).save(exporter, from.slab.key().location().withSuffix("_smelting"))
+        ).unlockedBy("inventory_changed", from.slab.hasItems()).save(exporter, BuiltInRegistries.BLOCK.getKey(from.slab).withSuffix("_smelting"))
         smelting(
             from.stairs.ingredient(),
             RecipeCategory.BUILDING_BLOCKS,
@@ -424,7 +416,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             0.0f,
             200
         ).unlockedBy("inventory_changed", from.stairs.hasItems())
-            .save(exporter, from.stairs.key().location().withSuffix("_smelting"))
+            .save(exporter, BuiltInRegistries.BLOCK.getKey(from.stairs).withSuffix("_smelting"))
         smelting(
             from.wall.ingredient(),
             RecipeCategory.BUILDING_BLOCKS,
@@ -432,23 +424,19 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             0.0f,
             200
         ).unlockedBy("inventory_changed", from.wall.hasItems())
-            .save(exporter, from.wall.key().location().withSuffix("_smelting"))
+            .save(exporter, BuiltInRegistries.BLOCK.getKey(from.wall).withSuffix("_smelting"))
     }
 
     private fun smelting(
         ingredient: Ingredient,
         buildingBlocks: RecipeCategory,
-        holder: Holder<out ItemLike>,
+        result: ItemLike,
         f: Float,
         i: Int
-    ) = SimpleCookingRecipeBuilder.smelting(ingredient, buildingBlocks, holder.value(), f, i)
+    ) = SimpleCookingRecipeBuilder.smelting(ingredient, buildingBlocks, result, f, i)
 
-    private fun Holder<out ItemLike>.ingredient(): Ingredient = this.value().let(Ingredient::of)
-    private fun threeByThreePacker(recipeOutput: RecipeOutput, category: RecipeCategory, packed: Holder<out ItemLike>, unpacked: Holder<out ItemLike>) = threeByThreePacker(recipeOutput, category, packed.value(), unpacked.value())
+    private fun ItemLike.ingredient(): Ingredient = Ingredient.of(this)
 
-    fun ShapedRecipeBuilder.define(symbol: Char, holder: Holder<out ItemLike>): ShapedRecipeBuilder {
-        return this.define(symbol, holder.value())
-    }
 }
 
 fun Holder<*>.key() = this.unwrapKey().get()

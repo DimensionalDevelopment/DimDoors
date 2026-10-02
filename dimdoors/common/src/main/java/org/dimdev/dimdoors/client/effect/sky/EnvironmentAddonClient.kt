@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Camera
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.LightTexture
-import net.minecraft.core.Holder
 import org.dimdev.dimcore.api.Type
+import org.dimdev.dimcore.api.cast
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
@@ -16,27 +16,27 @@ import org.joml.Matrix4f
 
 
 object EnvironmentAddonClient {
-    private val CLOUD_RENDERERS = mutableMapOf<Holder<out Type<CloudData>>, CloudRenderer<out CloudData>>()
-    private val SKY_RENDERERS = mutableMapOf<Holder<out Type<SkyData>>, SkyRenderer<out SkyData>>()
-    private val WEATHER_RENDERERS = mutableMapOf<Holder<out Type<WeatherData>>, WeatherRenderer<out WeatherData>>()
+    private val CLOUD_RENDERERS = mutableMapOf<Type<CloudData>, CloudRenderer<out CloudData>>()
+    private val SKY_RENDERERS = mutableMapOf<Type<SkyData>, SkyRenderer<out SkyData>>()
+    private val WEATHER_RENDERERS = mutableMapOf<Type<WeatherData>, WeatherRenderer<out WeatherData>>()
 
-    fun <T : CloudData> registerCloudRendrer(type: Holder<out Type<T>>, rendrer: CloudRenderer<T>) {
+    fun <T : CloudData> registerCloudRendrer(type: Type<T>, rendrer: CloudRenderer<T>) {
         CLOUD_RENDERERS[type] = rendrer
     }
 
-    fun <T : SkyData> registerSkyRendrer(type: Holder<out Type<T>>, rendrer: SkyRenderer<T>) {
+    fun <T : SkyData> registerSkyRendrer(type: Type<T>, rendrer: SkyRenderer<T>) {
         SKY_RENDERERS[type] = rendrer
     }
 
-    fun <T : WeatherData> registerWeatherRendrer(type: Holder<out Type<T>>, rendrer: WeatherRenderer<T>) {
+    fun <T : WeatherData> registerWeatherRendrer(type: Type<T>, rendrer: WeatherRenderer<T>) {
         WEATHER_RENDERERS[type] = rendrer
     }
 
-    private fun <T : CloudData> getCloudRenderer(data: T): CloudRenderer<T>? = CLOUD_RENDERERS[data.type] as CloudRenderer<T>?
+    private fun <T : CloudData> getCloudRenderer(data: T): CloudRenderer<T>? = CLOUD_RENDERERS[data.type]?.cast()
 
-    private fun <T : SkyData> getSkyRenderer(data: T): SkyRenderer<T>? = SKY_RENDERERS[data.type] as SkyRenderer<T>?
+    private fun <T : SkyData> getSkyRenderer(data: T): SkyRenderer<T>? = SKY_RENDERERS[data.type]?.cast()
 
-    private fun <T : WeatherData> getWeatherRenderer(data: T): WeatherRenderer<T>? = WEATHER_RENDERERS[data.type] as WeatherRenderer<T>?
+    private fun <T : WeatherData> getWeatherRenderer(data: T): WeatherRenderer<T>? = WEATHER_RENDERERS[data.type]?.cast()
 
     fun <T : WeatherData> renderWeather(data: T, level: ClientLevel, ticks: Int, partialTick: Float, lightTexture: LightTexture, camX: Double, camY: Double, camZ: Double) = getWeatherRenderer(data)?.render(data, level, ticks, partialTick, lightTexture, camX, camY, camZ)
 

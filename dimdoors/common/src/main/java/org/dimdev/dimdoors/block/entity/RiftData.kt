@@ -8,7 +8,8 @@ import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import kotlin.jvm.optionals.getOrNull
 
 class RiftData {
     var destination: VirtualTarget<*> = VirtualTarget.NoneTarget
@@ -30,11 +31,10 @@ class RiftData {
     }
 
     companion object {
-        @JvmField
-        val CODEC = RecordCodecBuilder.create { instance -> instance.group(
+        val CODEC: Codec<RiftData> = RecordCodecBuilder.create { instance -> instance.group(
                 VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget)
                     .forGetter(RiftData::destination),
-                LinkProperties.CODEC.optionalFieldOf("properties").nullable().forGetter(RiftData::properties),
+                LinkProperties.CODEC.optionalFieldOf("properties").nullableForGetter(RiftData::properties),
                 RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::color),
                 Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::alwaysDelete),
                 Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::forcedColor),
@@ -42,7 +42,7 @@ class RiftData {
             ).apply(instance) { destination, properties, color, alwaysDelete, forcedColor, size ->
                 val data = RiftData()
                 data.destination = destination
-                data.properties = properties
+                data.properties = properties.getOrNull()
                 data.color = color
                 data.alwaysDelete = alwaysDelete
                 data.forcedColor = forcedColor
@@ -51,6 +51,6 @@ class RiftData {
             }
         }
 
-        val HOLDER_CODEC: Codec<Holder<RiftData>> = RegistryFileCodec.create<RiftData>(ModRegistryKeys.RIFT_DATA, CODEC)
+        val HOLDER_CODEC: Codec<Holder<RiftData>> = RegistryFileCodec.create(ModRegistryKeys.RIFT_DATA, CODEC)
     }
 }

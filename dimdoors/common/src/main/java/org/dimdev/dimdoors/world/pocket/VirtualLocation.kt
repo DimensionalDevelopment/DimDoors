@@ -8,7 +8,7 @@ import net.minecraft.core.SectionPos
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.Heightmap
-import org.dimdev.dimdoors.DimensionalDoors.Companion.getConfig
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
@@ -23,7 +23,7 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
             world = world.server.overworld()
         }
 
-        val spread = (getConfig().generalConfig.depthSpreadFactor * this.depth).toFloat()
+        val spread = (DimensionalDoors.config.generalConfig.depthSpreadFactor * this.depth).toFloat()
         val newX = (this.x + spread * 2 * (Math.random() - 0.5)).toInt()
         val newZ = (this.z + spread * 2 * (Math.random() - 0.5)).toInt()
         //BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));
@@ -41,7 +41,7 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
     }
 
     companion object {
-        var CODEC = RecordCodecBuilder.create { instance ->
+        val CODEC = RecordCodecBuilder.create { instance ->
                 instance.group(
                     Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(VirtualLocation::world),
                     Codec.INT.fieldOf("x").forGetter(VirtualLocation::x),
@@ -53,7 +53,7 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
         @JvmStatic
         fun fromLocation(location: Location): VirtualLocation = when {
                 ModDimensions.isPocketDimension(location.worldId) -> instance.getPocketDirectory(location.worldId).getPocketAt(location.blockPos)?.virtualLocation
-                ModDimensions.isLimboDimension(location.world) -> VirtualLocation(location.worldId, location.x, location.z, getConfig().dungeonsConfig.maxDungeonDepth) // TODO: convert to interface on worldprovider
+                ModDimensions.isLimboDimension(location.world) -> VirtualLocation(location.worldId, location.x, location.z, DimensionalDoors.config.dungeonsConfig.maxDungeonDepth) // TODO: convert to interface on worldprovider
                 else -> VirtualLocation(location.worldId, location.x, location.y, 5) // TODO: nether coordinate transform
             }?.let { VirtualLocation(location.worldId, location.x, location.z, it.depth) } ?: VirtualLocation(Level.OVERWORLD, location.x, location.z, 5)
 

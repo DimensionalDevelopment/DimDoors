@@ -17,21 +17,18 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry
  * such that when the target rift is gone, the destination is notified and invalidated
  * (see shouldInvalidate)
  */
-class RiftReference(private val target: Location?) : VirtualTarget<RiftReference>(), LocationProvider {
-    override fun getLocation(): Location? {
-        return target
-    }
+class RiftReference(private val target: Location) : VirtualTarget<RiftReference>(), LocationProvider {
 
     override fun receiveOther(): Target? {
         return TargetResolver.target(this.target)
     }
 
     override fun register() {
-        RiftRegistry.getInstance().addLink(this.location, this.target)
+        RiftRegistry.instance.addLink(this.location, this.target)
     }
 
      override fun unregister() {
-        if (this.location != null) RiftRegistry.getInstance().removeLink(this.location, this.target)
+         RiftRegistry.instance.removeLink(this.location, this.target)
     }
 
     override fun shouldInvalidate(riftDeleted: Location): Boolean {
@@ -41,9 +38,9 @@ class RiftReference(private val target: Location?) : VirtualTarget<RiftReference
 
     override val color: RGBA
         get() {
-            if (target != null && RiftRegistry.getInstance().isRiftAt(target)) {
+            if (RiftRegistry.instance.isRiftAt(target)) {
                 val otherRiftTargets =
-                    RiftRegistry.getInstance().getTargets(target)
+                    RiftRegistry.instance.getTargets(target)
                 if (otherRiftTargets.size == 1 && otherRiftTargets.contains(this.location)) {
                     return RGBA(0f, 1f, 0f, 1f)
                 }
@@ -54,10 +51,10 @@ class RiftReference(private val target: Location?) : VirtualTarget<RiftReference
     override val type get() = VirtualTargets.RIFT_REFERENCE
 
     override fun copy(): RiftReference {
-        return RiftReference(location)
+        return RiftReference(target)
     }
 
     companion object {
-        var CODEC: MapCodec<RiftReference> = Location.CODEC.fieldOf("target").xmap(::RiftReference, RiftReference::getLocation)
+        var CODEC: MapCodec<RiftReference> = Location.CODEC.fieldOf("target").xmap(::RiftReference, RiftReference::target)
     }
 }

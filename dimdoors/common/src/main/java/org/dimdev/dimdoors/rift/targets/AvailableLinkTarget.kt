@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
 class AvailableLinkTarget(
@@ -52,7 +53,7 @@ class AvailableLinkTarget(
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> common(instance).apply(instance, ::AvailableLinkTarget) }
+        val CODEC: MapCodec<AvailableLinkTarget> = RecordCodecBuilder.mapCodec<AvailableLinkTarget> { instance -> common(instance).apply(instance, ::AvailableLinkTarget) }
 
         @JvmStatic
         fun builder(): AvailableLinkTargetBuilder {

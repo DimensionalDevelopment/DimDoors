@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.client
 import net.minecraft.client.Minecraft
 import net.minecraft.client.RecipeBookCategories
 import net.minecraft.world.item.ItemStack
+import java.util.function.Supplier
 import net.minecraft.world.item.Items
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
@@ -57,8 +58,8 @@ class DimensionalDoorsForgeClient(bus: IEventBus, container: ModContainer) :
     }
 
     companion object {
-        val TESSELLATING_GENERAL = EnumProxy(RecipeBookCategories::class.java, { listOf(ModItems.WORLD_THREAD.value().defaultInstance) })
-        val TESSELLATING_SEARCH = EnumProxy(RecipeBookCategories::class.java, { listOf(Items.COMPASS.defaultInstance) })
+        @JvmField val TESSELLATING_GENERAL = EnumProxy(RecipeBookCategories::class.java, Supplier { listOf(ModItems.WORLD_THREAD.defaultInstance) })
+        @JvmField val TESSELLATING_SEARCH = EnumProxy(RecipeBookCategories::class.java, Supplier { listOf(Items.COMPASS.defaultInstance) })
 
         fun registerRecipeBookCategories(event: RegisterRecipeBookCategoriesEvent) {
             ModRecipeBookGroups.init()

@@ -68,7 +68,7 @@ open class NeoForgeClientSided<V : NeoForgeClientSided<V, T>, T : ModClient<in V
         }
 
         bus.addListener<RegisterClientExtensionsEvent> { event ->
-            client.initFluids { _, fluid, details -> event.registerFluidType(FluidExtension(details), fluid.value().fluidType) }
+            client.initFluids { _, fluid, details -> event.registerFluidType(FluidExtension(details), fluid.fluidType) }
         }
         bus.addListener<EntityRenderersEvent.RegisterRenderers> { event ->
             client.initEntityRenderers(object : ModClient.EntityRegister {

@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.google.common.collect.HashBiMap
-import com.mojang.serialization.Codec.unboundedMap
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
@@ -11,7 +10,6 @@ import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.DialingPocket
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import java.util.*
-import java.util.function.Function
 
 class DialingRegistry(
     locations: MutableMap<UUID, PlayerRiftConnection> = mutableMapOf(),
@@ -25,18 +23,18 @@ class DialingRegistry(
 
     override fun invalidKeyErrorMessage(): String = "Cannot resolve dialing entrance for {} because no active dialing address is tracked."
 
-    public override fun invalidPocketErrorMessage(): String = "Cannot resolve dialing entrance for {} at {} because no dialing pocket is tracked."
+    override fun invalidPocketErrorMessage(): String = "Cannot resolve dialing entrance for {} at {} because no dialing pocket is tracked."
 
-    public override fun getPocketFromKey(uuid: DialingAddress?): DialingPocket? = this.dialingPockets[uuid]?.let { PocketRegistry.getInstance().getPocket<DialingPocket?>(it, DialingPocket::class.java) }
+    override fun getPocketFromKey(uuid: DialingAddress?): DialingPocket? = this.dialingPockets[uuid]?.let { PocketRegistry.instance.getPocket(it, DialingPocket::class.java) }
 
-    public override fun setNewPocket(uuid: UUID?, key: DialingAddress?, pocket: DialingPocket?) {
+    override fun setNewPocket(uuid: UUID?, key: DialingAddress?, pocket: DialingPocket?) {
         setDialingPocketAddress(key, pocket)
         setPlayerAddress(uuid, key)
     }
 
-    public override fun isCorrectDimensionForPocket(world: ServerLevel): Boolean = ModDimensions.isPocketDimension(world)
+    override fun isCorrectDimensionForPocket(world: ServerLevel): Boolean = ModDimensions.isPocketDimension(world)
 
-    public override fun setCurrentKey(uuid: UUID?, key: DialingAddress?) = setPlayerAddress(uuid, key)
+    override fun setCurrentKey(uuid: UUID?, key: DialingAddress?) = setPlayerAddress(uuid, key)
 
     fun setPlayerAddress(uuid: UUID?, address: DialingAddress?) {
         Objects.requireNonNull<UUID>(uuid, "uuid")
@@ -48,19 +46,17 @@ class DialingRegistry(
         }
     }
 
-    public override fun type(): Type<DialingRegistry> {
-        return SubsystemTypes.DIALING
-    }
+    override fun type(): Type<DialingRegistry> = SubsystemTypes.DIALING
 
     fun setDialingPocketAddress(address: DialingAddress?, pocket: DialingPocket?) {
-        Objects.requireNonNull<DialingAddress?>(address, "address")
-        Objects.requireNonNull<DialingPocket?>(pocket, "pocket")
+        requireNotNull(address) {"address" }
+        requireNotNull(pocket)  {  "pocket" }
 
-        val info = PocketInfo(pocket!!.getWorld(), pocket.getId())
+        val info = PocketInfo(pocket.world, pocket.id)
         val pocketAddress = pocket.address
         check(address == pocketAddress) { "Dialing pocket ${info.world.location()}:${info.id} has address $pocketAddress, cannot assign registry address $address" }
 
-        val existingAddress = this.dialingPockets.inverse().get(info)
+        val existingAddress = this.dialingPockets.inverse()[info]
         check(!(existingAddress != null && existingAddress != address)) { "Dialing pocket ${info.world.location()}:${info.id} is already assigned to $existingAddress, cannot assign to $address" }
 
         val previous = this.dialingPockets.put(address, info)
@@ -76,18 +72,15 @@ class DialingRegistry(
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> commonFields(instance)
-                    .and(unboundedMap(
+        val CODEC: MapCodec<DialingRegistry> = RecordCodecBuilder.mapCodec { instance -> commonFields(instance)
+            .and(unboundedMap(
                             DialingAddress.STRING_CODEC,
                             PocketInfo.CODEC,
                             HashBiMap<DialingAddress, PocketInfo>::create).fieldOf(
                             "dialing_pockets"
                         ).forGetter(DialingRegistry::dialingPockets)
                     ).and(
-                        unboundedMap<UUID?, DialingAddress?>(
-                            UUIDUtil.STRING_CODEC,
-                            DialingAddress.CODEC
-                        ).fieldOf("player_to_address").forGetter(DialingRegistry::playertoAddress)
+                        UUIDUtil.STRING_CODEC.unboundedMap(DialingAddress.CODEC).fieldOf("player_to_address").forGetter(DialingRegistry::playertoAddress)
                     ).apply(instance, ::DialingRegistry)
             }
 

@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.contents.TranslatableContents
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.decoration.PaintingVariant
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
@@ -31,96 +32,95 @@ import org.dimdev.dimdoors.painting.ModPaintings
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.world.ModBiomes
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.jvm.optionals.getOrNull
 
 class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: CompletableFuture<HolderLookup.Provider>) :
     AbstractLanguageProvider(dataOutput, registryLookup, "en_us") {
     public override fun generateTranslations() {
-        add(ModItems.DECAY.holder.value())
-        add(ModItems.DIMENSIONAL_DOORS.holder.value())
+        addEntry(ModItems.DECAY.holder.value())
+        addEntry(ModItems.DIMENSIONAL_DOORS.holder.value())
 
-        addHolder(ModBlocks.GOLD_DOOR)
-        addHolder(ModBlocks.QUARTZ_DOOR)
-        addHolder(ModBlocks.STONE_DOOR)
-        addHolder(ModBlocks.DIMENSIONAL_PORTAL)
-        addHolder(ModBlocks.BLACK_FABRIC)
-        addHolder(ModBlocks.WHITE_FABRIC)
-        addHolder(ModBlocks.ORANGE_FABRIC)
-        addHolder(ModBlocks.MAGENTA_FABRIC)
-        addHolder(ModBlocks.LIGHT_BLUE_FABRIC)
-        addHolder(ModBlocks.LIGHT_GRAY_FABRIC)
-        addHolder(ModBlocks.YELLOW_FABRIC)
-        addHolder(ModBlocks.LIME_FABRIC)
-        addHolder(ModBlocks.PINK_FABRIC)
-        addHolder(ModBlocks.GRAY_FABRIC)
-        addHolder(ModBlocks.CYAN_FABRIC)
-        addHolder(ModBlocks.PURPLE_FABRIC)
-        addHolder(ModBlocks.BLUE_FABRIC)
-        addHolder(ModBlocks.BROWN_FABRIC)
-        addHolder(ModBlocks.GREEN_FABRIC)
-        addHolder(ModBlocks.RED_FABRIC)
-        addHolder(ModBlocks.BLACK_ANCIENT_FABRIC)
-        addHolder(ModBlocks.WHITE_ANCIENT_FABRIC)
-        addHolder(ModBlocks.ORANGE_ANCIENT_FABRIC)
-        addHolder(ModBlocks.MAGENTA_ANCIENT_FABRIC)
-        addHolder(ModBlocks.LIGHT_BLUE_ANCIENT_FABRIC)
-        addHolder(ModBlocks.LIGHT_GRAY_ANCIENT_FABRIC)
-        addHolder(ModBlocks.YELLOW_ANCIENT_FABRIC)
-        addHolder(ModBlocks.LIME_ANCIENT_FABRIC)
-        addHolder(ModBlocks.PINK_ANCIENT_FABRIC)
-        addHolder(ModBlocks.GRAY_ANCIENT_FABRIC)
-        addHolder(ModBlocks.CYAN_ANCIENT_FABRIC)
-        addHolder(ModBlocks.PURPLE_ANCIENT_FABRIC)
-        addHolder(ModBlocks.BLUE_ANCIENT_FABRIC)
-        addHolder(ModBlocks.BROWN_ANCIENT_FABRIC)
-        addHolder(ModBlocks.GREEN_ANCIENT_FABRIC)
-        addHolder(ModBlocks.RED_ANCIENT_FABRIC)
-        addHolder(ModBlocks.DECAYED_BLOCK)
-        addHolder(ModBlocks.UNFOLDED_BLOCK)
-        addHolder(ModBlocks.UNWARPED_BLOCK)
-        addHolder(ModBlocks.UNRAVELLED_BLOCK)
-        addHolder(ModBlocks.UNRAVELLED_FABRIC)
-        addHolder(ModBlocks.DETACHED_RIFT)
-        addHolder(ModBlocks.ETERNAL_FLUID)
-        addHolder(ModBlocks.SOLID_STATIC)
-        addHolder(ModBlocks.TESSELATING_LOOM)
-        addHolder(ModBlocks.REALITY_SPONGE)
-        addHolder(ModBlocks.DRIFTWOOD_WOOD)
-        addHolder(ModBlocks.DRIFTWOOD_LOG)
-        addHolder(ModBlocks.DRIFTWOOD_PLANKS)
-        addHolder(ModBlocks.DRIFTWOOD_LEAVES)
-        addHolder(ModBlocks.DRIFTWOOD_SAPLING)
-        addHolder(ModBlocks.DRIFTWOOD_FENCE)
-        addHolder(ModBlocks.DRIFTWOOD_GATE)
-        addHolder(ModBlocks.DRIFTWOOD_BUTTON)
-        addHolder(ModBlocks.DRIFTWOOD_SLAB)
-        addHolder(ModBlocks.DRIFTWOOD_STAIRS)
-        addHolder(ModBlocks.DRIFTWOOD_DOOR)
-        addHolder(ModBlocks.DRIFTWOOD_TRAPDOOR)
-        addHolder(ModBlocks.AMALGAM_BLOCK)
-        addHolder(ModBlocks.AMALGAM_DOOR)
-        addHolder(ModBlocks.AMALGAM_TRAPDOOR)
-        addHolder(ModBlocks.RUST)
-        addHolder(ModBlocks.AMALGAM_SLAB)
-        addHolder(ModBlocks.AMALGAM_STAIRS)
-        addHolder(ModBlocks.AMALGAM_ORE)
-        addHolder(ModBlocks.CLOD_BLOCK)
-        addHolder(ModBlocks.CLOD_ORE)
-        addHolder(ModBlocks.UNRAVELED_SPIKE)
-        addHolder(ModBlocks.PALE_SAND)
-        addHolder(ModBlocks.DARK_SAND_LAYER)
-        addHolder(ModBlocks.DARK_SAND)
-        addHolder(ModBlocks.LINT_LAYER)
-        addHolder(ModBlocks.STONE_SLAB)
-        addHolder(ModBlocks.STONE_STAIRS)
-        addHolder(ModBlocks.STONE_WALL)
+        addEntry(ModBlocks.GOLD_DOOR)
+        addEntry(ModBlocks.QUARTZ_DOOR)
+        addEntry(ModBlocks.STONE_DOOR)
+        addEntry(ModBlocks.DIMENSIONAL_PORTAL)
+        addEntry(ModBlocks.BLACK_FABRIC)
+        addEntry(ModBlocks.WHITE_FABRIC)
+        addEntry(ModBlocks.ORANGE_FABRIC)
+        addEntry(ModBlocks.MAGENTA_FABRIC)
+        addEntry(ModBlocks.LIGHT_BLUE_FABRIC)
+        addEntry(ModBlocks.LIGHT_GRAY_FABRIC)
+        addEntry(ModBlocks.YELLOW_FABRIC)
+        addEntry(ModBlocks.LIME_FABRIC)
+        addEntry(ModBlocks.PINK_FABRIC)
+        addEntry(ModBlocks.GRAY_FABRIC)
+        addEntry(ModBlocks.CYAN_FABRIC)
+        addEntry(ModBlocks.PURPLE_FABRIC)
+        addEntry(ModBlocks.BLUE_FABRIC)
+        addEntry(ModBlocks.BROWN_FABRIC)
+        addEntry(ModBlocks.GREEN_FABRIC)
+        addEntry(ModBlocks.RED_FABRIC)
+        addEntry(ModBlocks.BLACK_ANCIENT_FABRIC)
+        addEntry(ModBlocks.WHITE_ANCIENT_FABRIC)
+        addEntry(ModBlocks.ORANGE_ANCIENT_FABRIC)
+        addEntry(ModBlocks.MAGENTA_ANCIENT_FABRIC)
+        addEntry(ModBlocks.LIGHT_BLUE_ANCIENT_FABRIC)
+        addEntry(ModBlocks.LIGHT_GRAY_ANCIENT_FABRIC)
+        addEntry(ModBlocks.YELLOW_ANCIENT_FABRIC)
+        addEntry(ModBlocks.LIME_ANCIENT_FABRIC)
+        addEntry(ModBlocks.PINK_ANCIENT_FABRIC)
+        addEntry(ModBlocks.GRAY_ANCIENT_FABRIC)
+        addEntry(ModBlocks.CYAN_ANCIENT_FABRIC)
+        addEntry(ModBlocks.PURPLE_ANCIENT_FABRIC)
+        addEntry(ModBlocks.BLUE_ANCIENT_FABRIC)
+        addEntry(ModBlocks.BROWN_ANCIENT_FABRIC)
+        addEntry(ModBlocks.GREEN_ANCIENT_FABRIC)
+        addEntry(ModBlocks.RED_ANCIENT_FABRIC)
+        addEntry(ModBlocks.DECAYED_BLOCK)
+        addEntry(ModBlocks.UNFOLDED_BLOCK)
+        addEntry(ModBlocks.UNWARPED_BLOCK)
+        addEntry(ModBlocks.UNRAVELLED_BLOCK)
+        addEntry(ModBlocks.UNRAVELLED_FABRIC)
+        addEntry(ModBlocks.DETACHED_RIFT)
+        addEntry(ModBlocks.ETERNAL_FLUID)
+        addEntry(ModBlocks.SOLID_STATIC)
+        addEntry(ModBlocks.TESSELATING_LOOM)
+        addEntry(ModBlocks.REALITY_SPONGE)
+        addEntry(ModBlocks.DRIFTWOOD_WOOD)
+        addEntry(ModBlocks.DRIFTWOOD_LOG)
+        addEntry(ModBlocks.DRIFTWOOD_PLANKS)
+        addEntry(ModBlocks.DRIFTWOOD_LEAVES)
+        addEntry(ModBlocks.DRIFTWOOD_SAPLING)
+        addEntry(ModBlocks.DRIFTWOOD_FENCE)
+        addEntry(ModBlocks.DRIFTWOOD_GATE)
+        addEntry(ModBlocks.DRIFTWOOD_BUTTON)
+        addEntry(ModBlocks.DRIFTWOOD_SLAB)
+        addEntry(ModBlocks.DRIFTWOOD_STAIRS)
+        addEntry(ModBlocks.DRIFTWOOD_DOOR)
+        addEntry(ModBlocks.DRIFTWOOD_TRAPDOOR)
+        addEntry(ModBlocks.AMALGAM_BLOCK)
+        addEntry(ModBlocks.AMALGAM_DOOR)
+        addEntry(ModBlocks.AMALGAM_TRAPDOOR)
+        addEntry(ModBlocks.RUST)
+        addEntry(ModBlocks.AMALGAM_SLAB)
+        addEntry(ModBlocks.AMALGAM_STAIRS)
+        addEntry(ModBlocks.AMALGAM_ORE)
+        addEntry(ModBlocks.CLOD_BLOCK)
+        addEntry(ModBlocks.CLOD_ORE)
+        addEntry(ModBlocks.UNRAVELED_SPIKE)
+        addEntry(ModBlocks.PALE_SAND)
+        addEntry(ModBlocks.DARK_SAND_LAYER)
+        addEntry(ModBlocks.DARK_SAND)
+        addEntry(ModBlocks.LINT_LAYER)
+        addEntry(ModBlocks.STONE_SLAB)
+        addEntry(ModBlocks.STONE_STAIRS)
+        addEntry(ModBlocks.STONE_WALL)
 
         ModBlocks.DecayGroupSet.SETS.forEach(::addBlockSet)
 
-        addHolder(ModBlocks.GRITTY_STONE)
-        addHolder(ModBlocks.LEAK)
+        addEntry(ModBlocks.GRITTY_STONE)
+        addEntry(ModBlocks.LEAK)
 
         add(ModItems.RIFT_KEY, "Rift Key")
 
@@ -138,7 +138,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(3, "dungeon.")
         }
 
-        add(ModItems.RIFT_REMOVER) {
+        addEntry(ModItems.RIFT_REMOVER) {
             add("closing", "The rift will close soon")
             add("already_closing", "This rift is already closing")
             info(0, "Use near exposed rift")
@@ -151,11 +151,11 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(1, "but shinier")
         }
 
-        add(ModBlocks.DIALING_DOOR) {}
+        addEntry(ModBlocks.DIALING_DOOR) {}
 
         addArmor(ModItems.WORLD_THREAD_ARMOR, "Woven World Thread")
 
-        add(ModItems.RIFT_SIGNATURE) {
+        addEntry(ModItems.RIFT_SIGNATURE) {
             add("stored", "Location stored")
             add("created", "Rift created")
 
@@ -171,7 +171,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             }
         }
 
-        addHolder(ModItems.STABILIZED_RIFT_SIGNATURE) {
+        addEntry(ModItems.STABILIZED_RIFT_SIGNATURE) {
             add("stored", "Location stored")
             add("created", "Rift created")
 
@@ -186,7 +186,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             }
         }
 
-        add(ModItems.RIFT_CONFIGURATION_TOOL) {
+        addEntry(ModItems.RIFT_CONFIGURATION_TOOL) {
             //TODO: Figure out better working later.
             info(0, "Shift right click on")
             info(1, "a door to set")
@@ -196,13 +196,13 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         }
 
 
-        add(ModItems.RIFT_STABILIZER) {
+        addEntry(ModItems.RIFT_STABILIZER) {
             info("Use on a rift's core to stop its growth.")
             add("stabilized", "The rift has been stabilized and will stop growing")
             add("already_stabilized", "This rift is already stable")
         }
 
-        add(ModItems.RIFT_BLADE) {
+        addEntry(ModItems.RIFT_BLADE) {
             add("rift_miss", "You can only use this item on a rift's core")
             info(0, "Opens temporary doors on rifts")
             info(1, "and has a teleport attack.")
@@ -239,12 +239,12 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
 
         addDisc(ModItems.CREEPY_RECORD, "Stevenrs11 - Creepy")
 
-        add(ModItems.ETERNAL_FLUID_BUCKET)
-        add(ModItems.LEAK_BUCKET)
+        addEntry(ModItems.ETERNAL_FLUID_BUCKET)
+        addEntry(ModItems.LEAK_BUCKET)
 
         addDisc(ModItems.WHITE_VOID_RECORD, "Lachney - White Void")
 
-        add(ModItems.DIMENSIONAL_ERASER) {
+        addEntry(ModItems.DIMENSIONAL_ERASER) {
             info("Erases entities")
         }
 
@@ -264,11 +264,11 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
 
         addDisc(ModItems.THEY_STARE_BACK_RECORD, "Firel - They Stare Back")
 
-        add(ModFluids.ETERNAL_FLUID)
-        add(ModFluids.LEAK)
+        addEntry(ModFluids.ETERNAL_FLUID)
+        addEntry(ModFluids.LEAK)
 
-        add(ModEntityTypes.MONOLITH)
-        add(ModEntityTypes.MASK)
+        addEntry(ModEntityTypes.MONOLITH)
+        addEntry(ModEntityTypes.MASK)
 
         add("commands") {
             builder.add("commands.dimteleport.usage", "/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]")
@@ -831,7 +831,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         add(ModFluids.FLOWING_LEAK, "Flowing Leak")
     }
 
-    private fun <T: VirtualTarget<*>> add(type: Holder<MapCodec<VirtualTarget<*>>>, name: String) {
+    private fun add(type: MapCodec<out VirtualTarget<*>>, name: String) {
         val key = Util.makeDescriptionId("virtual_type", ModRegistries.VIRTUAL_TYPE.getKey(type))
         add(key, name)
     }
@@ -844,12 +844,8 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         add("info$i", value)
     }
 
-    private fun addDoorAutoGen(block: Holder<Block>, name: String, runnable: Runnable) {
-        addDoorAutoGen(block.value(), name, runnable)
-    }
-
     private fun addDoorAutoGen(block: Block, name: String, runnable: Runnable) {
-        val key = Util.makeDescriptionId("autogen", BuiltInRegistries.BLOCK.getKey(block!!))
+        val key = Util.makeDescriptionId("autogen", BuiltInRegistries.BLOCK.getKey(block))
         add(key) {
             add("name", name)
             runnable.run()
@@ -902,12 +898,12 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
     private fun add(supplier: Fluid, contents: String) = builder.add(BuiltInRegistries.FLUID.getKey(supplier).toLanguageKey("fluid"), contents)
 
     private fun addBlockSet(set: ModBlocks.DecayGroupSet) {
-        add(set.fence)
-        add(set.gate)
-        add(set.button)
-        add(set.slab)
-        add(set.stairs)
-        add(set.wall)
+        addEntry(set.fence)
+        addEntry(set.gate)
+        addEntry(set.button)
+        addEntry(set.slab)
+        addEntry(set.stairs)
+        addEntry(set.wall)
     }
 
     private fun <T: Any> addCapitalizedEntry(registry: Registry<T>, entry: T) {
@@ -928,9 +924,8 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         return location!!.toLanguageKey((if (registryKey.path == "minecraft") "" else registryKey.path + ".") + registryKey.path)
     }
 
-    private fun <T: Any> addHolder(holder: Holder<T>, runnable: Runnable = Runnable {}) {
-        val entry = holder.value()
-        val id = holder.unwrapKey().getOrNull() ?: return
+    private fun addEntry(obj: Any, runnable: Runnable = Runnable {}) {
+        val entry = if (obj is Holder<*>) obj.value() else obj
 
         when (entry) {
             is Block -> {
@@ -955,15 +950,19 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
                 add(BuiltInRegistries.FLUID.getKey(entry).toLanguageKey("fluid"), runnable)
             }
 
+            is EntityType<*> -> builder.add(entry, BuiltInRegistries.ENTITY_TYPE.getKey(entry).path.capitialize())
+
             else -> {}
         }
     }
 
 
+    @JvmName("addBiome")
     private fun add(key: ResourceKey<Biome>, name: String) {
         builder.add(Util.makeDescriptionId("biome", key.location()), name)
     }
 
+    @JvmName("addEnchantment")
     private fun add(key: ResourceKey<Enchantment>, name: String) {
         builder.addEnchantment(key, name)
     }
@@ -975,7 +974,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         }
     }
 
-    fun String.capitialize(): String = name.split("_").joinToString(" ", transform = { this.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } })
+    fun String.capitialize(): String = split("_").joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 
 
 }

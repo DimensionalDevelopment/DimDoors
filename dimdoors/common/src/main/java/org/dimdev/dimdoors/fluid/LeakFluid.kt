@@ -20,10 +20,10 @@ import org.dimdev.dimdoors.item.ModItems
 
 abstract class LeakFluid : FlowingFluid() {
     override fun getFlowing(): Fluid {
-        return ModFluids.FLOWING_LEAK.value()
+        return ModFluids.FLOWING_LEAK
     }
 
-    override fun getSource(falling: Boolean) = ModFluids.LEAK.value().defaultFluidState().setValue(FALLING, falling)
+    override fun getSource(falling: Boolean) = ModFluids.LEAK.defaultFluidState().setValue(FALLING, falling)
 
     override fun getBucket(): Item {
         return ModItems.LEAK_BUCKET
@@ -40,7 +40,7 @@ abstract class LeakFluid : FlowingFluid() {
 
     override fun getDropOff(levelReader: LevelReader) = if (levelReader.dimensionType().ultraWarm()) 4 else 2
 
-    override fun createLegacyBlock(fluidState: FluidState) = ModBlocks.LEAK.value().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState))
+    override fun createLegacyBlock(fluidState: FluidState) = ModBlocks.LEAK.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState))
 
     override fun isSame(fluid: Fluid): Boolean {
         return fluid === ModFluids.LEAK || fluid === ModFluids.FLOWING_LEAK
@@ -80,7 +80,7 @@ abstract class LeakFluid : FlowingFluid() {
             builder.add(LEVEL)
         }
 
-        override fun getSource() = ModFluids.LEAK.value()
+        override fun getSource() = ModFluids.LEAK
 
         override fun isSource(fluidState: FluidState) = false
 
@@ -88,7 +88,7 @@ abstract class LeakFluid : FlowingFluid() {
     }
 
     open class Still : LeakFluid() {
-        override fun getSource() = ModFluids.LEAK.value().defaultFluidState().type
+        override fun getSource() = ModFluids.LEAK.defaultFluidState().type
 
         override fun isSource(fluidState: FluidState) = true
 

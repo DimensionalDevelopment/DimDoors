@@ -1,7 +1,6 @@
 package org.dimdev.dimcore
 
 import com.mojang.serialization.Codec
-import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -36,85 +35,61 @@ import net.neoforged.neoforge.network.handling.IPayloadHandler
 import net.neoforged.neoforge.network.registration.PayloadRegistrar
 import net.neoforged.neoforge.registries.*
 import net.neoforged.neoforge.registries.callback.AddCallback
-import org.dimdev.dimcore.api.EntityAttributeProvider
-import org.dimdev.dimcore.api.Hooks
-import org.dimdev.dimcore.api.ICreativeTabHandler
-import org.dimdev.dimcore.api.ModCommon
-import org.dimdev.dimcore.api.PackProvider
-import org.dimdev.dimcore.api.PacketProvider
-import org.dimdev.dimcore.api.PacketRegister
-import org.dimdev.dimcore.api.PlatformRegistry
-import org.dimdev.dimcore.api.RegistrationHooks
-import org.dimdev.dimcore.api.ServerReloadListenerProvider
-import org.dimdev.dimcore.api.SidedImpl
-import org.dimdev.dimcore.api.cast
-import org.dimdev.dimcore.api.CreativeTabType
-import org.dimdev.dimcore.api.DataValueType
+import org.dimdev.dimcore.api.*
 import java.util.*
-import java.util.function.*
+import java.util.function.Supplier
 
 abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(private val bus: IEventBus, common: T) : SidedImpl<V, T>(common) {
     private val toRegister = mutableMapOf<ResourceKey<*>, MutableMap<ResourceLocation, Any>>()
-    private val toRegisterHolder = mutableMapOf<ResourceKey<*>, MutableMap<ResourceLocation, HolderRegistration<*>>>()
     private var hooks: Hooks? = null
-    private var activeKey: ResourceKey<out Registry<*>>? = null
-    private val registerRunnables = mutableMapOf<ResourceKey<*>, MutableList<() -> Unit>>()
     private val registriesToRegister = mutableListOf<Registry<*>>()
     private val dataPackRegistries = mutableListOf<DataPackRegistryRegistration<*>>()
 
+    private fun id(name: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(modId(), name)
+
+    private fun queue(key: ResourceKey<*>, name: String, value: Any) {
+        toRegister.getOrPut(key) { linkedMapOf() }[id(name)] = value
+    }
 
     override fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>?): PlatformRegistry.EntryRegister<T> {
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
-            private val deferredRegister = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, modId()).also { it.register(bus) }
-
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as DataValueType<Any>
                 val builder = AttachmentType.builder(Supplier { type.defaultValue() }).serialize(type.codec)
                 type.streamCodec?.let(builder::sync)
                 val attachment = builder.build()
-                val holder = deferredRegister.register(name, Supplier { attachment })
-                val value: V by lazy { holder.value().cast() }
-                return value;
+                queue(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, name, attachment)
+                return attachment as V
             }
 
             override fun createRegistry(): Registry<T> = NeoForgeRegistries.ATTACHMENT_TYPES.cast()
         }
 
         if (resourceKey == PlatformRegistry.CreativeTabPlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
-            private val deferredRegister = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modId()).also { it.register(bus) }
-
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as CreativeTabType
-                val holder = deferredRegister.register(name, Supplier { CreativeModeTab.builder().apply(type.block).build() })
-                val value: V by lazy { holder.value().cast() }
-
-                return value
+                queue(Registries.CREATIVE_MODE_TAB, name, CreativeModeTab.builder().apply(type.block).build())
+                return DeferredHolder.create<CreativeModeTab, CreativeModeTab>(Registries.CREATIVE_MODE_TAB, id(name)) as V
             }
 
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
         }
 
         return object : PlatformRegistry.EntryRegister<T>() {
-            private val deferredRegister = DeferredRegister.create(resourceKey, modId()).also { it.register(bus) }
+            private val target: Registry<T> by lazy { registry ?: RegistryBuilder(resourceKey).create().also(registriesToRegister::add) }
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
-                val holder = deferredRegister.register(name, supplier)
-
-                val value: V by lazy { holder.value() }
-
-                return value;
+                val value = supplier()
+                queue(resourceKey, name, value as Any)
+                return value
             }
 
-            override fun createRegistry(): Registry<T> = registry ?: deferredRegister.makeRegistry {}
+            override fun createRegistry(): Registry<T> = target
         }
     }
 
     private fun onDataPackRegister(event: DataPackRegistryEvent.NewRegistry) {
-        dataPackRegistries.forEach(Consumer { registration: DataPackRegistryRegistration<*>? ->
-            registration!!.register(
-                event
-            )
-        })
+        dataPackRegistries.forEach { it.register(event) }
     }
 
     @JvmRecord
@@ -138,15 +113,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
                 registry,
                 resourceLocation,
                 obj as T
-            )
-        }
-    }
-
-    fun <T> populateHolders(registry: Registry<T>, map: MutableMap<ResourceLocation, HolderRegistration<*>>) {
-        map.forEach { (resourceLocation: ResourceLocation?, registration: HolderRegistration<*>?) ->
-            (registration as HolderRegistration<T?>).register(
-                registry,
-                resourceLocation!!
             )
         }
     }
@@ -176,87 +142,11 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         }
     }
 
-    override fun <T : Any, V : T> register(key: ResourceKey<Registry<T>>, id: ResourceLocation, obj: V): V {
-        if (key == activeKey) {
-            return Registry.register<T, V>(BuiltInRegistries.REGISTRY.get(key.location()) as Registry<T>, id, obj)
-        } else {
-            val map = this.toRegister.computeIfAbsent(key) { mutableMapOf<ResourceLocation, Any>() }
-
-            map.putIfAbsent(id, obj)
-
-            return obj
-        }
-    }
-
-    override fun <T : Any, V : T> registerHolder(
-        key: ResourceKey<Registry<T>>,
-        id: ResourceLocation,
-        obj: V
-    ): Holder<T> {
-        if (key == activeKey) {
-            return Registry.registerForHolder<T>(BuiltInRegistries.REGISTRY.get(key.location()) as Registry<T>, id, obj)
-        } else {
-            val map =
-                this.toRegisterHolder.computeIfAbsent(key) { mutableMapOf<ResourceLocation, HolderRegistration<*>>() }
-            val registration = map.computeIfAbsent(id) { ignored: ResourceLocation? ->
-                HolderRegistration(
-                    obj,
-                    BindableDeferredHolder.Companion.createBindable<T, T>(key, id)
-                )
-            } as HolderRegistration<T>
-
-            return registration.holder
-        }
-    }
-
-    @JvmRecord
-    data class HolderRegistration<T>(val obj: T?, val holder: BindableDeferredHolder<T?, out T?>) {
-        fun register(registry: Registry<T?>, id: ResourceLocation) {
-            Registry.registerForHolder<T?>(registry, id, obj)
-            holder.bind()
-        }
-    }
-
-    class BindableDeferredHolder<R, T : R?>(key: ResourceKey<R?>) : DeferredHolder<R?, T?>(key) {
-        fun bind() {
-            bind(false)
-        }
-
-        companion object {
-            private fun <R, T : R?> createBindable(
-                registryKey: ResourceKey<out Registry<R?>?>,
-                id: ResourceLocation
-            ): BindableDeferredHolder<R?, T?> {
-                return BindableDeferredHolder<R?, T?>(ResourceKey.create<R?>(registryKey, id))
-            }
-        }
-    }
-
     private fun <T> runHooks(registry: Registry<T>, handlers: List<(ResourceLocation, Any?) -> Unit>) {
         registry.entrySet().toList().forEach { (key, value) -> handlers.forEach { it(key.location(), value) } }
-        registry.addCallback(AddCallback<T> { callbackRegistry, _, key, value ->
-            val previousKey = activeKey
-            activeKey = callbackRegistry.key()
-            try {
-                handlers.forEach { it(key.location(), value) }
-            } finally {
-                activeKey = previousKey
-            }
-        })
+        registry.addCallback(AddCallback<T> { _, _, key, value -> handlers.forEach { it(key.location(), value) } })
     }
 
-
-    override fun <T> createRegistry(
-        key: ResourceKey<Registry<T>>,
-        defaultId: ResourceLocation,
-        sync: Boolean
-    ): Registry<T> {
-        val registry = RegistryBuilder<T?>(key).sync(sync).defaultKey(defaultId).create()
-
-        registriesToRegister.add(registry)
-
-        return registry
-    }
 
     private class NeoForgePacketRegister(private val registrar: PayloadRegistrar) : PacketRegister {
         override fun <T : CustomPacketPayload> registerServerPacket(
@@ -282,33 +172,15 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
 
         bus.addListener(this::onDataPackRegister)
 
-        bus.addListener<NewRegistryEvent?>(Consumer { event: NewRegistryEvent? ->
-            registriesToRegister.forEach(Consumer { registry: Registry<*>? ->
-                event!!.register(
-                    registry
-                )
-            })
-        })
+        bus.addListener<NewRegistryEvent> { event -> registriesToRegister.forEach { event.register(it) } }
 
         bus.addListener<RegisterEvent>(EventPriority.LOWEST, { event ->
             val key = event.registryKey
-            this@NeoForgeSided.activeKey = key
-            try {
-                registerRunnables.remove(key)?.forEach({ obj -> obj.invoke() })
+            val registry = event.registry
 
-                val registry = event.registry
+            toRegister.remove(key)?.takeIf { it.isNotEmpty() }?.let { populate(registry, it) }
 
-                toRegister[key]?.takeIf { it.isNotEmpty() }.also { populate(registry, it) }
-
-                val holderMap = toRegisterHolder.remove(key)
-                if (holderMap != null && !holderMap.isEmpty()) {
-                    populateHolders(registry, holderMap)
-                }
-
-                hooks?.onEntry?.get(key)?.let { runHooks(registry, it) }
-            } finally {
-                this@NeoForgeSided.activeKey = null
-            }
+            hooks?.onEntry?.get(key)?.let { runHooks(registry, it) }
         })
 
         if (mod is PacketProvider) bus.addListener<RegisterPayloadHandlersEvent> { event -> mod.registerPackets(NeoForgePacketRegister(event.registrar("1"))) }
@@ -323,8 +195,15 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
             event.addRepositorySource { source -> packs.forEach { pack -> pack.create(common.modId, event.packType)?.let(source::accept) } }
         }
 
-        common!!.init(self()!!)
-        if (mod is RegistrationHooks) hooks = Hooks().also(mod::registrationHooks)
+        common.initRegistries(self())
+
+        var initialized = false
+        bus.addListener<RegisterEvent>(EventPriority.HIGHEST, { _ ->
+            if (initialized) return@addListener
+            initialized = true
+            common.init(self())
+            if (mod is RegistrationHooks) hooks = Hooks().also(mod::registrationHooks)
+        })
     }
 
     @JvmRecord
@@ -342,14 +221,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
 
 
     override fun <S> createDynamicRegistry(key: ResourceKey<Registry<S>>, codec: Codec<S>, networkCodec: Codec<S>?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T> createDynamicRegistry(
-        key: ResourceKey<Registry<T>>,
-        codec: Codec<T>,
-        networkCodec: Codec<T?>
-    ) {
-        dataPackRegistries.add(DataPackRegistryRegistration<T?>(key, codec, networkCodec))
+        dataPackRegistries.add(DataPackRegistryRegistration(key, codec, networkCodec))
     }
 }

@@ -1,14 +1,15 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.datafixers.Products.P1
-import com.mojang.serialization.Codec.unboundedMap
+import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import net.minecraft.server.level.ServerLevel
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
 
@@ -105,13 +106,13 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
     class PlayerRiftConnection (var entrance: UUID? = null, var exit: UUID? = null) {
         companion object {
             val CODEC = RecordCodecBuilder.create { instance -> instance.group(
-                    UUIDUtil.CODEC.optionalFieldOf("entranceId").nullable().forGetter(PlayerRiftConnection::entrance),
-                    UUIDUtil.CODEC.optionalFieldOf("exitId").nullable().forGetter(PlayerRiftConnection::exit)
-                ).apply(instance, ::PlayerRiftConnection)
+                    UUIDUtil.CODEC.optionalFieldOf("entranceId").nullableForGetter(PlayerRiftConnection::entrance),
+                    UUIDUtil.CODEC.optionalFieldOf("exitId").nullableForGetter(PlayerRiftConnection::exit)
+                ).apply(instance) { entrance, exit -> PlayerRiftConnection(entrance.getOrNull(), exit.getOrNull()) }
             }
 
 
-            val MAP_CODEC = unboundedMap(UUIDUtil.STRING_CODEC, CODEC)
+            val MAP_CODEC = UUIDUtil.STRING_CODEC.unboundedMap(CODEC)
         }
     }
 
@@ -145,7 +146,7 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
     }
 
     companion object {
-        protected inline fun <reified V, P : Pocket<*, *>, T : PlayerTrackingSubSystem<V, P, T>> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, MutableMap<UUID, PlayerRiftConnection>> {
+        fun <V, P : Pocket<*, *>, T : PlayerTrackingSubSystem<V, P, T>> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, MutableMap<UUID, PlayerRiftConnection>> {
             return instance.group(PlayerRiftConnection.MAP_CODEC.fieldOf("locations").forGetter(PlayerTrackingSubSystem<V, P, T>::locations))
         }
     }

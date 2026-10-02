@@ -28,9 +28,9 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
 
         val destLoc = registry.getExitLocation(uuid)
         val pocket: Pocket<*, *>? = registry.getPocketFromPlayer(uuid)
-        if (registry.isCorrectDimensionForPocket(this.location!!.world) && pocket != null) {
+        if (registry.isCorrectDimensionForPocket(this.location.world) && pocket != null) {
             val currentPocket =
-                PocketRegistry.instance.getPocketDirectory(pocket.world).getPocketAt(this.location!!.blockPos)
+                PocketRegistry.instance.getPocketDirectory(pocket.world).getPocketAt(this.location.blockPos)
             if (pocket == currentPocket) {
                 registry.setEntrance(
                     uuid,
@@ -64,8 +64,8 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
 
     override fun register() {
         super.register()
-        val registry = PocketRegistry.instance.getPocketDirectory(this.location!!.worldId)
-        val pocket = registry.getPocketAt(this.location!!.blockPos)
+        val registry = PocketRegistry.instance.getPocketDirectory(this.location.worldId)
+        val pocket = registry.getPocketAt(this.location.blockPos)
         if (pocket != null) {
             PocketRegistry.instance.addPocketEntrance(pocket, this.location)
         }

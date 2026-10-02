@@ -98,9 +98,9 @@ abstract class RandomTarget<T : RandomTarget<T>>(
                     pos = BlockPos(virtualLocation.x, 0, virtualLocation.z)
                 }
 
-                world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.value().defaultBlockState())
+                world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState())
 
-                val thisRift = this.location!!.blockEntity!!.cast<Rift>()
+                val thisRift = this.location.blockEntity!!.cast<Rift>()
                 val riftEntity = world.getBlockEntity(pos)!!.cast<DetachedRiftBlockEntity>()
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.properties = thisRift.properties!!.toBuilder().linksRemaining(1).build()
@@ -115,7 +115,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
                 return riftEntity.`as`(Targets.ENTITY)
             } else {
                 // Make a new dungeon pocket
-                val thisRift = this.location!!.blockEntity as Rift?
+                val thisRift = this.location.blockEntity as Rift?
                 val newLink = if (thisRift!!.properties != null) thisRift.properties!!.toBuilder().linksRemaining(0)
                     .build() else null
                 val linkBack = if (this.isNoLinkBack) NoneTarget else RiftReference(this.location)
@@ -250,7 +250,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
     companion object {
         private val LOGGER: Logger = LogManager.getLogger()
 
-        inline fun <reified T : RandomTarget<T>> common(instance: RecordCodecBuilder.Instance<T>): P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, MutableSet<Int>, Boolean, Boolean> = instance.group(
+        fun <T : RandomTarget<T>> common(instance: RecordCodecBuilder.Instance<T>): P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, MutableSet<Int>, Boolean, Boolean> = instance.group(
                 Codec.FLOAT.fieldOf("newRiftWeight").forGetter{ obj -> obj.newRiftWeight },
                 Codec.DOUBLE.fieldOf("weightMaximum").forGetter { obj -> obj.weightMaximum },
                 Codec.DOUBLE.fieldOf("coordFactor").forGetter { obj -> obj.coordFactor },

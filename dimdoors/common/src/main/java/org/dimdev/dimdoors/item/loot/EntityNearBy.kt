@@ -11,10 +11,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders
-import org.dimdev.dimdoors.util.CodecUtils.nullable
+import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import kotlin.jvm.optionals.getOrNull
 
 data class EntityNearBy(val range: NumberProvider, val predicate: EntityPredicate?, val interval: Int) : LootItemCondition {
-    override fun getType(): LootItemConditionType = ModItemLootConditions.ENTITY_NEARBY.value()
+    override fun getType(): LootItemConditionType = ModItemLootConditions.ENTITY_NEARBY
 
     override fun getReferencedContextParams() = mutableSetOf(
             LootContextParams.THIS_ENTITY,
@@ -42,9 +43,9 @@ data class EntityNearBy(val range: NumberProvider, val predicate: EntityPredicat
     companion object {
         val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
                     NumberProviders.CODEC.fieldOf("range").forGetter(EntityNearBy::range),
-                    EntityPredicate.CODEC.optionalFieldOf("predicate").nullable().forGetter(EntityNearBy::predicate),
+                    EntityPredicate.CODEC.optionalFieldOf("predicate").nullableForGetter(EntityNearBy::predicate),
                     Codec.INT.optionalFieldOf("interval", 40).forGetter(EntityNearBy::interval)
-                ).apply(instance, ::EntityNearBy);
+                ).apply(instance) { range, predicate, interval -> EntityNearBy(range, predicate.getOrNull(), interval) }
         }
 
         @JvmStatic

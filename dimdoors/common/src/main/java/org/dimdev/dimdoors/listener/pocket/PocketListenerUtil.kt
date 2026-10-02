@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddonType
 
 object PocketListenerUtil {
+    @JvmStatic
     fun <T : PocketAddon> getAddon(
         holder: PocketAddonType<T>,
         world: Level,

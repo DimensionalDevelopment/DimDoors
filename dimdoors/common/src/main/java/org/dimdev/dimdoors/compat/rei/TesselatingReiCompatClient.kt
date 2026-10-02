@@ -46,7 +46,7 @@ open class TesselatingReiCompatClient : REIClientPlugin {
     }
 
     override fun registerScreens(registry: ScreenRegistry) {
-        registry.registerContainerClickArea<TessellatingContainer?, TesselatingLoomScreen?>(
+        registry.registerContainerClickArea(
             Rectangle(90, 35, 22, 15),
             TesselatingLoomScreen::class.java,
             TESSELATING

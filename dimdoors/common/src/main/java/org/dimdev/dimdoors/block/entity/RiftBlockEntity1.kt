@@ -12,6 +12,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
+import org.dimdev.dimcore.api.cast
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location
 
 open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), Rift {
@@ -39,7 +41,7 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
     }
 
     public override fun saveAdditional(nbt: CompoundTag, provider: HolderLookup.Provider) {
-        val serialize = Serialize.nbt(nbt, this as T)
+        val serialize = Serialize.nbt(nbt, this.cast<T>())
 
         this.serialize(serialize)
     }
@@ -51,10 +53,11 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
     @JvmRecord
     data class Deserialize<K>(val data: K, val ops: DynamicOps<K>) {
         fun <V, O> get(builder: CodecRecord<V, O>): O {
-            val value = ops.get(data, builder.name)
-                .flatMap { field: K -> builder.codec.parse(ops, field) }
+            val field = ops.get(data, builder.name).result().orElse(null) ?: return builder.defaultValue()
 
-            return value.result().orElseGet(builder.defaultValue)
+            return builder.codec.parse(ops, field)
+                .ifError { DimensionalDoors.LOGGER.error("Failed to decode rift field '{}': {}", builder.name, it.message()) }
+                .result().orElseGet(builder.defaultValue)
         }
 
         companion object {
@@ -121,6 +124,6 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
     class Impl(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<Impl>(ModBlockEntityTypes.GENERIC_RIFT, pos, state)
 
     companion object {
-        val RIFT_DATA_BUILDER = CodecRecord<Rift, RiftData>("data", RiftData.CODEC, ::RiftData, Rift::data)
+        val RIFT_DATA_BUILDER = CodecRecord("data", RiftData.CODEC, ::RiftData, Rift::data)
     }
 }

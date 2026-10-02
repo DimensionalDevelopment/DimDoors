@@ -14,11 +14,8 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.DimensionalDoors.Companion.getConfig
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
@@ -30,7 +27,7 @@ import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
 import java.util.*
 
-class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {
+class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {
     override fun receiveEntity(
         entity: Entity,
         relativePos: Vec3,
@@ -55,7 +52,7 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
             var destLevel: ServerLevel? = null
             var destPos: BlockPos? = null
 
-            if (getConfig().limboConfig.tryPlayerBedSpawn) {
+            if (DimensionalDoors.config.limboConfig.tryPlayerBedSpawn) {
                 val level = DimensionalDoors.getWorld(entity.respawnDimension)
 
                 if (level != null) {
@@ -66,7 +63,7 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
 
 
             if (destLevel == null) {
-                val targetWorld = getConfig().limboConfig.escapeTargetWorld
+                val targetWorld = DimensionalDoors.config.limboConfig.escapeTargetWorld
                 destLevel = server.overworld()
 
                 val level = DimensionalDoors.getWorld(targetWorld)
@@ -76,7 +73,7 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
                 }
 
                 destPos =
-                    (if (getConfig().limboConfig.defaultToWorldSpawn) destLevel.sharedSpawnPos else entity.blockPosition())
+                    (if (DimensionalDoors.config.limboConfig.defaultToWorldSpawn) destLevel.sharedSpawnPos else entity.blockPosition())
             }
 
             /*
@@ -98,13 +95,12 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
             val destLoc: Location? = randomizeLimboReturn(
                 destLevel,
                 destPos,
-                getConfig().limboConfig.limboReturnDistanceMin,
-                getConfig().limboConfig.limboReturnDistanceMax
+                DimensionalDoors.config.limboConfig.limboReturnDistanceMin,
+                DimensionalDoors.config.limboConfig.limboReturnDistanceMax
             ) //todo add minimum radius
 
             if (destLoc != null && this.canEscapeLimbo) {
-                val location =
-                    destLoc //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
+                val location = destLoc //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
 
                 val level = location.world
                 entity = TeleportUtil.teleport(entity, level, location.blockPos, relativeAngle, relativeVelocity)
@@ -112,12 +108,12 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
                 level.setBlockAndUpdate(location.blockPos, Blocks.AIR.defaultBlockState())
                 level.setBlockAndUpdate(location.blockPos.offset(0, 1, 0), Blocks.AIR.defaultBlockState())
 
-                if (getConfig().limboConfig.decaySurroundings) {
+                if (DimensionalDoors.config.limboConfig.decaySurroundings) {
                     val random = RandomSource.create()
                     BlockPos.withinManhattan(location.blockPos.offset(0, -3, 0), 3, 2, 3)
                         .forEach { pos ->
                             if (random.nextFloat() < (1 / (location.blockPos.distSqr(pos)
-                                    .toFloat())) * getConfig().limboConfig.limboBlocksCorruptingExitWorldAmount
+                                    .toFloat())) * DimensionalDoors.config.limboConfig.limboBlocksCorruptingExitWorldAmount
                             ) {
                                 decayBlock(level, pos)
                             }
@@ -129,16 +125,14 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
                     Component.translatable(if (destLoc == null) "rifts.destinations.escape.did_not_use_rift" else "rifts.destinations.escape.rift_has_closed")
                 )
 
-                if (ModDimensions.LIMBO_DIMENSION != null) {
-                    entity = TeleportUtil.teleport(
-                        entity,
-                        ModDimensions.LIMBO_DIMENSION,
-                        BlockPos(this.location!!.x, this.location!!.y, this.location!!.z),
-                        relativeAngle,
-                        relativeVelocity
-                    )
-                    entity.fallDistance = -500f
-                }
+                entity = TeleportUtil.teleport(
+                    entity,
+                    ModDimensions.LIMBO_DIMENSION,
+                    BlockPos(this.location.x, this.location.y, this.location.z),
+                    relativeAngle,
+                    relativeVelocity
+                )
+                entity.fallDistance = -500f
             }
             return true
         } else {
@@ -154,10 +148,9 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
 
     companion object {
         // TODO: createRift option
-        private val LOGGER: Logger? = LogManager.getLogger()
         private val targetWorldResourceKey: ResourceKey<Level?>? = null
 
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<EscapeTarget> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(EscapeTarget::canEscapeLimbo)
             ).apply(
                 instance, ::EscapeTarget
@@ -176,8 +169,8 @@ class EscapeTarget(protected val canEscapeLimbo: Boolean) : VirtualTarget<Escape
             level,
             getHeightmapPosSafe(
                 level,
-                randomizeCoord(pos.getX(), minRange, maxRange),
-                randomizeCoord(pos.getZ(), minRange, maxRange)
+                randomizeCoord(pos.x, minRange, maxRange),
+                randomizeCoord(pos.z, minRange, maxRange)
             )
         )
     }

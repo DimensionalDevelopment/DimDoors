@@ -10,7 +10,6 @@ import me.shedaniel.rei.api.common.display.DisplayMerger
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.util.EntryStacks
 import net.minecraft.network.chat.Component
-import net.minecraft.world.inventory.AbstractContainerMenu
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient
 
@@ -59,11 +58,7 @@ class DefaultTesselatingCategory : DisplayCategory<DefaultTesselatingDisplay<*>>
         return object : DisplayMerger<DefaultTesselatingDisplay<*>> {
             override fun canMerge(first: DefaultTesselatingDisplay<*>, second: DefaultTesselatingDisplay<*>): Boolean {
                 if (first.categoryIdentifier != second.categoryIdentifier) return false
-                if (!equals(
-                        first.getOrganisedInputEntries<AbstractContainerMenu>(3, 3),
-                        second.getOrganisedInputEntries<AbstractContainerMenu>(3, 3)
-                    )
-                ) return false
+                if (!equals(first.getOrganisedInputEntries(3, 3), second.getOrganisedInputEntries(3, 3))) return false
                 if (!equals(first.outputEntries, second.outputEntries)) return false
                 if (first.isShapeless != second.isShapeless) return false
                 if (first.width != second.width) return false
@@ -73,11 +68,11 @@ class DefaultTesselatingCategory : DisplayCategory<DefaultTesselatingDisplay<*>>
 
             override fun hashOf(display: DefaultTesselatingDisplay<*>): Int {
                 return display.categoryIdentifier
-                    .hashCode() * 31 * 31 * 31 + display.getOrganisedInputEntries<AbstractContainerMenu?>(3, 3)
+                    .hashCode() * 31 * 31 * 31 + display.getOrganisedInputEntries(3, 3)
                     .hashCode() * 31 * 31 + display.outputEntries.hashCode()
             }
 
-            fun equals(l1: MutableList<EntryIngredient>, l2: MutableList<EntryIngredient>): Boolean {
+            fun equals(l1: List<EntryIngredient>, l2: List<EntryIngredient>): Boolean {
                 if (l1.size != l2.size) return false
                 val it1 = l1.iterator()
                 val it2 = l2.iterator()

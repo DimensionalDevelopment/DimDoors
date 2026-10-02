@@ -20,7 +20,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
         return CODEC
     }
 
-    override val riftBlockEnityType get() = ModBlockEntityTypes.GENERIC_RIFT.value()
+    override val riftBlockEnityType get() = ModBlockEntityTypes.GENERIC_RIFT
 
     override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
         if (!ctx.level.getBlockState(ctx.clickedPos).`is`(ModBlocks.DETACHED_RIFT)) {
@@ -51,7 +51,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
     }
 
     companion object {
-        val CODEC = simpleCodec(::LiminalTransmitterBlock)
+        val CODEC: MapCodec<LiminalTransmitterBlock> = simpleCodec(::LiminalTransmitterBlock)
 
         fun attemptRedstoneTransmission(strength: Int, rift: Rift): Boolean {
             rift.isStateDirty = false

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 
 interface ModCommon<T : ISided<*>> {
+    fun initRegistries(sided: T) {}
     fun init(sided: T)
     val modId: String
 }

@@ -72,15 +72,15 @@ object ServerPacketHandler {
         private var pocketSyncDirty = true
 
         fun syncPocketAddonsIfNeeded(pocket: Pocket<*, *>): SyncPocketAddonsS2CPacket? {
-            if ((pocketSyncDirty || pocket.getId() != lastSyncedPocketId || (pocket.world.location() != lastSyncedPocketWorld!!.location()))) {
+            if ((pocketSyncDirty || pocket.id != lastSyncedPocketId || (pocket.world.location() != lastSyncedPocketWorld!!.location()))) {
                 pocketSyncDirty = false
-                lastSyncedPocketId = pocket.getId()
+                lastSyncedPocketId = pocket.id
                 lastSyncedPocketWorld = pocket.world
 
                 return SyncPocketAddonsS2CPacket(
                     pocket.world,
-                    pocket.getBox(),
-                    pocket.getAddons { a -> a.type.value().isSyncable }
+                    pocket.box,
+                    pocket.getAddons { a -> a.type.isSyncable }
                 )
             }
 

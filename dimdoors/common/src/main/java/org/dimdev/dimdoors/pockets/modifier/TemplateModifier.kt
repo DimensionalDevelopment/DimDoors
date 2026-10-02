@@ -28,7 +28,7 @@ data class TemplateModifier(val templateId: Holder<VirtualPocket>, val ids: Muta
     override fun apply(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>) {}
 
     companion object {
-        var CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
                     VirtualPocket.HOLDER_CODEC.fieldOf("templateId").forGetter(TemplateModifier::templateId),
                     Codec.INT_STREAM.xmap(
                         { obj -> obj.boxed() },

@@ -21,18 +21,18 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 
 class EntranceRiftBlockEntityRenderer<T : EntranceRiftBlockEntity<T>>(context: BlockEntityRendererProvider.Context) : RiftBlockEntityRenderer<T>(context) {
     override fun render(
-        blockEntity: T,
+        rift: T,
         tickDelta: Float,
-        matrixStack: PoseStack,
-        vertexConsumerProvider: MultiBufferSource,
-        light: Int,
-        overlay: Int
+        matrices: PoseStack,
+        multiBufferSource: MultiBufferSource,
+        breakingProgress: Int,
+        alpha: Int
     ) {
-        super.render(blockEntity, tickDelta, matrixStack, vertexConsumerProvider, light, overlay)
+        super.render(rift, tickDelta, matrices, multiBufferSource, breakingProgress, alpha)
 
-        val state = blockEntity.renderBlockState ?: return
+        val state = rift.renderBlockState ?: return
 
-        renderDimensionalPortal(state, matrixStack, vertexConsumerProvider, light, overlay)
+        renderDimensionalPortal(state, matrices, multiBufferSource, breakingProgress, alpha)
 
         //        renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
 //        if (state.getBlock() instanceof DoorBlock) {

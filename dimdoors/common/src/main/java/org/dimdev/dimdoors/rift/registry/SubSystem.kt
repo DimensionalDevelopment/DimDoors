@@ -5,7 +5,6 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtIo
 import net.minecraft.nbt.NbtUtils
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
@@ -17,7 +16,6 @@ import org.dimdev.dimdoors.api.util.NbtUtil
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.util.function.Supplier
 
 /*
  * A subsystem in Dimensional Doors is a SavedData that is backed by a codec for its serialization and deserialization. They can be accessed via the getInstance method and their respective Type instance.
@@ -42,7 +40,7 @@ abstract class SubSystem<T : SubSystem<T>> : SavedData() {
 
                 NbtIo.writeCompressed(compoundtag, file.toPath())
             } catch (ioexception: IOException) {
-                DimensionalDoors.LOGGER.error("Error when saving subsytem {}", type().name.toString(), ioexception)
+                DimensionalDoors.LOGGER.error("Error when saving subsytem {}", type().name, ioexception)
             }
 
             this.isDirty = false

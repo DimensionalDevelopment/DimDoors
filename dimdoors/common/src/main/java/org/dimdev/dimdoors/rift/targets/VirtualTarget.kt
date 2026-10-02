@@ -1,13 +1,11 @@
 package org.dimdev.dimdoors.rift.targets
 
-import com.mojang.logging.LogUtils
 import com.mojang.serialization.MapCodec
 import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.util.Copyable
-import org.slf4j.Logger
 import java.util.*
 
 /**
@@ -29,17 +27,19 @@ abstract class VirtualTarget<T : VirtualTarget<T>> : Target, Copyable<T>, MapCod
         if (this === other) return true
         if (other == null || this.javaClass != other.javaClass) return false
         val that = other as VirtualTarget<*>
-        return this.location == that.location
+        return this.locationOrNull == that.locationOrNull
     }
 
-    override fun hashCode(): Int = Objects.hash(this.location)
+    override fun hashCode(): Int = Objects.hash(this.locationOrNull)
+
+    val locationOrNull: Location? get() = if (this::location.isInitialized) location else null
 
     object NoneTarget : VirtualTarget<NoneTarget>() {
-        override val type = VirtualTargets.NONE
+        override val type get() = VirtualTargets.NONE
 
         override var location: Location
             get() = super.location
-            set(value) = logger.warn("Attempted to set location of NoneTarget to {}", value, Throwable())
+            set(_) {}
 
         override fun equals(other: Any?) = other === NoneTarget
 
@@ -48,8 +48,6 @@ abstract class VirtualTarget<T : VirtualTarget<T>> : Target, Copyable<T>, MapCod
         override fun copy() = NoneTarget
 
         override fun toString() = "[none]"
-
-        private val logger: Logger = LogUtils.getLogger()
 
         val codec = MapCodec.unit(NoneTarget)
     }

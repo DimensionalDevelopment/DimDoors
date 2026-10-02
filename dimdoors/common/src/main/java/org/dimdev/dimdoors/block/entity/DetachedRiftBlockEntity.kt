@@ -26,9 +26,7 @@ import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.util.Utils
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
-import java.util.*
 import java.util.function.Consumer
-import java.util.function.Supplier
 import kotlin.math.abs
 
 class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntity<DetachedRiftBlockEntity>(
@@ -89,12 +87,12 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         this.setChanged()
     }
 
-    override fun gatherDebug(textConsumer: Consumer<Component?>) {
+    override fun gatherDebug(textConsumer: Consumer<Component>) {
         super.gatherDebug(textConsumer)
         textConsumer.accept(Component.literal("Decay radius: " + this.decayRadius))
     }
 
-    public override fun deserialize(nbt: Deserialize<Tag>) {
+    override fun deserialize(nbt: Deserialize<Tag>) {
         super.deserialize(nbt)
         spawnedEndermanId = nbt.get<DetachedRiftBlockEntity, Int>(SPAWNED_ENDERMAN_ID_BUILDER)
         curveID = nbt.get<DetachedRiftBlockEntity, Int>(CURVE_ID_BUILDER)
@@ -104,7 +102,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     }
 
 
-    public override fun serialize(serialize: Serialize<Tag, DetachedRiftBlockEntity>) {
+    override fun serialize(serialize: Serialize<Tag, DetachedRiftBlockEntity>) {
         super.serialize(serialize)
         serialize.put(SPAWNED_ENDERMAN_ID_BUILDER)
         serialize.put(CURVE_ID_BUILDER)
@@ -133,29 +131,25 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     override fun unregister() {
         super.unregister()
-        level!!.removeBlock(getBlockPos(), false)
+        level?.removeBlock(blockPos, false)
     }
 
     override fun receiveEntity(
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
-        velocity: Vec3,
+        relativeVelocity: Vec3,
         location: Location?
     ): Boolean {
         if (this.level is ServerLevel) {
             val localTargetPos = Vec3.atBottomCenterOf(this.worldPosition)
 
             val frame =
-                LevelSpaceHelper.INSTANCE.projectTeleportFrame(level as ServerLevel, location, localTargetPos, relativeAngle, velocity)
+                LevelSpaceHelper.INSTANCE.projectTeleportFrame(level as ServerLevel, location, localTargetPos, relativeAngle, relativeVelocity)
 
-            TeleportUtil.teleport(entity, this.level, frame.pos, frame.angle, frame.velocity)
+            TeleportUtil.teleport(entity, this.level as ServerLevel, frame.pos, frame.angle, frame.velocity)
         }
         return true
-    }
-
-    override fun update(level: Level?, pos: BlockPos?, blockState: BlockState?) {
-        super.update(level, pos, blockState)
     }
 
     override fun update(level: Level, pos: BlockPos, blockState: BlockState) {
@@ -166,7 +160,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
                 if (level.random.nextInt(0, 100) <= absoluteChance) {
                     val sizeChange = if (weight > 0) 1 else -1
 
-                    data.size = data.size + sizeChange
+                    data.size += sizeChange
                 }
 
                 if (weight < 0 && data.size == 0) {
@@ -189,7 +183,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         }
     }
 
-    public override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag {
+    override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag {
         val tag = super.getUpdateTag(provider)
         tag.putInt("weight", this.weight)
         tag.putInt("curveID", this.curveID)
@@ -203,32 +197,24 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         }
 
         if (level.random.nextFloat() < config.generalConfig.endermanSpawnChance) {
-            val list = level.getEntitiesOfClass<EnderMan?>(
+            val list = level.getEntitiesOfClass(
                 EnderMan::class.java,
                 AABB(
-                    (pos.getX() - 9).toDouble(),
-                    (pos.getY() - 3).toDouble(),
-                    (pos.getZ() - 9).toDouble(),
-                    (pos.getX() + 9).toDouble(),
-                    (pos.getY() + 3).toDouble(),
-                    (pos.getZ() + 9).toDouble()
+                    (pos.x - 9).toDouble(),
+                    (pos.y - 3).toDouble(),
+                    (pos.z - 9).toDouble(),
+                    (pos.x + 9).toDouble(),
+                    (pos.y + 3).toDouble(),
+                    (pos.z + 9).toDouble()
                 )
             )
 
             if (list.isEmpty()) {
-                val enderman = EntityType.ENDERMAN.spawn(
-                    level as ServerLevel,
-                    pos,
-                    MobSpawnType.STRUCTURE
-                )
-                Objects.requireNonNull<EnderMan?>(enderman)
-                    .absMoveTo(pos.getX() + 0.5, (pos.getY() - 1).toDouble(), pos.getZ() + 0.5, 5f, 6f)
+                val enderman = EntityType.ENDERMAN.spawn(level as ServerLevel, pos, MobSpawnType.STRUCTURE) ?: return
+                enderman.absMoveTo(pos.x + 0.5, (pos.y - 1).toDouble(), pos.z + 0.5, 5f, 6f)
 
                 if (level.random.nextDouble() < config.generalConfig.endermanAggressiveChance) {
-                    val player = level.getNearestPlayer(enderman, 50.0)
-                    if (player != null) {
-                        enderman!!.setTarget(player)
-                    }
+                    level.getNearestPlayer(enderman, 50.0)?.run { enderman.target = this }
                 }
             }
         }

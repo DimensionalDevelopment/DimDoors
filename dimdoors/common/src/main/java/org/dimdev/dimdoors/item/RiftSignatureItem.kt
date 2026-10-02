@@ -147,9 +147,6 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         private fun normalizeRiftProviderLocation(location: RotatedLocation): RotatedLocation {
             val world = location.world
-            if (world == null) {
-                return location
-            }
 
             val normalizedPos: BlockPos = normalizeRiftProviderPos(world, location.blockPos)
             if (normalizedPos == location.blockPos) {
@@ -183,7 +180,7 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
                 state.canBeReplaced() -> run {
                     world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState())
-                    return world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).map { it.register() }.getOrNull()?.cast()
+                    return world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).getOrNull()?.also { it.register() }
                 }
 
                 else -> null

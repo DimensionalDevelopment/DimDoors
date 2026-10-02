@@ -3,16 +3,12 @@ package org.dimdev.dimdoors.rift.registry
 import com.google.common.collect.HashBiMap
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
-import net.minecraft.core.Holder
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.NbtAccounter
-import net.minecraft.nbt.NbtIo
-import net.minecraft.nbt.NbtOps
-import net.minecraft.nbt.Tag
+import net.minecraft.nbt.*
 import net.minecraft.server.MinecraftServer
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.storage.LevelResource
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.ModRegistries
 import org.dimdev.dimdoors.api.util.Edge
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.NbtUtil
@@ -28,17 +24,17 @@ import java.util.*
 object LegacyDimensionalRegistryMigrator {
     private const val OLD_DATA_NAME = "dimensional_registry"
     private const val SUPPORTED_RIFT_DATA_VERSION = 1
-    private val COMPOUND = Tag.TAG_COMPOUND.toInt()
+    private const val COMPOUND = Tag.TAG_COMPOUND.toInt()
     private val POCKET_DIRECTORY_MAP_CODEC = Codec.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC)
 
-    private val splitTypes: List<Holder<out SubSystem.Type<*>>>
+    private val splitTypes: List<SubSystem.Type<*>>
         get() = listOf(SubsystemTypes.GRAPH, SubsystemTypes.RIFT, SubsystemTypes.PRIVATE, SubsystemTypes.POCKET)
 
     fun migrateIfNeeded(server: MinecraftServer) {
         val oldFile = server.dataFile(OLD_DATA_NAME)
         if (!Files.exists(oldFile)) return
 
-        val existing = splitTypes.count { Files.exists(server.dataFile(it.value().toFilename())) }
+        val existing = splitTypes.count { Files.exists(server.dataFile(it.toFilename())) }
         if (existing == splitTypes.size) return
         if (existing > 0) {
             DimensionalDoors.LOGGER.warn("Found old {}.dat but only some split registry data exists. Skipping automatic registry migration.", OLD_DATA_NAME)
@@ -164,7 +160,7 @@ object LegacyDimensionalRegistryMigrator {
 
     private fun readPocketEntrancePointers(riftTag: CompoundTag, vertices: MutableMap<UUID, RegistryVertex>): ParsedPointers {
         val entranceType = typeId(RegistryVertices.ENTRANCE)
-        val pointers = LinkedHashMap<PocketInfo?, PocketEntrancePointer>()
+        val pointers = mutableMapOf<PocketInfo, PocketEntrancePointer>()
         var entries = 0
 
         for (pointerTag in riftTag.compounds("pockets")) {
@@ -186,7 +182,7 @@ object LegacyDimensionalRegistryMigrator {
             .map { Edge(it.getUUID("from"), it.getUUID("to")) }
             .filterTo(mutableListOf()) { it.source in vertices && it.target in vertices }
 
-    private fun readPlayerConnections(riftTag: CompoundTag, vertices: MutableMap<UUID, RegistryVertex>, edges: MutableList<Edge>): Map<UUID, PlayerRiftConnection> {
+    private fun readPlayerConnections(riftTag: CompoundTag, vertices: MutableMap<UUID, RegistryVertex>, edges: MutableList<Edge>): MutableMap<UUID, PlayerRiftConnection> {
         val entranceTargets = readPlayerPointerTargets(riftTag, "last_private_pocket_entrances", vertices)
         val exitTargets = readPlayerPointerTargets(riftTag, "last_private_pocket_exits", vertices)
         val connections = LinkedHashMap<UUID, PlayerRiftConnection>()
@@ -209,8 +205,7 @@ object LegacyDimensionalRegistryMigrator {
             .filter { entry -> vertices[entry.getUUID("rift")].let { it is Rift && it !is RiftPlaceholder } }
             .associate { it.getUUID("player") to it.getUUID("rift") }
 
-    private fun typeId(type: Holder<out MapCodec<out RegistryVertex>>): String =
-        type.unwrapKey().orElseThrow { IllegalStateException("Unregistered legacy registry vertex type") }.location().toString()
+    private fun typeId(type: MapCodec<out RegistryVertex>): String = ModRegistries.REGISTRY_VERTEX_TYPE.getKey(type).toString()
 
     private fun CompoundTag.compounds(key: String): List<CompoundTag> = getList(key, COMPOUND).filterIsInstance<CompoundTag>()
 
@@ -218,7 +213,7 @@ object LegacyDimensionalRegistryMigrator {
 
     private class ParsedRifts(val byLocation: Map<Location, Rift>, val dropped: Int)
 
-    private class ParsedPointers(val pointers: MutableMap<PocketInfo?, PocketEntrancePointer>, val dropped: Int)
+    private class ParsedPointers(val pointers: MutableMap<PocketInfo, PocketEntrancePointer>, val dropped: Int)
 
     private class Migration(
         val pocketRegistry: PocketRegistry,
@@ -241,9 +236,9 @@ object LegacyDimensionalRegistryMigrator {
         fun install(server: MinecraftServer) {
             val storage = server.overworld().dataStorage
 
-            fun put(type: Holder<out SubSystem.Type<*>>, data: SubSystem<*>) {
+            fun put(type: SubSystem.Type<*>, data: SubSystem<*>) {
                 data.setDirty()
-                storage.set(type.value().toFilename(), data)
+                storage.set(type.toFilename(), data)
             }
 
             put(SubsystemTypes.POCKET, pocketRegistry)

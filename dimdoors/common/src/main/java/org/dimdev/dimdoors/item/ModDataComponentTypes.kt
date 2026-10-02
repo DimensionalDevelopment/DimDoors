@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 
 object ModDataComponentTypes : PlatformRegistry.DataComponentTypePlatformRegistry(getSided()) {
-    val DESTINATION = create("destination", RotatedLocation.CODEC, RotatedLocation.STREAM_CODEC)
+    val DESTINATION = create("destination", RotatedLocation.CODEC, RotatedLocation.STREAM_CODEC.cast())
     @JvmField val COUNT = create("count", Codec.INT, ByteBufCodecs.INT.cast())
 
     @JvmField
