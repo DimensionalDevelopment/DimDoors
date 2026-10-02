@@ -19,7 +19,7 @@ import org.dimdev.dimdoors.block.ModBlocks.fabric
 import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.generate
 import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.hasItems
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.Companion.PREFIX
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX
 import org.dimdev.dimdoors.tag.ModItemTags
 import java.util.concurrent.CompletableFuture
 

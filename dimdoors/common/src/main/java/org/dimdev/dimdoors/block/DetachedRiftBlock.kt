@@ -59,7 +59,11 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         val level = location.world
         val pos = location.blockPos
 
-        val state = level.getBlockState(pos).setValue(BlockStateProperties.POWER, strength)
+        var state = level.getBlockState(pos);
+
+        if(state.getValue(BlockStateProperties.POWER) == strength) return false
+
+        state = level.getBlockState(pos).setValue(BlockStateProperties.POWER, strength)
 
         level.setBlockAndUpdate(pos, state)
 

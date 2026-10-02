@@ -118,7 +118,7 @@ object TemplateUtils {
             if (rift.data.destination is PocketExitMarker) {
                 if (linkProperties != null) rift.properties = linkProperties
 
-                val exitDestination = if (rift.properties?.isOneWay == false) linkTo else VirtualTarget.NoneTarget
+                val exitDestination = if (rift.properties?.isOneWay != true) linkTo else VirtualTarget.NoneTarget
 
                 rift.setDestination(exitDestination)
 
@@ -135,12 +135,13 @@ object TemplateUtils {
     }
 
     fun linkRifts(from: Location?, to: Location?) {
+        if (to == null) return
         val fromBe = from?.blockEntity?.castOrNull<Rift>() ?: return
-        val toBe = to?.blockEntity?.castOrNull<Rift>() ?: return
 
         fromBe.setDestination(to.asTarget())
         fromBe.markStateChanged()
 
+        val toBe = to.blockEntity?.castOrNull<Rift>() ?: return
         val properties = toBe.properties ?: return
 
         toBe.properties = properties.withLinksRemaining(properties.linksRemaining - 1)

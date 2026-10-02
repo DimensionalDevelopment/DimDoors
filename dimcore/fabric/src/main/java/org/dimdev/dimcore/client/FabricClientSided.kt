@@ -50,7 +50,7 @@ open class FabricClientSided<V : FabricClientSided<V, T>, T : ModClient<in V>>(p
         })
 
 
-        client.initFluids { flowing, still, details -> FluidRenderHandlerRegistry.INSTANCE.register(flowing.value(), still.value(), SimpleFluidRenderHandler(details.still, details.flowing, details.overlay)) }
+        client.initFluids { flowing, still, details -> FluidRenderHandlerRegistry.INSTANCE.register(flowing, still, SimpleFluidRenderHandler(details.still, details.flowing, details.overlay)) }
         client.initScreens(object : ModClient.ScreenRegister { override fun <U : AbstractContainerMenu, M> register(menuType: MenuType<U>, factory: (U, Inventory, Component) -> M) where M : Screen, M : MenuAccess<U> = MenuScreens.register<U, M>(menuType, factory) })
         client.initBlockEntityRenderers(object : ModClient.BlockEntityRegister { override fun <T : BlockEntity> register(type: BlockEntityType<T>, provider: BlockEntityRendererProvider<T>) = BlockEntityRenderers.register(type, provider) })
         client.initEntityRenderers(object : ModClient.EntityRegister { override fun <T : Entity> register(type: EntityType<T>, provider: EntityRendererProvider<T>) { EntityRendererRegistry.register(type, provider) } })

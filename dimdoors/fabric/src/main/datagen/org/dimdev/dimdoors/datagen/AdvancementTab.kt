@@ -8,7 +8,6 @@ import net.minecraft.advancements.critereon.*
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
-import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Blocks
@@ -18,6 +17,7 @@ import org.dimdev.dimdoors.criteria.ModCriteria
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion
 import org.dimdev.dimdoors.item.ModItems
+import org.dimdev.dimdoors.tag.ModWorldTags.tag
 import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 import java.util.function.Consumer
@@ -146,7 +146,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             .addCriterion(
                 "get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(
                     ItemPredicate.Builder.item().of(
-                        TagKey.create<T?>(Registries.ITEM, DimensionalDoors.id("fabric"))
+                        Registries.ITEM.tag("fabric")
                     ).build()
                 )
             )
@@ -214,9 +214,9 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
         fun makeDisplay(item: ItemLike, titleKey: String?): DisplayInfo {
             return DisplayInfo(
                 item.asItem().getDefaultInstance(),
-                Component.translatable("advancement.dimdoors." + titleKey),
-                Component.translatable("advancement.dimdoors." + titleKey + ".desc"),
-                Optional.of<T?>(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
+                Component.translatable("advancement.dimdoors.$titleKey"),
+                Component.translatable("advancement.dimdoors.$titleKey.desc"),
+                Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
                 AdvancementType.TASK,
                 true,
                 true,
@@ -229,7 +229,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
                 item.asItem().getDefaultInstance(),
                 Component.translatable("dimdoors.advancement." + titleKey),
                 Component.translatable("dimdoors.advancement." + titleKey + ".desc"),
-                Optional.of<T?>(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
+                Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
                 advancementFrame,
                 true,
                 true,

@@ -83,7 +83,7 @@ object Targets {
             override fun recieveSignal(strength: Int, location: Location?): Boolean {
                 val targetLevel = location?.world ?: return false
 
-                return TargetResolver.target<RedstoneTarget>(targetLevel, location.blockPos)?.recieveSignal(strength, location) ?: false
+                return TargetResolver.target(targetLevel, location.blockPos, REDSTONE)?.recieveSignal(strength, location) ?: false
             }
         })
     }

@@ -10,13 +10,11 @@ interface Handle<U : Unit<U>> {
 
     fun contents(): List<U>
 
-    fun extractAny(amount: Long, simulate: Boolean): U? {
-        return contents().filter { it.isNotEmpty }
-            .map(
-                { extract(it.withAmount(amount.coerceAtMost(it.amount)), simulate) },
-                { it > 0},
-                {unit, amount -> unit.withAmount(amount)})
-            .firstOrNull()
+    fun extractAny(amount: Long, simulate: Boolean): U? = contents().firstNotNullOfOrNull { held ->
+        held.takeIf { it.isNotEmpty }
+            ?.let { extract(it.withAmount(amount.coerceAtMost(it.amount)), simulate) }
+            ?.takeIf { it > 0 }
+            ?.let(held::withAmount)
     }
 
     private object Empty : Handle<FluidUnit> {
@@ -27,12 +25,5 @@ interface Handle<U : Unit<U>> {
 
     companion object {
         fun <U : Unit<U>> empty(): Handle<U> = Empty.cast()
-    }
-}
-
-inline fun <T, R> Iterable<T>.map(transform: (T) -> R, filter: (R) -> Boolean, map: (T, R) -> T):List<T> {
-    return this.map {
-        val r = transform.invoke(it)
-        if(filter.invoke(r)) map.invoke(it, r) else it
     }
 }

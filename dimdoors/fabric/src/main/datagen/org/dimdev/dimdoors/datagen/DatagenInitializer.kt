@@ -19,7 +19,7 @@ class DatagenInitializer : DataGeneratorEntrypoint {
 
         pack.addProvider { output, registries -> DimDoorsDynamicRegistryDatagen(output, registries) }
 
-        pack.addProvider { output -> DimDoorsModelProvider(output) }
+        pack.addProvider { output, registries -> DimDoorsModelProvider(output) }
         pack.addProvider { output, registries -> DimdoorsRecipeProvider(output, registries) }
         pack.addProvider { output, registries -> AdvancementProvider(output, registries) }
         pack.addProvider { output, registries -> BlockLootTableProvider(output, registries) }

@@ -160,7 +160,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                 var relativeVelocity = entity.deltaMovement
 
                 val target = rift.target
-                val location = if (target is LocationProvider) target.location else null
+                val location = if (target is LocationProvider) target.providedLocation else null
 
                 val state = rift.riftLevel.getBlockState(rift.riftBlockPos)
                 val block = state.block

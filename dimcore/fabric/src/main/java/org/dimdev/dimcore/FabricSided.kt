@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -48,7 +47,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         RegistryEntryAddedCallback.event(registry).register { _, id, value -> handlers.forEach { it(id, value) } }
     }
 
-    private data class PlayPayloadHandlerReturnable<T : CustomPacketPayload>(val packetFunction: (T, ServerPlayer) -> CustomPacketPayload?) : ServerPlayNetworking.PlayPayloadHandler<T> {
+    data class PlayPayloadHandlerReturnable<T : CustomPacketPayload>(val packetFunction: (T, ServerPlayer) -> CustomPacketPayload?) : ServerPlayNetworking.PlayPayloadHandler<T> {
         override fun receive(payload: T, context: ServerPlayNetworking.Context) {
             packetFunction.invoke(payload, context.player()).also { context.responseSender().sendPacket(it) }
         }
@@ -95,7 +94,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as DataValueType<Any>
-                val attachment = AttachmentRegistry.create<Any?>(ResourceLocation.fromNamespaceAndPath(common.modId, name)) { builder ->
+                val attachment = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(common.modId, name)) { builder ->
                     builder.initializer(type.defaultValue)
                     builder.persistent(type.codec)
                     type.streamCodec?.let { builder.syncWith(it, AttachmentSyncPredicate.all()) }

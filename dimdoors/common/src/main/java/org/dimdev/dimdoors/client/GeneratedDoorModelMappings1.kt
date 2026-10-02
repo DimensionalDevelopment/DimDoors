@@ -71,7 +71,7 @@ object GeneratedDoorModelMappings {
      */
     @JvmRecord
     data class ItemMapping(
-        val source: ModelResourceLocation?,
+        val source: ModelResourceLocation,
         val portal: ResourceLocation?
     )
 

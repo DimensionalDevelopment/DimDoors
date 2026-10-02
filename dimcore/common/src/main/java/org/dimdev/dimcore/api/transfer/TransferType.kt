@@ -25,12 +25,12 @@ class TransferType<U : Unit<U>> private constructor(
     private val deserialize: (Tag) -> U
 ) {
     val lookup: SimpleEvent<Lookup<U>> = SimpleEvent.of { listeners -> { level, pos, side ->
-            listeners.map { it.find(level, pos, side) }.firstOrNull()
+            listeners.firstNotNullOfOrNull { it.find(level, pos, side) }
         }
     }
 
     val expose: SimpleEvent<Expose<U>> = SimpleEvent.of { listeners -> { blockEntity, side ->
-            listeners.map { it.expose(blockEntity, side) }.firstOrNull()
+            listeners.firstNotNullOfOrNull { it.expose(blockEntity, side) }
         }
     }
 

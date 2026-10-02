@@ -26,11 +26,10 @@ class GeneratedDoorBakedModel
     private val portalId: ResourceLocation?
 ) : BakedModel {
     private val source get() = Minecraft.getInstance().modelManager.getModel(sourceId)
-    private val portal = Minecraft.getInstance().modelManager.getModel(portalId)
+    private val portal get() = Minecraft.getInstance().modelManager.getModel(portalId)
 
     override fun getQuads(state: BlockState?, direction: Direction?, random: RandomSource): List<BakedQuad>? {
-
-
+        if (portalId == null) return source.getQuads(state, direction, random)
 
         val sourceQuads = source.getQuads(state, direction, random)
         val portalQuads = portal.getQuads(state, direction, random)
@@ -61,7 +60,7 @@ class GeneratedDoorBakedModel
 
     override fun getOverrides(): ItemOverrides = source.overrides
 
-    override fun isVanillaAdapter(): Boolean = source.isVanillaAdapter
+    override fun isVanillaAdapter(): Boolean = portalId == null && source.isVanillaAdapter
 
     override fun emitBlockQuads(
         blockView: BlockAndTintGetter?,

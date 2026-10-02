@@ -2,12 +2,15 @@ package org.dimdev.dimdoors.block
 
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity
@@ -41,13 +44,12 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
         notify: Boolean
     ) {
         super.neighborChanged(state, world, pos, block, fromPos, notify)
-        if (world.isClientSide()) return
+        if (!world.isClientSide && !world.blockTicks.hasScheduledTick(pos, this)) world.scheduleTick(pos, this, 1)
+    }
 
-        val strength = world.getBestNeighborSignal(pos)
-
-        val rift = getRift(world, pos, state) ?: return
-
-        attemptRedstoneTransmission(strength, rift)
+    override fun tick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {
+        val rift = getRift(level, pos, state) ?: return
+        attemptRedstoneTransmission(level.getBestNeighborSignal(pos), rift)
     }
 
     companion object {
@@ -59,12 +61,17 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
             // Attempt a teleport
             try {
                 val target = rift.target
-                val location = target.castOrNull<LocationProvider>()?.location
+                val location = target.castOrNull<LocationProvider>()?.providedLocation
 
-                return target.`as`(Targets.REDSTONE)?.recieveSignal(strength, location) ?: false
-            } catch (_: Exception) {
+                val redstone = target.`as`(Targets.REDSTONE)
+
+                return redstone?.recieveSignal(strength, location) ?: false
+            } catch (e: Exception) {
+                DimensionalDoors.LOGGER.error("Redstone transmission from {} failed", rift.riftBlockPos, e)
                 return false
             }
+
+
         }
     }
 }

@@ -42,6 +42,7 @@ processResources {
 tasks.named('javadoc', Javadoc).configure {
     dependsOn(configurations.commonJava)
     source(configurations.commonJava)
+    include('**/*.java')
 }
 
 tasks.named('sourcesJar', Jar) {

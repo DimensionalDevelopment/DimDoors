@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.cast
 import org.dimdev.dimdoors.api.util.BlockPosUtil
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock
@@ -16,39 +16,28 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 
 object TargetResolver {
-    @JvmName("targetAs")
-    fun <T : Target> target(location: Location?): T? {
-        return location?.run { target<T>(this.world, this.blockPos, null) }
-    }
-
-    fun <T : Target> target(level: ServerLevel, pos: BlockPos): T? = target<T>(level, pos, null)
+    fun <T : Target> target(location: Location?, clazz: Class<T>): T? = location?.run { target(this.world, this.blockPos, clazz) }
 
     fun <T : Target> target(
         level: ServerLevel,
         pos: BlockPos,
+        clazz: Class<T>,
         function: ResolveFunction<T>? = null
     ): T? = BlockPosUtil.nearbyVertical(pos) { p ->
-        castOrNull(level, p, LevelSpaceHelper.INSTANCE::getBlockEntity) ?:
-        castOrNull(level, p) { level, pos -> LevelSpaceHelper.INSTANCE.getBlockState(level, pos).block } ?:
-        castOrNull(level, p, function)
+        LevelSpaceHelper.INSTANCE.getBlockEntity(level, p)?.cast(clazz) ?:
+        LevelSpaceHelper.INSTANCE.getBlockState(level, p).block.cast(clazz) ?:
+        function?.resolve(level, p)?.cast(clazz)
     }
 
-
-    fun target(location: Location?): Target? = location?.run { target(this.world, this.blockPos) }
+    fun target(location: Location?): Target? = location?.run { target(this.world, this.blockPos, Target::class.java) }
 
     fun entity(location: Location?): EntityTarget? = location?.run { entity(this.world, this.blockPos) }
 
-    fun entity(level: ServerLevel, pos: BlockPos): EntityTarget? = target(level, pos, TargetResolver::blockStateEntity)
+    fun entity(level: ServerLevel, pos: BlockPos): EntityTarget? = target(level, pos, EntityTarget::class.java, TargetResolver::blockStateEntity)
 
     fun interface ResolveFunction<V> {
         fun resolve(level: ServerLevel, pos: BlockPos): V?
     }
-
-    fun <T, V> castOrNull(
-        level: ServerLevel,
-        pos: BlockPos,
-        function: ResolveFunction<V>?,
-    ): T? = function?.resolve(level, pos)?.castOrNull()
 
     fun blockStateEntity(level: ServerLevel, pos: BlockPos): EntityTarget? {
         var pos = pos
@@ -62,7 +51,7 @@ object TargetResolver {
         val block = state.block
         return when (block) {
             is CoordinateTransformerBlock -> state
-            is RiftVariantProvider -> block.getRiftProviderState(state).takeIf { block.castOrNull<CoordinateTransformerBlock>() != null }
+            is RiftVariantProvider -> block.getRiftProviderState(state)?.takeIf { it.block is CoordinateTransformerBlock }
             else -> null
         }?.let {
             EntityTarget { entity: Entity, relPos: Vec3, relAngle: Rotations, relVel: Vec3, location: Location? ->

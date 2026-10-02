@@ -24,6 +24,6 @@ public class FabricLanguageMixin {
 
     @Inject(method = "loadFromJson(Ljava/io/InputStream;Ljava/util/function/BiConsumer;)V", at = @At("TAIL"))
     private static void dimdoors$loadFromJson(InputStream stream, BiConsumer<String, String> output, CallbackInfo ci) {
-        AutoGenDoorTranslations.apply(output);
+        AutoGenDoorTranslations.INSTANCE.apply(output);
     }
 }

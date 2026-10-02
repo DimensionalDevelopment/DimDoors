@@ -30,7 +30,6 @@ import net.minecraft.world.item.JukeboxSong
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents
 import net.minecraft.world.item.enchantment.LevelBasedValue
-import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect
 import net.minecraft.world.item.enchantment.effects.PlaySoundEffect
 import net.minecraft.world.level.biome.*
 import net.minecraft.world.level.block.Block
@@ -293,11 +292,11 @@ object DefaultDynamicRegistryDataGen {
                     BiomeGenerationSettings.PlainBuilder()
                         .addCarver(
                             GenerationStep.Carving.AIR,
-                            entries.lookup<ConfiguredWorldCarver<*>?>(ModCarvers.LIMBO)
+                            entries.lookup(ModCarvers.LIMBO)
                         )
                         .addFeature(
                             GenerationStep.Decoration.UNDERGROUND_ORES,
-                            entries.lookup<PlacedFeature?>(ModFeatures.Placed.SOLID_STATIC_ORE)
+                            entries.lookup(ModFeatures.Placed.SOLID_STATIC_ORE)
                         )
                         .build()
                 )
@@ -382,8 +381,8 @@ object DefaultDynamicRegistryDataGen {
     }
 
     fun bootstrapStructures(context: DimDoorsDynamicRegistryProvider.RegistrationHelper) {
-        val biomes = context.registrylookup<Biome?>(Registries.BIOME)
-        val pools = context.registrylookup<StructureTemplatePool?>(Registries.TEMPLATE_POOL)
+        val biomes = context.registrylookup(Registries.BIOME)
+        val pools = context.registrylookup(Registries.TEMPLATE_POOL)
 
         registerStructure(
             context,
@@ -460,13 +459,13 @@ object DefaultDynamicRegistryDataGen {
 
     private fun registerStructure(
         context: DimDoorsDynamicRegistryProvider.RegistrationHelper,
-        biomes: HolderLookup<Biome?>,
-        pools: HolderLookup<StructureTemplatePool?>,
-        structure: ResourceKey<Structure?>?,
-        biome: TagKey<Biome?>?,
-        pool: ResourceKey<StructureTemplatePool?>?
+        biomes: HolderLookup<Biome>,
+        pools: HolderLookup<StructureTemplatePool>,
+        structure: ResourceKey<Structure>,
+        biome: TagKey<Biome>,
+        pool: ResourceKey<StructureTemplatePool>
     ) {
-        context.register<Structure?>(
+        context.register<Structure>(
             structure,
             JigsawStructure(
                 Structure.StructureSettings(
@@ -485,7 +484,7 @@ object DefaultDynamicRegistryDataGen {
     }
 
     fun bootstrapProcessorLists(context: DimDoorsDynamicRegistryProvider.RegistrationHelper) {
-        context.register<StructureProcessorList?>(
+        context.register<StructureProcessorList>(
             ModProcessorLists.DUNGEON,
             StructureProcessorList(listOf(DestinationDataModifier.of(DefaultDungeonDestinations.shallowerDungeonDestination)))
         )
@@ -574,7 +573,7 @@ object DefaultDynamicRegistryDataGen {
 
     @JvmStatic
     fun bootstrapStructureSets(context: DimDoorsDynamicRegistryProvider.RegistrationHelper) {
-        context.register<StructureSet?>(
+        context.register(
             ModStructureSets.GATEWAYS, StructureSet(
                 listOf<StructureSet.StructureSelectionEntry?>(
                     StructureSet.StructureSelectionEntry(
@@ -725,9 +724,9 @@ object DefaultDynamicRegistryDataGen {
                     EquipmentSlotGroup.MAINHAND
                 )
             )
-                .withEffect<EnchantmentEntityEffect?>(
+                .withEffect(
                     EnchantmentEffectComponents.PROJECTILE_SPAWNED,
-                    TranscendentProjectileEffect.INSTANCE
+                    TranscendentProjectileEffect
                 ).build(ModEnchants.TRANSCENDENT_ENCHANTMENT.location())
         )
 

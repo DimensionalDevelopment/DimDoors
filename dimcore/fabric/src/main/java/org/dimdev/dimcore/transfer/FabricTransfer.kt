@@ -25,7 +25,7 @@ import org.dimdev.dimcore.api.transfer.*
 import org.dimdev.dimcore.api.transfer.Unit
 import team.reborn.energy.api.EnergyStorage
 
-object FabricTransfer : TransferBridgeImpl() {
+class FabricTransfer : TransferBridgeImpl() {
     override fun interactWithFluid(
         player: Player?,
         hand: InteractionHand?,
@@ -43,8 +43,6 @@ object FabricTransfer : TransferBridgeImpl() {
         bind(TransferType.ENERGY, EnergyStorage.SIDED.sided(), ::wrapEnergy, ::unwrapEnergy)
     }
 
-    fun init() {}
-
     fun <U : Unit<U>, V> wrap(type: TransferType<U>, storage: Storage<V>): Handle<U> =
         if (storage is HandleStorage<*>) storage.handle.cast() else StorageHandle(type, storage.cast())
 
@@ -61,16 +59,18 @@ object FabricTransfer : TransferBridgeImpl() {
         { lookup, level, pos, side -> lookup.find(level, pos, side) },
         { lookup, type, provider -> lookup.registerForBlockEntity({ blockEntity, side -> provider(blockEntity, side) }, type) })
 
-    private val Unit<*>.variant: TransferVariant<*>
-        get() = when (val resource = resource) {
-            is Item -> ItemVariant.of(resource, components)
-            is Fluid -> FluidVariant.of(resource, components)
-            else -> error("No Fabric variant for $resource")
-        }
+    companion object {
+        private val Unit<*>.variant: TransferVariant<*>
+            get() = when (val resource = resource) {
+                is Item -> ItemVariant.of(resource, components)
+                is Fluid -> FluidVariant.of(resource, components)
+                else -> error("No Fabric variant for $resource")
+            }
 
-    private fun <U : Unit<U>> TransferType<U>.unit(variant: Any, amount: Long): U = (variant as TransferVariant<*>).let { create(it.`object`, it.components, amount) }
+        private fun <U : Unit<U>> TransferType<U>.unit(variant: Any, amount: Long): U = (variant as TransferVariant<*>).let { create(it.`object`, it.components, amount) }
 
-    private fun Transaction.finish(simulate: Boolean) = if (simulate) abort() else commit()
+        private fun Transaction.finish(simulate: Boolean) = if (simulate) abort() else commit()
+    }
 
     private class StorageHandle<U : Unit<U>>(val type: TransferType<U>, val storage: Storage<Any>) : Handle<U> {
         override fun insert(unit: U, simulate: Boolean): Long = Transaction.openOuter().use { transaction ->

@@ -27,9 +27,7 @@ class GeneratedDoorModelCopyPlugin : ModelLoadingPlugin {
             if (blockModel != null) return@register GeneratedDoorBakedModel(blockModel, null)
 
             val itemModel = mappings.itemModels[id]
-            if (itemModel != null) {
-                return@register GeneratedDoorBakedModel(itemModel.source, itemModel.portal)
-            }
+            if (itemModel != null) return@register GeneratedDoorBakedModel(itemModel.source, itemModel.portal)
             model
         }
     }

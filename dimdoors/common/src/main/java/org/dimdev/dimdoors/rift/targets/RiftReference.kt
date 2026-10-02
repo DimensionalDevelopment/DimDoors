@@ -18,6 +18,8 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry
  * (see shouldInvalidate)
  */
 class RiftReference(private val target: Location) : VirtualTarget<RiftReference>(), LocationProvider {
+    override val providedLocation: Location
+        get() = target
 
     override fun receiveOther(): Target? {
         return TargetResolver.target(this.target)
