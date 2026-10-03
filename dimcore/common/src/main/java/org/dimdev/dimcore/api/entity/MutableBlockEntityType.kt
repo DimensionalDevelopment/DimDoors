@@ -9,7 +9,7 @@ import org.dimdev.dimcore.mixin.accessor.BlockEntityTypeAccessor
 class MutableBlockEntityType<T : BlockEntity>(
     factory: BlockEntityFactory<out T>,
     blocks: MutableSet<Block>,
-    type: Type<*>
+    type: Type<*>?
 ) : BlockEntityType<T>(factory, HashSet(blocks), type) {
     fun addBlock(block: Block): Boolean = getBlocks(this).add(block)
 
@@ -29,7 +29,7 @@ class MutableBlockEntityType<T : BlockEntity>(
         private val factory: BlockEntityFactory<out T>,
         private val blocks: MutableSet<Block>
     ) {
-        fun build(type: Type<*>): MutableBlockEntityType<T> = MutableBlockEntityType(this.factory, this.blocks, type)
+        fun build(type: Type<*>?): MutableBlockEntityType<T> = MutableBlockEntityType(this.factory, this.blocks, type)
 
         companion object {
             fun <T : BlockEntity> create(factory: BlockEntityFactory<out T>, vararg blocks: Block?) = Builder(factory, blocks.filterNotNull().toMutableSet())

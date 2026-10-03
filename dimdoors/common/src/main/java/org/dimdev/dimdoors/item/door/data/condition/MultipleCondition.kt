@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item.door.data.condition
 
 import com.mojang.serialization.MapCodec
-import org.dimdev.dimdoors.util.CodecUtils.imutableList
+import org.dimdev.dimdoors.api.util.imutableList
 
 abstract class MultipleCondition protected constructor(val conditions: List<Condition>) : Condition {
 

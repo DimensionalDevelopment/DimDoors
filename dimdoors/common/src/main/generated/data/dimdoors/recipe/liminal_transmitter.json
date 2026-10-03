@@ -1,0 +1,23 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "L": {
+      "item": "dimdoors:liminal_lint"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "S": {
+      "item": "minecraft:sculk_sensor"
+    }
+  },
+  "pattern": [
+    " L ",
+    "LSL",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:liminal_transmitter"
+  }
+}

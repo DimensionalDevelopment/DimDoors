@@ -2,7 +2,7 @@ package org.dimdev.dimcore.api.client
 
 import net.minecraft.client.KeyMapping
 import net.minecraft.server.packs.resources.ResourceManager
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import java.util.function.Consumer
 
 interface IClientSided<T : IClientSided<T>> {

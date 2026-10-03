@@ -36,6 +36,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar
 import net.neoforged.neoforge.registries.*
 import net.neoforged.neoforge.registries.callback.AddCallback
 import org.dimdev.dimcore.api.*
+import org.dimdev.dimcore.api.ext.cast
 import java.util.*
 import java.util.function.Supplier
 

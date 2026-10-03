@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.api.util.BlockPosUtil
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock

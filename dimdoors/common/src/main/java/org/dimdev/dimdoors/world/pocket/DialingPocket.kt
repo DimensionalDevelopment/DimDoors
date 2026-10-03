@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 
 class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon.DyeablePocket {
-    lateinit var address: DialingAddress
+    var address: DialingAddress = DialingAddress.DEFAULT
 
     constructor(
         id: Int,

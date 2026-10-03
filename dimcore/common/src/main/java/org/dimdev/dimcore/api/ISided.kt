@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import org.dimdev.dimcore.DimCore.platform
+import org.dimdev.dimcore.api.ext.cast
 import java.nio.file.Path
 
 interface ISided<T : ISided<T>> : ICreativeTabHandler {
@@ -21,7 +22,3 @@ interface ISided<T : ISided<T>> : ICreativeTabHandler {
 
     fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>? = null): PlatformRegistry.EntryRegister<T>
 }
-
-fun <T : Any> Any.cast(): T = this as T
-
-infix fun <T : Any> Any.cast(clazz: Class<T>): T? = this.takeIf(clazz::isInstance)?.let(clazz::cast)

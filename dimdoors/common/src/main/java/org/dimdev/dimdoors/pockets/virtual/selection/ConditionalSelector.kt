@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
-import org.dimdev.dimdoors.util.CodecUtils.mutableList
+import org.dimdev.dimdoors.api.util.mutableList
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 class ConditionalSelector(val pocketMap: MutableList<ConditionalPocket>) : ImplementedVirtualPocket<ConditionalSelector> {

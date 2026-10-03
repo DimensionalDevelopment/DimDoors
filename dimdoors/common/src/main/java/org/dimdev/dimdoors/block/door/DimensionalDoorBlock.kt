@@ -30,11 +30,7 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
 import org.dimdev.dimdoors.api.util.horizontalFacing
-import org.dimdev.dimdoors.api.util.math.MathUtil.eulerAngle
-import org.dimdev.dimdoors.api.util.math.MathUtil.plus
-import org.dimdev.dimdoors.api.util.math.MathUtil.times
-import org.dimdev.dimdoors.api.util.math.inverseRotateLocal
-import org.dimdev.dimdoors.api.util.math.inverseTranslateLocal
+import org.dimdev.dimdoors.api.util.math.*
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
@@ -62,7 +58,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
         closeDoorBehind(level, pos.above())
     }
 
-    protected fun closeDoorBehind(world: Level, pos: BlockPos) {
+    protected open fun closeDoorBehind(world: Level, pos: BlockPos) {
         world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(OPEN, false))
     }
 

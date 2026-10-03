@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.packet.s2c
 
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import org.dimdev.dimdoors.network.packet.type
+import org.dimdev.dimdoors.api.util.type
 import org.dimdev.dimdoors.util.StreamCodecUtils.Companion.intArray
 
 data class PortalColorsS2CPacket(val colors: IntArray) : CustomPacketPayload {

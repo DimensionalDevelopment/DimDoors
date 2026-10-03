@@ -13,10 +13,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate
-import org.dimdev.dimdoors.api.util.NbtUtil.toNbt
+import org.dimdev.dimdoors.api.util.toNbt
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.util.CodecUtils
-import org.dimdev.dimdoors.util.immutable
+import org.dimdev.dimdoors.api.util.immutable
 import org.dimdev.dimdoors.world.ModStructureProccessors
 
 class DestinationDataModifier(val destinations: Map<Int, Tag>) :

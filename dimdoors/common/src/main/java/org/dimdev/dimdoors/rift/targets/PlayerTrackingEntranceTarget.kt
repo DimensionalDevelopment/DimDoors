@@ -5,8 +5,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.util.EntityUtils.chat
-import org.dimdev.dimcore.api.util.EntityUtils.ownerPlayer
-import org.dimdev.dimcore.api.util.EntityUtils.ownerPlayerUuid
+import org.dimdev.dimcore.api.ext.ownerPlayer
+import org.dimdev.dimcore.api.ext.ownerPlayerUuid
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity

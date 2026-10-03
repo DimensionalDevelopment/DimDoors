@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity
 import net.minecraft.world.level.storage.loot.LootTable
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
@@ -64,7 +64,7 @@ object TemplateUtils {
 
     fun registerRifts(
         rifts: MutableList<out Rift>,
-        linkTo: VirtualTarget<*>,
+        linkTo: VirtualTarget<*>?,
         linkProperties: LinkProperties?,
         pocket: Pocket<*, *>
     ) {
@@ -118,7 +118,10 @@ object TemplateUtils {
             if (rift.data.destination is PocketExitMarker) {
                 if (linkProperties != null) rift.properties = linkProperties
 
-                val exitDestination = if (rift.properties?.isOneWay != true) linkTo else VirtualTarget.NoneTarget
+                val exitDestination = (if (rift.properties?.isOneWay != true) linkTo else VirtualTarget.NoneTarget) ?: run {
+                    DimensionalDoors.LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.riftBlockPos, pocket.id)
+                    VirtualTarget.NoneTarget
+                }
 
                 rift.setDestination(exitDestination)
 

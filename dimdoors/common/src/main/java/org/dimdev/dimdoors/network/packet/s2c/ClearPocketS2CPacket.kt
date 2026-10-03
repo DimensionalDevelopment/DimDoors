@@ -5,7 +5,7 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.network.packet.type
+import org.dimdev.dimdoors.api.util.type
 
 object ClearPocketS2CPacket : CustomPacketPayload {
     override fun type() = TYPE

@@ -29,6 +29,7 @@ import org.dimdev.dimcore.NeoforgeResourceLoader
 import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
 import org.dimdev.dimcore.api.client.IClientSided
 import org.dimdev.dimcore.api.client.ModClient
+import org.dimdev.dimcore.api.ext.id
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import java.io.IOException
 
@@ -131,6 +132,4 @@ open class NeoForgeClientSided<V : NeoForgeClientSided<V, T>, T : ModClient<in V
     override fun registerKeyBinding(mapping: KeyMapping) {
         keyMappings.add(mapping)
     }
-
-    infix fun String.id(that: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(this, that)
 }

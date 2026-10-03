@@ -7,7 +7,7 @@ import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.BuilderTypeHasHolder
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 
 abstract class AbstractPocket<V : AbstractPocket<V, T>, T : AbstractPocket.AbstractPocketBuilder<V, T>> : BuilderTypeHasHolder<AbstractPocket<*, *>, AbstractPocket.AbstractPocketBuilder<*, *>> {

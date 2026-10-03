@@ -13,9 +13,10 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.transfer
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.util.SimpleEvent
 
 class TransferType<U : Unit<U>> private constructor(
@@ -49,6 +50,8 @@ class TransferType<U : Unit<U>> private constructor(
     fun expose(blockEntity: BlockEntity, side: Direction?): Handle<U>? {
         return expose.invoker().expose(blockEntity, side)
     }
+
+    fun declare(type: BlockEntityType<*>) = transfer.declare(this, type)
 
     override fun toString() = "TransferType[$id]"
 

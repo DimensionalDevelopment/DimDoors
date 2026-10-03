@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config

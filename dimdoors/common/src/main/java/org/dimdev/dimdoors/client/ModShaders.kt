@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.client
 
 import com.mojang.blaze3d.shaders.Uniform
 import net.minecraft.client.renderer.ShaderInstance
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.PortalColors.base
 import org.dimdev.dimdoors.api.client.UniformExt
 

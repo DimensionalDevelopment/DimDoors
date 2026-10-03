@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.ModConfig.Doors
-import org.dimdev.dimdoors.item.translate
+import org.dimdev.dimdoors.api.util.translate
 
 object ClothConfigCompat {
     @JvmStatic

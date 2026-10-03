@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.datafixers.Products.P1
-import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
+import org.dimdev.dimdoors.api.util.unboundedMap
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import net.minecraft.server.level.ServerLevel
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*

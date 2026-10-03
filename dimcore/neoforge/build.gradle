@@ -20,7 +20,10 @@ neoForge {
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = modProject('common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
+        accessTransformers {
+            from(at.absolutePath)
+            publish(at)
+        }
     }
     parchment {
         minecraftVersion = parchment_minecraft

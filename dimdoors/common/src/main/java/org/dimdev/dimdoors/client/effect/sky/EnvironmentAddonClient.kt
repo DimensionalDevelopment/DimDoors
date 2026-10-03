@@ -5,7 +5,7 @@ import net.minecraft.client.Camera
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.LightTexture
 import org.dimdev.dimcore.api.Type
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData

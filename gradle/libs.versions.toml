@@ -25,7 +25,7 @@ mixinextras-common = { group = "io.github.llamalad7", name = "mixinextras-common
 minecraft = { group = "com.mojang", name = "minecraft", version = "1.21.1" }
 parchment = { group = "org.parchmentmc.data", name = "parchment-1.21.1", version = "2024.11.17" }
 fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.116.6+1.21.1" }
-fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version = "0.18.4" }
+fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version = "0.19.5" }
 
 #sable
 sable-common = { group = "dev.ryanhcode.sable", name = "sable-common-1.21.1", version = "2.0.5" }

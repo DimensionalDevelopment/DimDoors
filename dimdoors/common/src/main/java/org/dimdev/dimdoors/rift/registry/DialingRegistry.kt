@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import net.minecraft.server.level.ServerLevel
+import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.DialingPocket

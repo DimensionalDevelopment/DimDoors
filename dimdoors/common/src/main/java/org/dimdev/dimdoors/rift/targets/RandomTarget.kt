@@ -9,8 +9,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.levelgen.Heightmap
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimcore.api.cast
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location

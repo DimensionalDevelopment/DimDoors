@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.Half
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock

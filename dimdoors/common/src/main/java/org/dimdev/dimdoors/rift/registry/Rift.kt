@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.registry.RiftRegistry.Companion.instance
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 import java.util.*
 

@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.entity.limbo
 
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.entity.player.Player
-import org.dimdev.dimdoors.item.translate
+import org.dimdev.dimdoors.api.util.translate
 import java.util.*
 
 enum class LimboExitReason : StringRepresentable {

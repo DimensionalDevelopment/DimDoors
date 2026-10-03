@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.tag
 
 import net.minecraft.core.registries.Registries
-import org.dimdev.dimdoors.tag.ModWorldTags.tag
+import org.dimdev.dimdoors.api.util.tag
 
 object ModBlockTags {
     val DRIFTWOOD_LOGS = of("driftwood_logs")

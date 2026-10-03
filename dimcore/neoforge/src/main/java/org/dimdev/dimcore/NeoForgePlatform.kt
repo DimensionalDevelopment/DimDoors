@@ -33,10 +33,9 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent
 import net.neoforged.neoforge.event.tick.LevelTickEvent
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.server.ServerLifecycleHooks
-import org.apache.commons.lang3.function.TriConsumer
 import org.dimdev.dimcore.api.Platform
-import org.dimdev.dimcore.api.cast
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import java.nio.file.Path
 import java.util.function.Consumer
 
@@ -95,7 +94,6 @@ class NeoForgePlatform : Platform {
 
     override fun onAttackBlock(callback: Platform.AttackBlockCallback) = NeoForge.EVENT_BUS.addListener<PlayerInteractEvent.LeftClickBlock> { event ->
         val face = event.face ?: return@addListener
-
         if (event.action != PlayerInteractEvent.LeftClickBlock.Action.START) return@addListener
 
         val result = callback.attack(event.entity, event.hand, event.pos, face)

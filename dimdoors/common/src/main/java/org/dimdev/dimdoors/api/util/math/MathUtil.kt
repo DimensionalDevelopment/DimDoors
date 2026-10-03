@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.api.util.math
 
 import net.minecraft.core.Direction
 import net.minecraft.core.Rotations
-import net.minecraft.core.Vec3i
 import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
@@ -47,8 +46,6 @@ object MathUtil {
         return Math.toDegrees(asin(-vector.y)).toFloat()
     }
 
-    val Direction.eulerAngle  get() = directionEulerAngle(this)
-
     @JvmStatic
     fun directionEulerAngle(direction: Direction) = when (direction) {
         Direction.DOWN -> EulerAngleDirection.DOWN.angle
@@ -70,8 +67,4 @@ object MathUtil {
         WEST(Rotations(0f, 90f, 0f)),
         EAST(Rotations(0f, -90f, 0f));
     }
-
-    operator fun Vec3i.times(scale: Double) = Vec3.atLowerCornerOf(this).scale(scale)
-
-    operator fun Vec3.plus(vec: Vec3) = this.add(vec)
 }

@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.util.ConfigType
-import org.dimdev.dimdoors.util.CodecUtils.mutableList
+import org.dimdev.dimdoors.api.util.mutableList
 
 data class ModConfig(
     val generalConfig: General = General(),

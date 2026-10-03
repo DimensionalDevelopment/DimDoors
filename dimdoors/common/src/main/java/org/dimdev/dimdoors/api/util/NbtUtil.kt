@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 
 object NbtUtil {
     fun <T> deserialize(data: CompoundTag, codec: MapCodec<T>): T = codec.decoder().parse(NbtOps.INSTANCE, data).getOrThrow()
@@ -17,14 +17,7 @@ object NbtUtil {
 
     fun <T> serialize(data: T, codec: Codec<T>): Tag = NbtOps.INSTANCE.withEncoder<T>(codec).apply(data).getOrThrow()
 
-    @JvmName("asNbtCompoundExt")
-    fun Tag?.asNbtCompound(error: String?): CompoundTag = asNbtCompound(this, error)
-
     fun asNbtCompound(nbt: Tag?, error: String?): CompoundTag {
         return nbt?.castOrNull<CompoundTag>() ?: throw RuntimeException(error)
-    }
-
-    fun <T> Codec<T>.toNbt(value: T): Tag {
-        return serialize(value, this)
     }
 }

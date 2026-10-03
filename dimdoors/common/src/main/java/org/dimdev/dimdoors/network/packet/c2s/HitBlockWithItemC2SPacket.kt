@@ -7,7 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.world.InteractionHand
-import org.dimdev.dimdoors.network.packet.type
+import org.dimdev.dimdoors.api.util.type
 
 data class HitBlockWithItemC2SPacket(val hand: InteractionHand, val pos: BlockPos, val direction: Direction) : CustomPacketPayload {
     override fun type(): CustomPacketPayload.Type<HitBlockWithItemC2SPacket> = TYPE

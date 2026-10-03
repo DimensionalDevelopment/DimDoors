@@ -5,7 +5,7 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.context.UseOnContext
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.RiftVariantProvider
 import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget
 import org.dimdev.dimdoors.rift.targets.TempTarget

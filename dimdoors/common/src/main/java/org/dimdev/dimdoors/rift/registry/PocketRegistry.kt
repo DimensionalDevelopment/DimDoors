@@ -4,10 +4,10 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
-import org.dimdev.dimcore.api.cast
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
+import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 import org.dimdev.dimdoors.world.pocket.PocketInfo

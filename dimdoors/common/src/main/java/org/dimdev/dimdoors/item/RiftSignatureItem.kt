@@ -14,8 +14,8 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
-import org.dimdev.dimcore.api.cast
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimdoors.ModGameRules
 import org.dimdev.dimdoors.api.util.RotatedLocation

@@ -12,7 +12,7 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.levelgen.structure.BoundingBox
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.VirtualLocation

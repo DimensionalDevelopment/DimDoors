@@ -12,7 +12,7 @@ import net.minecraft.world.item.TieredItem
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.world.decay.Decay.DecayContext.Companion.create
 import org.dimdev.dimdoors.world.decay.Decay.DecayLoader.getPatterns
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder

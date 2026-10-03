@@ -21,7 +21,7 @@ import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.server.ServerStoppedEvent
 import net.neoforged.neoforge.fluids.FluidType
 import org.dimdev.dimcore.NeoForgeSided
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.event.ChunkServedCallback
 import org.dimdev.dimdoors.fluid.EternalFluid
 import org.dimdev.dimdoors.fluid.LeakFluid

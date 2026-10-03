@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.item.door.data.condition.Condition
 import org.dimdev.dimdoors.item.door.data.condition.Conditions
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 
 @ConsistentCopyVisibility

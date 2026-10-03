@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.item
 
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.network.chat.Component
 import net.minecraft.world.item.*
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.api.CreativeTab
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.api.util.translate
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
@@ -148,5 +148,3 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
         creativeTabs.register()
     }
 }
-
-fun String.translate(vararg arg: Any): Component = Component.translatable(this, *arg)

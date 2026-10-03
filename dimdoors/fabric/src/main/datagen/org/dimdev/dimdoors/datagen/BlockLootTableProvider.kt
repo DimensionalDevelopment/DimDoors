@@ -46,6 +46,7 @@ class BlockLootTableProvider(dataGenerator: FabricDataOutput, completableFuture:
         }
         dropSelf(ModBlocks.TESSELATING_LOOM)
         dropSelf(ModBlocks.REALITY_SPONGE)
+        dropSelf(ModBlocks.LIMINAL_TRANSMITTER)
 
         dropSelf(ModBlocks.DRIFTWOOD_WOOD)
         dropSelf(ModBlocks.DRIFTWOOD_LOG)

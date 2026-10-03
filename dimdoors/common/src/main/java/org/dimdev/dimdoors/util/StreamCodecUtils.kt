@@ -10,8 +10,6 @@ import net.minecraft.sounds.Music
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.Vec3
-import java.util.*
-import kotlin.jvm.optionals.getOrNull
 
 class StreamCodecUtils {
 
@@ -57,5 +55,3 @@ class StreamCodecUtils {
         }
     }
 }
-
-fun <B : ByteBuf, T : Any> StreamCodec<B, T>.nullable(): StreamCodec<B, T?> = ByteBufCodecs.optional(this).map<T?>(Optional<T>::getOrNull, Optional<T>::ofNullable)

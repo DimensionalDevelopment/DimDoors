@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.criteria.ModCriteria
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.tag.ModWorldTags.tag
+import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 import java.util.function.Consumer

@@ -9,7 +9,7 @@ import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.platform
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.compat.decay.DecayDisplayData
 import org.dimdev.dimdoors.world.decay.results.DecayResult
 

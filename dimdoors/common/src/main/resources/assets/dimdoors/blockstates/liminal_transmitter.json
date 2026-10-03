@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "dimdoors:block/liminal_transmitter_off"
+    },
+    "powered=true": {
+      "model": "dimdoors:block/liminal_transmitter"
+    }
+  }
+}

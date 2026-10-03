@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.RiftVariantProvider

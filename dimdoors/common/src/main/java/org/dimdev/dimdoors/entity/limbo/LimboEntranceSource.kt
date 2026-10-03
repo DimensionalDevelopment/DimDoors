@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.player.Player
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
-import org.dimdev.dimdoors.item.translate
+import org.dimdev.dimdoors.api.util.translate
 
 abstract class LimboEntranceSource {
     abstract fun getMessage(player: Player): Component

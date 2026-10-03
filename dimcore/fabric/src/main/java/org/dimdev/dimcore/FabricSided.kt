@@ -27,6 +27,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import org.dimdev.dimcore.api.*
+import org.dimdev.dimcore.api.ext.cast
 
 abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S) : SidedImpl<V, S>(common), ModInitializer {
     override fun onInitialize() {

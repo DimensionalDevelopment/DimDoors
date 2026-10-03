@@ -17,10 +17,8 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.material.Fluid
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.transfer.*
 import org.dimdev.dimcore.api.transfer.Unit
 import team.reborn.energy.api.EnergyStorage
@@ -38,7 +36,7 @@ class FabricTransfer : TransferBridgeImpl() {
     }
 
     init {
-        bind(TransferType.FLUID, FluidStorage.SIDED.sided(), ::wrap, ::unwrap)
+        bind(TransferType.FLUID, FluidStorage.SIDED.sided(), ::wrap) { type, handle -> unwrap(type, handle) }
         bind(TransferType.ITEM, ItemStorage.SIDED.sided(), ::wrap, ::unwrap)
         bind(TransferType.ENERGY, EnergyStorage.SIDED.sided(), ::wrapEnergy, ::unwrapEnergy)
     }
@@ -46,7 +44,7 @@ class FabricTransfer : TransferBridgeImpl() {
     fun <U : Unit<U>, V> wrap(type: TransferType<U>, storage: Storage<V>): Handle<U> =
         if (storage is HandleStorage<*>) storage.handle.cast() else StorageHandle(type, storage.cast())
 
-    fun <U : Unit<U>, V> unwrap(type: TransferType<U>, handle: Handle<U>): Storage<V> = if (handle is StorageHandle<*>) handle.storage.cast() else HandleStorage(type, handle).cast()
+    fun <U : Unit<U>, V> unwrap(type: TransferType<U>, handle: Handle<out U>): Storage<V> = if (handle is StorageHandle<*>) handle.storage.cast() else HandleStorage(type, handle.cast()).cast()
 
     fun wrapEnergy(type: TransferType<EnergyUnit>, storage: EnergyStorage): Handle<EnergyUnit> =
         if (storage is HandleEnergyStorage) storage.handle else EnergyStorageHandle(storage)

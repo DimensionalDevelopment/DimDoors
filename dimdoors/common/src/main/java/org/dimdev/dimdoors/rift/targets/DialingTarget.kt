@@ -4,7 +4,7 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
@@ -31,14 +31,12 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress?, DialingP
     ): Boolean {
         val received = target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null)
         if (received) {
-            val sourceRift = this.cast<Rift>().takeIf { it.isRegistered }
-
-            if(sourceRift != null) {
+            (this as? Rift)?.takeIf { !it.isRegistered }?.let {
                 DimensionalDoors.LOGGER.warn(
                     "Dialing source at {} was not registered before setting return exit; registering now.",
                     this.location
                 )
-                sourceRift.register()
+                it.register()
             }
 
             subsystem.setPlayerAddress(uuid, this.address)

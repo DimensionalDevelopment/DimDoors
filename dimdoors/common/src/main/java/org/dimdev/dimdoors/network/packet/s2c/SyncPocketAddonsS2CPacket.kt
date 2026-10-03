@@ -7,10 +7,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.structure.BoundingBox
-import org.dimdev.dimdoors.network.packet.streamCodec
-import org.dimdev.dimdoors.network.packet.type
+import org.dimdev.dimdoors.api.util.streamCodec
+import org.dimdev.dimdoors.api.util.type
 import org.dimdev.dimdoors.util.StreamCodecUtils
-import org.dimdev.dimdoors.util.nullable
+import org.dimdev.dimdoors.api.util.nullable
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 
 

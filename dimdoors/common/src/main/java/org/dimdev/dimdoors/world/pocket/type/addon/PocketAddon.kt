@@ -6,7 +6,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimcore.api.BuilderType
 import org.dimdev.dimcore.api.BuilderTypeHasHolder
-import org.dimdev.dimdoors.util.CodecUtils.mutableList
+import org.dimdev.dimdoors.api.util.mutableList
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 typealias PocketAddonType<T> = BuilderType<T, PocketAddon.PocketBuilderAddon<T, *>>

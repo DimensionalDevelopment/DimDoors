@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors
 
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.tags.TagKey
 import net.minecraft.world.inventory.RecipeBookType
@@ -51,6 +50,4 @@ interface IDimensionalDoorsSided<T : IDimensionalDoorsSided<T>> : ISided<T> {
     fun createFarShot(properties: Item.Properties): FarShotItem
 
     val enderPearlsTag: TagKey<Item>
-
-    fun String.id(name: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(this, name)
 }

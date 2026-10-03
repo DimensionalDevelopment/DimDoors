@@ -4,7 +4,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.world.item.ItemStack
-import org.dimdev.dimdoors.network.packet.type
+import org.dimdev.dimdoors.api.util.type
 
 data class PlayerInventorySlotUpdateS2CPacket(val slot: Int, val stack: ItemStack) : CustomPacketPayload {
     override fun type() = TYPE

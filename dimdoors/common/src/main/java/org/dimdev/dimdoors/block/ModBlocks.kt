@@ -153,7 +153,10 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
 
     @JvmField val LIMINAL_TRANSMITTER = regular("liminal_transmitter") {
         block(::LiminalTransmitterBlock)
-        blockProperties(Blocks.IRON_BLOCK)
+        blockProperties(Blocks.IRON_BLOCK) {
+            noOcclusion()
+            requiresCorrectToolForDrops()
+        }
         item({ block, properties -> PlaceOnlyOnRiftBlockItem(block, properties) })
     }
 

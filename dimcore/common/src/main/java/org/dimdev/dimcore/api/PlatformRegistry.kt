@@ -1,7 +1,9 @@
 package org.dimdev.dimcore.api
 
+import com.mojang.datafixers.DSL
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponentType
@@ -21,12 +23,16 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.carver.WorldCarver
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType
 import net.minecraft.world.level.material.Fluid
+import org.dimdev.dimcore.api.entity.MutableBlockEntityType
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.util.DataValue
 
 class DataValueType<T>(val defaultValue: () -> T, val codec: Codec<T>, val streamCodec: StreamCodec<in RegistryFriendlyByteBuf, T>?)
@@ -77,7 +83,8 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
      * @param entry The entry being added.
      * @return The entry created.
      */
-    open fun <V : T> create(name: String, entry: () -> V): V = register.register(name, entry).also { queue.add(it.cast()) }
+    open fun <V : T> create(name: String, entry: () -> V): V =
+        register.register(name, entry).also { queue.add(it.cast()) }
 
     /**
      * Handles the registration of this registry into the platform specific one.
@@ -93,25 +100,40 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
         abstract fun <V : T> register(name: String, supplier: () -> V): V
     }
 
-    open class StructureProcessorPlatformRegistry(sided: ISided<*>) : PlatformRegistry<StructureProcessorType<*>>(Registries.STRUCTURE_PROCESSOR, BuiltInRegistries.STRUCTURE_PROCESSOR, sided) {
-        fun <E : StructureProcessor> create(name: String, codec: MapCodec<E>) = create(name) { return@create StructureProcessorType { codec } }
+    open class StructureProcessorPlatformRegistry(sided: ISided<*>) : PlatformRegistry<StructureProcessorType<*>>(
+        Registries.STRUCTURE_PROCESSOR,
+        BuiltInRegistries.STRUCTURE_PROCESSOR,
+        sided
+    ) {
+        fun <E : StructureProcessor> create(name: String, codec: MapCodec<E>) =
+            create(name) { return@create StructureProcessorType { codec } }
     }
 
-    open class BlockPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Block>(Registries.BLOCK, BuiltInRegistries.BLOCK, sided)
-    open class ConfiguredCarverPlatformRegistry(sided: ISided<*>) : PlatformRegistry<WorldCarver<*>>(Registries.CARVER, BuiltInRegistries.CARVER, sided)
-    open class ItemPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Item>(Registries.ITEM, BuiltInRegistries.ITEM, sided)
+    open class BlockPlatformRegistry(sided: ISided<*>) :
+        PlatformRegistry<Block>(Registries.BLOCK, BuiltInRegistries.BLOCK, sided)
+
+    open class ConfiguredCarverPlatformRegistry(sided: ISided<*>) :
+        PlatformRegistry<WorldCarver<*>>(Registries.CARVER, BuiltInRegistries.CARVER, sided)
+
+    open class ItemPlatformRegistry(sided: ISided<*>) :
+        PlatformRegistry<Item>(Registries.ITEM, BuiltInRegistries.ITEM, sided)
+
     open class CreativeTabPlatformRegistry(sided: ISided<*>) : PlatformRegistry<Any>(KEY, sided) {
         fun create(name: String, block: CreativeModeTab.Builder.() -> Unit): CreativeTab {
             val tab = CreativeTab()
-            tab.holder = (create<Any>(name) { CreativeTabType { block(); displayItems { _, output -> tab.fill(output) } } } as Holder<*>).cast()
+            tab.holder =
+                (create<Any>(name) { CreativeTabType { block(); displayItems { _, output -> tab.fill(output) } } } as Holder<*>).cast()
             return tab
         }
 
         companion object {
-            val KEY: ResourceKey<Registry<Any>> = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("dimcore", "creative_tab"))
+            val KEY: ResourceKey<Registry<Any>> =
+                ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("dimcore", "creative_tab"))
         }
     }
-    open class EntityTypePlatformRegistry(sided: ISided<*>) : PlatformRegistry<EntityType<*>>(Registries.ENTITY_TYPE, BuiltInRegistries.ENTITY_TYPE, sided) {
+
+    open class EntityTypePlatformRegistry(sided: ISided<*>) :
+        PlatformRegistry<EntityType<*>>(Registries.ENTITY_TYPE, BuiltInRegistries.ENTITY_TYPE, sided) {
         fun <E : Entity> create(
             id: String,
             factory: EntityType.EntityFactory<E>,
@@ -122,7 +144,20 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
         }
 
     }
-    open class BlockEntityTypePlatformRegistry(sided: ISided<*>) : PlatformRegistry<BlockEntityType<*>>(Registries.BLOCK_ENTITY_TYPE, BuiltInRegistries.BLOCK_ENTITY_TYPE, sided)
+
+    open class BlockEntityTypePlatformRegistry(sided: ISided<*>) :
+        PlatformRegistry<BlockEntityType<*>>(Registries.BLOCK_ENTITY_TYPE, BuiltInRegistries.BLOCK_ENTITY_TYPE, sided) {
+
+        fun <BE : BlockEntity> create(name: String, supplier: (BlockPos, BlockState) -> BE, vararg blocks: Block) =
+            create(name) { MutableBlockEntityType.Builder.create(supplier, *blocks).build(DSL.remainderType()) }
+
+        fun <BE : BlockEntity> create(
+            id: String,
+            factory: (BlockPos, BlockState) -> BE,
+            blocks: () -> Block? = { null }
+        ) = create(id, factory, *listOfNotNull(blocks()).toTypedArray())
+    }
+
     open class DataComponentTypePlatformRegistry(sided: ISided<*>) : PlatformRegistry<DataComponentType<*>>(Registries.DATA_COMPONENT_TYPE, BuiltInRegistries.DATA_COMPONENT_TYPE, sided) {
         fun <T: Any, V : Codec<T>, U : StreamCodec<RegistryFriendlyByteBuf, T>> create(
             name: String,

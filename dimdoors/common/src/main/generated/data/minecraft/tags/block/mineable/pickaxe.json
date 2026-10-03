@@ -274,6 +274,7 @@
     "dimdoors:stone_door",
     "dimdoors:quartz_door",
     "dimdoors:amalgam_door",
-    "dimdoors:dialing_door"
+    "dimdoors:dialing_door",
+    "dimdoors:liminal_transmitter"
   ]
 }

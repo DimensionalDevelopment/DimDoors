@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.DyeColor
-import org.dimdev.dimdoors.tag.ModWorldTags.tag
+import org.dimdev.dimdoors.api.util.tag
 
 object ModItemTags {
     val LIMBO_GAZE_DEFYING = Registries.ITEM.tag("limbo_gaze_defying")

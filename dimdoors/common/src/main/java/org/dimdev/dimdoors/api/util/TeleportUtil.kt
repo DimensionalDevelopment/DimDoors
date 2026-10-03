@@ -10,15 +10,14 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.border.WorldBorder
 import net.minecraft.world.level.portal.DimensionTransition
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.api.util.math.clamp
 import org.dimdev.dimdoors.entity.stat.ModStats
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.world.ModDimensions
-import kotlin.math.abs
 
 object TeleportUtil {
     fun teleport(entity: Entity, world: Level, pos: BlockPos, yaw: Float): Entity {
@@ -27,22 +26,6 @@ object TeleportUtil {
 
     fun teleport(entity: Entity, world: Level, pos: Vec3, yaw: Float): Entity {
         return teleport(entity, world, pos, Rotations(entity.xRot, yaw, 0.0f), entity.deltaMovement)
-    }
-
-    fun WorldBorder.clamp(original: Vec3): Vec3 {
-
-        var newX = original.x
-        var newZ = original.z
-        val size = size - 1
-        val northBound = minZ + 1
-        val southBound = maxZ - 1
-        val westBound = minX + 1
-        val eastBound = maxX - 1
-
-        if (newZ < northBound) { newZ = northBound + abs(newZ % size) + 1 } else if (newZ > southBound) { newZ = southBound - abs(newZ % size) - 1 }
-        if (newX < westBound) newX = westBound + abs(newX % size) + 1 else if (newX > eastBound) newX = eastBound - abs(newX % size) - 1
-
-        return Vec3(newX, original.y, newZ)
     }
 
     fun teleport(entity: Entity, world: Level, pos: Vec3, angle: Rotations, velocity: Vec3): Entity {

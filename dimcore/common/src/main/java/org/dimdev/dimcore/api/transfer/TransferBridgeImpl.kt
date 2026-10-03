@@ -4,12 +4,13 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntityType
+import org.dimdev.dimcore.api.ext.castOrNull
 
 abstract class TransferBridgeImpl : TransferBridge {
     private val bindings = mutableMapOf<TransferType<*>, Binding<*>>()
 
     override fun <U : Unit<U>> find(type: TransferType<U>, level: Level?, pos: BlockPos?, side: Direction?): Handle<U>? =
-        if (level == null || pos == null) null else binding(type)?.find(level, pos, side)
+        if (level == null || pos == null) null else type.binding()?.find(level, pos, side)
 
     interface Binding<U : Unit<U>> {
         val type: TransferType<U>
@@ -18,7 +19,7 @@ abstract class TransferBridgeImpl : TransferBridge {
     }
 
     override fun <U : Unit<U>> declare(type: TransferType<U>, blockEntityType: BlockEntityType<*>) {
-        binding(type)?.register(blockEntityType)
+        type.binding()?.register(blockEntityType)
     }
 
     fun <U : Unit<U>, H> bind(
@@ -36,6 +37,5 @@ abstract class TransferBridgeImpl : TransferBridge {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <U : Unit<U>> binding(type: TransferType<U>): Binding<U>? = bindings[type] as Binding<U>?
+    private fun <U : Unit<U>> TransferType<U>.binding(): Binding<U>? = bindings[this]?.castOrNull()
 }

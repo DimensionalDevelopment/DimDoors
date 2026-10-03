@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.ChildItem
 

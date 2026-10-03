@@ -13,7 +13,7 @@ import net.minecraft.core.Rotations
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle
 

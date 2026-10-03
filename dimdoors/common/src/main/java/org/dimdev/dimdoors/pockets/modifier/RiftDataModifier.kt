@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 

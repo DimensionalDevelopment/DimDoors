@@ -1140,6 +1140,8 @@ class BlockTagProvider(output: FabricDataOutput, lookupProvider: CompletableFutu
         add(ModBlocks.AMALGAM_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE)
         add(ModBlocks.DIALING_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE)
 
+        add(ModBlocks.LIMINAL_TRANSMITTER, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+
 
         setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL)
         setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL)

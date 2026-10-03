@@ -1,6 +1,6 @@
 package org.dimdev.dimcore.api.transfer
 
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 
 interface Handle<U : Unit<U>> {
 
@@ -24,6 +24,7 @@ interface Handle<U : Unit<U>> {
     }
 
     companion object {
+        @JvmStatic
         fun <U : Unit<U>> empty(): Handle<U> = Empty.cast()
     }
 }

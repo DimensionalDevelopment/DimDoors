@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette
 import org.dimdev.dimdoors.world.pocket.type.Pocket

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.minecraft.resources.ResourceLocation
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar
 
 class GeneratedDoorModelCopyPlugin : ModelLoadingPlugin {
     override fun onInitializeModelLoader(context: ModelLoadingPlugin.Context) {
@@ -18,6 +19,13 @@ class GeneratedDoorModelCopyPlugin : ModelLoadingPlugin {
                     ctx.setModel(state, placeholder)
                 }
             }
+        }
+
+        context.resolveModel().register { ctx ->
+            val id = ctx.id()
+            if (id.namespace == "dimdoors" && id.path.startsWith("item/${DimensionalDoorItemRegistrar.PREFIX}")) {
+                ctx.getOrLoadModel(ResourceLocation.withDefaultNamespace("block/air"))
+            } else null
         }
 
         context.modifyModelAfterBake().register{ model, ctx ->

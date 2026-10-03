@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.util.CodecUtils.mutableList
+import org.dimdev.dimdoors.api.util.mutableList
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import java.util.*
 

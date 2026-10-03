@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.compat.decay
 
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceLocation
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder
 import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern
 import org.dimdev.dimdoors.world.decay.results.DecayResult

@@ -19,8 +19,8 @@ import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.pockets.modifier.RiftManager
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.util.CodecUtils.mutableList
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.mutableList
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
@@ -105,7 +105,7 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
                 destination.location = ofWorld(world, rift.riftBlockPos)
             }
         }
-        TemplateUtils.registerRifts(manager.rifts, parameters.linkTo!!, parameters.linkProperties, pocket)
+        TemplateUtils.registerRifts(manager.rifts, parameters.linkTo, parameters.linkProperties, pocket)
     }
 
     fun getRiftManager(pocket: Pocket<*, *>): RiftManager {

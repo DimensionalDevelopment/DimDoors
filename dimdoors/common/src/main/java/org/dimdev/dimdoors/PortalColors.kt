@@ -9,7 +9,7 @@ import net.minecraft.util.GsonHelper
 import net.minecraft.world.item.DyeColor
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.util.function.StreamUtils
-import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
+import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.util.Utils
 import java.io.IOException
 import java.util.*

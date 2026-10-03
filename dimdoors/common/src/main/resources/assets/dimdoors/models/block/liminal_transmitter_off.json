@@ -1,0 +1,6 @@
+{
+  "parent": "dimdoors:block/liminal_transmitter",
+  "textures": {
+    "0": "dimdoors:block/liminal_transmitter_off"
+  }
+}

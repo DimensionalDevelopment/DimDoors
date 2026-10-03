@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.block.ModBlocks.fabric
 import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.generate
 import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.hasItems
 import org.dimdev.dimdoors.item.ModItems
@@ -127,7 +126,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             .define('A', ModItems.WORLD_THREAD)
             .define('L', Blocks.LOOM)
             .define('X', Blocks.SCAFFOLDING)
-            .define('O', DyeColor.BLACK.fabric())
+            .define('O', ModBlocks.fabricFromDye(DyeColor.BLACK)!!)
             .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.LOOM))
             .save(exporter, DimensionalDoors.id("tesselating_loom"))
 

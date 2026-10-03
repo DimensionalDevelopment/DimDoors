@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.BuilderType
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.client.ModShaders
 import org.dimdev.dimdoors.entity.MonolithEntity
 import org.dimdev.dimdoors.network.packet.s2c.*

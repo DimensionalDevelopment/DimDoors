@@ -8,13 +8,19 @@ neoForge {
     // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
+        accessTransformers {
+            from(at.absolutePath)
+            publish(at)
+        }
     }
     accessTransformers.from(project(':dimcore-common').file('src/main/resources/META-INF/accesstransformer.cfg'))
 
     def interfaces = file('src/main/resources/interfaces.json')
     if (interfaces.exists()) {
-        interfaceInjectionData.from(interfaces.absolutePath)
+        interfaceInjectionData {
+            from(interfaces.absolutePath)
+            publish(interfaces)
+        }
     }
     parchment {
         minecraftVersion = parchment_minecraft

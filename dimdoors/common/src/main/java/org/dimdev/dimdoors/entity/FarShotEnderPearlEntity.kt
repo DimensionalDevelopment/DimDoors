@@ -19,7 +19,7 @@ import net.minecraft.world.level.portal.DimensionTransition
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.item.RaycastHelper.hitsDetachedRift
 import org.dimdev.dimdoors.item.RaycastHelper.projectileCast
 

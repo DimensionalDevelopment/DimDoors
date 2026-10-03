@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders
-import org.dimdev.dimdoors.util.CodecUtils.nullableForGetter
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 
 data class EntityNearBy(val range: NumberProvider, val predicate: EntityPredicate?, val interval: Int) : LootItemCondition {

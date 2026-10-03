@@ -8,9 +8,10 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.math.GridUtil
+import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.util.CodecUtils
 import org.dimdev.dimdoors.util.CodecUtils.unboundedMap

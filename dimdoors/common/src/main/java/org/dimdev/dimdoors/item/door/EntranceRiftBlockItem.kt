@@ -9,7 +9,7 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
-import org.dimdev.dimcore.api.castOrNull
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider

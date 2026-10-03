@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 
 interface ExplosionConvertibleBlock {
     fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) {

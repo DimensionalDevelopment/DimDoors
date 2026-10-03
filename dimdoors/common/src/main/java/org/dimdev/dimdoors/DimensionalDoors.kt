@@ -228,7 +228,6 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         private lateinit var sided: IDimensionalDoorsSided<*>
 
         @JvmStatic fun id(id: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, id)
-        @JvmStatic @JvmName("idOf") fun String.id(): ResourceLocation = id(this)
 
         @JvmStatic
         val server: MinecraftServer get() = platform.server

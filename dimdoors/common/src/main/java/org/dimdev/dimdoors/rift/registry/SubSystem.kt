@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtUtils
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
-import org.dimdev.dimcore.api.cast
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.ModRegistries
