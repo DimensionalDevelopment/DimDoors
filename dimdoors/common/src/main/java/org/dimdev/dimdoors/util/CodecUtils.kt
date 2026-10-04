@@ -21,7 +21,7 @@ import kotlin.jvm.optionals.getOrNull
 
 object CodecUtils {
 
-    private fun createMusic(sound: Holder<SoundEvent>): Music {
+    public fun createMusic(sound: Holder<SoundEvent>): Music {
         return Music(sound, 0, 0, true)
     }
 

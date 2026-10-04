@@ -32,7 +32,7 @@ public class MinecraftMixin {
     )
     public void checkPocketMusic(CallbackInfoReturnable<Music> cir) {
         if(this.player != null) {
-            Optional.ofNullable(PocketListenerUtil.getAddon(PocketAddons.MUSIC_ADDON, this.player.level(), this.player.blockPosition())).map(MusicAddon::music).ifPresent(cir::setReturnValue);
+            Optional.ofNullable(PocketListenerUtil.getAddon(PocketAddons.MUSIC_ADDON, this.player.level(), this.player.blockPosition())).map(MusicAddon::getMusic).ifPresent(cir::setReturnValue);
         }
     }
 }

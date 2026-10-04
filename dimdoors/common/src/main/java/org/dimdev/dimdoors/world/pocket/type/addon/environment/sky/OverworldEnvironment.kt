@@ -15,14 +15,14 @@ import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.Overworld
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
 
 class OverworldEnvironment(
-    private val dayTime: Long,
-    private val moonPhase: Int,
-    private val skyColor: Vec3,
-    private val rainLevel: Float,
-    private val precipitation: Biome.Precipitation,
-    private val thunderLevel: Float,
-    internal val cloudHeight: Float,
-    private val cloudColor: Vec3
+    val dayTime: Long,
+    val moonPhase: Int,
+    val skyColor: Vec3,
+    val rainLevel: Float,
+    val precipitation: Biome.Precipitation,
+    val thunderLevel: Float,
+    val cloudHeight: Float,
+    val cloudColor: Vec3
 ) : Environment {
 
     private val sunriseColors: FloatArray = FloatArray(4)

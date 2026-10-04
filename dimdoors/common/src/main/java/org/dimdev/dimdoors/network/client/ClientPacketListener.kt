@@ -75,7 +75,7 @@ object ClientPacketListener {
 
     private fun hasMusicAddon(): Boolean = addons.containsKey(PocketAddons.MUSIC_ADDON)
 
-    private fun stopMusic() = Minecraft.getInstance().soundManager.stop(null, SoundSource.MUSIC)
+    private fun stopMusic() = Minecraft.getInstance().execute { Minecraft.getInstance().musicManager.stopPlaying() }
 
     fun onMonolithAggroParticles(packet: MonolithAggroParticlesPacket) = Minecraft.getInstance().execute { spawnParticles(packet.aggro) }
 
@@ -122,7 +122,7 @@ object ClientPacketListener {
         }
     }
 
-    fun <T : PocketAddon> getAddonClient(type: PocketAddonType<T>, world: Level, pos: BlockPos): T? {
+    fun <T : PocketAddon> getAddonClient(type: PocketAddonType<T, *>, world: Level, pos: BlockPos): T? {
         if (world.dimension() != pocketWorld) return null
 
         if (!area!!.isInside(pos.x, pos.y, pos.z)) return null

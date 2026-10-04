@@ -66,10 +66,10 @@ class CreativeTab {
     }
 }
 
-abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, registry: Registry<T>?, sided: ISided<*>) {
-    constructor(registryKey: ResourceKey<Registry<T>>, sided: ISided<*>) : this(registryKey, null, sided)
+abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, registry: Registry<T>?, sided: ISided<*>, synced: Boolean = false) {
+    constructor(registryKey: ResourceKey<Registry<T>>, sided: ISided<*>, synced: Boolean = false) : this(registryKey, null, sided, synced)
 
-    private val register: EntryRegister<T> = sided.entryRegister(registryKey, registry)
+    private val register: EntryRegister<T> = sided.entryRegister(registryKey, registry, synced)
     val registry: Registry<T> = register.createRegistry()
     val modid = sided.modId()
 
@@ -182,7 +182,7 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
     open class MapCodecPlatformRegistry<B : MapCodecHasHolder<B>>(registryKey: ResourceKey<Registry<MapCodec<out B>>>, sided: ISided<*>) : PlatformRegistry<MapCodec<out B>>(registryKey, sided) {
         val codec: Codec<B> = this.registry.byNameCodec().dispatch({ it.type }, { it })
     }
-    open class TypePlatformRegistry<B : TypeHasHolder<B>>(registryKey: ResourceKey<Registry<Type<B>>>, sided: ISided<*>) : PlatformRegistry<Type<B>>(registryKey, sided) {
+    open class TypePlatformRegistry<B : TypeHasHolder<B>>(registryKey: ResourceKey<Registry<Type<B>>>, sided: ISided<*>, synced: Boolean = false) : PlatformRegistry<Type<B>>(registryKey, sided, synced) {
         fun <T : B> create(id: String, codec: MapCodec<T>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): Type<T> = create(id) { Type(codec, streamCodec) }
         fun <T : B> create(id: String, codec: MapCodec<B>): Type<B> = create(id) { Type(codec, null) }
 
@@ -190,8 +190,8 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
         val streamCodec = ByteBufCodecs.registry(registryKey).dispatch({ it.type }, { it.streamCodec })
     }
 
-    open class BuilderTypePlatformRegistry<B : BuilderTypeHasHolder<B, C>, C : BuilderTypeHasHolder<B, C>>(registryKey: ResourceKey<Registry<BuilderType<B, C>>>, sided: ISided<*>) : PlatformRegistry<BuilderType<B, C>>(registryKey, sided) {
-        fun <T : B, V: C> create(id: String, codec: MapCodec<T>, builderCodec: MapCodec<V>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): BuilderType<T, V> = create(id) { BuilderType(codec, builderCodec, streamCodec) }
+    open class BuilderTypePlatformRegistry<B : BuilderTypeHasHolder<B, C>, C : BuilderTypeHasHolder<B, C>>(registryKey: ResourceKey<Registry<BuilderType<B, C>>>, sided: ISided<*>, synced: Boolean = false) : PlatformRegistry<BuilderType<B, C>>(registryKey, sided, synced) {
+        fun <T : B, V: C> create(id: String, codec: MapCodec<T>, builderCodec: MapCodec<V>, builderSupplier: () -> V, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): BuilderType<T, V> = create(id) { BuilderType(codec, builderCodec, builderSupplier, streamCodec) }
 
         val codec = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
         val builderCodec = this.registry.byNameCodec().dispatch({ it.type }, { it.builderCodec })

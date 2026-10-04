@@ -45,5 +45,9 @@ enum class PocketColor(private val id: String, val color: DyeColor?) : StringRep
 
         fun from(color: DyeColor?) = entries.firstOrNull { it.color === color } ?: NONE
 
+        fun from(name: String) = entries.firstOrNull { name.equals(it.serializedName, ignoreCase = false) }
+
+        val DyeColor?.pocketColor: PocketColor get() = from(this)
+
     }
 }

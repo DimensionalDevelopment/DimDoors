@@ -3,7 +3,11 @@ package org.dimdev.dimcore
 import com.mojang.brigadier.CommandDispatcher
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import com.mojang.brigadier.arguments.ArgumentType
+import net.minecraft.commands.synchronization.SingletonArgumentInfo
+import net.minecraft.resources.ResourceLocation
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.*
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -86,6 +90,9 @@ class FabricPlatform : Platform {
     }
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = CommandRegistrationCallback.EVENT.register { dispatcher, _, _ -> consumer.invoke(dispatcher) }
+
+    override fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A) =
+        ArgumentTypeRegistry.registerArgumentType(id, clazz, SingletonArgumentInfo.contextFree { supplier() })
 
     override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) = ServerPlayNetworking.send(player, packet)
 

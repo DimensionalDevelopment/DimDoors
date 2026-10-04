@@ -154,29 +154,6 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         //        SchemFixer.run();
     }
 
-    private fun syncColors(player: ServerPlayer, pocket: Pocket<*, *>?) {
-        var colors: IntArray?
-
-        if (pocket != null) {
-            colors = pocket.streamAddon()
-                .filter { obj: PocketAddon? -> PortalColorProvider::class.java.isInstance(obj) }
-                .filterIsInstance<PortalColorProvider>().firstNotNullOfOrNull { obj -> obj.colors }
-                ?: PortalColors.base()
-        } else {
-            val level = player.serverLevel()
-            colors = PortalColors.levels(level.dimension())
-            if (colors == null) colors = PortalColors.base()
-        }
-
-        platform.sendPacket(player, PortalColorsS2CPacket(colors))
-    }
-
-    private fun syncPocket(player: ServerPlayer, pocket: Pocket<*, *>?) = if (pocket != null) {
-        ServerPacketHandler.syncPocketAddonsIfNeeded(player, pocket)
-    } else {
-        ServerPacketHandler.clearPocketIfNeeded(player)
-    }
-
     override val modId: String get() = "dimdoors"
 
     override fun registerEntityAttributes(register: EntityAttributeRegister) {
@@ -224,6 +201,28 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         @JvmField
         val LOGGER: Logger = LogUtils.getLogger()
 
+        fun syncColors(player: ServerPlayer, pocket: Pocket<*, *>?) {
+            var colors: IntArray?
+
+            if (pocket != null) {
+                colors = pocket.streamAddon()
+                    .filter { obj: PocketAddon? -> PortalColorProvider::class.java.isInstance(obj) }
+                    .filterIsInstance<PortalColorProvider>().firstNotNullOfOrNull { obj -> obj.colors }
+                    ?: PortalColors.base()
+            } else {
+                val level = player.serverLevel()
+                colors = PortalColors.levels(level.dimension())
+                if (colors == null) colors = PortalColors.base()
+            }
+
+            platform.sendPacket(player, PortalColorsS2CPacket(colors))
+        }
+
+        private fun syncPocket(player: ServerPlayer, pocket: Pocket<*, *>?) = if (pocket != null) {
+            ServerPacketHandler.syncPocketAddonsIfNeeded(player, pocket)
+        } else {
+            ServerPacketHandler.clearPocketIfNeeded(player)
+        }
 
         private lateinit var sided: IDimensionalDoorsSided<*>
 

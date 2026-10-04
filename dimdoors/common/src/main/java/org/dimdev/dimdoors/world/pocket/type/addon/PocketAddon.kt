@@ -9,17 +9,17 @@ import org.dimdev.dimcore.api.BuilderTypeHasHolder
 import org.dimdev.dimdoors.api.util.mutableList
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
-typealias PocketAddonType<T> = BuilderType<T, PocketAddon.PocketBuilderAddon<T, *>>
+typealias PocketAddonType<T, V> = BuilderType<T, PocketAddon.PocketBuilderAddon<T, V>>
 
 interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>> {
     fun applicable(pocket: Pocket<*, *>): Boolean = true
 
-    fun addAddon(addons: MutableMap<PocketAddonType<*>, PocketAddon>) {
+    fun addAddon(addons: MutableMap<PocketAddonType<*, *>, PocketAddon>) {
         addons[this.type] = this
     }
 
     interface PocketBuilderExtension<T : Pocket<T, P>, P : Pocket.PocketBuilder<T, P>> {
-        fun <C : PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*>): C?
+        fun <C : PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*, *>): C?
 
         val self: P
     }
@@ -29,12 +29,11 @@ interface PocketAddon : BuilderTypeHasHolder<PocketAddon, PocketAddon.PocketBuil
             return true
         }
 
-        // makes it possible for addons themselves to control how they are added
-        fun addAddon(addons: MutableMap<PocketAddonType<*>, PocketBuilderAddon<*, *>>) {
+        fun addAddon(addons: MutableMap<PocketAddonType<*, *>, PocketBuilderAddon<*, *>>) {
             addons[this.type] = this
         }
 
-        fun apply(pocket: Pocket<*, *>)
+        fun apply(pocket: Pocket<*, *>) : T
     }
 
     companion object {

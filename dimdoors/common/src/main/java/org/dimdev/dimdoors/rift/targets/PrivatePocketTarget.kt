@@ -43,6 +43,7 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
                     return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null)
                 } else {
                     val remaining = dyeableAddon.addDye(pocket, entity.owner!!, dye, stack.count)
+                    pocket.syncClientAddons()
 
                     if (remaining <= 0) {
                         entity.discard()

@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.DyeColor
-import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.PortalColors
@@ -16,6 +15,7 @@ import org.dimdev.dimdoors.block.ModBlocks.ancientFabricFromDye
 import org.dimdev.dimdoors.block.ModBlocks.fabricFromDye
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketColor
+import org.dimdev.dimdoors.world.pocket.type.PocketColor.Companion.pocketColor
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket
 import kotlin.math.max
 import kotlin.math.min
@@ -25,65 +25,6 @@ class DyeableAddon(
     private var nextDyeColor: PocketColor = PocketColor.NONE,
     private var count: Int = 0
 ) : PocketAddon, PortalColorProvider {
-
-    private fun repaint(pocket: Pocket<*, *>, dyeColor: DyeColor) {
-        val serverWorld: Level = DimensionalDoors.getWorld(pocket.world)!!
-
-        val innerWall = fabricFromDye(dyeColor)!!.defaultBlockState()
-        val outerWall = ancientFabricFromDye(dyeColor)!!.defaultBlockState()
-
-        val box = pocket.box
-        val minX = box.minX()
-        val minChunkX = minX shr 4
-        val minZ = box.minZ()
-        val minChunkZ = minZ shr 4
-        val minY = box.minY()
-        val minChunkY = minY shr 4
-
-
-        val xSpan = box.xSpan
-        val xChunkSpan = xSpan shr 4
-        val ySpan = box.xSpan
-        val yChunkSpan = ySpan shr 4
-        val zSpan = box.xSpan
-        val zChunkSpan = zSpan shr 4
-
-        for (chunkX in 0..xChunkSpan) {
-            for (chunkZ in 0..zChunkSpan) {
-                val chunk = serverWorld.getChunk(minChunkX + chunkX, minChunkZ + chunkZ)
-                var changed = false
-
-                for (sectionY in 0..yChunkSpan) {
-                    val sectionIndex = chunk.getSectionIndexFromSectionY(minChunkY + sectionY)
-                    val section = chunk.getSection(sectionIndex)
-
-                    for (x in 0..15) {
-                        for (y in 0..15) {
-                            for (z in 0..15) {
-                                val state = section.getBlockState(x, y, z)
-                                val block = state.block
-
-                                val replacement = when (block) {
-                                    is AncientFabricBlock -> outerWall
-                                    is FabricBlock -> innerWall
-                                    else -> null
-                                }
-
-                                if (replacement != null) {
-                                    section.setBlockState(x, y, z, replacement)
-                                    changed = true
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (changed) {
-                    chunk.isUnsaved = true
-                }
-            }
-        }
-    }
 
     fun addDye(pocket: Pocket<*, *>, entity: Entity, dyeColor: DyeColor, count: Int): Int {
         val color = PocketColor.from(dyeColor)
@@ -111,19 +52,7 @@ class DyeableAddon(
         this.count += absorbed
 
         if (this.count >= maxDye) {
-            repaint(pocket, dyeColor)
-
-            this.dyeColor = color
-            this.nextDyeColor = PocketColor.NONE
-            this.count = 0
-
-            EntityUtils.chat(
-                entity,
-                Component.translatable(
-                    "advancement.pocket.pocketHasBeenDyed",
-                    dyeColor.serializedName
-                )
-            )
+            setColor(entity, pocket, dyeColor)
         } else {
             EntityUtils.chat(
                 entity,
@@ -137,6 +66,32 @@ class DyeableAddon(
         }
 
         return remainingInStack
+    }
+
+    fun setColor(entity: Entity, pocket: Pocket<*, *>, dyeColor: DyeColor) {
+        val innerWall = fabricFromDye(dyeColor)!!.defaultBlockState()
+        val outerWall = ancientFabricFromDye(dyeColor)!!.defaultBlockState()
+
+        pocket.modify {
+            return@modify when (it.block) {
+                is AncientFabricBlock -> outerWall
+                is FabricBlock -> innerWall
+                else -> null
+            }
+        }
+
+
+        this.dyeColor = dyeColor.pocketColor
+        this.nextDyeColor = PocketColor.NONE
+        this.count = 0
+
+        EntityUtils.chat(
+            entity,
+            Component.translatable(
+                "advancement.pocket.pocketHasBeenDyed",
+                dyeColor.serializedName
+            )
+        )
     }
 
     override fun applicable(pocket: Pocket<*, *>): Boolean = pocket is PrivatePocket
@@ -157,10 +112,12 @@ class DyeableAddon(
 
     class DyeableBuilderAddon @JvmOverloads constructor(internal var dyeColor: PocketColor = PocketColor.NONE) : PocketAddon.PocketBuilderAddon<DyeableAddon, DyeableBuilderAddon> {
         // TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
-        override fun apply(pocket: Pocket<*, *>) {
+        override fun apply(pocket: Pocket<*, *>): DyeableAddon {
             val addon = DyeableAddon(dyeColor)
-            addon.dyeColor = dyeColor
-            pocket.addAddon(addon)
+                addon.dyeColor = dyeColor
+                pocket.addAddon(addon)
+
+            return addon
         }
 
         override val type get() = PocketAddons.DYEABLE_ADDON

@@ -52,7 +52,7 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         toRegister.getOrPut(key) { linkedMapOf() }[id(name)] = value
     }
 
-    override fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>?): PlatformRegistry.EntryRegister<T> {
+    override fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>?, synced: Boolean): PlatformRegistry.EntryRegister<T> {
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as DataValueType<Any>
@@ -77,7 +77,7 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         }
 
         return object : PlatformRegistry.EntryRegister<T>() {
-            private val target: Registry<T> by lazy { registry ?: RegistryBuilder(resourceKey).create().also(registriesToRegister::add) }
+            private val target: Registry<T> by lazy { registry ?: RegistryBuilder(resourceKey).sync(synced).create().also(registriesToRegister::add) }
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val value = supplier()

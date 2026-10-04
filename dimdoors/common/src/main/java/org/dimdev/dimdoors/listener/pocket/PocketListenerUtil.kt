@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddonType
 object PocketListenerUtil {
     @JvmStatic
     fun <T : PocketAddon> getAddon(
-        holder: PocketAddonType<T>,
+        holder: PocketAddonType<T, *>,
         world: Level,
         pos: BlockPos
     ): T? {
@@ -23,7 +23,7 @@ object PocketListenerUtil {
     }
 
     fun <T : PocketAddon> getAddonCommon(
-        clazz: PocketAddonType<T>,
+        clazz: PocketAddonType<T, *>,
         world: Level,
         pos: BlockPos
     ): T? {

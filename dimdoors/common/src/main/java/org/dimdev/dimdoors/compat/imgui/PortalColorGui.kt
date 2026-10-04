@@ -20,7 +20,8 @@ object PortalColorGui {
 
     fun toggle() {
         if (Minecraft.getInstance().screen == null) {
-            if (ModShaders.getPortalColors(colors)) Minecraft.getInstance().setScreen(SCREEN)
+            System.arraycopy(ModShaders.portalColors, 0, colors, 0, 16)
+            Minecraft.getInstance().setScreen(SCREEN)
         }
     }
 

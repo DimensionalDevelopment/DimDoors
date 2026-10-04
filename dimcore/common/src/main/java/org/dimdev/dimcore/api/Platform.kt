@@ -1,12 +1,12 @@
 package org.dimdev.dimcore.api
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.Registry
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -42,7 +42,7 @@ interface Platform {
     fun onBeforeBlockBreak(callback: BlockBreakCallback)
     fun onBeforeBlockPlace(callback: BlockPlaceCallback)
     fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit)
-
+    fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A)
     fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T)
     fun <T : CustomPacketPayload> sendPacket(packet: T)
 

@@ -20,5 +20,5 @@ interface ISided<T : ISided<T>> : ICreativeTabHandler {
 
     fun configPath(): Path = platform.configRoot.resolve(modId())
 
-    fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>? = null): PlatformRegistry.EntryRegister<T>
+    fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>? = null, synced: Boolean = false): PlatformRegistry.EntryRegister<T>
 }

@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
 
 class EnvironmentAddon(environment: Environment = EmptyEnvironment) : PocketAddon {
-    private var environment: Environment = EmptyEnvironment
+    var environment: Environment = EmptyEnvironment
 
     init {
         this.environment = environment
@@ -29,11 +29,13 @@ class EnvironmentAddon(environment: Environment = EmptyEnvironment) : PocketAddo
     val weather: WeatherData
         get() = environment.weather
 
-    class EnvironmentBuilderAddon(private val environment: Environment) :
+    class EnvironmentBuilderAddon(private val environment: Environment = EmptyEnvironment) :
         PocketAddon.PocketBuilderAddon<EnvironmentAddon, EnvironmentBuilderAddon> {
-        override fun apply(pocket: Pocket<*, *>) {
+        override fun apply(pocket: Pocket<*, *>): EnvironmentAddon {
             val addon = EnvironmentAddon(environment)
             pocket.addAddon(addon)
+
+            return addon
         }
 
         override val type get() = PocketAddons.ENVIRONMENT_ADDON

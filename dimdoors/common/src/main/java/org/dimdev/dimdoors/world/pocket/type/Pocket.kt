@@ -7,13 +7,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.network.ServerPacketHandler
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider
@@ -23,7 +27,7 @@ import java.util.function.Consumer
 import kotlin.streams.asSequence
 
 abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : AbstractPocket<T, V>, AddonProvider {
-    protected val addons = mutableMapOf<PocketAddonType<*>, PocketAddon>()
+    protected val addons = mutableMapOf<PocketAddonType<*, *>, PocketAddon>()
     private var range = -1
     lateinit var box: BoundingBox
         protected set
@@ -56,7 +60,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     protected constructor()
 
-    override fun hasAddon(id: PocketAddonType<*>): Boolean {
+    override fun hasAddon(id: PocketAddonType<*,*>): Boolean {
         return addons.containsKey(id)
     }
 
@@ -68,7 +72,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         return false
     }
 
-    fun removeAddon(type: PocketAddonType<*>): Boolean {
+    fun removeAddon(type: PocketAddonType<*, *>): Boolean {
         return addons.remove(type) != null
     }
 
@@ -76,7 +80,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     fun streamAddon(): MutableCollection<PocketAddon> = addons.values
 
-    fun <T : PocketAddon> getAddon(type: PocketAddonType<*>): T? = addons[type]?.cast()
+    fun <T : PocketAddon> getAddon(type: PocketAddonType<T, *>): T? = addons[type]?.cast()
 
     fun isInBounds(pos: BlockPos): Boolean = this.box.isInside(pos)
 
@@ -158,10 +162,52 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         this.box = this.box.inflatedBy(amount)
     }
 
+    fun <T : PocketAddon, V : PocketAddon.PocketBuilderAddon<T, V>> createOrGet(type: PocketAddonType<T, V>): T =
+        getAddon(type) ?: type.builderSupplier().apply(this)
+
+    fun syncClientAddons() {
+        PocketRegistry.instance.setDirty()
+        ServerPacketHandler.markPocketSyncDirty(id)
+        DimensionalDoors.getWorld(world)?.players()?.filter { box.isInside(it.blockPosition()) }?.forEach {
+            ServerPacketHandler.syncPocketAddonsIfNeeded(it, this)
+            DimensionalDoors.syncColors(it, this)
+        }
+
+    }
+
+    fun modify(changer: (BlockState) -> BlockState? = { null }) {
+        val level = DimensionalDoors.getWorld(this.world) ?: return
+        val box = this.box
+
+        for (chunkX in (box.minX() shr 4)..(box.maxX() shr 4)) {
+            for (chunkZ in (box.minZ() shr 4)..(box.maxZ() shr 4)) {
+                val chunk = level.getChunk(chunkX, chunkZ)
+                var changed = false
+
+                for (sectionY in (box.minY() shr 4)..(box.maxY() shr 4)) {
+                    val section = chunk.getSection(chunk.getSectionIndexFromSectionY(sectionY))
+                    if (section.hasOnlyAir()) continue
+
+                    for (x in 0..15) for (y in 0..15) for (z in 0..15) {
+                        changer(section.getBlockState(x, y, z))?.let {
+                            section.setBlockState(x, y, z, it)
+                            changed = true
+                        }
+                    }
+                }
+
+                if (changed) {
+                    chunk.isUnsaved = true
+                    val packet = ClientboundLevelChunkWithLightPacket(chunk, level.lightEngine, null, null)
+                    level.chunkSource.chunkMap.getPlayers(chunk.pos, false).forEach { it.connection.send(packet) }
+                }
+            }
+        }
+    }
 
     // TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
     abstract class PocketBuilder<T : Pocket<T, P>, P : PocketBuilder<T, P>> : AbstractPocketBuilder<T, P> {
-        protected var addons = mutableMapOf<PocketAddonType<*>, PocketAddon.PocketBuilderAddon<*, *>>()
+        protected var addons = mutableMapOf<PocketAddonType<*, *>, PocketAddon.PocketBuilderAddon<*, *>>()
 
         protected var origin: Vec3i = Vec3i(0, 0, 0)
         protected var size: Vec3i = Vec3i(0, 0, 0)
@@ -185,7 +231,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         open fun initAddons() {
         }
 
-        fun hasAddon(id: PocketAddonType<*>): Boolean {
+        fun hasAddon(id: PocketAddonType<*, *>): Boolean {
             return addons.containsKey(id)
         }
 
@@ -195,7 +241,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             }
         }
 
-        fun <C : PocketAddon.PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*>): C? = addons[id]?.cast()
+        fun <C : PocketAddon.PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*, *>): C? = addons[id]?.cast()
 
         override val expectedSize: Vec3i
             get() = expected

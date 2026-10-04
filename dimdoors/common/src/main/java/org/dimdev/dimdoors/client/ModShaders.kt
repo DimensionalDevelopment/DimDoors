@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.api.client.UniformExt
 object ModShaders {
     private var COLORS: Uniform? = null
     private lateinit var DIMENSIONAL_PORTAL: ShaderInstance
+    private var current: IntArray? = null
 
     var dimensionalPortal: ShaderInstance
         get() = DIMENSIONAL_PORTAL
@@ -16,11 +17,14 @@ object ModShaders {
             DIMENSIONAL_PORTAL = dimensionalPortal
 
             COLORS = dimensionalPortal.getUniform("Colors").also {
-                it?.cast<UniformExt>()?.`dimensionalDoors$set`(base())
+                it?.cast<UniformExt>()?.`dimensionalDoors$set`(current ?: base())
             }
         }
 
-    fun setPortalColors(colors: IntArray): Boolean = COLORS?.cast<UniformExt>()?.`dimensionalDoors$set`(colors) != null
+    val portalColors: IntArray get() = current ?: base()
 
-    fun getPortalColors(target: IntArray): Boolean = COLORS?.also { it.intBuffer.get(0, target, 0, target.size) } != null
+    fun setPortalColors(colors: IntArray): Boolean {
+        current = colors.copyOf()
+        return COLORS?.cast<UniformExt>()?.`dimensionalDoors$set`(colors) != null
+    }
 }

@@ -9,17 +9,17 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimdoors.api.util.math.Equation
-import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.api.util.nullableForGetter
-import kotlin.jvm.optionals.getOrNull
+import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import kotlin.jvm.optionals.getOrNull
 
 data class ShellModifier(val layers: MutableList<Layer>, val boxToDrawAround: BoundingBox?) : Modifier {
     override val type get() = Modifiers.SHELL
 
     override fun apply(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>) {
-        val variableMap = parameters.toVariableMap(mutableMapOf<String, Double>())
+        val variableMap = parameters.toVariableMap()
         for (layer in layers) {
             val thickness = layer.getThickness(variableMap)
             builder.expandExpected(Vec3i(2 * thickness, 2 * thickness, 2 * thickness))
@@ -34,7 +34,7 @@ data class ShellModifier(val layers: MutableList<Layer>, val boxToDrawAround: Bo
             a.moved(origin.x, origin.y, origin.z)
         } ?: pocket.box
 
-        val variableMap = pocket.toVariableMap(mutableMapOf())
+        val variableMap = pocket.toVariableMap()
 
         var cumulativeThickness = 0
 

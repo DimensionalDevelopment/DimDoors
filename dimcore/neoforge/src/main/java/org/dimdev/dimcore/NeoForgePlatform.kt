@@ -1,6 +1,12 @@
 package org.dimdev.dimcore
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
+import net.minecraft.commands.synchronization.ArgumentTypeInfos
+import net.minecraft.commands.synchronization.SingletonArgumentInfo
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceLocation
+import net.neoforged.neoforge.registries.RegisterEvent
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import net.minecraft.commands.CommandSourceStack
@@ -139,6 +145,14 @@ class NeoForgePlatform : Platform {
         }
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = NeoForge.EVENT_BUS.addListener<RegisterCommandsEvent> { event -> event.dispatcher.run(consumer) }
+
+    override fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A) {
+        val bus = ModList.get().getModContainerById(id.namespace).orElseThrow().eventBus ?: error("Mod ${id.namespace} has no event bus")
+
+        bus.addListener<RegisterEvent> { event ->
+            event.register(Registries.COMMAND_ARGUMENT_TYPE, id) { ArgumentTypeInfos.registerByClass(clazz, SingletonArgumentInfo.contextFree { supplier() }) }
+        }
+    }
 
     override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) = PacketDistributor.sendToPlayer(player, packet)
 

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
@@ -87,7 +88,8 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
 
     override fun <T> entryRegister(
         resourceKey: ResourceKey<Registry<T>>,
-        registry: Registry<T>?
+        registry: Registry<T>?,
+        synced: Boolean
     ): PlatformRegistry.EntryRegister<T> {
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             override fun createRegistry(): Registry<T> =
@@ -114,7 +116,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         }
 
         return object : PlatformRegistry.EntryRegister<T>() {
-            private val target: Registry<T> by lazy { registry ?: FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister() }
+            private val target: Registry<T> by lazy { registry ?: FabricRegistryBuilder.createSimple(resourceKey).apply { if (synced) attribute(RegistryAttribute.SYNCED) }.buildAndRegister() }
 
             override fun createRegistry(): Registry<T> = target
 

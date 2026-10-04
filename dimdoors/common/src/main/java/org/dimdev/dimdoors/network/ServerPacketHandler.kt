@@ -35,6 +35,8 @@ object ServerPacketHandler {
 
     private fun getSyncData(player: ServerPlayer): PlayerSyncData = DATA_MAP.computeIfAbsent(player.getUUID()) { PlayerSyncData() }
 
+    fun markPocketSyncDirty(id: Int) = DATA_MAP.values.forEach { it.markPocketSyncDirty(id) }
+
     fun clear() = DATA_MAP.clear()
 
     // TODO: attach this to some event to detect other kinds teleportation
