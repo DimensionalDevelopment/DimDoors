@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.BlockHitResult
-import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.SingletonInstance
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback
 import org.dimdev.dimdoors.world.pocket.type.Pocket
@@ -48,7 +47,7 @@ object PreventBlockModificationAddon : PocketAddon, SingletonInstance<PreventBlo
         override fun apply(pocket: Pocket<*, *>): PreventBlockModificationAddon {
             pocket.addAddon(PreventBlockModificationAddon)
 
-            return this.cast()
+            return PreventBlockModificationAddon
         }
 
         override val type get() = PocketAddons.PREVENT_BLOCK_MODIFICATION_ADDON
