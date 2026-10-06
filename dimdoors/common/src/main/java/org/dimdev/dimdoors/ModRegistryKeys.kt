@@ -35,7 +35,7 @@ object ModRegistryKeys {
     @JvmField val CONDITION_TYPE = "rift_data_condition".type<MapCodec<out Condition>>()
     @JvmField val POCKET_ADDON_TYPE = "pocket_applicable_addon_type".type<BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>>()
     @JvmField val SUBSYSTEM_TYPE = "subsystem_type".type<SubSystem.Type<*>>()
-    @JvmField val REGISTRY_VERTEX_TYPE = "registry_vertex".type<MapCodec<out RegistryVertex>>()
+    @JvmField val REGISTRY_VERTEX_TYPE = "registry_vertex".type<RegistryVertex>()
     val DECAY_CONDITION_TYPE = "decay_condition_type".type<MapCodec<out DecayCondition>>()
     val DECAY_RESULT_TYPE = "decay_result_type".type<MapCodec<out DecayResult>>()
     val DECAY_PATTERN_TYPE = "decay_pattern_type".type<MapCodec<out DecayPattern>>()

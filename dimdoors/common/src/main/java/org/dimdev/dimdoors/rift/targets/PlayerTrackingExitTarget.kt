@@ -4,17 +4,20 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimcore.api.ext.ownerPlayerUuid
+import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : PlayerTrackingSubSystem<*, *, *>> : VirtualTarget<T>(), EntityTarget {
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -26,16 +29,20 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
 
         val registry = this.subsystem
 
-        val destLoc = registry.getExitLocation(uuid)
+        val destLoc = registry.getLocation(uuid, PlayerTrackerPointer.Variant.Exit)
         val pocket: Pocket<*, *>? = registry.getPocketFromPlayer(uuid)
-        if (registry.isCorrectDimensionForPocket(this.location.world) && pocket != null) {
+
+        val location = owner.providedLocation!!
+
+        if (registry.isCorrectDimensionForPocket(location.world) && pocket != null) {
             val currentPocket =
-                PocketRegistry.instance.getPocketDirectory(pocket.world).getPocketAt(this.location.blockPos)
+                PocketRegistry.instance.getPocketDirectory(pocket.world).getPocketAt(location.blockPos)
             if (pocket == currentPocket) {
-                registry.setEntrance(
+                registry.setRift(
                     uuid,
-                    this.location
-                ) // Remember which exit was used for next time the pocket is entered
+                    PlayerTrackerPointer.Variant.Entrance,
+                    owner.id
+                )
             }
         }
 
@@ -54,20 +61,22 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
                 )
             }
 
-            LimboTarget.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)
+            LimboTarget.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location)
 
             return false
         }
 
-        return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, destLoc)
+        return target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, destLoc)
     }
 
-    override fun register() {
-        super.register()
-        val registry = PocketRegistry.instance.getPocketDirectory(this.location.worldId)
-        val pocket = registry.getPocketAt(this.location.blockPos)
+    override fun register(owner: Vertex) {
+        super.register(owner)
+        val location = owner.providedLocation!!
+
+        val registry = PocketRegistry.instance.getPocketDirectory(location.worldId)
+        val pocket = registry.getPocketAt(location.blockPos)
         if (pocket != null) {
-            PocketRegistry.instance.addPocketEntrance(pocket, this.location)
+            PocketRegistry.instance.addPocketEntrance(pocket, location)
         }
     }
 

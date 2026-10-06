@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.rift.registry.Vertex
 
 class PocketEntranceMarker @JvmOverloads constructor(
     @JvmField val weight: Float = 1f,
@@ -17,6 +19,7 @@ class PocketEntranceMarker @JvmOverloads constructor(
     @JvmField val otherwiseDestination: VirtualTarget<*> = NoneTarget
 ) : VirtualTarget<PocketEntranceMarker>(), EntityTarget {
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -39,7 +42,7 @@ class PocketEntranceMarker @JvmOverloads constructor(
             .otherwiseDestination(this.otherwiseDestination)
     }
 
-    override val type
+    override val type: MapCodec<PocketEntranceMarker>
         get() = VirtualTargets.POCKET_ENTRANCE
 
     override fun copy(): PocketEntranceMarker {
@@ -80,7 +83,7 @@ class PocketEntranceMarker @JvmOverloads constructor(
     }
 
     companion object {
-        val CODEC= RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<PocketEntranceMarker> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                     Codec.FLOAT.fieldOf("weight").forGetter(PocketEntranceMarker::weight),
                     VirtualTarget.CODEC.optionalFieldOf("ifDestination", NoneTarget).forGetter(PocketEntranceMarker::ifDestination),
                     VirtualTarget.CODEC.optionalFieldOf("otherwiseDestination", NoneTarget).forGetter(PocketEntranceMarker::otherwiseDestination)

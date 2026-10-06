@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.DialingAddress
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.targets.DialingTarget
 import org.dimdev.dimdoors.rift.targets.DialingTargetImpl
 import org.dimdev.dimdoors.util.Copyable
@@ -33,6 +34,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
     override val target: Target get() = this
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -40,17 +42,17 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
         location: Location?
     ): Boolean {
         if (location != null) {
-            return super<EntranceRiftBlockEntity>.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)
+            return super<EntranceRiftBlockEntity>.receiveEntity(owner
+                , entity,
+                relativePos,
+                relativeAngle,
+                relativeVelocity,
+                location
+            )
         }
 
-        return super<DialingTarget>.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)
+        return super<DialingTarget>.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location)
     }
-
-    override val location: Location
-        get() = Location.ofWorld(
-            (level as net.minecraft.server.level.ServerLevel?)!!,
-            blockPos
-        )
 
     fun updateAddress(address: DialingAddress) {
         this.address = address

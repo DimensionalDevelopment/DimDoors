@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock
 import org.dimdev.dimdoors.block.RiftVariantProvider
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 
 object TargetResolver {
@@ -54,7 +55,7 @@ object TargetResolver {
             is RiftVariantProvider -> block.getRiftProviderState(state)?.takeIf { it.block is CoordinateTransformerBlock }
             else -> null
         }?.let {
-            EntityTarget { entity: Entity, relPos: Vec3, relAngle: Rotations, relVel: Vec3, location: Location? ->
+            EntityTarget { owner: Vertex, entity: Entity, relPos: Vec3, relAngle: Rotations, relVel: Vec3, location: Location? ->
                 EntranceRiftBlockEntity.receiveEntityAt(
                     level,
                     pos,

@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
 
 object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {
@@ -19,24 +20,33 @@ object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {
     }
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
         relativeVelocity: Vec3,
         location: Location?
     ): Boolean {
+        val location = owner.providedLocation
+
         val candidates = RiftRegistry.instance.rifts
-            .map { it.location }
-            .filter { !ModDimensions.isPocketDimension(it.worldId) && it != locationOrNull }
+            .map { it.value }
+            .filter { !ModDimensions.isPocketDimension(it.worldId) && it != location }
 
         if (candidates.isNotEmpty()) {
             val destination = candidates[RANDOM.nextInt(candidates.size)]
             val target = TargetResolver.entity(destination)
 
-            if (target != null) return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, destination)
+            if (target != null) return target.receiveEntity(
+                owner, entity,
+                relativePos,
+                relativeAngle,
+                relativeVelocity,
+                destination
+            )
         }
 
-        return LimboTarget.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)
+        return LimboTarget.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location)
     }
 
     val codec = MapCodec.unit(UnstableTarget)

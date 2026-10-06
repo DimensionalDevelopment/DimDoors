@@ -4,15 +4,17 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimcore.api.ext.ownerPlayer
 import org.dimdev.dimcore.api.ext.ownerPlayerUuid
+import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
@@ -20,9 +22,8 @@ import java.util.*
 interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSubSystem<O, P, S>> : EntityTarget {
     val subsystem: S
 
-    val location: Location
-
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -31,14 +32,14 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
     ): Boolean {
         val uuid = entity.ownerPlayerUuid ?: return false
 
-        if (this.isCorrectPocketType) {
+        if (this.isCorrectPocketType(owner)) {
             onInPocketType(entity, relativePos, relativeAngle, relativeVelocity, location)
             return true
         }
 
         val registry = this.subsystem
 
-        val virtualLocation = VirtualLocation.fromLocation(this.location)
+        val virtualLocation = VirtualLocation.fromLocation(owner)
 
         val key = getKey(uuid)
 
@@ -66,7 +67,7 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
             return false
         }
 
-        return this.processEntity(pocket, target, entity, uuid, relativePos, relativeAngle, relativeVelocity)
+        return this.processEntity(owner, pocket, target, entity, uuid, relativePos, relativeAngle, relativeVelocity)
     }
 
     fun onInPocketType(
@@ -78,12 +79,14 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
     ) {
     }
 
-    val isCorrectPocketType: Boolean
-        get() = instance.getPocketAt(this.location, pocketClass) != null
+    fun isCorrectPocketType(owner: Vertex): Boolean {
+        return instance.getPocketAt(owner, pocketClass) != null
+    }
 
     val pocketClass: Class<P>
 
     fun processEntity(
+        owner: Vertex,
         pocket: P,
         target: EntityTarget,
         entity: Entity,
@@ -93,7 +96,7 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
         relativeVelocity: Vec3
     ): Boolean
 
-    fun createPocket(key: O?, uuid: UUID, virtualLocation: VirtualLocation): P? {
+    fun createPocket(key: O?, playerId: UUID, virtualLocation: VirtualLocation): P? {
         val pocket = createPocket(virtualLocation)
 
         if (pocket != null) {
@@ -102,17 +105,17 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
                 DimensionalDoors.LOGGER.error(
                     "Could not create dialing pocket {} for {} because no entrance was registered.",
                     pocket.id,
-                    uuid
+                    playerId
                 )
                 return null
             }
 
             val registry = this.subsystem
 
-            registry.setEntrance(uuid, null)
-            registry.setExit(uuid, null)
+            registry.setRift(playerId, PlayerTrackerPointer.Variant.Entrance, null as? UUID)
+            registry.setRift(playerId, PlayerTrackerPointer.Variant.Exit, null as? UUID)
 
-            registry.setNewPocket(uuid, key, pocket)
+            registry.setNewPocket(playerId, key, pocket)
 
             return pocket
         } else {

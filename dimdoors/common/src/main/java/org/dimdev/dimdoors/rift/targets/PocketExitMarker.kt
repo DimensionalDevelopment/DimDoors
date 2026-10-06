@@ -8,9 +8,11 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.rift.registry.Vertex
 
 object PocketExitMarker : VirtualTarget<PocketExitMarker>(), EntityTarget {
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -25,9 +27,9 @@ object PocketExitMarker : VirtualTarget<PocketExitMarker>(), EntityTarget {
         return false
     }
 
-    override val type get() = VirtualTargets.POCKET_EXIT
+    override val type: MapCodec<PocketExitMarker> get() = VirtualTargets.POCKET_EXIT
 
     override fun copy(): PocketExitMarker = PocketExitMarker
 
-    val codec = MapCodec.unit(PocketExitMarker)
+    val codec: MapCodec<PocketExitMarker> = MapCodec.unit(PocketExitMarker)
 }

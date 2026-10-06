@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.getHeightmapPosSafe
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.TeleportUtil
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
@@ -29,6 +30,7 @@ import java.util.*
 
 class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -125,10 +127,12 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
                     Component.translatable(if (destLoc == null) "rifts.destinations.escape.did_not_use_rift" else "rifts.destinations.escape.rift_has_closed")
                 )
 
+                val location = owner.providedLocation!!
+
                 entity = TeleportUtil.teleport(
                     entity,
                     ModDimensions.LIMBO_DIMENSION,
-                    BlockPos(this.location.x, this.location.y, this.location.z),
+                    BlockPos(location.x, location.y, location.z),
                     relativeAngle,
                     relativeVelocity
                 )

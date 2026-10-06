@@ -8,6 +8,7 @@ import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.rift.registry.Vertex
 
 class MessageTarget(private val forwardTo: Target?, private val message: String, private vararg val messageParams: Any?) :
     EntityTarget {
@@ -15,6 +16,7 @@ class MessageTarget(private val forwardTo: Target?, private val message: String,
     constructor(message: String, vararg messageParams: Any?) : this(null, message, *messageParams)
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -23,12 +25,10 @@ class MessageTarget(private val forwardTo: Target?, private val message: String,
     ): Boolean {
         chat(entity, Component.translatable(this.message, *this.messageParams))
 
-        if (this.forwardTo != null) {
-            this.forwardTo.`as`<EntityTarget>(Targets.ENTITY)!!
-                .receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)
-            return true
+        return if (this.forwardTo != null) {
+            this.forwardTo.`as`<EntityTarget>(Targets.ENTITY, owner)?.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location) == true
         } else {
-            return false
+            false
         }
     }
 }

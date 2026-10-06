@@ -41,7 +41,7 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
             var newLocation = Location.ofWorld(resultingLevel, newPos);
             var registry = RiftRegistry.Companion.getInstance();
             if (registry.isRiftAt(newLocation)) {
-                SableLevelSpaceHelper.INSTANCE.track(resultingLevel, registry.getRift(newLocation));
+                SableLevelSpaceHelper.INSTANCE.track(resultingLevel, registry.getRift(newLocation), newLocation);
             }
         }
     }

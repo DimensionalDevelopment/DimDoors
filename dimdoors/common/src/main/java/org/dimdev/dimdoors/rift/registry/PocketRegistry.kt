@@ -1,27 +1,22 @@
 package org.dimdev.dimdoors.rift.registry
 
-import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimcore.api.ext.castOrNull
+import org.dimdev.dimcore.api.util.SimpleEvent
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
-import java.util.Objects.requireNonNull
-import java.util.function.*
-import java.util.function.Function
-import java.util.stream.Collectors
 
 class PocketRegistry(
     val directories: MutableMap<ResourceKey<Level>, PocketDirectory> = mutableMapOf(),
-    val pocketEntrancePointers: MutableMap<PocketInfo, PocketEntrancePointer> = mutableMapOf()
-) : SubSystem<PocketRegistry>(), VertexProvider {
+) : SubSystem<PocketRegistry>() {
 
     fun forEachPocketDirectory(consumer: (ResourceKey<Level>, PocketDirectory) -> Unit) {
         directories.forEach(consumer)
@@ -32,7 +27,7 @@ class PocketRegistry(
             return null
         }
 
-        return directories.get(key)
+        return directories[key]
     }
 
     fun getOrCreate(key: ResourceKey<Level>): PocketDirectory {
@@ -57,9 +52,7 @@ class PocketRegistry(
         return getPocketDirectory(key).newPocket(key, builder)
     }
 
-    override fun collectVertices(): MutableList<out RegistryVertex> = this.pocketEntrancePointers.values.toMutableList()
-
-    public override fun type(): Type<PocketRegistry> {
+    override fun type(): Type<PocketRegistry> {
         return SubsystemTypes.POCKET
     }
 
@@ -71,72 +64,45 @@ class PocketRegistry(
         return this.getPocketEntrances(PocketInfo(pocket.world, pocket.id))
     }
 
-    fun getPocketEntrances(info: PocketInfo?): MutableSet<Location> {
-        Objects.requireNonNull<PocketInfo?>(info, "info")
-
-        val pointer = this.pocketEntrancePointers[info] ?: return mutableSetOf<Location>()
-
-        return RiftGraph.getInstance().targets(pointer).mapNotNull { RiftRegistry.instance.findRift(it) }.map(Rift::location).toMutableSet()
+    fun getPocketEntrances(info: PocketInfo): MutableSet<Location> {
+        return getPocketEntrances(info.uuid)
     }
+
+    fun getPocketEntrances(info: UUID): MutableSet<Location> = RiftGraph.getInstance().targets(info).mapNotNull { RiftRegistry.instance.locationOf(it) }.toMutableSet()
 
     fun getPocketEntrance(pocket: Pocket<*, *>?): Location? {
         requireNotNull(pocket) { "pocket" }
         return this.getPocketEntrance(PocketInfo(pocket.world, pocket.id))
     }
 
-    fun getPocketEntrance(info: PocketInfo?): Location? = this.getPocketEntrances(info).firstOrNull()
+    fun getPocketEntrance(pocketId: UUID): Location? = this.getPocketEntrances(pocketId).firstOrNull()
+    fun getPocketEntrance(info: PocketInfo): Location? = this.getPocketEntrances(info).firstOrNull()
 
     fun addPocketEntrance(pocket: Pocket<*, *>?, location: Location?) {
         requireNotNull(pocket) { "pocket" }
         requireNotNull(location) { "location" }
 
         val info = PocketInfo(pocket.world, pocket.id)
-        val pointer = this.pocketEntrancePointers.computeIfAbsent(info) { key ->
-            val created = PocketEntrancePointer(key.world, key.id)
-            RiftGraph.getInstance().addVertex(created)
-            created
-        }
+        val pointer = info.uuid
 
-        val rift = RiftRegistry.instance.getRift(location)
-        if (RiftGraph.getInstance().addEdge(pointer, rift)) {
-            this.setDirty()
-        }
+        PocketEvents.ADDED_POCKET_ENTRANCE.invoker().addPocketEntrance(pointer, location)
     }
 
-    fun removePocketReferences(pocket: Pocket<*, *>?): Boolean {
-        Objects.requireNonNull(pocket, "pocket")
-        return this.removePocketReferences(pocket!!.world, pocket.id)
+    object PocketEvents {
+        val ADDED_POCKET_ENTRANCE : SimpleEvent<PocketEntranceAdd> = SimpleEvent.of  { callbacks -> { id, location -> callbacks.forEach { it.addPocketEntrance(id, location) } } }
+
+        fun interface PocketEntranceAdd { fun addPocketEntrance(id: UUID, location: Location) }
     }
 
-    fun removePocketReferences(world: ResourceKey<Level>?, pocketId: Int): Boolean {
-        requireNotNull(world) { "world" }
+    fun getPocketAt(provider: LocationProvider?): Pocket<*, *>? = provider?.providedLocation?.let { location -> location.worldId?.let { directories[it] }?.getPocketAt(location.blockPos) }
 
-        val pointer = this.pocketEntrancePointers.remove(PocketInfo(world, pocketId)) ?: return false
-
-        val affectedRifts = linkedSetOf<Rift>()
-        if (RiftGraph.getInstance().containsVertex(pointer)) {
-            RiftGraph.getInstance().sources(pointer).mapNotNullTo(affectedRifts) { RiftRegistry.instance.findRift(it) }
-            RiftGraph.getInstance().targets(pointer).mapNotNullTo(affectedRifts) { RiftRegistry.instance.findRift(it) }
-
-            RiftGraph.getInstance().removeVertex(pointer)
-        }
-
-        affectedRifts.forEach(Rift::markDirty)
-        this.setDirty()
-        return true
-    }
-
-    fun getPocketAt(location: Location?): Pocket<*, *>? = location?.worldId?.let { directories[it] }?.getPocketAt(location.blockPos)
-
-    fun <P : Pocket<*, *>> getPocketAt(location: Location?, pocketClass: Class<P>): P? = getPocketAt(location)?.cast(pocketClass)
+    fun <P : Pocket<*, *>> getPocketAt(location: LocationProvider?, pocketClass: Class<P>): P? = getPocketAt(location)?.cast(pocketClass)
 
     companion object {
         @JvmField
         val CODEC = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
-                    Level.RESOURCE_KEY_CODEC.unboundedMap(PocketDirectory.CODEC).fieldOf("directories").forGetter(PocketRegistry::directories),
-                    PocketInfo.STRING_CODEC.unboundedMap(PocketEntrancePointer.CODEC).fieldOf("entrance_pointers").forGetter(
-                        PocketRegistry::pocketEntrancePointers)
+                    Level.RESOURCE_KEY_CODEC.unboundedMap(PocketDirectory.CODEC).fieldOf("directories").forGetter(PocketRegistry::directories)
                 ).apply(instance, ::PocketRegistry)
             }
 

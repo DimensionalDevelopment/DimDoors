@@ -23,11 +23,12 @@ object Targets {
     fun registerDefaultTargets() {
         DefaultTargets.registerDefaultTarget(
             ENTITY,
-            EntityTarget { entity: Entity, relativePos: Vec3, relativeRotation: Rotations, relativeVelocity: Vec3, location: Location? ->
+            EntityTarget { owner, entity: Entity, relativePos: Vec3, relativeRotation: Rotations, relativeVelocity: Vec3, location: Location? ->
                 if (location != null) {
                     val targetLevel = location.world
 
                     entity(targetLevel, location.blockPos)?.let { return@EntityTarget it.receiveEntity(
+                        owner,
                         entity,
                         relativePos,
                         relativeRotation,

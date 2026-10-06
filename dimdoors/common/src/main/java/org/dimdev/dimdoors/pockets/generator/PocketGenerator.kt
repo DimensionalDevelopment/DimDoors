@@ -10,17 +10,16 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity
 import org.apache.logging.log4j.LogManager
 import org.dimdev.dimcore.api.MapCodecHasHolder
-import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.Weighted
 import org.dimdev.dimdoors.api.util.math.Equation
+import org.dimdev.dimdoors.api.util.mutableList
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.pockets.PocketCreator
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.pockets.modifier.RiftManager
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.api.util.mutableList
-import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
@@ -101,8 +100,6 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
                     "Pocket {} in {}: rift at {} (relative {}) has no destination. Its schematic block entity is missing rift data, or no modifier assigned it an id.",
                     pocket.id, world.dimension().location(), rift.riftBlockPos.toShortString(), rift.riftBlockPos.subtract(pocket.origin).toShortString()
                 )
-            } else {
-                destination.location = ofWorld(world, rift.riftBlockPos)
             }
         }
         TemplateUtils.registerRifts(manager.rifts, parameters.linkTo, parameters.linkProperties, pocket)

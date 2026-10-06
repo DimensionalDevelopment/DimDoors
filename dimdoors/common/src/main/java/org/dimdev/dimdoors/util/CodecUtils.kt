@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.util
 
 import com.mojang.datafixers.Products.P2
+import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
@@ -61,6 +62,16 @@ object CodecUtils {
             return DataResult.error(e::message)
         }
     }
+
+    fun <T> pair(codec: Codec<T>): Codec<Pair<T, T>> = Codec.pair(codec.fieldOf("key").codec(), codec.fieldOf("value").codec())
+
+    fun <T> mutableMap(codec: Codec<T>) = pair(codec).listOf().xmap<MutableMap<T, T>>(
+        {
+            it.associate { kotlin.Pair(it.first, it.second) }.toMutableMap()
+        },
+        {
+            it.entries.map { Pair(it.key, it.value) }
+        })
 
     var INT_ARRAY_CODEC: Codec<IntArray> = Codec.INT_STREAM.xmap({ obj -> obj.toArray() }, { array -> Arrays.stream(array) })
 

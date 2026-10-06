@@ -10,7 +10,11 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import kotlin.jvm.optionals.getOrNull
 
+/*
+ * The PocketGenerationContext is the context used all throughout the generation of pockets.
+ */
 data class PocketGenerationContext(
+
     val world: ServerLevel,
     val sourceVirtualLocation: VirtualLocation,
     val linkTo: VirtualTarget<*>?,

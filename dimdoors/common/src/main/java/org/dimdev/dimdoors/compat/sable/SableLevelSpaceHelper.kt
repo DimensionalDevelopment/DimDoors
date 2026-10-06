@@ -21,12 +21,13 @@ import org.dimdev.dimdoors.api.util.BlockPosUtil
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.math.inverse
 import org.dimdev.dimdoors.api.util.math.transform
-import org.dimdev.dimdoors.rift.registry.Rift
+import org.dimdev.dimdoors.rift.registry.LevelSpaceRegistry
 import org.dimdev.dimdoors.rift.registry.RiftRegistry
 import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.joml.Matrix4d
+import java.util.*
 
 object SableLevelSpaceHelper : LevelSpaceHelper() {
     @JvmStatic
@@ -50,14 +51,9 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
         return isUnavailableNow(level, pos)
     }
 
-    fun track(level: ServerLevel, rift: Rift) {
-        val id = SableCompanion.INSTANCE.getContaining(level, rift.location.blockPos)?.uniqueId
-        if (rift.levelSpaceId == id) return
-        rift.levelSpaceId = id
-        RiftRegistry.instance.setDirty()
-    }
+    fun track(level: ServerLevel, id: UUID, location: Location) = LevelSpaceRegistry.instance.set(id, levelSpaceOf(level, location.blockPos))
 
-    override fun onRiftAdded(rift: Rift) = track(rift.location.world, rift)
+    override fun levelSpaceOf(level: ServerLevel, pos: BlockPos): UUID? = SableCompanion.INSTANCE.getContaining(level, pos)?.uniqueId
 
     override fun getBlockEntity(level: ServerLevel, pos: BlockPos): BlockEntity? {
         ensureLoaded(level, pos)
@@ -109,8 +105,6 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
             return TeleportFrame(pos, angle, velocity)
         }
 
-        if (subLevel is ServerSubLevel) riftNear(level, probe)?.takeIf { it.levelSpaceId == null }?.let { track(level, it) }
-
         val pose = subLevel.logicalPose()
         return TeleportFrame(
             pose.transformPosition(pos),
@@ -129,10 +123,12 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
     }
 
     private fun ensureLoaded(level: ServerLevel, pos: BlockPos) {
-        if (isUnavailableNow(level, pos)) riftNear(level, pos)?.let { SableSubLevels.resolve(level, it) }
+        if (!isUnavailableNow(level, pos)) return
+        val id = riftNear(level, pos) ?: return
+        RiftRegistry.instance.locationOf(id)?.let { SableSubLevels.resolve(level, id, it) }
     }
 
-    private fun riftNear(level: ServerLevel, pos: BlockPos): Rift? {
+    private fun riftNear(level: ServerLevel, pos: BlockPos): UUID? {
         val registry = RiftRegistry.instance
         return BlockPosUtil.nearbyVertical(pos) { candidate ->
             Location.ofWorld(level, candidate).takeIf(registry::isRiftAt)?.let(registry::getRift)
@@ -142,12 +138,12 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
     private fun trackRiftsIn(level: ServerLevel, subLevel: SubLevel) {
         if (!level.server.isReady) return
         val registry = SubSystem.getInstance(level.server, SubsystemTypes.RIFT) ?: return
+        val spaces = SubSystem.getInstance(level.server, SubsystemTypes.LEVEL_SPACE) ?: return
 
-        for (rift in registry.rifts) {
-            if (rift.location.worldId != level.dimension() || rift.levelSpaceId == subLevel.uniqueId) continue
-            if (!subLevel.plot.contains(ChunkPos(rift.location.blockPos))) continue
-            rift.levelSpaceId = subLevel.uniqueId
-            registry.setDirty()
+        for ((id, location) in registry.rifts) {
+            if (location.worldId != level.dimension() || spaces.get(id) == subLevel.uniqueId) continue
+            if (!subLevel.plot.contains(ChunkPos(location.blockPos))) continue
+            spaces.set(id, subLevel.uniqueId)
         }
     }
 

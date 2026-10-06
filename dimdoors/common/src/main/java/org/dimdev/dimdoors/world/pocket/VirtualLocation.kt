@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.world.ModDimensions
 
 data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int, val depth: Int) {
@@ -51,11 +52,15 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
             }
 
         @JvmStatic
-        fun fromLocation(location: Location): VirtualLocation = when {
+        fun fromLocation(provider: LocationProvider): VirtualLocation {
+            val location = provider.providedLocation!!
+
+            return when {
                 ModDimensions.isPocketDimension(location.worldId) -> instance.getPocketDirectory(location.worldId).getPocketAt(location.blockPos)?.virtualLocation
                 ModDimensions.isLimboDimension(location.world) -> VirtualLocation(location.worldId, location.x, location.z, DimensionalDoors.config.dungeonsConfig.maxDungeonDepth) // TODO: convert to interface on worldprovider
-                else -> VirtualLocation(location.worldId, location.x, location.y, 5) // TODO: nether coordinate transform
+                else -> VirtualLocation(location.worldId, location.x, location.z, 5) // TODO: nether coordinate transform
             }?.let { VirtualLocation(location.worldId, location.x, location.z, it.depth) } ?: VirtualLocation(Level.OVERWORLD, location.x, location.z, 5)
+        }
 
         @JvmStatic
         fun getTopPos(world: Level, x: Int, z: Int): BlockPos {

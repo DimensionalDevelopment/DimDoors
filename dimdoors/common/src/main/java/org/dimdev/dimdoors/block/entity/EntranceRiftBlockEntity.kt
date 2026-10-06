@@ -29,10 +29,12 @@ import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations
 import org.dimdev.dimdoors.rift.RiftUtils
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.targets.EscapeTarget
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.util.LevelSpaceHelper
+import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import org.dimdev.dimdoors.world.ModDimensions.isLimboDimension
 import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
 import org.joml.Matrix4d
@@ -79,6 +81,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
     }
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
@@ -160,10 +163,11 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                 var relativeVelocity = entity.deltaMovement
 
                 val target = rift.target
-                val location = if (target is LocationProvider) target.providedLocation else null
+                val location = target.castOrNull<LocationProvider>()?.providedLocation
 
                 val state = rift.riftLevel.getBlockState(rift.riftBlockPos)
                 val block = state.block
+
                 if (block is CoordinateTransformerBlock) {
                     val blockPos = rift.riftBlockPos
                     val sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(rift.riftLevel as ServerLevel, blockPos, entity, entity.position(), relativeAngle, relativeVelocity)
@@ -174,8 +178,9 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                     relativeVelocity = block.rotateTo(rotatorBuilder, sourceFrame.velocity)
                 }
 
-                val entityTarget = target.`as`(Targets.ENTITY)
-                if (entityTarget!!.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
+                val owner = rift.location.riftOrPlaceholder().rift()
+                val entityTarget = target.`as`(Targets.ENTITY, owner)
+                if (entityTarget!!.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location)) {
                     val vLoc = fromLocation(ofWorld(entity.level() as ServerLevel, entity.blockPosition()))
                     if (config.generalConfig.enableDebugMessages) chat(
                         entity,

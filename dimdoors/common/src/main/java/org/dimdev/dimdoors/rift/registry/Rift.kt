@@ -1,103 +1,62 @@
 package org.dimdev.dimdoors.rift.registry
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.UUIDUtil
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.RiftUtils
-import org.dimdev.dimdoors.rift.registry.RiftRegistry.Companion.instance
-import org.dimdev.dimdoors.api.util.nullableForGetter
-import kotlin.jvm.optionals.getOrNull
 import java.util.*
 
-open class Rift(location: Location) : RegistryVertex() {
-    var location: Location = location
-        set(value) {
-            field = value
-            this.world = value.worldId
-        }
+object Rift : RegistryVertex() {
+    override fun getLocation(id: UUID): Location? = RiftRegistry.instance.locationOf(id)
 
-    var isDetached: Boolean = false
-    var properties: LinkProperties? = null
-    var levelSpaceId: UUID? = null
+    override fun sourceGone(self: UUID, source: Vertex, location: Location?) {
+        super.sourceGone(self, source, location)
 
-    init {
-        this.world = location.worldId
-    }
-
-    constructor(location: Location, isDetached: Boolean, properties: LinkProperties?) : this(location) {
-        this.isDetached = isDetached
-        this.properties = properties
-    }
-
-    constructor(id: UUID, location: Location, isDetached: Boolean, properties: LinkProperties?) : this(location) {
-        this.isDetached = isDetached
-        this.properties = properties
-        this.id = id
-    }
-
-    override fun sourceGone(source: RegistryVertex) {
-        super.sourceGone(source)
-
-        RiftUtils.runIfRiftAt(location) { rift ->
-            if (source is Rift) {
-                rift.handleSourceGone(source.location)
+        val self = source.providedLocation ?: return
+        RiftUtils.runIfRiftAt(self) { rift ->
+            if (source.type is Rift) {
+                rift.handleSourceGone(location)
             }
         }
     }
 
-    override fun targetGone(target: RegistryVertex) {
-        super.targetGone(target)
+    override fun targetGone(self: UUID, target: Vertex, location: Location?) {
+        super.targetGone(self, target, location)
 
-        RiftUtils.runIfRiftAt(location) { rift ->
-            if (target is Rift) {
-                rift.handleTargetGone(target.location)
+        val self = target.providedLocation ?: return
+        RiftUtils.runIfRiftAt(self) { rift ->
+            if (target.type is Rift && location != null) {
+                rift.handleTargetGone(location)
             }
             rift.updateColor()
         }
     }
 
-    override fun targetMoved(target: RegistryVertex) {
-        super.sourceAdded(target)
+    override fun targetMoved(self: UUID, target: Vertex) {
+        super.targetMoved(self, target)
 
-        RiftUtils.runIfRiftAt(location) { rift ->
-            if (target is Rift) {
-                rift.handleSourceMoved(target.location)
+        val self = target.providedLocation ?: return
+        RiftUtils.runIfRiftAt(self) { rift ->
+            if (target.type is Rift) {
+                RiftRegistry.instance.locationOf(target.id)?.let(rift::handleSourceMoved)
             }
             rift.updateColor()
         }
     }
 
-    open fun targetChanged(target: RegistryVertex) {
-        LOGGER.debug("Rift {} notified of target {} having changed. Updating color.", this, target)
-        RiftUtils.runIfRiftAt(location) { rift -> rift.updateColor() }
+    override fun targetChanged(self: UUID, target: Vertex) {
+        LOGGER.debug("Rift {} notified of target {} having changed. Updating color.", self, target)
+        getLocation(self)?.let { RiftUtils.runIfRiftAt(it) { rift -> rift.updateColor() } }
     }
 
-    open fun markDirty() {
-        RiftUtils.runIfRiftAt(location) { rift -> rift.updateColor() }
-
-        for (location in instance.getTargets(this.location)) {
-            instance.getRift(location).targetChanged(this)
-        }
+    override fun targetAdded(self: UUID, target: Vertex) {
+        getLocation(self)?.let { RiftUtils.runIfRiftAt(it) { rift -> rift.updateColor() } }
     }
 
-    override val type: MapCodec<out Rift> = RegistryVertices.RIFT
-
-    companion object {
-        private val LOGGER: Logger = LogManager.getLogger()
-        val MAP_CODEC: MapCodec<Rift> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::id),
-                Location.CODEC.fieldOf("location").forGetter(Rift::location),
-                Codec.BOOL.optionalFieldOf("isDetached", false).forGetter(Rift::isDetached),
-                LinkProperties.CODEC.optionalFieldOf("properties").nullableForGetter(Rift::properties),
-                UUIDUtil.CODEC.optionalFieldOf("level_space_id").nullableForGetter(Rift::levelSpaceId)
-            ).apply(instance) { id, location, isDetached, properties, levelSpaceId ->
-                Rift(id, location, isDetached, properties.getOrNull()).also { it.levelSpaceId = levelSpaceId.getOrNull() }
-            }
-        }
+    override fun sourceAdded(self: UUID, source: Vertex) {
+        getLocation(self)?.let { RiftUtils.runIfRiftAt(it) { rift -> rift.updateColor() } }
     }
+
+
+    private val LOGGER: Logger = LogManager.getLogger()
 }

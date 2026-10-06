@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.pockets.modifier
 
 import com.google.common.base.MoreObjects
 import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.util.StringRepresentable
 import org.dimdev.dimdoors.block.entity.Rift
@@ -17,8 +16,8 @@ data class RelativeReferenceModifier(val point_a: Int, val point_b: Int, val con
         val riftA = manager[point_a]?.location ?: return
         val riftB = manager[point_b]?.location ?: return
 
-        val link1 = riftB.target
-        val link2 = riftA.target
+        val link1 = riftB.asTarget()
+        val link2 = riftA.asTarget()
 
         manager.consume(point_a) { rift -> addLink(rift, link1) }
 

@@ -7,12 +7,13 @@ import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 
 class TemplateTarget(private val template: Holder<VirtualPocket>) : RestoringTarget<TemplateTarget>() {
-    override fun makeLinkTarget(): Location? {
-        val riftVirtualLocation = VirtualLocation.fromLocation(this.location)
+    override fun makeLinkTarget(owner: Vertex): Location? {
+        val riftVirtualLocation = VirtualLocation.fromLocation(owner)
         val newVirtualLocation: VirtualLocation?
         val depth = riftVirtualLocation.depth + 1
         newVirtualLocation = VirtualLocation(
@@ -25,7 +26,7 @@ class TemplateTarget(private val template: Holder<VirtualPocket>) : RestoringTar
             DimensionalDoors.getWorld(ModDimensions.DUNGEON),
             template,
             newVirtualLocation,
-            this.location.asTarget(),
+            owner.providedLocation!!.asTarget(),
             null
         )
 

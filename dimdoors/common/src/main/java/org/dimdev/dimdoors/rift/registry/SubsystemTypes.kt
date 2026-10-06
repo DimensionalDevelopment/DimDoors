@@ -12,6 +12,8 @@ object SubsystemTypes : PlatformRegistry<SubSystem.Type<*>>(ModRegistryKeys.SUBS
     val PRIVATE = create("private_registry", ::PrivateRegistry, PrivateRegistry.CODEC)
     val POCKET = create("pocket_registry", ::PocketRegistry, PocketRegistry.CODEC)
     val DIALING = create("dialing_registry", ::DialingRegistry, DialingRegistry.CODEC)
+    val PROPERTIES = create("properties_registry", ::LinkPropertiesRegistry, LinkPropertiesRegistry.CODEC)
+    val LEVEL_SPACE = create("level_space_registry", ::LevelSpaceRegistry, LevelSpaceRegistry.CODEC)
 //    val DUNGEON = create("dungeon_registry", ::DungeonRegistry, DungeonRegistry.CODEC)
 
     private fun <T : SubSystem<T>> create(
@@ -19,4 +21,5 @@ object SubsystemTypes : PlatformRegistry<SubSystem.Type<*>>(ModRegistryKeys.SUBS
         supplier: () -> T,
         codec: MapCodec<T>
     ): SubSystem.Type<T> = create(name) { SubSystem.Type("$modid/$name", supplier, codec) }
+
 }

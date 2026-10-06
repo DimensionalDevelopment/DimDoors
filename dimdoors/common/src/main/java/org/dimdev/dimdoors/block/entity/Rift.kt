@@ -10,10 +10,11 @@ import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.registry.Rift
+import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.registry.RiftRegistry
 import org.dimdev.dimdoors.rift.targets.MessageTarget
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
+import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import java.util.function.Consumer
 
 interface Rift : Target {
@@ -21,6 +22,7 @@ interface Rift : Target {
     var data: RiftData
 
     fun setDestination(destination: VirtualTarget<*>) {
+
         if (DimensionalDoors.LOGGER.isDebugEnabled) {
             DimensionalDoors.LOGGER.debug(
                 "Setting destination {} for {}",
@@ -31,13 +33,15 @@ interface Rift : Target {
 
         val data = this.data
 
+        val owner = location.riftOrPlaceholder().rift()
+
         if (data.destination != VirtualTarget.NoneTarget && this.isRegistered) {
-            data.destination.unregister()
+            data.destination.unregister(owner)
         }
+
         data.destination = destination
         if (destination !== VirtualTarget.NoneTarget) {
-            destination.location = location
-            if (this.isRegistered) destination.register()
+            if (this.isRegistered) destination.register(owner)
         }
         this.setChanged()
         this.updateColor()
@@ -47,17 +51,14 @@ interface Rift : Target {
     var isStateDirty: Boolean
 
     var properties: LinkProperties?
-        get() = this.data.properties
+        get() = RiftRegistry.instance.idAt(location)?.let { LinkPropertiesRegistry.instance.getProperties(it) }
         set(properties) {
-            this.data.properties = properties
-            this.updateProperties()
+            val rift = RiftRegistry.instance.getRiftOrPlaceholder(location)
+
+            LinkPropertiesRegistry.instance.setProperties(rift, properties)
+
             this.setChanged()
         }
-
-    fun updateProperties() {
-        if (this.isRegistered) RiftRegistry.instance.setProperties(location, this.data.properties)
-        this.setChanged()
-    }
 
     fun setChanged()
 
@@ -83,11 +84,10 @@ interface Rift : Target {
         get() {
             val data = this.data
 
-            if (data.destination === VirtualTarget.NoneTarget) {
-                return MessageTarget("rifts.unlinked1")
+            return if (data.destination === VirtualTarget.NoneTarget) {
+                MessageTarget("rifts.unlinked1")
             } else {
-                data.destination.location = location
-                return data.destination
+                data.destination
             }
         }
 
@@ -101,13 +101,12 @@ interface Rift : Target {
 
         val data = this.data
 
-        val loc = location
-        RiftRegistry.instance.addRift(loc)
-        if (data.destination !== VirtualTarget.NoneTarget) {
-            data.destination.location = loc
-            data.destination.register()
-        }
-        this.updateProperties()
+        RiftRegistry.instance.addRift(location)
+
+        val owner = location.riftOrPlaceholder().rift()
+
+        data.destination.takeIf { it !== VirtualTarget.NoneTarget }?.register(owner)
+
         this.updateColor()
     }
 
@@ -119,9 +118,9 @@ interface Rift : Target {
 
     fun updateType() {
         if (!this.isRegistered) return
+
         val rift = RiftRegistry.instance.getRift(location)
-        rift.isDetached = this.isDetached
-        rift.markDirty()
+        LinkPropertiesRegistry.instance.setDetached(rift, this.isDetached)
     }
 
     fun handleSourceMoved(location: Location) {
@@ -155,9 +154,7 @@ interface Rift : Target {
         } else if (data.destination === VirtualTarget.NoneTarget) {
             data.color = RGBA(0.7f, 0.7f, 0.7f, 1f)
         } else {
-            data.destination.location = location
-
-            val newColor = data.destination.color
+            val newColor = data.destination.getColor(location.riftOrPlaceholder().rift())
             if (data.color != newColor) {
                 data.color = newColor
                 this.setChanged()
@@ -165,7 +162,7 @@ interface Rift : Target {
         }
     }
 
-    fun <T : org.dimdev.dimdoors.block.entity.Rift> copyFrom(rift: T) {
+    fun <T : Rift> copyFrom(rift: T) {
         this.data = rift.data.copy()
     }
 
@@ -188,10 +185,6 @@ interface Rift : Target {
     }
 
     fun update(level: Level, pos: BlockPos, blockState: BlockState) {
-    }
-
-    fun asRift(): Rift {
-        return RiftRegistry.instance.getRift(location)
     }
 
     var isDeleteRift: Boolean

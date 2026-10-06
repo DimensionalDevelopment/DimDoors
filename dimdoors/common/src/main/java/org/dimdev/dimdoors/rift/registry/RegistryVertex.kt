@@ -1,27 +1,25 @@
 package org.dimdev.dimdoors.rift.registry
 
-import net.minecraft.resources.ResourceKey
-import net.minecraft.world.level.Level
-import org.dimdev.dimcore.api.MapCodecHasHolder
+import com.mojang.serialization.Codec
+import org.dimdev.dimdoors.ModRegistries
+import org.dimdev.dimdoors.api.util.Location
 import java.util.*
 
-abstract class RegistryVertex : MapCodecHasHolder<RegistryVertex> {
-    var world: ResourceKey<Level>? = null
+abstract class RegistryVertex {
+    abstract fun getLocation(id: UUID): Location?
 
-    var id: UUID = UUID.randomUUID()
+    open fun sourceGone(self: UUID, source: Vertex, location: Location?) {}
+    open fun targetGone(self: UUID, target: Vertex, location: Location?) {}
 
-    open fun sourceGone(source: RegistryVertex) {}
-    open fun targetGone(target: RegistryVertex) {}
+    open fun sourceAdded(self: UUID, source: Vertex) {}
+    open fun targetAdded(self: UUID, target: Vertex) {}
 
-    open fun sourceAdded(source: RegistryVertex) {}
-    open fun targetAdded(target: RegistryVertex) {}
+    open fun sourceMoved(self: UUID, source: Vertex) {}
+    open fun targetMoved(self: UUID, target: Vertex) {}
 
-    open fun sourceMoved(source: RegistryVertex) {}
-    open fun targetMoved(target: RegistryVertex) {}
-
-    override fun toString(): String = "RegistryVertex(dim=${this.world}, id=${this.id})"
+    open fun targetChanged(self: UUID, target: Vertex) {}
 
     companion object {
-        val CODEC = RegistryVertices.codec
+        val CODEC = Codec.lazyInitialized { ModRegistries.REGISTRY_VERTEX_TYPE.byNameCodec() }
     }
 }

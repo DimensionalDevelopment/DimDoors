@@ -45,7 +45,6 @@ import org.dimdev.dimdoors.pockets.PocketLoader
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
-import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.util.CodecUtils
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
@@ -293,7 +292,7 @@ object PocketCommand {
         val pocketGenerationContext = PocketGenerationContext(
             pocketLevel,
             fromLocation(contextLocation),
-            RiftReference(contextLocation),
+            contextLocation.asTarget(),
             LinkProperties.NONE,
             pocketLevel.registryAccess()
         )

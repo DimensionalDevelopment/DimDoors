@@ -8,12 +8,12 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.util.CodecUtils
-import java.util.function.BiFunction
-import java.util.function.Function
-import java.util.function.Supplier
+import java.util.*
 
 data class PocketInfo(val world: ResourceKey<Level>, val id: Int) {
     override fun toString() = "${world.location()}#$id"
+
+    val uuid: UUID get() = UUID(world.hashCode().toLong(), id.toLong())
 
     companion object {
         @JvmField

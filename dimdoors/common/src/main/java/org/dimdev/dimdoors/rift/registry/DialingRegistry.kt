@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.world.pocket.PocketInfo
 import java.util.*
 
 class DialingRegistry(
-    locations: MutableMap<UUID, PlayerRiftConnection> = mutableMapOf(),
+    locations: MutableMap<UUID, UUID> = mutableMapOf(),
     private var dialingPockets: HashBiMap<DialingAddress, PocketInfo> = HashBiMap.create<DialingAddress, PocketInfo>(),
     private var playertoAddress: MutableMap<UUID, DialingAddress> = HashMap<UUID, DialingAddress>()
 ) : PlayerTrackingSubSystem<DialingAddress?, DialingPocket, DialingRegistry>(locations) {
@@ -48,6 +48,9 @@ class DialingRegistry(
     }
 
     override fun type(): Type<DialingRegistry> = SubsystemTypes.DIALING
+
+    override val entranceRegistryVertex: PlayerTrackerPointer get() = RegistryVertices.DIALING_ENTRANCE
+    override val exitRegistryVertex: PlayerTrackerPointer get() = RegistryVertices.DIALING_EXIT
 
     fun setDialingPocketAddress(address: DialingAddress?, pocket: DialingPocket?) {
         requireNotNull(address) {"address" }

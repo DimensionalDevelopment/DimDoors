@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.client.RiftCurves
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.util.Utils
 import org.dimdev.dimdoors.world.decay.Decay
@@ -135,6 +136,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     }
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,

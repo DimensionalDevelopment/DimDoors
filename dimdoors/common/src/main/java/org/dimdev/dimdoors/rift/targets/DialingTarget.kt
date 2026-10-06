@@ -4,7 +4,6 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
@@ -13,6 +12,8 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.DialingRegistry
+import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.DialingPocket
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import java.util.*
@@ -21,6 +22,7 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress?, DialingP
     val address: DialingAddress
 
     override fun processEntity(
+        owner: Vertex,
         pocket: DialingPocket,
         target: EntityTarget,
         entity: Entity,
@@ -29,7 +31,7 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress?, DialingP
         relativeAngle: Rotations,
         relativeVelocity: Vec3
     ): Boolean {
-        val received = target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null)
+        val received = target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, null)
         if (received) {
             (this as? Rift)?.takeIf { !it.isRegistered }?.let {
                 DimensionalDoors.LOGGER.warn(
@@ -40,7 +42,7 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress?, DialingP
             }
 
             subsystem.setPlayerAddress(uuid, this.address)
-            subsystem.setExit(uuid, this.location)
+            subsystem.setRift(uuid, PlayerTrackerPointer.Variant.Exit, owner)
         }
         return received
     }

@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.Rift
+import java.util.*
 
 /**
  * Base integration point for alternate level-space behavior.
@@ -99,8 +99,7 @@ open class LevelSpaceHelper {
         return AfterBlockData(box, previousPos, currentPos)
     }
 
-    open fun onRiftAdded(rift: Rift) {
-    }
+    open fun levelSpaceOf(level: ServerLevel, pos: BlockPos): UUID? = null
 
     /**
      * Collision and movement data used when evaluating after-block behavior.

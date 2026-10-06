@@ -5,10 +5,7 @@ import net.minecraft.world.inventory.RecipeBookType
 import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.RecipeType
 import org.dimdev.dimcore.api.util.SimpleEvent
-import org.dimdev.dimcore.api.util.SimpleEvent.Companion.consumerLoop
-import java.util.function.BiConsumer
 import java.util.function.Consumer
-import java.util.function.Function
 
 data class RegisterRecipeBookCategoriesEvent(
     val categoryAggregateCategory: (RecipeBookCategories, MutableList<RecipeBookCategories>) -> Unit,

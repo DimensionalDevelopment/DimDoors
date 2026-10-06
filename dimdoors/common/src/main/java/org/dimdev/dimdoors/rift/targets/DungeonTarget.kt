@@ -79,7 +79,7 @@ class DungeonTarget(
     }
 
     companion object {
-        val CODEC: MapCodec<DungeonTarget> = RecordCodecBuilder.mapCodec<DungeonTarget> { instance -> Products.and(
+        val CODEC: MapCodec<DungeonTarget> = RecordCodecBuilder.mapCodec { instance -> Products.and(
                 common(instance),
                 ResourceKey.codec(ModRegistryKeys.POCKET_GROUPS).fieldOf("dungeonGroup").forGetter(DungeonTarget::dungeonGroup)
             ).apply(

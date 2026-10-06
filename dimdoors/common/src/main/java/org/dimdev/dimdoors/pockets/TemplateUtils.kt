@@ -8,12 +8,12 @@ import net.minecraft.world.level.storage.loot.LootTable
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.math.MathUtil
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
@@ -124,10 +124,6 @@ object TemplateUtils {
                 }
 
                 rift.setDestination(exitDestination)
-
-                if (exitDestination !== VirtualTarget.NoneTarget) {
-                    exitDestination.location = ofWorld(world, rift.riftBlockPos)
-                }
             }
         }
 
@@ -137,18 +133,17 @@ object TemplateUtils {
         }
     }
 
-    fun linkRifts(from: Location?, to: Location?) {
-        if (to == null) return
-        val fromBe = from?.blockEntity?.castOrNull<Rift>() ?: return
+    fun linkRifts(from: LocationProvider?, to: LocationProvider?) {
+        val toLocation = to?.providedLocation ?: return
+        val fromBe = from?.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return
 
-        fromBe.setDestination(to.asTarget())
+        fromBe.setDestination(toLocation.asTarget())
         fromBe.markStateChanged()
 
-        val toBe = to.blockEntity?.castOrNull<Rift>() ?: return
+        val toBe = to.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return
         val properties = toBe.properties ?: return
 
         toBe.properties = properties.withLinksRemaining(properties.linksRemaining - 1)
-        toBe.updateProperties()
         toBe.markStateChanged()
     }
 }

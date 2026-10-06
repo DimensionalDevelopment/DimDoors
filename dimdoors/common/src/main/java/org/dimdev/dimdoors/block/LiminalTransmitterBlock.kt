@@ -26,7 +26,9 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.targets.LocationProvider
+import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.rift.targets.Targets
 
 class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEntity(properties), RiftProvider<RiftBlockEntity.Impl> {
@@ -89,7 +91,8 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
     }
 
     override fun onRemove(state: BlockState, level: Level, pos: BlockPos, newState: BlockState, movedByPiston: Boolean) {
-        if (!level.isClientSide && !newState.`is`(this)) getRift(level, pos, state)?.let { attemptRedstoneTransmission(0, it) }
+        if (!level.isClientSide && !newState.`is`(this)) getRift(level, pos, state)?.let { attemptRedstoneTransmission(
+            RiftReference.from(level as ServerLevel, pos), 0, it) }
         super.onRemove(state, level, pos, newState, movedByPiston)
     }
 
@@ -111,7 +114,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
         if (state.getValue(POWERED) != powered) level.setBlock(pos, state.setValue(POWERED, powered), UPDATE_CLIENTS)
 
         val rift = getRift(level, pos, state) ?: return
-        attemptRedstoneTransmission(signal, rift)
+        attemptRedstoneTransmission(RiftReference.from(level, pos), signal, rift)
     }
 
     companion object {
@@ -121,7 +124,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
 
         val SHAPE = Shapes.create(0.0, 0.0, 0.0, 1.0, 2.0/16.0, 1.0) + Shapes.create(2.0/16.0, 2.0/16.0, 2.0/16.0, 14.0/16.0, 4.0/16.0, 14.0/16.0)
 
-        fun attemptRedstoneTransmission(strength: Int, rift: Rift): Boolean {
+        fun attemptRedstoneTransmission(owner: Vertex, strength: Int, rift: Rift): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport
@@ -129,7 +132,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
                 val target = rift.target
                 val location = target.castOrNull<LocationProvider>()?.providedLocation
 
-                val redstone = target.`as`(Targets.REDSTONE)
+                val redstone = target.`as`(Targets.REDSTONE, owner)
 
                 return redstone?.recieveSignal(strength, location) ?: false
             } catch (e: Exception) {

@@ -11,7 +11,6 @@ import net.minecraft.world.level.saveddata.SavedData
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
-import org.dimdev.dimdoors.ModRegistries
 import org.dimdev.dimdoors.api.util.NbtUtil
 import java.io.File
 import java.io.IOException
@@ -67,13 +66,5 @@ abstract class SubSystem<T : SubSystem<T>> : SavedData() {
             )
         }
 
-        fun initialize(server: MinecraftServer): List<SubSystem<out SubSystem<*>>> {
-            val subSystems = ModRegistries.SUBSYTEM_TYPE.mapNotNull { getInstance(server, it) }
-
-
-            subSystems.filterIsInstance<RiftGraph>().forEach { graph -> graph.refreshVertices(subSystems) }
-
-            return subSystems
-        }
     }
 }

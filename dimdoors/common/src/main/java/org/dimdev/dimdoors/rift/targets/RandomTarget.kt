@@ -21,9 +21,7 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.TemplateUtils
-import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.stream.Collectors
@@ -39,8 +37,8 @@ abstract class RandomTarget<T : RandomTarget<T>>(
     val isNoLink: Boolean,
     val isNoLinkBack: Boolean
 ) : VirtualTarget<T>() {
-    override fun receiveOther(): Target? { // TODO: Wrap rather than replace
-        val virtualLocationHere = VirtualLocation.fromLocation(this.location)
+    override fun receiveOther(owner: Vertex): Target? { // TODO: Wrap rather than replace
+        val virtualLocationHere = VirtualLocation.fromLocation(owner)
 
         val riftWeights = calculateRiftWeights(virtualLocationHere)
         val selectedLink = if (riftWeights.isEmpty())
@@ -100,38 +98,42 @@ abstract class RandomTarget<T : RandomTarget<T>>(
 
                 world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState())
 
-                val thisRift = this.location.blockEntity!!.cast<Rift>()
+                val loc = owner.providedLocation!!
+
+                val thisRift = loc.blockEntity!!.cast<Rift>()
                 val riftEntity = world.getBlockEntity(pos)!!.cast<DetachedRiftBlockEntity>()
                 // TODO: Should the rift not be configured like the other link
-                riftEntity.properties = thisRift.properties!!.toBuilder().linksRemaining(1).build()
 
-                if (!this.isNoLinkBack && !riftEntity.properties!!.isOneWay) TemplateUtils.linkRifts(
+                riftEntity.properties = thisRift.properties?.toBuilder()?.linksRemaining(1)?.build()
+
+                if (!this.isNoLinkBack && riftEntity.properties?.isOneWay != true) TemplateUtils.linkRifts(
                     ofWorld(
                         world,
                         pos
-                    ), this.location
+                    ), owner
                 )
-                if (!this.isNoLink) TemplateUtils.linkRifts(this.location, ofWorld(world, pos))
-                return riftEntity.`as`(Targets.ENTITY)
+                if (!this.isNoLink) TemplateUtils.linkRifts(owner, ofWorld(world, pos))
+                return riftEntity.`as`(Targets.ENTITY, owner)
             } else {
                 // Make a new dungeon pocket
-                val thisRift = this.location.blockEntity as Rift?
-                val newLink = if (thisRift!!.properties != null) thisRift.properties!!.toBuilder().linksRemaining(0)
-                    .build() else null
-                val linkBack = if (this.isNoLinkBack) NoneTarget else RiftReference(this.location)
-                val pocket = generatePocket(
-                    virtualLocation,
-                    linkBack,
-                    newLink
-                ) // TODO make the generated dungeon of the same type, but in the overworld
+
+
+                val thisRift = owner.providedLocation?.blockEntity as Rift?
+                val newLink = thisRift?.properties?.toBuilder()?.linksRemaining(0)?.build()
+
+                val linkBack = if (this.isNoLinkBack) NoneTarget else RiftReference(owner)
+
+                val pocket = generatePocket(virtualLocation, linkBack, newLink)
+
+                // TODO make the generated dungeon of the same type, but in the overworld
 
                 if (pocket == null) {
-                    LOGGER.error("Failed to generate dungeon pocket at {} from {}.", virtualLocation, this.location)
+                    LOGGER.error("Failed to generate dungeon pocket at {} from {}.", virtualLocation, owner)
                     return null
                 }
 
                 val entrance = PocketRegistry.instance.getPocketEntrance(pocket)
-                if (!this.isNoLink) TemplateUtils.linkRifts(this.location, entrance)
+                if (!this.isNoLink) TemplateUtils.linkRifts(owner, entrance)
                 return entrance?.blockEntity?.castOrNull<Target>()
             }
         } else {
@@ -139,27 +141,27 @@ abstract class RandomTarget<T : RandomTarget<T>>(
             val riftEntity = selectedLink.blockEntity as Rift?
 
             // Link the rifts if necessary and teleport the entity
-            if (!this.isNoLink) TemplateUtils.linkRifts(this.location, selectedLink)
+            if (!this.isNoLink) TemplateUtils.linkRifts(owner, selectedLink)
             if (!this.isNoLinkBack && !riftEntity!!.properties!!.isOneWay) TemplateUtils.linkRifts(
                 selectedLink,
-                this.location
+                owner
             )
             return riftEntity
         }
     }
-
     private fun calculateRiftWeights(virtualLocation: VirtualLocation): MutableMap<Location?, Float> {
         val weights = mutableMapOf<Location?, Float>()
         if (this.newRiftWeight > 0) weights[null] = this.newRiftWeight
 
-        for (otherRift in RiftRegistry.instance.rifts) {
-            val otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location)
-            if (otherRift.properties == null) continue
-            val otherWeight = (if (otherRift.isDetached) otherRift.properties!!.floatingWeight else otherRift.properties!!.entranceWeight).toDouble()
-            if (otherWeight == 0.0 || Sets.intersection(this.acceptedGroups, otherRift.properties!!.groups).isEmpty()) continue
+        for ((id, location) in RiftRegistry.instance.rifts) {
+            val otherVirtualLocation = VirtualLocation.fromLocation(location)
+            val entry = LinkPropertiesRegistry.instance.propertiesMap[id] ?: continue
+            val properties = entry.properties ?: continue
+            val otherWeight = (if (entry.isDetached) properties.floatingWeight else properties.entranceWeight).toDouble()
+            if (otherWeight == 0.0 || Sets.intersection(this.acceptedGroups, properties.groups).isEmpty()) continue
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-            if (otherRift.properties!!.linksRemaining == 0) continue
+            if (properties.linksRemaining == 0) continue
             val depthDifference = (otherVirtualLocation.depth - virtualLocation.depth).toDouble()
             val coordDistance = sqrt(this.sq((otherVirtualLocation.x - virtualLocation.x).toDouble()) + this.sq((otherVirtualLocation.z - virtualLocation.z).toDouble())
             )
@@ -176,7 +178,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
             // TODO: We might want an a larger than 1 to make the function closer to 1/d^2
             val weight =
                 4 * this.weightMaximum / Math.PI * otherWeight / this.sq(this.sq(this.weightMaximum) / distance + distance)
-            weights[otherRift.location] = weight.toFloat()
+            weights[location] = weight.toFloat()
         }
 
         return weights

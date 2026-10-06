@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets
 
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.Rotations
 import net.minecraft.world.entity.Entity
@@ -9,6 +8,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 
@@ -16,6 +16,7 @@ object LimboTarget : VirtualTarget<LimboTarget>(), EntityTarget {
     val CODEC = MapCodec.unit(this)
 
     override fun receiveEntity(
+        owner: Vertex,
         entity: Entity,
         relativePos: Vec3,
         relativeAngle: Rotations,
