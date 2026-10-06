@@ -1,4 +1,11 @@
-{
-  "type": "dimdoors:tag",
-  "required": ["myth"]
-}
+[
+  {
+    "type": "dimdoors:tag",
+    "required": ["myth"]
+  }
+  ,
+  {
+    "type": "dimdoors:id",
+    "id": "dimdoors:lab/lab_hallway"
+  }
+]
