@@ -23,6 +23,8 @@ import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.clientPlatform
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.client.ActionKeyMapping
+import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
+import org.dimdev.dimcore.api.client.ClientReloadListenerRegister
 import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import org.dimdev.dimdoors.DimensionalDoors
@@ -32,6 +34,7 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.client.RiftCrackRenderer.ChromaticAberration
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
@@ -52,7 +55,7 @@ import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
 import org.lwjgl.glfw.GLFW
 
-class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
+class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadListenerProvider {
     var renderTick: Float = 0f
         private set
 
@@ -154,6 +157,10 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
             ModBlocks.DRIFTWOOD_DOOR,
             ModBlocks.DIALING_DOOR
         )
+    }
+
+    override fun registerClientReloadListeners(register: ClientReloadListenerRegister) {
+        register.register("chromatic_aberration", ChromaticAberration::reload)
     }
 
     companion object {

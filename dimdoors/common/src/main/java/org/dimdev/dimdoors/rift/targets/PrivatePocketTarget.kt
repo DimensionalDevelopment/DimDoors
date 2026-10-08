@@ -71,6 +71,10 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
 
     override fun copy(): PrivatePocketTarget = this
 
+    override fun equals(other: Any?) = this === other
+
+    override fun hashCode() = System.identityHashCode(this)
+
     override val subsystem: PrivateRegistry get() = PrivateRegistry.instance
 
     override val pocketClass = PrivatePocket::class.java

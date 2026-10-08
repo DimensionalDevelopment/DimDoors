@@ -72,6 +72,10 @@ accessible field net/minecraft/client/renderer/RenderStateShard VIEW_OFFSET_Z_LA
 accessible field net/minecraft/client/renderer/RenderStateShard NO_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 accessible field net/minecraft/client/renderer/RenderStateShard LIGHTMAP Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
 accessible field net/minecraft/client/renderer/RenderStateShard OVERLAY Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_TRANSLUCENT_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+accessible field net/minecraft/client/renderer/RenderStateShard NO_CULL Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
 
 accessible class net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source <init> (Ljava/util/function/Function;Ljava/util/function/Supplier;)V

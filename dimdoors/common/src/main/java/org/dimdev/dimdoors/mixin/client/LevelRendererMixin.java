@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
+import org.dimdev.dimdoors.client.RiftCrackRenderer;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;
 import org.jetbrains.annotations.Nullable;
@@ -364,5 +366,16 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
         if (state.getBlock() instanceof DetachedRiftBlock) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "renderLevel", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=destroyProgress"))
+    private void dimdoors$processRiftChain(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+        RiftCrackRenderer.ChromaticAberration.INSTANCE.process(deltaTracker.getGameTimeDeltaTicks());
+        RiftCrackRenderer.ChromaticAberration.INSTANCE.render(null);
+    }
+
+    @Inject(method = "resize", at = @At("TAIL"))
+    private void dimdoors$resizeRiftChain(int width, int height, CallbackInfo ci) {
+        RiftCrackRenderer.ChromaticAberration.INSTANCE.resize(width, height);
     }
 }

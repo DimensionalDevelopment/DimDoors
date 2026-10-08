@@ -19,6 +19,8 @@ import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.rift.RiftUtils
 
 class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Context) : RiftBlockEntityRenderer<DetachedRiftBlockEntity>(context) {
+    val tesseractRenderType: RenderType by lazy { RenderType.entityTranslucent(TESSERACT_PATH) }
+
     override fun render(
         rift: DetachedRiftBlockEntity,
         tickDelta: Float,
@@ -32,19 +34,19 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         val riftCoreVisibility = if (config.graphicsConfig.showRiftCore) 1f else RiftUtils.showRiftTimer.visibility
         if (riftCoreVisibility > 0) {
             this.renderTesseract(
-                multiBufferSource.getBuffer(RenderType.entityTranslucent(TESSERACT_PATH)),
+                multiBufferSource.getBuffer(tesseractRenderType),
                 rift,
                 matrices,
                 riftCoreVisibility
             )
         }
 
-        if (this.shouldRenderDecayRadiusDebug()) {
-            val renderType = RenderType.debugStructureQuads()
-            this.renderDecayRadius(renderType, multiBufferSource.getBuffer(renderType), rift, matrices)
-        }
+//        if (this.shouldRenderDecayRadiusDebug()) {
+//            val renderType = RenderType.debugStructureQuads()
+//            this.renderDecayRadius(renderType, multiBufferSource.getBuffer(renderType), rift, matrices)
+//        }
 
-        this.renderCrack(multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift)
+        this.renderCrack(multiBufferSource, matrices, rift)
     }
 
     private fun shouldRenderDecayRadiusDebug(): Boolean {
@@ -89,13 +91,13 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices.popPose()
     }
 
-    private fun renderCrack(vc: VertexConsumer, matrices: PoseStack, rift: DetachedRiftBlockEntity) {
+    private fun renderCrack(vc: MultiBufferSource, matrices: PoseStack, rift: DetachedRiftBlockEntity) {
         matrices.pushPose()
         matrices.translate(0.5f, 0.5f, 0.5f)
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw))
         RiftCrackRenderer.drawCrack(
             matrices.last().pose(),
-            vc,
+            vc.getBuffer(RenderTypes.chromaticRenderType),
             0f,
             RiftCurves.CURVES[rift.curveID],
             config.graphicsConfig.riftSize * rift.data.size / 150,

@@ -1,0 +1,24 @@
+{
+  "targets": [
+    "chromatic",
+    "final"
+  ],
+  "passes": [
+    {
+      "name": "dimdoors:chromatic",
+      "intarget": "minecraft:main",
+      "outtarget": "final",
+      "auxtargets": [
+        {
+          "name": "ChromaticSampler",
+          "id": "chromatic"
+        }
+      ]
+    },
+    {
+      "name": "blit",
+      "intarget": "final",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

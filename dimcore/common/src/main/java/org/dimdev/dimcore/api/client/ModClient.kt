@@ -49,8 +49,7 @@ interface ModClient<T : IClientSided<*>> {
 
     fun initShaders(shaderRegister: (ResourceLocation, VertexFormat, (ShaderInstance) -> Unit) -> Unit) {}
 
-    fun initItemProperties(consumer: (Item, ResourceLocation, ClampedItemPropertyFunction) -> Unit) {
-    }
+    fun initItemProperties(consumer: (Item, ResourceLocation, ClampedItemPropertyFunction) -> Unit) {}
 
     fun delayedInit() {}
 

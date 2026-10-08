@@ -1,8 +1,17 @@
 package org.dimdev.dimdoors.client
 
+import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.Util
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.PostChain
+import net.minecraft.client.renderer.RenderStateShard
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.util.profiling.ProfilerFiller
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
+import org.dimdev.dimdoors.api.util.id
 import org.dimdev.dimdoors.client.RiftCurves.PolygonInfo
 import org.joml.Matrix4f
 import kotlin.math.abs
@@ -10,6 +19,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object RiftCrackRenderer {
+
     fun drawCrack(
         model: Matrix4f,
         vc: VertexConsumer,
@@ -61,12 +71,12 @@ object RiftCrackRenderer {
         var i = 0
         val pointsSize = points.size
         while (i < pointsSize) {
-            val p = points.get(i)
+            val p = points[i]
 
             RiftCrackRenderer.renderPoint(
                 vc,
                 model,
-                points.get(i + 0)!!,
+                points[i + 0]!!,
                 jCount,
                 offsetX,
                 offsetY,
@@ -98,7 +108,7 @@ object RiftCrackRenderer {
             RiftCrackRenderer.renderPoint(
                 vc,
                 model,
-                points.get(i + 2)!!,
+                points[i + 2]!!,
                 jCount,
                 offsetX,
                 offsetY,
@@ -163,6 +173,53 @@ object RiftCrackRenderer {
                 .setOverlay(0)
                 .setLight(0)
                 .setNormal(0f, 0f, 0f)
+        }
+    }
+
+    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), "chromatic")
+
+    open class RenderNode(val resource: ResourceLocation, val targetName: String) {
+        var chain: PostChain? = null
+        var target: RenderTarget? = null
+        var outShard: RenderStateShard.OutputStateShard = RenderStateShard.OutputStateShard(targetName + "_target", {
+            target?.bindWrite(false)
+            }, {
+                Minecraft.getInstance().mainRenderTarget.bindWrite(false);
+            })
+
+        fun reload(manager: ResourceManager) {
+            val minecraft = Minecraft.getInstance()
+
+            this.chain?.close()
+            this.target?.destroyBuffers()
+
+            runCatching {
+                this.chain = PostChain(minecraft.textureManager, manager, minecraft.mainRenderTarget, resource);
+                this.target = chain?.getTempTarget(targetName)
+            }.onFailure {
+                DimensionalDoors.LOGGER.warn("Failed to load shader: {}", resource, it);
+                this.chain = null
+                this.target = null
+            }
+        }
+
+        fun render(profileFiller: ProfilerFiller?) {
+            target?.clear(Minecraft.ON_OSX)
+            target?.copyDepthFrom(Minecraft.getInstance().mainRenderTarget)
+            Minecraft.getInstance().mainRenderTarget.bindWrite(false)
+            profileFiller?.push(targetName)
+        }
+
+        fun process(partialTick: Float) {
+            val main = Minecraft.getInstance().mainRenderTarget
+            target?.copyDepthFrom(main)
+            chain?.process(partialTick)
+            target?.let { main.copyDepthFrom(it) }
+            main.bindWrite(false)
+        }
+
+        fun resize(width: Int, height: Int) {
+            chain?.resize(width, height)
         }
     }
 }
