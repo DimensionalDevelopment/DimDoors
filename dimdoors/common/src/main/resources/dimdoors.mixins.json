@@ -46,11 +46,13 @@
     "client.BuiltinModelItemRendererMixin",
     "client.ClientLanguageMixin",
     "client.ClientPlayerInteractionManagerMixin",
+    "client.GameRendererMixin",
     "client.InGameHudMixin",
     "client.LevelRendererMixin",
     "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PlaceRecipeMixin",
+    "client.PostChainMixin",
     "client.PostProcessShaderMixin",
     "client.UniformMixin"
   ],

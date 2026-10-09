@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.client
 
 import com.mojang.blaze3d.vertex.PoseStack
-import net.minecraft.Util
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
@@ -13,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.client.RenderUtils.renderTextLines
 import org.dimdev.dimdoors.item.ModItems
-import java.util.function.Consumer
 
 abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : Rift {
 
@@ -25,7 +23,7 @@ abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRender
             matrices.pushPose()
 
             matrices.translate(0.5, 1.25, 0.5)
-            matrices.mulPose(minecraft.getBlockEntityRenderDispatcher().camera.rotation())
+            matrices.mulPose(minecraft.blockEntityRenderDispatcher.camera.rotation())
             matrices.scale(0.025f, -0.025f, 0.025f)
             val texts = mutableListOf<Component>().also{ rift.gatherDebug(it::add) }
             renderTextLines(texts, matrices, multiBufferSource, context.getFont(), LightTexture.FULL_BRIGHT)

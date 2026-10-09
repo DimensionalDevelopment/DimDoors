@@ -53,7 +53,7 @@ class RiftRemoverItem(settings: Properties) : Item(settings) {
         if (hitsDetachedRift(hit, world)) {
             // casting to BlockHitResult is mostly safe since RaycastHelper#hitsDetachedRift already checks hit type
             val rift = world.getBlockEntity((hit as BlockHitResult).blockPos) as DetachedRiftBlockEntity?
-            if (Objects.requireNonNull<DetachedRiftBlockEntity>(rift).getWeight() >= 0) {
+            if (Objects.requireNonNull<DetachedRiftBlockEntity>(rift).weight >= 0) {
                 rift!!.setClosing()
                 world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE, SoundSource.BLOCKS, 0.6f, 1f)
 

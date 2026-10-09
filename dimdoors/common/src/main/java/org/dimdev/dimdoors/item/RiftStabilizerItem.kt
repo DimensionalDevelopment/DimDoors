@@ -38,7 +38,7 @@ class RiftStabilizerItem(settings: Properties) : Item(settings) {
 
         if (hitsDetachedRift(hit, world)) {
             val rift = world.getBlockEntity(hit.getBlockPos()) as DetachedRiftBlockEntity?
-            if (rift!!.getWeight() > 0) {
+            if (rift!!.weight > 0) {
                 rift.setStabilized()
                 world.playSound(
                     null,

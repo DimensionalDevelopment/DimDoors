@@ -1,15 +1,9 @@
 package org.dimdev.dimdoors.client
 
-import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.shaders.Uniform
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.Util
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.PostChain
-import net.minecraft.client.renderer.RenderStateShard
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.util.profiling.ProfilerFiller
-import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.id
 import org.dimdev.dimdoors.client.RiftCurves.PolygonInfo
@@ -41,7 +35,7 @@ object RiftCrackRenderer {
         val motionMagnitude = 0.6f
 
         // Changes how quickly the triangles move
-        val motionSpeed = 0.014f
+        val motionSpeed = 0.0f
 
         // Number of individual jitter waveforms to generate
         // changes how "together" the overall motions are
@@ -176,50 +170,19 @@ object RiftCrackRenderer {
         }
     }
 
-    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), "chromatic")
+    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), 1536, "chromatic") {
+        private var seperation: Uniform? = null
 
-    open class RenderNode(val resource: ResourceLocation, val targetName: String) {
-        var chain: PostChain? = null
-        var target: RenderTarget? = null
-        var outShard: RenderStateShard.OutputStateShard = RenderStateShard.OutputStateShard(targetName + "_target", {
-            target?.bindWrite(false)
-            }, {
-                Minecraft.getInstance().mainRenderTarget.bindWrite(false);
-            })
-
-        fun reload(manager: ResourceManager) {
-            val minecraft = Minecraft.getInstance()
-
-            this.chain?.close()
-            this.target?.destroyBuffers()
-
-            runCatching {
-                this.chain = PostChain(minecraft.textureManager, manager, minecraft.mainRenderTarget, resource);
-                this.target = chain?.getTempTarget(targetName)
-            }.onFailure {
-                DimensionalDoors.LOGGER.warn("Failed to load shader: {}", resource, it);
-                this.chain = null
-                this.target = null
-            }
+        override fun reload(manager: ResourceManager) {
+            super.reload(manager)
+            seperation = getUniform("dimdoors:chromatic", "Seperation")
         }
 
-        fun render(profileFiller: ProfilerFiller?) {
-            target?.clear(Minecraft.ON_OSX)
-            target?.copyDepthFrom(Minecraft.getInstance().mainRenderTarget)
-            Minecraft.getInstance().mainRenderTarget.bindWrite(false)
-            profileFiller?.push(targetName)
-        }
-
-        fun process(partialTick: Float) {
-            val main = Minecraft.getInstance().mainRenderTarget
-            target?.copyDepthFrom(main)
-            chain?.process(partialTick)
-            target?.let { main.copyDepthFrom(it) }
-            main.bindWrite(false)
-        }
-
-        fun resize(width: Int, height: Int) {
-            chain?.resize(width, height)
+        override fun process(partialTick: Float) {
+            seperation?.set(8f * sin(Util.getMillis() / 250f))
+            super.process(partialTick)
         }
     }
+
+
 }

@@ -2,15 +2,14 @@ package org.dimdev.dimcore
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
-import net.minecraft.commands.synchronization.ArgumentTypeInfos
-import net.minecraft.commands.synchronization.SingletonArgumentInfo
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
-import net.neoforged.neoforge.registries.RegisterEvent
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.synchronization.ArgumentTypeInfos
+import net.minecraft.commands.synchronization.SingletonArgumentInfo
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -38,6 +37,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
 import net.neoforged.neoforge.event.tick.LevelTickEvent
 import net.neoforged.neoforge.network.PacketDistributor
+import net.neoforged.neoforge.registries.RegisterEvent
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 import org.dimdev.dimcore.api.Platform
 import org.dimdev.dimcore.api.ext.cast

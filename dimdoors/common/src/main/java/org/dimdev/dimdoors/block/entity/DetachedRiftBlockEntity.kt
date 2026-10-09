@@ -37,7 +37,13 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     var riftYaw: Float
     @JvmField
     var curveID: Int
-    private var weight = 5
+
+    var weight = 5
+        set(value) {
+            field = Mth.clamp(value, -100, 100)
+            this.setChanged()
+        }
+
     private var updateTimer = 0
 
     init {
@@ -66,15 +72,11 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     }
 
     fun setClosing() {
-        this.setWeight(-100)
+        weight = -100
     }
 
     fun setStabilized() {
-        this.setWeight(0)
-    }
-
-    fun getWeight(): Int {
-        return weight
+        weight = 0
     }
 
     val decayRadius: Int
@@ -82,11 +84,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
             val size = data.size
             return if (size > 0) Mth.ceil(size / DECAY_RADIUS_DIVISOR) else 0
         }
-
-    fun setWeight(weight: Int) {
-        this.weight = Mth.clamp(weight, -100, 100)
-        this.setChanged()
-    }
 
     override fun gatherDebug(textConsumer: Consumer<Component>) {
         super.gatherDebug(textConsumer)

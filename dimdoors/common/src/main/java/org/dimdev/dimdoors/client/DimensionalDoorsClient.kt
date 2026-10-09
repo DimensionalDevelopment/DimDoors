@@ -34,7 +34,6 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.client.RiftCrackRenderer.ChromaticAberration
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
@@ -65,6 +64,8 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
         registerCompats()
 
         sided.onPreRender(this::preRender)
+
+        RenderNode.register(RiftCrackRenderer.ChromaticAberration)
 
         if (platform.isModLoaded("imguimc")) {
             sided.registerKeyBinding(ActionKeyMapping("key.dimdoors.portal_colors_editor", GLFW.GLFW_KEY_N, "key.categories.dimdoors", PortalColorGui::toggle))
@@ -160,7 +161,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
     }
 
     override fun registerClientReloadListeners(register: ClientReloadListenerRegister) {
-        register.register("chromatic_aberration", ChromaticAberration::reload)
+        register.register("render_nodes", RenderNode::reloadAll)
     }
 
     companion object {

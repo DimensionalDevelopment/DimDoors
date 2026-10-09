@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "dimdoors.refmap.json",
   "client": [
+    "client.EffectInstanceMixin",
     "client.FabricLanguageMixin",
     "client.RecipeBookCategoriesAccessor",
     "client.RecipeBookCategoriesMixin",

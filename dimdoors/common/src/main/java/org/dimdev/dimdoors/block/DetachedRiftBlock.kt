@@ -77,7 +77,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         val outsidePocket = !isPocketDimension(world)
         val speed = 0.1
 
-        if (blockEntity.getWeight() < 0) {
+        if (blockEntity.weight < 0) {
             world.addParticle(
                 RiftParticleOptions.of(outsidePocket),
                 pos.x + .5,
@@ -90,7 +90,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         }
 
         world.addParticle(
-            RiftParticleOptions.of(outsidePocket, blockEntity.getWeight() == 0),
+            RiftParticleOptions.of(outsidePocket, blockEntity.weight == 0),
             pos.x + .5,
             pos.y + .5,
             pos.z + .5,
