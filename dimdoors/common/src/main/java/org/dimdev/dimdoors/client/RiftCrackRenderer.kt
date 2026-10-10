@@ -1,14 +1,19 @@
 package org.dimdev.dimdoors.client
 
-import com.mojang.blaze3d.shaders.Uniform
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.Util
-import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.util.Mth
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.id
 import org.dimdev.dimdoors.client.RiftCurves.PolygonInfo
+import org.dimdev.dimdoors.client.render.node.NodeProgramKind
+import org.dimdev.dimdoors.client.render.node.NodeStage
+import org.dimdev.dimdoors.client.render.node.NodeUniforms
+import org.dimdev.dimdoors.client.render.node.RenderNode
 import org.joml.Matrix4f
+import org.joml.Vector2f
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -155,7 +160,7 @@ object RiftCrackRenderer {
         z *= scale
 
         vc.addVertex(model, (x + xJitter).toFloat(), (y + yJitter).toFloat(), (z + zJitter).toFloat())
-            .setColor(0.08f, 0.08f, 0.08f, .3f)
+            .setColor(0.08f, 0.08f, 0.08f, 1f)
             .setUv(0f, 0f)
             .setOverlay(0)
             .setLight(0)
@@ -163,7 +168,7 @@ object RiftCrackRenderer {
 
         if (twice) {
             vc.addVertex(model, (x + xJitter).toFloat(), (y + yJitter).toFloat(), (z + zJitter).toFloat())
-                .setColor(0.08f, 0.08f, 0.08f, .3f)
+                .setColor(0.08f, 0.08f, 0.08f, 1f)
                 .setUv(0f, 0f)
                 .setOverlay(0)
                 .setLight(0)
@@ -171,40 +176,41 @@ object RiftCrackRenderer {
         }
     }
 
-    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), 1536, "chromatic", "final") {
-        private var redOffset: Uniform? = null
-        private var greenOffset: Uniform? = null
-        private var blueffset: Uniform? = null
-
+    object ChromaticAberration : RenderNode("chromatic".id(), NodeStage.TRANSLUCENT, 1536) {
         val oscilationDuration = 2f
         val chromaticSeperation = 8f
         val orbitDuration = 4f
 
-        override fun reload(manager: ResourceManager) {
-            super.reload(manager)
-            redOffset = getUniform("dimdoors:chromatic", "RedOffset")
-            greenOffset = getUniform("dimdoors:chromatic", "GreenOffset")
-            blueffset = getUniform("dimdoors:chromatic", "BlueOffset")
+        override val renderType: RenderType get() = RenderTypes.chromaticRenderType
+
+        override fun shader(kind: NodeProgramKind): ShaderInstance = when (kind) {
+            NodeProgramKind.GEOMETRY -> ModShaders.chromaticGeometry
+            NodeProgramKind.COMPOSITE -> ModShaders.chromaticComposite
         }
 
-        override fun process(partialTick: Float) {
+        override fun uniforms(uniforms: NodeUniforms) {
+            uniforms.vec2("RedOffset") { offset(0f) }
+            uniforms.vec2("GreenOffset") { offset(120f) }
+            uniforms.vec2("BlueOffset") { offset(240f) }
+            uniforms.sampler("ChromaticSampler") { target?.colorTexture ?: 0 }
+            uniforms.sampler("ChromaticDepthSampler") { target?.depthTexture ?: 0 }
+        }
+
+        private fun offset(angle: Float): Vector2f {
             val time = Util.getMillis() / 1000f
 
             val magnitude = sin(time.oscilate(oscilationDuration) * Mth.TWO_PI) * chromaticSeperation
 
             val baseAngle = time.oscilate(orbitDuration) * 360f
 
-            redOffset?.setPolar(baseAngle, magnitude)
-            greenOffset?.setPolar(baseAngle + 120f, magnitude)
-            blueffset?.setPolar(baseAngle + 240f, magnitude)
-            super.process(partialTick)
+            return polar(baseAngle + angle, magnitude)
         }
 
         private fun Float.oscilate(interval: Float) = (this % interval) / interval
 
-        private fun Uniform.setPolar(angle: Float, magnitude: Float) {
+        private fun polar(angle: Float, magnitude: Float): Vector2f {
             val radians = angle * Mth.DEG_TO_RAD
-            this.set(magnitude * Mth.cos(radians), magnitude * Mth.sin(radians))
+            return Vector2f(magnitude * Mth.cos(radians), magnitude * Mth.sin(radians))
         }
     }
 

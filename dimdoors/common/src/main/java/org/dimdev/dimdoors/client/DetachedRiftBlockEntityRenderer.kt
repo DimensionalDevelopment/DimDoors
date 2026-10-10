@@ -97,7 +97,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw))
         RiftCrackRenderer.drawCrack(
             matrices.last().pose(),
-            RiftCrackRenderer.ChromaticAberration.buffers.getBuffer(RenderTypes.chromaticRenderType),
+            RiftCrackRenderer.ChromaticAberration.buffer(),
             0f,
             RiftCurves.CURVES[rift.curveID],
             config.graphicsConfig.riftSize * rift.data.size / 150,

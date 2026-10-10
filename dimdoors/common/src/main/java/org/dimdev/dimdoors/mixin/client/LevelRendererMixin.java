@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
-import org.dimdev.dimdoors.client.RenderNode;
+import org.dimdev.dimdoors.client.render.node.RenderNodes;
 import org.dimdev.dimdoors.client.RiftCrackRenderer;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;
@@ -371,11 +371,11 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
 
     @Inject(method = "renderLevel", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=destroyProgress"))
     private void dimdoors$processRiftChain(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
-        RenderNode.endLevel(deltaTracker.getGameTimeDeltaTicks());
+        RenderNodes.renderLevel(deltaTracker.getGameTimeDeltaTicks());
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
     private void dimdoors$resizeRiftChain(int width, int height, CallbackInfo ci) {
-        RenderNode.resize(width, height);
+        RenderNodes.resize(width, height);
     }
 }

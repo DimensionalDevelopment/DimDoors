@@ -37,6 +37,8 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
+import org.dimdev.dimdoors.client.render.node.RenderNodes
+import org.dimdev.dimdoors.client.render.node.iris.IrisNodeEvents
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
 import org.dimdev.dimdoors.compat.iris.IrisCompat
@@ -65,7 +67,8 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
 
         sided.onPreRender(this::preRender)
 
-        RenderNode.register(RiftCrackRenderer.ChromaticAberration)
+        RenderNodes.register(RiftCrackRenderer.ChromaticAberration)
+        if (platform.isModLoaded("iris")) IrisNodeEvents.register()
 
         if (platform.isModLoaded("imguimc")) {
             sided.registerKeyBinding(ActionKeyMapping("key.dimdoors.portal_colors_editor", GLFW.GLFW_KEY_N, "key.categories.dimdoors", PortalColorGui::toggle))
@@ -104,6 +107,12 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
     override fun initShaders(shaderRegister: (ResourceLocation, VertexFormat, (ShaderInstance) -> Unit) -> Unit) {
         shaderRegister.invoke(DimensionalDoors.id("dimensional_portal"), DefaultVertexFormat.POSITION) {
             ModShaders.dimensionalPortal = it
+        }
+        shaderRegister.invoke(DimensionalDoors.id("chromatic_geometry"), DefaultVertexFormat.NEW_ENTITY) {
+            ModShaders.chromaticGeometry = it
+        }
+        shaderRegister.invoke(DimensionalDoors.id("chromatic_composite"), DefaultVertexFormat.POSITION_TEX) {
+            ModShaders.chromaticComposite = it
         }
     }
 
@@ -161,7 +170,7 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
     }
 
     override fun registerClientReloadListeners(register: ClientReloadListenerRegister) {
-        register.register("render_nodes", RenderNode::reloadAll)
+        register.register("render_nodes", RenderNodes::reloadAll)
     }
 
     companion object {

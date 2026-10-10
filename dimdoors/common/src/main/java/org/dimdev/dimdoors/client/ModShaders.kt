@@ -21,6 +21,9 @@ object ModShaders {
             }
         }
 
+    lateinit var chromaticGeometry: ShaderInstance
+    lateinit var chromaticComposite: ShaderInstance
+
     val portalColors: IntArray get() = current ?: base()
 
     fun setPortalColors(colors: IntArray): Boolean {
