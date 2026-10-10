@@ -6,16 +6,19 @@ out vec4 fragColor;
 
 uniform sampler2D DiffuseSampler;
 uniform sampler2D ChromaticSampler;
-uniform float Seperation;
+uniform vec2 RedOffset;
+uniform vec2 GreenOffset;
+uniform vec2 BlueOffset;
+
+vec4 color(vec2 offset) {
+    return texture(ChromaticSampler, texCoord + offset * oneTexel);
+}
 
 void main() {
-    vec2 direction = normalize(texCoord - 0.5);
-    vec2 offset = vec2(1.0, 0.0) * (Seperation * oneTexel);
-
     vec4 world = texture(DiffuseSampler, texCoord);
-    vec4 rs = texture(ChromaticSampler, texCoord + offset);
-    vec4 gs = texture(ChromaticSampler, texCoord);
-    vec4 bs = texture(ChromaticSampler, texCoord - offset);
+    vec4 rs = color(RedOffset);
+    vec4 gs = color(GreenOffset);
+    vec4 bs = color(BlueOffset);
 
     float r = mix(world.r, rs.r, step(0.001, rs.a));
     float g = mix(world.g, gs.g, step(0.001, gs.a));

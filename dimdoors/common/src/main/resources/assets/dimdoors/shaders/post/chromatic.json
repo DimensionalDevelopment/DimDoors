@@ -14,11 +14,6 @@
           "id": "chromatic"
         }
       ]
-    },
-    {
-      "name": "blit",
-      "intarget": "final",
-      "outtarget": "minecraft:main"
     }
   ]
 }

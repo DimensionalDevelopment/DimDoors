@@ -4,6 +4,7 @@ import com.mojang.blaze3d.shaders.Uniform
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.Util
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.util.Mth
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.id
 import org.dimdev.dimdoors.client.RiftCurves.PolygonInfo
@@ -170,17 +171,40 @@ object RiftCrackRenderer {
         }
     }
 
-    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), 1536, "chromatic") {
-        private var seperation: Uniform? = null
+    object ChromaticAberration : RenderNode("shaders/post/chromatic.json".id(), 1536, "chromatic", "final") {
+        private var redOffset: Uniform? = null
+        private var greenOffset: Uniform? = null
+        private var blueffset: Uniform? = null
+
+        val oscilationDuration = 2f
+        val chromaticSeperation = 8f
+        val orbitDuration = 4f
 
         override fun reload(manager: ResourceManager) {
             super.reload(manager)
-            seperation = getUniform("dimdoors:chromatic", "Seperation")
+            redOffset = getUniform("dimdoors:chromatic", "RedOffset")
+            greenOffset = getUniform("dimdoors:chromatic", "GreenOffset")
+            blueffset = getUniform("dimdoors:chromatic", "BlueOffset")
         }
 
         override fun process(partialTick: Float) {
-            seperation?.set(8f * sin(Util.getMillis() / 250f))
+            val time = Util.getMillis() / 1000f
+
+            val magnitude = sin(time.oscilate(oscilationDuration) * Mth.TWO_PI) * chromaticSeperation
+
+            val baseAngle = time.oscilate(orbitDuration) * 360f
+
+            redOffset?.setPolar(baseAngle, magnitude)
+            greenOffset?.setPolar(baseAngle + 120f, magnitude)
+            blueffset?.setPolar(baseAngle + 240f, magnitude)
             super.process(partialTick)
+        }
+
+        private fun Float.oscilate(interval: Float) = (this % interval) / interval
+
+        private fun Uniform.setPolar(angle: Float, magnitude: Float) {
+            val radians = angle * Mth.DEG_TO_RAD
+            this.set(magnitude * Mth.cos(radians), magnitude * Mth.sin(radians))
         }
     }
 

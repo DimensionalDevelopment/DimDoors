@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.shaders.Uniform
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
@@ -16,10 +17,20 @@ import org.dimdev.dimcore.DimCore
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.joml.Matrix4f
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
 
-open class RenderNode(val resource: ResourceLocation, bufferSize: Int, val targetName: String) {
+private fun RenderTarget.copyColorFrom(other: RenderTarget) {
+    GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, other.frameBufferId)
+    GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, frameBufferId)
+    GlStateManager._glBlitFrameBuffer(0, 0, other.width, other.height, 0, 0, width, height, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST)
+    GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0)
+}
+
+open class RenderNode(val resource: ResourceLocation, bufferSize: Int, val targetName: String, val outputName: String) {
     var chain: PostChain? = null
     var target: RenderTarget? = null
+    var output: RenderTarget? = null
     val outShard = RenderStateShard.OutputStateShard("${targetName}_target", { target?.bindWrite(false) }, { main.bindWrite(false) })
     val buffers: MultiBufferSource.BufferSource = MultiBufferSource.immediate(ByteBufferBuilder(bufferSize))
 
@@ -30,6 +41,7 @@ open class RenderNode(val resource: ResourceLocation, bufferSize: Int, val targe
         chain?.close()
         chain = runCatching { PostChain(Minecraft.getInstance().textureManager, manager, main, resource) }.onFailure { DimensionalDoors.LOGGER.warn("Failed to load shader: {}", resource, it) }.getOrNull()
         target = chain?.getTempTarget(targetName)
+        output = chain?.getTempTarget(outputName)
     }
 
     open fun process(partialTick: Float) {
@@ -37,7 +49,7 @@ open class RenderNode(val resource: ResourceLocation, bufferSize: Int, val targe
         target?.copyDepthFrom(main)
         buffers.endBatch()
         chain?.process(partialTick)
-        target?.let { main.copyDepthFrom(it) }
+        output?.let { main.copyColorFrom(it) }
         main.bindWrite(false)
     }
 
