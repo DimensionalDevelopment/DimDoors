@@ -26,7 +26,7 @@
         "fabric-datagen": [
             "org.dimdev.dimdoors.datagen.DatagenInitializer"
         ],
-        "mm:early_risers": [
+        "dimcore:enum_extensions": [
             "org.dimdev.dimdoors.EarlyRiser"
         ],
         "rei_client": [

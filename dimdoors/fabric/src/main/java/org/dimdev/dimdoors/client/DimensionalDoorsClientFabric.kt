@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.client.effect.DimensionEffect
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects
 import org.joml.Matrix4f
 
-class DimensionalDoorsClientFabric : FabricClientSided<DimensionalDoorsClientFabric, DimensionalDoorsClient>(DimensionalDoorsClient.INSTANCE), IDimDoorsClientSided<DimensionalDoorsClientFabric> {
+class DimensionalDoorsClientFabric : FabricClientSided<DimensionalDoorsClientFabric, DimensionalDoorsClient>(DimensionalDoorsClient), IDimDoorsClientSided<DimensionalDoorsClientFabric> {
 
         override fun onInitializeClient() {
         super.onInitializeClient()

@@ -4,11 +4,12 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.resources.RegistryFileCodec
+import net.minecraft.util.Mth
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 
 class RiftData {
@@ -17,6 +18,9 @@ class RiftData {
     var alwaysDelete = false
     var forcedColor = false
     var size = 0
+        set(value) {
+            field = Mth.clamp(value, 0 , 150)
+        }
     var color: RGBA = RGBA.NONE
 
     fun copy(): RiftData {

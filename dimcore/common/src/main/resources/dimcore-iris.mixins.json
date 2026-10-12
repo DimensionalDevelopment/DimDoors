@@ -1,0 +1,19 @@
+{
+  "required": false,
+  "package": "org.dimdev.dimcore.compat.iris.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "org.dimdev.dimcore.compat.iris.IrisMixinPlugin",
+  "minVersion": "0.8",
+  "refmap": "dimcore.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "client.IrisRenderingPipelineMixin",
+    "client.ProgramSetMixin",
+    "client.ShaderPackSourceNamesMixin",
+    "client.ShadowRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

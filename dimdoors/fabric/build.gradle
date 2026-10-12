@@ -13,15 +13,6 @@ def includeCompile(entry) {
     }
 }
 
-// Same, for a Fabric mod that needs Loom to remap it.
-def includeMod(entry) {
-    project.dependencies {
-        modCompileOnly(entry)
-        modLocalRuntime(entry)
-        include(entry)
-    }
-}
-
 dependencies {
     def loaderExclude = { exclude group: "net.fabricmc", module: "fabric-loader" }
 
@@ -37,6 +28,7 @@ dependencies {
     modImplementation libs.fabric.api
     modImplementation libs.fabric.loader
     modImplementation libs.fabric.language.kotlin
+    modImplementation libs.fabric.asm
 
     modLocalRuntime(libs.sable.fabric, loaderExclude)
 
@@ -44,7 +36,6 @@ dependencies {
     includeCompile libs.jheaps
     includeCompile libs.jgrapht
     includeCompile libs.poly2tri
-    includeMod libs.fabric.asm
 
     modLocalRuntime libs.wthit.fabric
     modLocalRuntime(libs.cloth.config.fabric, loaderExclude)
@@ -57,7 +48,6 @@ dependencies {
     modCompileOnly libs.modmenu
     modLocalRuntime libs.modmenu
     modCompileOnly(libs.sodium.fabric, loaderExclude)
-
     modCompileOnly libs.iris.fabric
 
     modCompileOnly libs.rei.api.fabric

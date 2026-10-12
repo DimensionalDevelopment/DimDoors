@@ -23,10 +23,9 @@ import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.clientPlatform
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.client.ActionKeyMapping
-import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
-import org.dimdev.dimcore.api.client.ClientReloadListenerRegister
 import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.fluid.FluidDetails
+import org.dimdev.dimcore.client.node.RenderNodes
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
@@ -37,8 +36,6 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
-import org.dimdev.dimdoors.client.render.node.RenderNodes
-import org.dimdev.dimdoors.client.render.node.iris.IrisNodeEvents
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
 import org.dimdev.dimdoors.compat.iris.IrisCompat
@@ -56,7 +53,7 @@ import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
 import org.lwjgl.glfw.GLFW
 
-class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadListenerProvider {
+object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
     var renderTick: Float = 0f
         private set
 
@@ -68,10 +65,16 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
         sided.onPreRender(this::preRender)
 
         RenderNodes.register(RiftCrackRenderer.ChromaticAberration)
-        if (platform.isModLoaded("iris")) IrisNodeEvents.register()
 
         if (platform.isModLoaded("imguimc")) {
-            sided.registerKeyBinding(ActionKeyMapping("key.dimdoors.portal_colors_editor", GLFW.GLFW_KEY_N, "key.categories.dimdoors", PortalColorGui::toggle))
+            sided.registerKeyBinding(
+                ActionKeyMapping(
+                    "key.dimdoors.portal_colors_editor",
+                    GLFW.GLFW_KEY_N,
+                    "key.categories.dimdoors",
+                    PortalColorGui::toggle
+                )
+            )
 
             ImGuiMCEvents.INSTANCE.preRenderImGuiEvent { PortalColorGui.render() }
         }
@@ -87,19 +90,27 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
             ModParticleTypes.MONOLITH
         ) { _, clientLevel, x, y, z, _, _, _ -> MonolithParticle(clientLevel, x, y, z) }
         regularParticleRegister.register(ModParticleTypes.RIFT) { spriteProvider -> RiftParticle.Factory(spriteProvider) }
-        regularParticleRegister.register<SimpleParticleType>(ModParticleTypes.LIMBO_ASH) { spriteProvider -> LimboAshParticle.Factory(spriteProvider) }
+        regularParticleRegister.register<SimpleParticleType>(ModParticleTypes.LIMBO_ASH) { spriteProvider ->
+            LimboAshParticle.Factory(
+                spriteProvider
+            )
+        }
 
     }
 
 
     override fun initDimensionEffects(effectsRegister: (ResourceLocation, DimensionSpecialEffects) -> Unit) {
-        effectsRegister.invoke(DimensionalDoors.id("limbo"), sided.createVoidEffect(LimboDimensionEffect.INSTANCE))
-        effectsRegister.invoke(DimensionalDoors.id("dungeon"), sided.createVoidEffect(DungeonDimensionEffect.INSTANCE)
+        effectsRegister.invoke(DimensionalDoors.id("limbo"), clientSided.createVoidEffect(LimboDimensionEffect.INSTANCE))
+        effectsRegister.invoke(
+            DimensionalDoors.id("dungeon"), clientSided.createVoidEffect(DungeonDimensionEffect.INSTANCE)
         )
     }
 
     override fun initBlockEntityRenderers(register: ModClient.BlockEntityRegister) {
-        register.register<EntranceRiftBlockEntity.Impl>(ModBlockEntityTypes.ENTRANCE_RIFT, ::EntranceRiftBlockEntityRenderer)
+        register.register<EntranceRiftBlockEntity.Impl>(
+            ModBlockEntityTypes.ENTRANCE_RIFT,
+            ::EntranceRiftBlockEntityRenderer
+        )
         register.register<DetachedRiftBlockEntity>(ModBlockEntityTypes.DETACHED_RIFT, ::DetachedRiftBlockEntityRenderer)
         register.register<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, ::DialingDoorBlockEntityRenderer)
     }
@@ -117,9 +128,28 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
     }
 
     override fun initItemProperties(consumer: (Item, ResourceLocation, ClampedItemPropertyFunction) -> Unit) {
-        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pull"), ClampedItemPropertyFunction { stack: ItemStack?, _, entity: LivingEntity?, _ -> if (entity == null) 0.0f else if (CrossbowItem.isCharged(stack!!)) 0.0f else (stack.getUseDuration(entity) - entity.useItemRemainingTicks).toFloat() / CrossbowItem.getChargeDuration(stack, entity).toFloat() })
-        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pulling"), ClampedItemPropertyFunction { stack: ItemStack, _, entity: LivingEntity?, _ -> if (entity != null && entity.isUsingItem && entity.getUseItem() == stack && !CrossbowItem.isCharged(stack)) 1.0f else 0.0f })
-        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("charged"), ClampedItemPropertyFunction { stack: ItemStack, _, _, _ -> if (CrossbowItem.isCharged(stack)) 1.0f else 0.0f
+        consumer.invoke(
+            ModItems.FARSHOT,
+            ResourceLocation.withDefaultNamespace("pull"),
+            ClampedItemPropertyFunction { stack: ItemStack?, _, entity: LivingEntity?, _ ->
+                if (entity == null) 0.0f else if (CrossbowItem.isCharged(stack!!)) 0.0f else (stack.getUseDuration(
+                    entity
+                ) - entity.useItemRemainingTicks).toFloat() / CrossbowItem.getChargeDuration(stack, entity).toFloat()
+            })
+        consumer.invoke(
+            ModItems.FARSHOT,
+            ResourceLocation.withDefaultNamespace("pulling"),
+            ClampedItemPropertyFunction { stack: ItemStack, _, entity: LivingEntity?, _ ->
+                if (entity != null && entity.isUsingItem && entity.getUseItem() == stack && !CrossbowItem.isCharged(
+                        stack
+                    )
+                ) 1.0f else 0.0f
+            })
+        consumer.invoke(
+            ModItems.FARSHOT,
+            ResourceLocation.withDefaultNamespace("charged"),
+            ClampedItemPropertyFunction { stack: ItemStack, _, _, _ ->
+                if (CrossbowItem.isCharged(stack)) 1.0f else 0.0f
             })
     }
 
@@ -138,7 +168,10 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
     }
 
     override fun initScreens(screenRegister: ModClient.ScreenRegister) {
-        screenRegister.register<TessellatingContainer, TesselatingLoomScreen>(ModScreenHandlerTypes.TESSELATING_LOOM, ::TesselatingLoomScreen)
+        screenRegister.register<TessellatingContainer, TesselatingLoomScreen>(
+            ModScreenHandlerTypes.TESSELATING_LOOM,
+            ::TesselatingLoomScreen
+        )
     }
 
     override fun initEntityRenderers(register: ModClient.EntityRegister) {
@@ -169,34 +202,25 @@ class DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, ClientReloadL
         )
     }
 
-    override fun registerClientReloadListeners(register: ClientReloadListenerRegister) {
-        register.register("render_nodes", RenderNodes::reloadAll)
+
+    @JvmField
+    var detector: ShaderPackDetector =
+        { consumer -> consumer.invoke(DimensionalPortalRenderer.VANILLA_DIMENSIONAL_PORTAL_RENDER_LAYER) }
+
+    private fun registerCompats() {
+        if (platform.isModLoaded("iris") || platform.isModLoaded("oculus")) detector = IrisCompat()
     }
 
-    companion object {
-        @JvmField
-        val INSTANCE: DimensionalDoorsClient = DimensionalDoorsClient()
+    fun initGeneratedDoorCutouts() {
+        val registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar()
 
-        @JvmField
-        var detector: ShaderPackDetector = { consumer -> consumer.invoke(DimensionalPortalRenderer.VANILLA_DIMENSIONAL_PORTAL_RENDER_LAYER) }
-        private lateinit var sided: IDimDoorsClientSided<*>
-        private fun registerCompats() {
-            if (platform.isModLoaded("iris") || platform.isModLoaded("oculus")) detector = IrisCompat()
+        val generatedBlocks =
+            registrar.gennedIds.mapNotNull(BuiltInRegistries.BLOCK::get).toTypedArray()
+        if (generatedBlocks.isNotEmpty()) {
+            clientPlatform.register(RenderType.cutout(), *generatedBlocks)
         }
-
-        fun initGeneratedDoorCutouts() {
-            val registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar()
-
-            val generatedBlocks =
-                registrar.gennedIds.mapNotNull(BuiltInRegistries.BLOCK::get).toTypedArray()
-            if (generatedBlocks.isNotEmpty()) { clientPlatform.register(RenderType.cutout(), *generatedBlocks) }
-        }
-
-        @JvmStatic
-        var clientSided: IDimDoorsClientSided<*>
-            get() = sided
-            set(sided) {
-                Companion.sided = sided
-            }
     }
+
+    @JvmStatic
+    lateinit var clientSided: IDimDoorsClientSided<*>
 }

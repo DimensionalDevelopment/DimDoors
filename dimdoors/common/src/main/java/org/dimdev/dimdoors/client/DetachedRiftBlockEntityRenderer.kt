@@ -91,20 +91,19 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices.popPose()
     }
 
-    private fun renderCrack(vc: MultiBufferSource, matrices: PoseStack, rift: DetachedRiftBlockEntity) {
-        matrices.pushPose()
+    private fun renderCrack(vc: MultiBufferSource, matrices: PoseStack, rift: DetachedRiftBlockEntity) = matrices.pusPop {
         matrices.translate(0.5f, 0.5f, 0.5f)
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw))
+
+        val size = rift.data.size
+
         RiftCrackRenderer.drawCrack(
-            matrices.last().pose(),
-            RiftCrackRenderer.ChromaticAberration.buffer(),
+            matrices,
+            RiftCrackRenderer.ChromaticAberration.buffer(vc),
             0f,
             RiftCurves.CURVES[rift.curveID],
-            config.graphicsConfig.riftSize * rift.data.size / 150,
-            0
+            size / 150f,
         )
-
-        matrices.popPose()
     }
 
     private fun renderTesseract(
@@ -113,7 +112,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices: PoseStack,
         alphaMultiplier: Float
     ) {
-        val radian = (DimensionalDoorsClient.INSTANCE.renderTick * 10 % 360) * Mth.DEG_TO_RAD
+        val radian = (DimensionalDoorsClient.renderTick * 10 % 360) * Mth.DEG_TO_RAD
         var color = rift.color
         if (color == RGBA.NONE) {
             color = DEFAULT_COLOR
@@ -137,4 +136,10 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         private const val DECAY_RADIUS_LATITUDE_SEGMENTS = 12
         private const val DECAY_RADIUS_LONGITUDE_SEGMENTS = 24
     }
+}
+
+fun PoseStack.pusPop(function: () -> Unit) {
+    this.pushPose()
+    function()
+    this.popPose()
 }

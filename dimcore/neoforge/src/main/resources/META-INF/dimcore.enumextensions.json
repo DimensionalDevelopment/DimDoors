@@ -1,0 +1,10 @@
+{
+  "entries": [
+    {
+      "enum": "com/mojang/blaze3d/shaders/Program$Type",
+      "name": "DIMCORE_GEOMETRY",
+      "constructor": "(Ljava/lang/String;Ljava/lang/String;I)V",
+      "parameters": ["dimcore:geometry", ".gsh", 36313]
+    }
+  ]
+}

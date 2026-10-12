@@ -9,12 +9,16 @@ displayName = "${mod_name}"
 credits = "${credits}"
 authors = "${neoforge_mod_authors}"
 description = '''${description}'''
+enumExtensions = "META-INF/dimcore.enumextensions.json"
 
 [[mixins]]
 config = "dimcore.mixins.json"
 
 [[mixins]]
 config = "dimcore.neoforge.mixins.json"
+
+[[mixins]]
+config = "dimcore-iris.mixins.json"
 
 [[dependencies.${mod_id}]]
 modId = "kotlinforforge"

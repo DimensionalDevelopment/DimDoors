@@ -1,6 +1,8 @@
 {
+    "blend": { "func": "add", "srcrgb": "1-dstcolor", "dstrgb": "1" },
     "vertex": "dimdoors:chromatic_geometry",
     "fragment": "dimdoors:chromatic_geometry",
+    "dimcore:geometry": "dimdoors:chromatic_geometry",
     "samplers": [
         { "name": "Sampler0" },
         { "name": "Sampler2" }
@@ -14,6 +16,6 @@
         { "name": "FogStart", "type": "float", "count": 1, "values": [ 0.0 ] },
         { "name": "FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
         { "name": "FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
-        { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] }
+        { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ]}
     ]
 }

@@ -49,6 +49,9 @@ dependencies {
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
     compileOnly libs.mixinextras.common
     annotationProcessor libs.mixinextras.common
+
+    compileOnly libs.sodium.neoforge
+    compileOnly libs.iris.common
 }
 
 artifacts {

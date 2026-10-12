@@ -39,7 +39,7 @@ accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lne
 accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
+
 #accessible method net/minecraft/world/level/block/entity/BlockEntity saveMetadata (Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;
 
 #accessible method net/minecraft/commands/arguments/blocks/BlockStateParser parse (Z)Lnet/minecraft/commands/arguments/blocks/BlockStateParser;
@@ -76,6 +76,8 @@ accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTIT
 accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 accessible field net/minecraft/client/renderer/RenderStateShard NO_CULL Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
 accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
 
 accessible class net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source <init> (Ljava/util/function/Function;Ljava/util/function/Supplier;)V

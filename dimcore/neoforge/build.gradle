@@ -13,6 +13,8 @@ configurations {
 
 dependencies {
     implementation libs.kotlinforforge.neoforge
+    compileOnly libs.sodium.neoforge
+    compileOnly libs.iris.neoforge
 }
 
 neoForge {

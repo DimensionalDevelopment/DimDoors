@@ -18,11 +18,18 @@
     "entrypoints": {
         "main": [
             "org.dimdev.dimcore.DimCoreFabric"
+        ],
+        "client": [
+            "org.dimdev.dimcore.client.DimCoreFabricClient"
+        ],
+        "mm:early_risers": [
+            "org.dimdev.dimcore.client.DimcoreEarlyRiser"
         ]
     },
     "mixins": [
         "dimcore.mixins.json",
-        "dimcore.fabric.mixins.json"
+        "dimcore.fabric.mixins.json",
+        "dimcore-iris.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",

@@ -3,6 +3,15 @@ plugins {
     id 'fabric-loom'
 }
 
+def includeMod(entry) {
+    project.dependencies {
+        modCompileOnly(entry)
+        modLocalRuntime(entry)
+        include(entry)
+    }
+}
+
+
 dependencies {
     minecraft libs.minecraft
     mappings loom.layered {
@@ -13,6 +22,11 @@ dependencies {
     modImplementation libs.fabric.loader
     modImplementation libs.fabric.language.kotlin
     include modApi('teamreborn:energy:4.1.0')
+    includeMod libs.fabric.asm
+
+
+    modCompileOnly(libs.sodium.fabric) { exclude group: "net.fabricmc", module: "fabric-loader" }
+    modCompileOnly libs.iris.fabric
 }
 
 loom {

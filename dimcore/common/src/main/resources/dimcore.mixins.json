@@ -10,6 +10,9 @@
     "accessor.BlockEntityTypeAccessor"
   ],
   "client": [
+    "client.LevelRendererAccessor",
+    "client.LevelRendererMixin",
+    "client.ShaderInstanceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

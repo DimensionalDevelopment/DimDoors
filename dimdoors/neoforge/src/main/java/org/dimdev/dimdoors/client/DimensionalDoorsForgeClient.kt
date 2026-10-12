@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.client
 import net.minecraft.client.Minecraft
 import net.minecraft.client.RecipeBookCategories
 import net.minecraft.world.item.ItemStack
-import java.util.function.Supplier
 import net.minecraft.world.item.Items
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
@@ -20,13 +19,10 @@ import org.dimdev.dimdoors.client.IDimDoorsClientSided.PreRender
 import org.dimdev.dimdoors.client.config.ConfigScreen
 import org.dimdev.dimdoors.client.effect.DimensionEffect
 import org.dimdev.dimdoors.item.ModItems
+import java.util.function.Supplier
 
 @Mod(dist = [Dist.CLIENT], value = DimensionalDoors.MOD_ID)
-class DimensionalDoorsForgeClient(bus: IEventBus, container: ModContainer) :
-    NeoForgeClientSided<DimensionalDoorsForgeClient, DimensionalDoorsClient>(
-        bus,
-        DimensionalDoorsClient.INSTANCE
-    ), IDimDoorsClientSided<DimensionalDoorsForgeClient> {
+class DimensionalDoorsForgeClient(bus: IEventBus, container: ModContainer) : NeoForgeClientSided<DimensionalDoorsForgeClient, DimensionalDoorsClient>(bus, DimensionalDoorsClient), IDimDoorsClientSided<DimensionalDoorsForgeClient> {
     override fun getRecipBookCategories(name: String, itemStack: () -> ItemStack) = fun() = when (name) {
         "TESSELATING_GENERAL" -> {
             TESSELLATING_GENERAL.getValue()

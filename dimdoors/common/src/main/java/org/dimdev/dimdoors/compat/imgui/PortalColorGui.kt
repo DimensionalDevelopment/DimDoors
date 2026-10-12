@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen
 import org.dimdev.dimcore.api.util.function.StreamUtils
 import org.dimdev.dimdoors.PortalColors.base
 import org.dimdev.dimdoors.client.ModShaders
+import org.dimdev.dimdoors.client.RiftCrackRenderer
 import java.util.*
 import java.util.function.IntFunction
 import java.util.stream.Collectors
@@ -69,6 +70,8 @@ object PortalColorGui {
 //            }
 //        }
 //        ImGui.end();
+
+        RiftCrackRenderer.ChromaticAberration.render()
     }
 
     private fun renderColor(name: String, index: Int) {
