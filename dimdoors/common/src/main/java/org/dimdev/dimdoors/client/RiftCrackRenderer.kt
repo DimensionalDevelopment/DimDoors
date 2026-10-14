@@ -6,12 +6,13 @@ import com.mojang.math.Axis
 import imgui.ImGui
 import imgui.flag.ImGuiWindowFlags
 import net.minecraft.Util
+import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.util.Mth
-import org.dimdev.dimcore.client.node.*
+import org.dimdev.dimcore.client.node.NodeUniforms
+import org.dimdev.dimcore.client.node.RenderNode
 import org.dimdev.dimdoors.api.util.id
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer.Companion.TESSERACT_PATH
 import org.dimdev.dimdoors.client.RiftCurves.PolygonInfo
 import kotlin.math.roundToInt
 
@@ -57,19 +58,17 @@ object RiftCrackRenderer {
             .setColor(0.08f, 0.08f, 0.08f, 1f)
             .setUv(0f, 0f)
             .setUv1((size * 150).roundToInt(), 0)
-            .setLight(0)
+            .setLight(LightTexture.FULL_BRIGHT)
             .setNormal(pose, 0f, 0f, 1f)
     }
 
-    object ChromaticAberration : RenderNode("chromatic".id(), RenderStage.TRANSLUCENT, 1536) {
+    object ChromaticAberration : RenderNode("chromatic".id()) {
         var oscilationDuration = 2f
         var orbitDuration = 4f
         var worldSeparation = 0.05f
         var size = 1
 
-        override val renderType: RenderType get() = RenderTypes.chromaticRenderType
-
-        override val shadowRenderType: RenderType = RenderType.entityCutoutNoCull(TESSERACT_PATH)
+        override val baseRenderType: RenderType get() = RenderTypes.chromaticRenderType
 
         val intScratch = IntArray(1)
 
@@ -98,16 +97,16 @@ object RiftCrackRenderer {
             ImGui.end()
         }
 
-        override fun shader(kind: NodeProgramType): ShaderInstance = when (kind) {
-            NodeProgramType.GEOMETRY -> ModShaders.chromaticGeometry
-            NodeProgramType.COMPOSITE -> ModShaders.chromaticComposite
+        override fun shader(): ShaderInstance = ModShaders.chromaticGeometry
+
+        override fun compositeShader(): ShaderInstance = ModShaders.chromaticComposite
+
+        override fun compositeUniforms(uniforms: NodeUniforms) {
+            uniforms.sampler("ChromaticSampler") { target?.colorTexture ?: 0 }
+            uniforms.sampler("ChromaticDepthSampler") { target?.depthTexture ?: 0 }
         }
 
         override fun uniforms(uniforms: NodeUniforms) {
-            uniforms.sampler("ChromaticSampler") { target?.colorTexture ?: 0 }
-            uniforms.sampler("ChromaticDepthSampler") { target?.depthTexture ?: 0 }
-            uniforms.sampler("TranslucentSampler") { RenderNodes.translucentLayer?.colorTexture ?: 0 }
-            uniforms.sampler("TranslucentDepthSampler") { RenderNodes.translucentLayer?.depthTexture ?: 0 }
             uniforms.float("ChromaticAngle") { time().oscilate(orbitDuration) * Mth.TWO_PI }
             uniforms.float("ChromaticPhase") { time().oscilate(oscilationDuration) * Mth.TWO_PI }
             uniforms.float("ChromaticSeparation") { worldSeparation }

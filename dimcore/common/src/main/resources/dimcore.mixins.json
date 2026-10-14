@@ -10,7 +10,6 @@
     "accessor.BlockEntityTypeAccessor"
   ],
   "client": [
-    "client.LevelRendererAccessor",
     "client.LevelRendererMixin",
     "client.ShaderInstanceMixin"
   ],

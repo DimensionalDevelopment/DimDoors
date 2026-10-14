@@ -3,8 +3,6 @@ package org.dimdev.dimcore.compat.iris.mixins.client;
 import net.irisshaders.iris.pipeline.IrisRenderingPipeline;
 import net.irisshaders.iris.shaderpack.programs.ProgramSet;
 import net.irisshaders.iris.targets.RenderTargets;
-import net.irisshaders.iris.uniforms.CapturedRenderingState;
-import org.dimdev.dimcore.client.node.RenderStage;
 import org.dimdev.dimcore.client.node.RenderNodes;
 import org.dimdev.dimcore.compat.iris.node.IrisNodeCompat;
 import org.dimdev.dimcore.compat.iris.node.IrisRenderingPipelineExt;
@@ -29,18 +27,22 @@ public abstract class IrisRenderingPipelineMixin implements IrisRenderingPipelin
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void dimensionalDoors$createNodeCompat(ProgramSet programSet, CallbackInfo ci) {
-        dimensionalDoors$nodeCompat = new IrisNodeCompat((IrisRenderingPipeline) (Object) this, programSet);
+        dimensionalDoors$nodeCompat = new IrisNodeCompat((IrisRenderingPipeline) (Object) this, programSet, renderTargets);
+    }
+
+    @Inject(method = "beginLevelRendering", at = @At("HEAD"))
+    private void dimensionalDoors$bindNodes(CallbackInfo ci) {
+        dimensionalDoors$nodeCompat.bind();
     }
 
     @Inject(method = "beginTranslucents", at = @At("HEAD"))
-    private void dimensionalDoors$gbufferStage(CallbackInfo ci) {
-        RenderNodes.render(RenderStage.OPAQUE, CapturedRenderingState.INSTANCE.getTickDelta());
+    private void dimensionalDoors$compositeNodes(CallbackInfo ci) {
+        RenderNodes.composite();
     }
 
-    @Inject(method = "beginTranslucents", at = @At("RETURN"))
-    private void dimensionalDoors$translucentStage(CallbackInfo ci) {
-        RenderNodes.render(RenderStage.TRANSLUCENT, CapturedRenderingState.INSTANCE.getTickDelta());
-        renderTargets.copyPreTranslucentDepth();
+    @Inject(method = "finalizeLevelRendering", at = @At("RETURN"))
+    private void dimensionalDoors$unbindNodes(CallbackInfo ci) {
+        dimensionalDoors$nodeCompat.unbind();
     }
 
     @Inject(method = "destroy", at = @At("HEAD"))
@@ -51,10 +53,5 @@ public abstract class IrisRenderingPipelineMixin implements IrisRenderingPipelin
     @Override
     public IrisNodeCompat dimensionalDoors$getNodeCompat() {
         return dimensionalDoors$nodeCompat;
-    }
-
-    @Override
-    public RenderTargets dimensionalDoors$getRenderTargets() {
-        return renderTargets;
     }
 }

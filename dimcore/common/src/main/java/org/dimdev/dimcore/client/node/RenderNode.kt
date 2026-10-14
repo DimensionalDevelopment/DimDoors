@@ -1,7 +1,8 @@
 package org.dimdev.dimcore.client.node
 
-import com.mojang.blaze3d.vertex.*
-import net.minecraft.client.Minecraft
+import com.mojang.blaze3d.vertex.BufferUploader
+import com.mojang.blaze3d.vertex.MeshData
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
@@ -9,92 +10,77 @@ import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimcore.client.node.vanilla.TextureTargetFramebuffer
 import org.dimdev.dimcore.client.node.vanilla.VanillaNodeProgram
-import java.util.*
 
-abstract class RenderNode(val id: ResourceLocation, val stage: RenderStage, bufferSize: Int) {
-    private val bytes = ByteBufferBuilder(bufferSize)
-    private var builder: BufferBuilder? = null
-    private val defaults = EnumMap<NodeProgramType, Pair<ShaderInstance, NodeProgram>>(NodeProgramType::class.java)
+abstract class RenderNode(val id: ResourceLocation) {
+    private var default: Pair<ShaderInstance, NodeProgram>? = null
+    private var defaultComposite: Pair<ShaderInstance, NodeProgram>? = null
 
     var target: TextureTargetFramebuffer? = null
         private set
 
-    val outShard = RenderStateShard.OutputStateShard("${id}_target", { framebuffer(NodeProgramType.GEOMETRY)?.bind() }, { MainFramebuffer.bind() })
+    val outShard = RenderStateShard.OutputStateShard("${id}_target", { framebuffer()?.bind() }, { MainFramebuffer.bind() })
 
-    private val compositeType: RenderType by lazy<RenderType> {
-        RenderType.create(
-            "${id}_composite", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false,
-            RenderType.CompositeState.builder()
-                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                .setOutputState(RenderStateShard.OutputStateShard("${id}_composite", { framebuffer(NodeProgramType.COMPOSITE)?.bind() }, { MainFramebuffer.bind() }))
-                .createCompositeState(false)
-        )
-    }
+    protected abstract val baseRenderType: RenderType
 
-    abstract val renderType: RenderType
+    val renderType: RenderType by lazy { NodeRenderType(this, baseRenderType) }
 
     open val attachments: Int = 1
 
-    val hasGeometry: Boolean get() = builder != null
+    open val clearColor: FloatArray = floatArrayOf(0f, 0f, 0f, 0f)
 
-    protected abstract fun shader(kind: NodeProgramType): ShaderInstance
+    protected abstract fun shader(): ShaderInstance
 
     open fun uniforms(uniforms: NodeUniforms) {}
 
-    abstract val shadowRenderType: RenderType
+    protected open fun compositeShader(): ShaderInstance? = null
 
-    fun buffer(source: MultiBufferSource): VertexConsumer =
-        if (RenderNodes.shadowPass()) source.getBuffer(shadowRenderType)
-        else builder ?: BufferBuilder(bytes, renderType.mode(), renderType.format()).also { builder = it }
+    open fun compositeUniforms(uniforms: NodeUniforms) {}
 
-    fun program(type: NodeProgramType): NodeProgram = NodeOverrides.program(id, type) ?: defaultProgram(type)
+    fun buffer(source: MultiBufferSource): VertexConsumer = source.getBuffer(renderType)
 
-    fun framebuffer(kind: NodeProgramType): NodeFramebuffer? = NodeOverrides.framebuffer(id, kind) ?: when (kind) {
-        NodeProgramType.GEOMETRY -> target
-        NodeProgramType.COMPOSITE -> if (Minecraft.useShaderTransparency()) ItemEntityFramebuffer else MainFramebuffer
+    fun program(): NodeProgram? = if (NodeOverrides.bound(id)) NodeOverrides.program(id) else defaultProgram()
+
+    fun compositeProgram(): NodeProgram? = if (NodeOverrides.compositeBound(id)) NodeOverrides.composite(id) else defaultCompositeProgram()
+
+    fun framebuffer(): NodeFramebuffer? = NodeOverrides.framebuffer(id) ?: target
+
+    fun compositeFramebuffer(): NodeFramebuffer = NodeOverrides.compositeFramebuffer(id) ?: MainFramebuffer
+
+    private fun defaultProgram(): NodeProgram {
+        val shader = shader()
+        default?.let { (cached, program) -> if (cached === shader) return program else program.free() }
+        return VanillaNodeProgram(shader, ::uniforms).also { default = shader to it }
     }
 
-    private fun defaultProgram(kind: NodeProgramType): NodeProgram {
-        val shader = shader(kind)
-        defaults[kind]?.let { (cached, program) -> if (cached === shader) return program else program.free() }
-        return VanillaNodeProgram(shader, ::uniforms).also { defaults[kind] = shader to it }
+    private fun defaultCompositeProgram(): NodeProgram? {
+        val shader = compositeShader() ?: return null
+        defaultComposite?.let { (cached, program) -> if (cached === shader) return program else program.free() }
+        return VanillaNodeProgram(shader, ::compositeUniforms).also { defaultComposite = shader to it }
     }
 
     fun reload(width: Int, height: Int) {
         target?.destroy()
-        target = TextureTargetFramebuffer(width, height, attachments)
+        target = TextureTargetFramebuffer(width, height, attachments).also { it.target.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]) }
     }
 
     fun resize(width: Int, height: Int) {
         target?.resize(width, height)
     }
 
-    fun render(context: NodeRenderContext) {
-        val mesh = builder?.build()
-        builder = null
-        mesh ?: return
-
+    fun clear() {
         target?.clear()
-        renderType.setupRenderState()
-        program(NodeProgramType.GEOMETRY).also {
-            it.bind(context)
+    }
+
+    private class NodeRenderType(private val node: RenderNode, base: RenderType) : RenderType(
+        node.id.toString(), base.format(), base.mode(), base.bufferSize(), base.affectsCrumbling(), true, base::setupRenderState, base::clearRenderState
+    ) {
+        override fun draw(mesh: MeshData) {
+            val program = node.program() ?: return mesh.close()
+            setupRenderState()
+            program.bind()
             BufferUploader.draw(mesh)
-            it.unbind()
+            program.unbind()
+            clearRenderState()
         }
-        renderType.clearRenderState()
-
-        val quad = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-        quad.addVertex(0f, 0f, 0f).setUv(0f, 0f)
-        quad.addVertex(1f, 0f, 0f).setUv(1f, 0f)
-        quad.addVertex(1f, 1f, 0f).setUv(1f, 1f)
-        quad.addVertex(0f, 1f, 0f).setUv(0f, 1f)
-
-        compositeType.setupRenderState()
-        program(NodeProgramType.COMPOSITE).also {
-            it.bind(context)
-            BufferUploader.draw(quad.buildOrThrow())
-            it.unbind()
-        }
-        compositeType.clearRenderState()
     }
 }

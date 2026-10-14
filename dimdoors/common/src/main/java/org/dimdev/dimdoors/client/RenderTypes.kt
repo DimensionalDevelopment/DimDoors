@@ -18,7 +18,7 @@ object RenderTypes {
 
     private val ADDITIVE = RenderStateShard.TransparencyStateShard("chromatic_additive", {
         RenderSystem.enableBlend()
-        RenderSystem.blendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE)
+        RenderSystem.blendFuncSeparate(GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ONE)
     }, {
         RenderSystem.disableBlend()
         RenderSystem.defaultBlendFunc()

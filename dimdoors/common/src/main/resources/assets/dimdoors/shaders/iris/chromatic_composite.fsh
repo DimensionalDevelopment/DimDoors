@@ -1,4 +1,6 @@
 #version 330 compatibility
+const vec3 white = vec3(1, 1, 1);
+const vec3 black = vec3(0, 0, 0);
 
 uniform sampler2D ChromaticSampler;
 uniform sampler2D ChromaticDepthSampler;
@@ -9,12 +11,9 @@ in vec2 texcoord;
 layout(location = 0) out vec4 outColor0;
 
 void main() {
-    vec4 crack = texture(ChromaticSampler, texcoord);
-    if (crack.a == 0.0) discard;
-
-    crack.a = (crack.r + crack.g + crack.b) / 3.0;
-    crack.rgb -= min(crack.r, min(crack.g, crack.b));
+    vec3 color = texture(ChromaticSampler, texcoord).rgb;
+    if (color == black) discard;
 
     gl_FragDepth = texture(ChromaticDepthSampler, texcoord).r;
-    outColor0 = crack;
+    outColor0 = vec4(color == white ? black : color, 1.0);
 }

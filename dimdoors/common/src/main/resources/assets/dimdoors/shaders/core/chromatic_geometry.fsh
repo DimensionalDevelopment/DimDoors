@@ -23,5 +23,5 @@ void main() {
         discard;
     }
     fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
-    fragColor = vec4(channel, 1.0);
+    fragColor = vec4(channel, 0.0);
 }

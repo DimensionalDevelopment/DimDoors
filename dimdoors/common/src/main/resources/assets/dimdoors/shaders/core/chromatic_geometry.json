@@ -1,5 +1,5 @@
 {
-    "blend": { "func": "add", "srcrgb": "1-dstcolor", "dstrgb": "1" },
+    "blend": { "func": "add", "srcrgb": "1", "dstrgb": "1", "srcalpha": "1", "dstalpha": "1" },
     "vertex": "dimdoors:chromatic_geometry",
     "fragment": "dimdoors:chromatic_geometry",
     "dimcore:geometry": "dimdoors:chromatic_geometry",

@@ -17,6 +17,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimcore.client.node.RenderNodes;
+import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;

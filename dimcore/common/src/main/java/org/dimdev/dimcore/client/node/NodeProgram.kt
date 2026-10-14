@@ -1,7 +1,7 @@
 package org.dimdev.dimcore.client.node
 
 interface NodeProgram {
-    fun bind(context: NodeRenderContext)
+    fun bind()
 
     fun unbind()
 

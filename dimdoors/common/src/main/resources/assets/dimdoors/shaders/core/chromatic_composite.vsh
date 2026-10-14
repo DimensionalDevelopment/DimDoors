@@ -6,10 +6,8 @@ in vec2 UV0;
 uniform vec2 ScreenSize;
 
 out vec2 texCoord;
-out vec2 oneTexel;
 
 void main() {
     gl_Position = vec4(Position.xy * 2.0 - 1.0, 0.0, 1.0);
     texCoord = UV0;
-    oneTexel = 1.0 / ScreenSize;
 }

@@ -1,14 +1,17 @@
 {
     "blend": {
         "func": "add",
-        "srcrgb": "srcalpha",
+        "srcrgb": "1",
         "dstrgb": "1-srcalpha",
-        "srcalpha": "1",
-        "dstalpha": "1-srcalpha"
+        "srcalpha": "0",
+        "dstalpha": "1"
     },
     "vertex": "dimdoors:chromatic_composite",
     "fragment": "dimdoors:chromatic_composite",
-    "samplers": [],
+    "samplers": [
+        { "name": "ChromaticSampler" },
+        { "name": "ChromaticDepthSampler" }
+    ],
     "uniforms": [
         { "name": "ScreenSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] }
     ]

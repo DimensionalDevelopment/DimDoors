@@ -1,7 +1,7 @@
 #version 150
 
 layout(triangles) in;
-layout(triangle_strip, max_vertices = 9) out;
+layout(triangle_strip, max_vertices = 12) out;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;

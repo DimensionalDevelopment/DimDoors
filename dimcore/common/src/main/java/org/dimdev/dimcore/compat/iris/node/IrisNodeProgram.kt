@@ -22,7 +22,7 @@ import net.irisshaders.iris.uniforms.CommonUniforms
 import net.irisshaders.iris.uniforms.builtin.BuiltinReplacementUniforms
 import net.minecraft.client.Minecraft
 import org.dimdev.dimcore.client.node.NodeProgram
-import org.dimdev.dimcore.client.node.NodeRenderContext
+import org.dimdev.dimcore.client.node.NodeUniforms
 import org.dimdev.dimcore.client.node.RenderNode
 import org.joml.Matrix3f
 import org.joml.Matrix4f
@@ -37,7 +37,7 @@ class IrisNodeProgram private constructor(
     format: VertexFormat,
     private val blend: BlendModeOverride?,
     pipeline: IrisRenderingPipeline,
-    node: RenderNode,
+    declare: (NodeUniforms) -> Unit,
     flipped: Supplier<ImmutableSet<Int>>,
     shadow: Boolean
 ) : NodeProgram {
@@ -70,7 +70,7 @@ class IrisNodeProgram private constructor(
         CommonUniforms.addDynamicUniforms(uniformBuilder, FogMode.PER_VERTEX)
         customUniforms.assignTo(uniformBuilder)
         BuiltinReplacementUniforms.addBuiltinReplacementUniforms(uniformBuilder)
-        node.uniforms(IrisUniforms(uniformBuilder, samplerBuilder))
+        declare(IrisUniforms(uniformBuilder, samplerBuilder))
         pipeline.addGbufferOrShadowSamplers(samplerBuilder, imageBuilder, flipped, shadow, true, true, true)
         customUniforms.mapholderToPass(uniformBuilder, this)
         uniforms = uniformBuilder.buildUniforms()
@@ -79,9 +79,9 @@ class IrisNodeProgram private constructor(
         locations = REPLACEMENTS.associateWith { GL20.glGetUniformLocation(id, it) }.filterValues { it != -1 }
     }
 
-    override fun bind(context: NodeRenderContext) {
-        modelView.set(context.modelView)
-        projection.set(context.projection)
+    override fun bind() {
+        modelView.set(RenderSystem.getModelViewMatrix())
+        projection.set(RenderSystem.getProjectionMatrix())
         GlStateManager._glUseProgram(id)
         blend?.apply()
 
@@ -135,7 +135,7 @@ class IrisNodeProgram private constructor(
                 name, vertex, geometry, tessControl, tessEval, fragment, AlphaTests.ONE_TENTH_ALPHA, false, false,
                 ShaderAttributeInputs(format, false, false, false, false, false), pipeline.textureMap
             )
-            return IrisNodeProgram(name, sources.filterValues { it != null }, format, blend, pipeline, node, flipped, shadow)
+            return IrisNodeProgram(name, sources.filterValues { it != null }, format, blend, pipeline, node::uniforms, flipped, shadow)
         }
 
         fun composite(
@@ -143,7 +143,7 @@ class IrisNodeProgram private constructor(
             blend: BlendModeOverride?, pipeline: IrisRenderingPipeline, flipped: Supplier<ImmutableSet<Int>>, shadow: Boolean
         ): IrisNodeProgram {
             val sources = TransformPatcher.patchComposite(name, vertex, geometry, fragment, TextureStage.GBUFFERS_AND_SHADOW, pipeline.textureMap)
-            return IrisNodeProgram(name, sources.filterValues { it != null }, DefaultVertexFormat.POSITION_TEX, blend, pipeline, node, flipped, shadow)
+            return IrisNodeProgram(name, sources.filterValues { it != null }, DefaultVertexFormat.POSITION_TEX, blend, pipeline, node::compositeUniforms, flipped, shadow)
         }
     }
 }

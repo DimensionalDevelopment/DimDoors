@@ -1,12 +1,12 @@
 package org.dimdev.dimcore.mixin.client;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimcore.client.node.RenderNodes;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,10 +16,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
-    @Inject(method = "renderLevel", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=destroyProgress"))
+    @Inject(method = "renderLevel", at = @At("HEAD"))
     private void dimcore$renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
-        Vec3 pos = camera.getPosition();
-        RenderNodes.renderLevel(deltaTracker.getGameTimeDeltaTicks(), () -> ((LevelRendererAccessor) this).dimcore$renderSectionLayer(RenderType.translucent(), pos.x, pos.y, pos.z, frustumMatrix, projectionMatrix));
+        RenderNodes.clear();
+    }
+
+    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderType;translucent()Lnet/minecraft/client/renderer/RenderType;"))
+    private void dimcore$compositeNodes(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+        if (!RenderNodes.INSTANCE.getExternal().invoke()) RenderNodes.composite();
+        RenderTarget translucent = ((LevelRenderer) (Object) this).getTranslucentTarget();
+        if (translucent != null) translucent.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
