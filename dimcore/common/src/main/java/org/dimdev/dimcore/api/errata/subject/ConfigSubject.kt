@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.entity.BlockEntity
 import org.dimdev.dimcore.api.errata.schema.StructNode
@@ -19,6 +20,15 @@ interface ConfigSubject {
     fun write(player: ServerPlayer, value: CompoundTag, paths: List<List<String>>): DataResult<Unit>
 
     fun isValid(player: ServerPlayer): Boolean
+}
+
+abstract class EntitySubject<T: Entity>(val entity: T) : ConfigSubject {
+    override fun isValid(player: ServerPlayer): Boolean {
+        val level = entity.level() ?: return false
+        val uuid = entity.uuid
+
+        return !entity.isRemoved
+    }
 }
 
 abstract class BlockEntitySubject<T : BlockEntity>(val blockEntity: T, private val hand: InteractionHand, private val item: Item) : ConfigSubject {

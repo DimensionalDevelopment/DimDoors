@@ -10,15 +10,10 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.Item
+import org.dimdev.dimcore.api.errata.schema.*
+import org.dimdev.dimcore.api.errata.subject.BlockEntitySubject
 import org.dimdev.dimcore.api.ext.at
 import org.dimdev.dimcore.api.ext.putAt
-import org.dimdev.dimcore.api.errata.schema.FieldNode
-import org.dimdev.dimcore.api.errata.schema.Presence
-import org.dimdev.dimcore.api.errata.schema.SchemaCodec
-import org.dimdev.dimcore.api.errata.schema.SchemaNode
-import org.dimdev.dimcore.api.errata.schema.StructNode
-import org.dimdev.dimcore.api.errata.schema.UntypedNode
-import org.dimdev.dimcore.api.errata.subject.BlockEntitySubject
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.entity.CodecRecord
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity
@@ -100,8 +95,8 @@ class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, 
         private const val DATA = "data"
         private val HIDDEN_DATA = setOf("properties", "forcedColor")
 
-        private val CodecRecord<*, *>.node: SchemaNode? get() = (codec as? SchemaCodec<*>)?.node
+        val CodecRecord<*, *>.node: SchemaNode? get() = (codec as? SchemaCodec<*>)?.node
 
-        private fun <T, V> CodecRecord<T, V>.prepare(subject: T, tag: Tag, ops: DynamicOps<Tag>): DataResult<() -> Unit> = parse(ops, tag).map { value -> { setter(subject, value) } }
+        fun <T, V> CodecRecord<T, V>.prepare(subject: T, tag: Tag, ops: DynamicOps<Tag>): DataResult<() -> Unit> = parse(ops, tag).map { value -> { setter(subject, value) } }
     }
 }

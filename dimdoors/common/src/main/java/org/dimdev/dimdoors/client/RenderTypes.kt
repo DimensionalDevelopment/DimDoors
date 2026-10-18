@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer.Companion.TESSERACT_PATH
 import org.lwjgl.opengl.GL11
-import java.util.function.Supplier
 
 object RenderTypes {
 
@@ -41,8 +40,8 @@ object RenderTypes {
 
     private fun createMonolith(texture: ResourceLocation): RenderType { val multiPhaseParameters = RenderType.CompositeState.builder()
             .setTextureState(RenderStateShard.TextureStateShard(texture, false, false))
-            .setShaderState(RenderStateShard.ShaderStateShard(Supplier { GameRenderer.getRendertypeEntitySolidShader() }))
-            .setTransparencyState(RenderStateShard.NO_TRANSPARENCY) //        .setCullState(RenderStateShard.NO_CULL)
+            .setShaderState(RenderStateShard.ShaderStateShard { GameRenderer.getRendertypeEntitySolidShader() })
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY) //        .setCullState(RenderStateShard.NO_CULL)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setOverlayState(RenderStateShard.OVERLAY).createCompositeState(false)
 

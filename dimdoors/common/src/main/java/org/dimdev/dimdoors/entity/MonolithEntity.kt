@@ -3,12 +3,14 @@ package org.dimdev.dimdoors.entity
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.Tag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Mth
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageTypes
 import net.minecraft.world.entity.*
@@ -18,8 +20,10 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.session.Errata
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal
+import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.tag.ModWorldTags
 import org.dimdev.dimdoors.util.TagUtils
@@ -76,10 +80,6 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
         builder.define(PITCH, 1f)
         builder.define(SOLID, true)
         //    this.refreshDimensions();
-    }
-
-    override fun isAlive(): Boolean {
-        return false
     }
 
     override fun move(moverType: MoverType, vec3: Vec3) {
@@ -202,40 +202,25 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
     override fun addAdditionalSaveData(nbt: CompoundTag) {
         super.addAdditionalSaveData(nbt)
         nbt.putInt("Aggro", this.aggro)
-        //        nbt.putFloat("scale", getScale());
         nbt.putFloat("pitch", this.pitch)
+        nbt.putBoolean("solid", this.solid)
     }
 
     override fun readAdditionalSaveData(nbt: CompoundTag) {
         super.readAdditionalSaveData(nbt)
         this.aggro = nbt.getInt("Aggro")
-        if (nbt.contains("pitch", Tag.TAG_FLOAT.toInt())) {
-            this.pitch = nbt.getFloat("pitch")
-        }
-
-        if (nbt.contains("solid", Tag.TAG_BYTE.toInt())) {
-            this.solid = nbt.getBoolean("solid")
-        }
+        this.pitch = nbt.getFloat("pitch")
+        this.solid = nbt.getBoolean("solid")
     }
 
     var solid: Boolean
         get() = this.entityData.get(SOLID)
-        private set(solid) = this.entityData.set(SOLID, solid)
+        set(solid) = this.entityData.set(SOLID, solid)
 
     var aggro: Int
         get() = this.entityData.get(AGGRO)
         set(aggro) = this.entityData.set(AGGRO, aggro)
 
-    //    @Override
-    //    public float getScale() {
-    //        return this.entityData.get(SCALE);
-    //    }
-
-//    fun setScale(scale: Float) {
-//        this.entityData.set(SCALE, scale);
-//        getAttribute(Attributes.SCALE)?.baseValue = scale.toDouble()
-//        refreshDimensions()
-//    }
 
     var pitch: Float
         get() = this.entityData.get(PITCH)
@@ -247,11 +232,17 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
     }
 
     override fun onSyncedDataUpdated(data: EntityDataAccessor<*>) {
-//    if (SCALE.equals(data)) {
-//        this.refreshDimensions();
-//    }
-
         super.onSyncedDataUpdated(data)
+    }
+
+    override fun mobInteract(player: Player, hand: InteractionHand): InteractionResult {
+        if(!player.level().isClientSide && player.getItemInHand(hand).`is`(ModItems.MONOLITH_SPAWNER)) {
+            Errata.open(player as ServerPlayer, MonolithSubject(this))
+
+            return InteractionResult.PASS
+        }
+
+        return super.mobInteract(player, hand)
     }
 
     override fun checkSpawnRules(world: LevelAccessor, spawnReason: MobSpawnType): Boolean {
@@ -277,7 +268,6 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
         const val MAX_AGGRO_RANGE: Int = 35
         private val AGGRO = SynchedEntityData.defineId(MonolithEntity::class.java, EntityDataSerializers.INT)
 
-        //    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
         private val PITCH = SynchedEntityData.defineId(MonolithEntity::class.java, EntityDataSerializers.FLOAT)
         private val SOLID = SynchedEntityData.defineId(MonolithEntity::class.java, EntityDataSerializers.BOOLEAN)
     }
