@@ -184,7 +184,7 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
             hooks?.onEntry?.get(key)?.let { runHooks(registry, it) }
         })
 
-        if (mod is PacketProvider) bus.addListener<RegisterPayloadHandlersEvent> { event -> mod.registerPackets(NeoForgePacketRegister(event.registrar("1"))) }
+        if (mod is PacketProvider) bus.addListener<RegisterPayloadHandlersEvent> { event -> mod.registerPackets(NeoForgePacketRegister(event.registrar("1").optional())) }
 
         if (mod is ServerReloadListenerProvider) NeoForge.EVENT_BUS.addListener<AddReloadListenerEvent> { event ->
             mod.registerServerReloadListeners { name, _, consumer -> event.addListener(NeoforgeResourceLoader.Server(ResourceLocation.fromNamespaceAndPath(common.modId, name), consumer)) }

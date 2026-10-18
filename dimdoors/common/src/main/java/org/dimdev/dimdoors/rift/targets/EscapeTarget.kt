@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets
 
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
@@ -14,6 +13,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
@@ -155,7 +155,7 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
         private val targetWorldResourceKey: ResourceKey<Level?>? = null
 
         val CODEC: MapCodec<EscapeTarget> = RecordCodecBuilder.mapCodec { instance -> instance.group(
-                Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(EscapeTarget::canEscapeLimbo)
+                Schemas.BOOL.fieldOf("canEscapeLimbo").forGetter(EscapeTarget::canEscapeLimbo)
             ).apply(
                 instance, ::EscapeTarget
             )

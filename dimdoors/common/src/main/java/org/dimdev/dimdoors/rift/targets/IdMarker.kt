@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.rift.targets
 
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
@@ -29,7 +29,7 @@ class IdMarker(val id: Int) : VirtualTarget<IdMarker>(), EntityTarget {
     }
 
     companion object {
-        val CODEC: MapCodec<IdMarker> = Codec.INT.xmap(::IdMarker, IdMarker::id)
+        val CODEC: MapCodec<IdMarker> = Schemas.INT.xmap(::IdMarker, IdMarker::id)
                 .fieldOf("id")
     }
 }

@@ -2,7 +2,9 @@ package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.pockets.PocketGenerator
@@ -44,7 +46,7 @@ class TemplateTarget(private val template: Holder<VirtualPocket>?) : RestoringTa
 
     companion object {
         val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
-                VirtualPocket.HOLDER_CODEC.lenientOptionalFieldOf("template").nullableForGetter(TemplateTarget::template)
+                Schemas.holder(ModRegistryKeys.VIRTUAL_POCKET, VirtualPocket.HOLDER_CODEC).lenientOptionalFieldOf("template").nullableForGetter(TemplateTarget::template)
             ).apply(instance) { TemplateTarget(it.getOrNull()) }
         }
     }

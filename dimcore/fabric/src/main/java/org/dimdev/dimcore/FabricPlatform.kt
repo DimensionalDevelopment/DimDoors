@@ -94,7 +94,9 @@ class FabricPlatform : Platform {
     override fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A) =
         ArgumentTypeRegistry.registerArgumentType(id, clazz, SingletonArgumentInfo.contextFree { supplier() })
 
-    override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) = ServerPlayNetworking.send(player, packet)
+    override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) {
+        if (canSend(player, packet.type())) ServerPlayNetworking.send(player, packet)
+    }
 
     override fun <T : CustomPacketPayload> sendPacket(packet: T) = ClientPlayNetworking.send(packet)
 

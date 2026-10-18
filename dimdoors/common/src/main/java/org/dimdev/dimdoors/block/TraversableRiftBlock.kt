@@ -18,8 +18,8 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.RiftUtils
 
 interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
-    override fun customDestroy(level: Level, pos: BlockPos, state: BlockState, i: Int, j: Int): Boolean {
-        val blockEntity = getRift(level, pos, state) ?: return false
+    override fun customDestroy(level: Level, pos: BlockPos, state: BlockState, i: Int, j: Int): Boolean? {
+        val blockEntity = getRift(level, pos, state) ?: return null
 
         blockEntity.detach()
         return true

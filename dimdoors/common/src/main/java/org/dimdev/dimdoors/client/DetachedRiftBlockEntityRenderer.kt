@@ -51,7 +51,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
 
     private fun shouldRenderDecayRadiusDebug(): Boolean {
         val minecraft = Minecraft.getInstance()
-        return minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).`is`(ModItems.RIFT_CONFIGURATION_TOOL)
+        return minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).let { it.`is`(ModItems.RIFT_CONFIGURATION_TOOL) || it.`is`(ModItems.RIFT_MARKER) }
     }
 
     private fun renderDecayRadius(

@@ -70,8 +70,8 @@ interface Rift : Target {
     val isAlwaysDelete: Boolean
         get() = this.data.alwaysDelete
 
-    val isForcedColor: Boolean
-        get() = this.data.forcedColor
+    val isColorOverridden: Boolean
+        get() = this.data.colorOverride != null
 
     var color: RGBA
         get() = this.data.color
@@ -148,7 +148,10 @@ interface Rift : Target {
     fun updateColor() {
         val data = this.data
 
-        if (data.forcedColor) return
+        data.colorOverride?.let {
+            if (data.color != it) this.color = it
+            return
+        }
         if (!this.isRegistered) {
             this.color = RGBA(0f, 0f, 0f, 1f)
         } else if (data.destination === VirtualTarget.NoneTarget) {

@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.block.entity
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.resources.RegistryFileCodec
 import net.minecraft.util.Mth
+import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.api.util.nullableForGetter
@@ -16,7 +17,7 @@ class RiftData {
     var destination: VirtualTarget<*> = VirtualTarget.NoneTarget
     var properties: LinkProperties? = null
     var alwaysDelete = false
-    var forcedColor = false
+    var colorOverride: RGBA? = null
     var size = 0
         set(value) {
             field = Mth.clamp(value, 0 , 150)
@@ -30,26 +31,27 @@ class RiftData {
         data.color = this.color.copy()
         data.alwaysDelete = this.alwaysDelete
         data.size = size
-        data.forcedColor = this.forcedColor
+        data.colorOverride = this.colorOverride?.copy()
         return data
     }
 
     companion object {
-        val CODEC: Codec<RiftData> = RecordCodecBuilder.create { instance -> instance.group(
+        val CODEC = Schemas.record<RiftData>(DimensionalDoors.id("rift_data")) { instance -> instance.group(
                 VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget)
                     .forGetter(RiftData::destination),
                 LinkProperties.CODEC.optionalFieldOf("properties").nullableForGetter(RiftData::properties),
-                RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::color),
-                Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::alwaysDelete),
-                Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::forcedColor),
-                Codec.INT.optionalFieldOf("size", 0).forGetter(RiftData::size)
-            ).apply(instance) { destination, properties, color, alwaysDelete, forcedColor, size ->
+                RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).readOnly().forGetter(RiftData::color),
+                Schemas.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::alwaysDelete),
+                RGBA.CODEC.optionalFieldOf("colorOverride").nullableForGetter(RiftData::colorOverride),
+                Schemas.int(0, 150).optionalFieldOf("size", 0).forGetter(RiftData::size),
+                Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter<RiftData> { false }
+            ).apply(instance) { destination, properties, color, alwaysDelete, colorOverride, size, forcedColor ->
                 val data = RiftData()
                 data.destination = destination
                 data.properties = properties.getOrNull()
                 data.color = color
                 data.alwaysDelete = alwaysDelete
-                data.forcedColor = forcedColor
+                data.colorOverride = colorOverride.getOrNull() ?: color.takeIf { forcedColor }
                 data.size = size
                 data
             }

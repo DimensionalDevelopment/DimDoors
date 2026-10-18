@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.rift.targets
 
 import com.google.common.collect.Sets
 import com.mojang.datafixers.Products.P8
-import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
@@ -11,6 +10,8 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.ext.castOrNull
+import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimcore.api.errata.schema.setOf
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
@@ -24,7 +25,6 @@ import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
-import java.util.stream.Collectors
 import kotlin.math.*
 
 abstract class RandomTarget<T : RandomTarget<T>>(
@@ -253,17 +253,14 @@ abstract class RandomTarget<T : RandomTarget<T>>(
         private val LOGGER: Logger = LogManager.getLogger()
 
         fun <T : RandomTarget<T>> common(instance: RecordCodecBuilder.Instance<T>): P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, MutableSet<Int>, Boolean, Boolean> = instance.group(
-                Codec.FLOAT.fieldOf("newRiftWeight").forGetter{ obj -> obj.newRiftWeight },
-                Codec.DOUBLE.fieldOf("weightMaximum").forGetter { obj -> obj.weightMaximum },
-                Codec.DOUBLE.fieldOf("coordFactor").forGetter { obj -> obj.coordFactor },
-                Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter { obj -> obj.positiveDepthFactor },
-                Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter { obj -> obj.negativeDepthFactor },
-                Codec.INT_STREAM.xmap(
-                    { intStream -> intStream.boxed().collect(Collectors.toSet()) },
-                    { integers -> integers.stream().mapToInt { obj -> obj } })
-                    .fieldOf("acceptedGroups").forGetter { obj -> obj.acceptedGroups },
-                Codec.BOOL.fieldOf("noLink").forGetter { obj -> obj.isNoLink },
-                Codec.BOOL.fieldOf("noLinkBack").forGetter { obj -> obj.isNoLinkBack }
+                Schemas.FLOAT.fieldOf("newRiftWeight").forGetter{ obj -> obj.newRiftWeight },
+                Schemas.DOUBLE.fieldOf("weightMaximum").forGetter { obj -> obj.weightMaximum },
+                Schemas.DOUBLE.fieldOf("coordFactor").forGetter { obj -> obj.coordFactor },
+                Schemas.DOUBLE.fieldOf("positiveDepthFactor").forGetter { obj -> obj.positiveDepthFactor },
+                Schemas.DOUBLE.fieldOf("negativeDepthFactor").forGetter { obj -> obj.negativeDepthFactor },
+                Schemas.INT.setOf().fieldOf("acceptedGroups").forGetter { obj -> obj.acceptedGroups },
+                Schemas.BOOL.fieldOf("noLink").forGetter { obj -> obj.isNoLink },
+                Schemas.BOOL.fieldOf("noLinkBack").forGetter { obj -> obj.isNoLinkBack }
             )
     }
 }

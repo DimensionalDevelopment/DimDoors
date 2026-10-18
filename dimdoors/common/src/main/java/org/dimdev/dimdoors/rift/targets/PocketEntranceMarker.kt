@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets
 
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Rotations
@@ -8,6 +7,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.apache.commons.lang3.builder.ToStringBuilder
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
@@ -84,7 +84,7 @@ class PocketEntranceMarker @JvmOverloads constructor(
 
     companion object {
         val CODEC: MapCodec<PocketEntranceMarker> = RecordCodecBuilder.mapCodec { instance -> instance.group(
-                    Codec.FLOAT.fieldOf("weight").forGetter(PocketEntranceMarker::weight),
+                    Schemas.FLOAT.fieldOf("weight").forGetter(PocketEntranceMarker::weight),
                     VirtualTarget.CODEC.optionalFieldOf("ifDestination", NoneTarget).forGetter(PocketEntranceMarker::ifDestination),
                     VirtualTarget.CODEC.optionalFieldOf("otherwiseDestination", NoneTarget).forGetter(PocketEntranceMarker::otherwiseDestination)
                 ).apply(instance, ::PocketEntranceMarker)

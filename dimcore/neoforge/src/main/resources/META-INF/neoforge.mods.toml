@@ -39,3 +39,10 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "imguimc"
+type = "optional"
+versionRange = "[1.2.5+mc1.21.1]"
+ordering = "NONE"
+side = "CLIENT"

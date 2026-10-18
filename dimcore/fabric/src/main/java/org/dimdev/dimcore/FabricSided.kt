@@ -51,7 +51,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
 
     data class PlayPayloadHandlerReturnable<T : CustomPacketPayload>(val packetFunction: (T, ServerPlayer) -> CustomPacketPayload?) : ServerPlayNetworking.PlayPayloadHandler<T> {
         override fun receive(payload: T, context: ServerPlayNetworking.Context) {
-            packetFunction.invoke(payload, context.player()).also { context.responseSender().sendPacket(it) }
+            packetFunction.invoke(payload, context.player())?.let { context.responseSender().sendPacket(it) }
         }
     }
 

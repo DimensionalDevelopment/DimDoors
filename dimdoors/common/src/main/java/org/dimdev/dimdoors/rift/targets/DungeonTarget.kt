@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.targets
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.Products
 import org.dimdev.dimdoors.pockets.PocketGenerator
@@ -81,7 +82,7 @@ class DungeonTarget(
     companion object {
         val CODEC: MapCodec<DungeonTarget> = RecordCodecBuilder.mapCodec { instance -> Products.and(
                 common(instance),
-                ResourceKey.codec(ModRegistryKeys.POCKET_GROUPS).fieldOf("dungeonGroup").forGetter(DungeonTarget::dungeonGroup)
+                Schemas.registryKey(ModRegistryKeys.POCKET_GROUPS).fieldOf("dungeonGroup").forGetter(DungeonTarget::dungeonGroup)
             ).apply(
                 instance, ::DungeonTarget
             )

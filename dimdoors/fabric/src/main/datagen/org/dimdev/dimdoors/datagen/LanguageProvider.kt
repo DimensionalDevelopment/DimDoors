@@ -188,11 +188,18 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
 
         addEntry(ModItems.RIFT_CONFIGURATION_TOOL) {
             //TODO: Figure out better working later.
-            info(0, "Shift right click on")
-            info(1, "a door to set")
-            info(2, "to an id for")
-            info(3, "pocket config in")
-            info(4, "a datapack.")
+            info(0, "Right click a rift")
+            info(1, "to open its configuration.")
+            info(2, "Operators only.")
+        }
+
+        addEntry(ModItems.RIFT_MARKER) {
+            info(0, "Right click a rift to set")
+            info(1, "it to an id for pocket")
+            info(2, "config in a datapack.")
+            info(3, "Shift left click a rift to clear it,")
+            info(4, "or anything else to reset the counter.")
+            info(5, "Creative only.")
         }
 
 
@@ -341,6 +348,72 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         add(VirtualTargets.ID_MARKER, "Id Marker")
         add(VirtualTargets.UNSTABLE, "Unstable")
         add(VirtualTargets.NONE, "None")
+
+        add("schema.dimdoors") {
+            add("rift_data") {
+                add("destination", "Destination")
+                add("color", "Color")
+                add("alwaysDelete", "Always Delete")
+                add("colorOverride", "Color Override")
+                add("size", "Size")
+            }
+            add("rgba") {
+                add("red", "Red")
+                add("green", "Green")
+                add("blue", "Blue")
+                add("alpha", "Alpha")
+            }
+
+            add("detached_rift") {
+                add("data", "Rift Data")
+                add("weight", "Weight")
+                add("curveID", "Curve")
+                add("rotation", "Rotation")
+            }
+            add("entrance_rift") { add("data", "Rift Data") }
+            add("dialing_door") {
+                add("data", "Rift Data")
+                add("address", "Address")
+            }
+            add("generic_rift") { add("data", "Rift Data") }
+
+            add("available_link", "Random")
+            add("available_link") { addRandomTargetFields() }
+            add("dungeon", "Dungeon")
+            add("dungeon") {
+                addRandomTargetFields()
+                add("dungeonGroup", "Dungeon Group")
+            }
+            add("template", "Template")
+            add("template") { add("template", "Template") }
+            add("escape", "Escape")
+            add("escape") { add("canEscapeLimbo", "Can Escape Limbo") }
+            add("rift_reference", "Rift Reference")
+            add("rift_reference") { add("target", "Target") }
+            add("temp", "Temporary")
+            add("temp") {
+                add("temp", "Temporary Destination")
+                add("original", "Original Destination")
+            }
+            add("limbo", "Limbo")
+            add("public_pocket", "Public Pocket")
+            add("pocket_entrance", "Pocket Entrance")
+            add("pocket_entrance") {
+                add("weight", "Weight")
+                add("ifDestination", "If Destination")
+                add("otherwiseDestination", "Otherwise Destination")
+            }
+            add("pocket_exit", "Pocket Exit")
+            add("private", "Private Pocket Entrance")
+            add("private_pocket_exit", "Private Pocket Exit")
+            add("dialing", "Dialing")
+            add("dialing") { add("address", "Address") }
+            add("dialing_pocket_exit", "Dialing Pocket Exit")
+            add("unstable", "Unstable")
+            add("id_marker", "Id Marker")
+            add("id_marker") { add("id", "Id") }
+            add("none", "None")
+        }
 
         add("category.dimdoors") {
             add("tesselating", "Tesselating")
@@ -834,6 +907,17 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
     private fun add(type: MapCodec<out VirtualTarget<*>>, name: String) {
         val key = Util.makeDescriptionId("virtual_type", ModRegistries.VIRTUAL_TYPE.getKey(type))
         add(key, name)
+    }
+
+    private fun addRandomTargetFields() {
+        add("newRiftWeight", "New Rift Weight")
+        add("weightMaximum", "Weight Maximum")
+        add("coordFactor", "Coordinate Factor")
+        add("positiveDepthFactor", "Positive Depth Factor")
+        add("negativeDepthFactor", "Negative Depth Factor")
+        add("acceptedGroups", "Accepted Groups")
+        add("noLink", "No Link")
+        add("noLinkBack", "No Link Back")
     }
 
     private fun info(value: String) {

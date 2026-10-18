@@ -3,10 +3,13 @@ package org.dimdev.dimdoors.rift.targets
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
+import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.rift.target.TargetResolver
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.rift.VertexReferenceSource
 import org.dimdev.dimdoors.rift.registry.RiftGraph
 import org.dimdev.dimdoors.rift.registry.RiftPlaceholder
 import org.dimdev.dimdoors.rift.registry.Vertex
@@ -62,6 +65,6 @@ class RiftReference(private val target: Vertex) : VirtualTarget<RiftReference>()
     companion object {
         fun from(level: ServerLevel, pos: BlockPos): Vertex = Location.ofWorld(level, pos).riftOrPlaceholder().rift()
 
-        var CODEC: MapCodec<RiftReference> = Vertex.CODEC.fieldOf("target").xmap(::RiftReference) { it.target }
+        var CODEC: MapCodec<RiftReference> = Schemas.reference(VertexReferenceSource, Vertex.CODEC).element(DimensionalDoors.id("location")).fieldOf("target").xmap(::RiftReference) { it.target }
     }
 }

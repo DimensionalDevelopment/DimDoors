@@ -62,6 +62,12 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
         world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(OPEN, false))
     }
 
+    override fun customDestroy(level: Level, pos: BlockPos, state: BlockState, i: Int, j: Int): Boolean? {
+        if(state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) return null
+
+        return super.customDestroy(level, pos, state, i, j)
+    }
+
     public override fun useWithoutItem(
         state: BlockState,
         world: Level,

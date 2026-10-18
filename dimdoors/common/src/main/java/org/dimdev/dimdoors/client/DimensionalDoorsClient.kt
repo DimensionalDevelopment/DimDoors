@@ -26,6 +26,7 @@ import org.dimdev.dimcore.api.client.ActionKeyMapping
 import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import org.dimdev.dimcore.client.node.RenderNodes
+import org.dimdev.dimcore.client.errata.element.SchemaElements
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
@@ -37,6 +38,9 @@ import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
+import org.dimdev.dimdoors.compat.imgui.DialsElement
+import org.dimdev.dimdoors.compat.imgui.LocationElement
+import org.dimdev.dimdoors.compat.imgui.RotationElement
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
 import org.dimdev.dimdoors.compat.iris.IrisCompat
 import org.dimdev.dimdoors.entity.MaskEntity
@@ -77,6 +81,10 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
             )
 
             ImGuiMCEvents.INSTANCE.preRenderImGuiEvent { PortalColorGui.render() }
+
+            SchemaElements.register(DimensionalDoors.id("dials"), DialsElement)
+            SchemaElements.register(DimensionalDoors.id("location"), LocationElement)
+            SchemaElements.register(DimensionalDoors.id("rotation"), RotationElement)
         }
     }
 

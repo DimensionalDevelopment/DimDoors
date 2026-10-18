@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
@@ -125,6 +127,8 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         }
     }
 
+    override val configRecords: List<CodecRecord<DetachedRiftBlockEntity, *>> get() = listOf(WEIGHT_BUILDER, CURVE_ID_BUILDER, RIFT_YAW_BUILDER)
+
     override val isDetached: Boolean get() = true
 
     override fun unregister() {
@@ -221,10 +225,10 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     companion object {
         const val DECAY_RADIUS_DIVISOR: Float = 40f
-        private val SPAWNED_ENDERMAN_ID_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("spawnedEnderManId", Codec.INT, 0, DetachedRiftBlockEntity::spawnedEndermanId)
-        private val RIFT_YAW_BUILDER = CodecRecord<DetachedRiftBlockEntity, Float>("rotation", Codec.FLOAT, { (Math.random() * 360).toFloat() }, DetachedRiftBlockEntity::riftYaw)
-        private val CURVE_ID_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("curveID", Codec.INT, { (Math.random() * RiftCurves.CURVES.size).toInt() }, DetachedRiftBlockEntity::curveID)
-        private val WEIGHT_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("weight", Codec.intRange(-100, 100), 5, DetachedRiftBlockEntity::weight)
-        private val UPDATE_TIMER_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("updateTimer", Codec.INT, 0, DetachedRiftBlockEntity::updateTimer)
+        private val SPAWNED_ENDERMAN_ID_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("spawnedEnderManId", Codec.INT, 0, DetachedRiftBlockEntity::spawnedEndermanId) { rift, value -> rift.spawnedEndermanId = value }
+        private val RIFT_YAW_BUILDER = CodecRecord("rotation", Schemas.float(0f, 360f).element(DimensionalDoors.id("rotation")), { (Math.random() * 360).toFloat() }, DetachedRiftBlockEntity::riftYaw) { rift, value -> rift.riftYaw = value }
+        private val CURVE_ID_BUILDER = CodecRecord("curveID", Schemas.int(0, RiftCurves.CURVES.size - 1), { (Math.random() * RiftCurves.CURVES.size).toInt() }, DetachedRiftBlockEntity::curveID) { rift, value -> rift.curveID = value }
+        private val WEIGHT_BUILDER = CodecRecord("weight", Schemas.int(-100, 100, 5), 5, DetachedRiftBlockEntity::weight) { rift, value -> rift.weight = value }
+        private val UPDATE_TIMER_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("updateTimer", Codec.INT, 0, DetachedRiftBlockEntity::updateTimer) { rift, value -> rift.updateTimer = value }
     }
 }

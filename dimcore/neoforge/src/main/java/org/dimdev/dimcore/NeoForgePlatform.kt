@@ -154,7 +154,9 @@ class NeoForgePlatform : Platform {
         }
     }
 
-    override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) = PacketDistributor.sendToPlayer(player, packet)
+    override fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T) {
+        if (canSend(player, packet.type())) PacketDistributor.sendToPlayer(player, packet)
+    }
 
     override fun <T : CustomPacketPayload> sendPacket(packet: T) = PacketDistributor.sendToServer(packet)
 

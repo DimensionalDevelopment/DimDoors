@@ -1099,7 +1099,7 @@ Fields:
 | `properties` | No | Link properties object | None | Link weighting and one-way behavior. |
 | `color` | No | RGBA object | `{red:0,green:0,blue:0,alpha:0}` | Rift color. |
 | `alwaysDelete` | No | Boolean | `false` | Whether the rift should always delete. |
-| `forcedColor` | No | Boolean | `false` | Whether color is forced. |
+| `colorOverride` | No | RGBA object | None | Fixed rift color; when set, `color` is no longer computed from the destination. |
 
 Example:
 
@@ -1148,7 +1148,7 @@ Example:
 
 ### RGBA
 
-`color` fields:
+`color` / `colorOverride` fields (each channel is clamped to 0–1):
 
 | Field | Type |
 | --- | --- |
@@ -1161,15 +1161,16 @@ Example:
 
 ```json
 {
-  "color": {
+  "colorOverride": {
     "red": 1.0,
     "green": 0.0,
     "blue": 0.0,
     "alpha": 1.0
-  },
-  "forcedColor": true
+  }
 }
 ```
+
+The old `"forcedColor": true` is still read and turns the existing `color` into `colorOverride`.
 
 ## Virtual Targets
 

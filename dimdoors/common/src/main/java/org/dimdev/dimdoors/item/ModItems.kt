@@ -29,6 +29,7 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val WORLD_THREAD = registerRegular("world_thread")
     @JvmField val FRAYED_FILAMENT = registerRegular("frayed_filament")
     @JvmField val RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", ::RiftConfigurationToolItem)
+    @JvmField val RIFT_MARKER = registerRegular("rift_marker", ::RiftMarkerItem)
 
 
     //TOOLS

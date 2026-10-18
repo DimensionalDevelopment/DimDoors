@@ -56,6 +56,7 @@ import org.dimdev.dimdoors.pockets.modifier.Modifiers
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
+import org.dimdev.dimcore.api.errata.session.Errata
 import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
@@ -121,6 +122,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         ModCommands.register()
         ModDimensions.register()
         RiftGraph.registerEvents()
+        Errata.init()
         LinkPropertiesRegistry.registerEvents()
         LevelSpaceRegistry.registerEvents()
         sided.checkCompat()
@@ -191,6 +193,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         packetRegister.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, ClientPacketListener::onPortalColors)
         packetRegister.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, ClientPacketListener::onClearPocket)
 
+        Errata.registerPackets(packetRegister)
     }
 
     companion object {

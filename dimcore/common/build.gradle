@@ -52,6 +52,8 @@ dependencies {
 
     compileOnly libs.sodium.neoforge
     compileOnly libs.iris.common
+
+    sharedCompileOnly libs.imguimc.common
 }
 
 artifacts {

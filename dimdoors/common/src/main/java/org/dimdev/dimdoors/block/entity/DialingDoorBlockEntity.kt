@@ -27,6 +27,8 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
         this.address = nbt.get(DIALING_ADDRESS_BUILDER)
     }
 
+    override val configRecords: List<CodecRecord<DialingDoorBlockEntity, *>> get() = listOf(DIALING_ADDRESS_BUILDER)
+
     fun turnDial(type: DialingAddress.DialType) {
         updateAddress(address.turnDial(type))
     }
@@ -68,7 +70,8 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
             "address",
             DialingAddress.CODEC,
             DialingAddress.DEFAULT,
-            DialingDoorBlockEntity::address
+            DialingDoorBlockEntity::address,
+            DialingDoorBlockEntity::updateAddress
         )
     }
 }
