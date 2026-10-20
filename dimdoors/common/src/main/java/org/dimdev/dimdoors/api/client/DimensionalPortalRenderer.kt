@@ -19,6 +19,7 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.client.DimensionalDoorsClient
 import org.dimdev.dimdoors.client.ModShaders
+import org.dimdev.dimdoors.client.RenderTypes
 import org.dimdev.dimdoors.client.RenderUtils
 
 object DimensionalPortalRenderer {
@@ -80,6 +81,8 @@ object DimensionalPortalRenderer {
         light: Int,
         overlay: Int
     ) {
+        RenderTypes.chromaticRenderType
+
         val model = when (state.block) {
            is DoorBlock -> getModelFromDirection(state.getValue(DoorBlock.FACING))
            is TrapDoorBlock -> if (state.getValue(TrapDoorBlock.HALF) == Half.TOP) TrapDoorBlock.TOP_AABB else TrapDoorBlock.BOTTOM_AABB

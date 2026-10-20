@@ -39,6 +39,7 @@ import org.dimdev.dimdoors.entity.ModEntityTypes.MONOLITH
 import org.dimdev.dimdoors.entity.mask.MaskEntity
 import org.dimdev.dimdoors.entity.stat.ModStats
 import org.dimdev.dimdoors.fluid.ModFluids
+import org.dimdev.dimdoors.item.MaskWearerEffects
 import org.dimdev.dimdoors.item.ModArmorMaterials
 import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.item.ModItems
@@ -162,7 +163,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
 
     override fun registerEntityAttributes(register: EntityAttributeRegister) {
         register.register(MONOLITH, Mob::createMobAttributes)
-        register.register(MASK, MaskEntity::createAttributes)
+        register.register(MASK, MaskEntity.Companion::createAttributes)
     }
 
     override fun registerPacks(register: PackRegister) {
@@ -288,6 +289,13 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             UseItemOnBlockCallback.EVENT.register(UseDoorItemOnBlockCallbackListener())
 
             platform.onServerLevelTick(Decay::tick)
+
+            PlacedContent.tracker = ChunkPlacedContentTracker
+            platform.onAfterBlockPlace { level, pos, _, placer -> if (placer is Player && ModDimensions.isPocketDimension(level)) PlacedContent.tracker.onPlaced(level, pos) }
+            platform.onAfterBlockBreak { level, pos, _, _ -> if (ModDimensions.isPocketDimension(level)) PlacedContent.tracker.onRemoved(level, pos) }
+
+            MaskEntity.registerEvents()
+            MaskWearerEffects.registerEvents()
         }
 
         private fun shouldCancelBlockModification(level: Level, pos: BlockPos, actor: Entity?): Boolean = !(actor is Player && actor.isCreative) && PocketListenerUtil.getAddon(PocketAddons.PREVENT_BLOCK_MODIFICATION_ADDON, level, pos) != null

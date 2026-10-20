@@ -5,6 +5,7 @@ import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 
 object ModGameRules {
     val RIFT_SIGNATURE_WORKS_IN_PRIVATE_POCKETS: GameRules.Key<GameRules.BooleanValue> = getSided().registerGameRule("pocketsRiftSignaturesWorkInPrivatePockets", GameRules.Category.MISC, true)
+    val DUNGEON_REAPER: GameRules.Key<GameRules.BooleanValue> = getSided().registerGameRule("dungeonReaper", GameRules.Category.MISC, false)
 
     fun register() {}
 }

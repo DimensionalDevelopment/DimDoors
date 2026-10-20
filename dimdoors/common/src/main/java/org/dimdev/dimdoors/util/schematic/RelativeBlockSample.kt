@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.CommandBlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimdoors.entity.mask.MaskEntity
 
 class RelativeBlockSample(@JvmField val schematic: Schematic) {
     private val blockDataContainer: MutableMap<BlockPos, BlockData> = Maps.newHashMap()
@@ -102,7 +103,10 @@ class RelativeBlockSample(@JvmField val schematic: Schematic) {
             doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z))
             nbt.put("Pos", doubles)
             nbt.remove("UUID")
-            EntityType.create(nbt, world.level).ifPresent { world.addFreshEntity(it) }
+            EntityType.create(nbt, world.level).ifPresent {
+                if (it is MaskEntity) it.frozen = false
+                world.addFreshEntity(it)
+            }
         }
     }
 

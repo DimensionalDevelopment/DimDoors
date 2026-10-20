@@ -63,6 +63,15 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         }
     }
 
+    @JvmField val MASK_HOME = create("mask_home") {
+        block(::MaskHomeBlock)
+        blockProperties {
+            noCollission()
+            noOcclusion()
+            noLootTable()
+        }
+    }
+
     @JvmField val DIALING_DOOR = regular("dialing_door") {
         block { DialingDoor(it, BlockSetType.IRON) }
         blockProperties(Blocks.GOLD_BLOCK) { requiresCorrectToolForDrops() }

@@ -12,12 +12,8 @@ import net.minecraft.client.model.geom.builders.MeshDefinition
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import org.dimdev.dimdoors.entity.mask.MaskEntity
 
-class MaskModel(root: EntityRendererProvider.Context) : HierarchicalModel<MaskEntity?>() {
-    private val root: ModelPart
-
-    init {
-        this.root = root.bakeLayer(ModEntityModelLayers.MASK)
-    }
+class MaskModel(root: EntityRendererProvider.Context) : HierarchicalModel<MaskEntity>() {
+    private val root: ModelPart = root.bakeLayer(ModEntityModelLayers.MASK)
 
     override fun setupAnim(
         entity: MaskEntity,
@@ -27,7 +23,7 @@ class MaskModel(root: EntityRendererProvider.Context) : HierarchicalModel<MaskEn
         netHeadYaw: Float,
         headPitch: Float
     ) {
-        this.root().getAllParts().forEach { obj: ModelPart? -> obj!!.resetPose() }
+        this.root().allParts.forEach(ModelPart::resetPose)
 
         this.animate(entity.idleState, MaskAnimations.IDLE, ageInTicks)
         this.animate(entity.spottedState, MaskAnimations.SPOTTED, ageInTicks)
@@ -52,7 +48,7 @@ class MaskModel(root: EntityRendererProvider.Context) : HierarchicalModel<MaskEn
             get() {
                 val meshdefinition =
                     MeshDefinition()
-                val partdefinition = meshdefinition.getRoot()
+                val partdefinition = meshdefinition.root
 
                 val mask = partdefinition.addOrReplaceChild(
                     "mask",

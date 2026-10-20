@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.level.ItemLike
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.Platform
+import org.dimdev.dimcore.api.util.SimpleEvent
 import java.nio.file.Path
 import java.util.function.Consumer
 
@@ -71,6 +73,8 @@ class FabricPlatform : Platform {
 
     override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = ServerTickEvents.START_WORLD_TICK.register(ServerTickEvents.StartWorldTick { consumer.invoke(it) })
 
+    override fun onPlayerTick(consumer: (ServerPlayer) -> Unit) = PLAYER_TICK.register(consumer)
+
     override fun onPlayerChangeWorld(consumer: (ServerPlayer, ServerLevel, ServerLevel) -> Unit) = ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register { player, before, after -> consumer.invoke(player, before, after) }
 
     override fun onAttackBlock(callback: Platform.AttackBlockCallback) = AttackBlockCallback.EVENT.register { player, _, hand, pos, direction -> callback.attack(player, hand, pos, direction) }
@@ -87,6 +91,12 @@ class FabricPlatform : Platform {
             val pos = hitResult.blockPos
             if (callback.shouldCancel(level, hitResult.blockPos, level.getBlockState(pos), player)) InteractionResult.FAIL else InteractionResult.PASS
         }
+    }
+
+    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = AFTER_BLOCK_PLACE.register(consumer)
+
+    override fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit) = PlayerBlockBreakEvents.AFTER.register { level, player, pos, state, _ ->
+        if (level is ServerLevel) consumer.invoke(level, pos, state, player)
     }
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = CommandRegistrationCallback.EVENT.register { dispatcher, _, _ -> consumer.invoke(dispatcher) }
@@ -107,4 +117,18 @@ class FabricPlatform : Platform {
     override fun registerStrippable(source: Block, target: Block) = StrippableBlockRegistry.register(source, target)
 
     override fun registerFlammable(block: Block, encouragement: Int, flammability: Int) = FlammableBlockRegistry.getDefaultInstance().add(block, encouragement, flammability)
+
+    companion object {
+        @JvmField
+        val AFTER_BLOCK_PLACE: SimpleEvent<(ServerLevel, BlockPos, BlockState, Entity?) -> Unit> = SimpleEvent.of { listeners -> { level, pos, state, placer ->
+                listeners.forEach { listener -> listener.invoke(level, pos, state, placer) }
+            }
+        }
+
+        @JvmField
+        val PLAYER_TICK: SimpleEvent<(ServerPlayer) -> Unit> = SimpleEvent.of { listeners -> { player ->
+                listeners.forEach { listener -> listener.invoke(player) }
+            }
+        }
+    }
 }

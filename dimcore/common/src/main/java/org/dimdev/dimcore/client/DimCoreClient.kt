@@ -5,8 +5,8 @@ import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
 import org.dimdev.dimcore.api.client.ClientReloadListenerRegister
 import org.dimdev.dimcore.api.client.IClientSided
 import org.dimdev.dimcore.api.client.ModClient
-import org.dimdev.dimcore.client.node.RenderNodes
 import org.dimdev.dimcore.client.errata.imgui.SchemaImGui
+import org.dimdev.dimcore.client.node.RenderNodes
 
 object DimCoreClient : ModClient<IClientSided<*>>, ClientReloadListenerProvider {
 

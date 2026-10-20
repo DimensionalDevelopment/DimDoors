@@ -3,13 +3,12 @@ package org.dimdev.dimdoors.client
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import foundry.imgui.api.ImGuiMCEvents
+import net.minecraft.client.Minecraft
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.renderer.DimensionSpecialEffects
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
-import net.minecraft.client.renderer.entity.EntityRenderer
-import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
@@ -20,13 +19,17 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
+import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.DimCore.clientPlatform
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.client.ActionKeyMapping
 import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.fluid.FluidDetails
-import org.dimdev.dimcore.client.node.RenderNodes
+import org.dimdev.dimcore.client.DebugRenders
+import org.dimdev.dimcore.client.RenderUtils
+import org.dimdev.dimcore.client.RenderUtils.drawBox
 import org.dimdev.dimcore.client.errata.element.SchemaElements
+import org.dimdev.dimcore.client.node.RenderNodes
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
@@ -40,11 +43,12 @@ import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
 import org.dimdev.dimdoors.compat.imgui.DialsElement
 import org.dimdev.dimdoors.compat.imgui.LocationElement
-import org.dimdev.dimdoors.compat.imgui.RotationElement
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
+import org.dimdev.dimdoors.compat.imgui.RotationElement
 import org.dimdev.dimdoors.compat.iris.IrisCompat
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
+import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.network.client.ClientPacketListener
 import org.dimdev.dimdoors.particle.ModParticleTypes
@@ -66,6 +70,25 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         registerCompats()
 
         sided.onPreRender(this::preRender)
+
+        DebugRenders.register { poseStack, source ->
+            val player = Minecraft.getInstance().player ?: return@register
+            val stack = player.mainHandItem
+            if(stack.`is`(ModItems.MASK_WAND)) {
+                val waypoints = stack.get(ModDataComponentTypes.MASK_WAND_WAYPOINTS)?.takeUnless { it.isEmpty() }?.map { Vec3.atCenterOf(it) } ?: return@register
+
+                poseStack.pusPop {
+                    waypoints.forEach { it.drawBox(poseStack, source, 0.125, 0x55ffff00) }
+
+                    if(waypoints.size == 1) return@pusPop
+                    waypoints.zipWithNext().forEach { (to, from) ->
+                        RenderUtils.drawLine(poseStack, source, 0.0, 0xffffffff.toInt(), to, from)
+                    }
+
+
+                }
+            }
+        }
 
         RenderNodes.register(RiftCrackRenderer.ChromaticAberration)
 
@@ -162,7 +185,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
 
     override fun initModelLayers(consumer: (ModelLayerLocation, () -> LayerDefinition) -> Unit) {
         consumer.invoke(ModEntityModelLayers.MONOLITH, MonolithModel::texturedModelData)
-        consumer.invoke(ModEntityModelLayers.MASK, MaskModel::getTexturedModelData)
+        consumer.invoke(ModEntityModelLayers.MASK, MaskModel::texturedModelData)
     }
 
     fun preRender(ticks: Long, deltaTick: Float) {

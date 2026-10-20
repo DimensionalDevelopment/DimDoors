@@ -59,6 +59,9 @@ object ModDimensions {
         return world.dimension() == LIMBO
     }
 
+    @JvmStatic
+    fun isRootDimension(world: Level): Boolean = !isPocketDimension(world) && !isLimboDimension(world)
+
     fun register() {
         platform.onServerStarted { server ->
             LIMBO_DIMENSION = server.getLevel(LIMBO)!!

@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.RGBA
@@ -46,8 +47,17 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
 //            this.renderDecayRadius(renderType, multiBufferSource.getBuffer(renderType), rift, matrices)
 //        }
 
+//        HALF.drawBox(matrices, multiBufferSource, 0.125, 0x8800ff00.toInt())
+//        HALF2.drawBox(matrices, multiBufferSource, 0.125, 0x8800ff00.toInt())
+//
+//        org.dimdev.dimcore.client.RenderUtils.drawLine(matrices, multiBufferSource, 0.125, 0xffffffff.toInt(), HALF, HALF2)
+
         this.renderCrack(multiBufferSource, matrices, rift)
     }
+
+    val HALF = Vec3(0.5, 0.5, 0.5)
+
+    val HALF2 = Vec3(0.5, 3.5, 0.5)
 
     private fun shouldRenderDecayRadiusDebug(): Boolean {
         val minecraft = Minecraft.getInstance()

@@ -15,6 +15,7 @@ import org.dimdev.dimcore.api.BuilderType
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.client.ModShaders
 import org.dimdev.dimdoors.entity.MonolithEntity
+import org.dimdev.dimdoors.item.MaskWearerEffects
 import org.dimdev.dimdoors.network.packet.s2c.*
 import org.dimdev.dimdoors.particle.client.MonolithParticle
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon

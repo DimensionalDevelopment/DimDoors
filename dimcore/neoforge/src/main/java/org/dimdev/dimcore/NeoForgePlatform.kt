@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.synchronization.ArgumentTypeInfos
 import net.minecraft.commands.synchronization.SingletonArgumentInfo
+import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
@@ -14,11 +15,14 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.FireBlock
+import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.EventPriority
 import net.neoforged.fml.ModList
@@ -36,6 +40,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent
 import net.neoforged.neoforge.event.server.ServerStoppedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
 import net.neoforged.neoforge.event.tick.LevelTickEvent
+import net.neoforged.neoforge.event.tick.PlayerTickEvent
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.registries.RegisterEvent
 import net.neoforged.neoforge.server.ServerLifecycleHooks
@@ -87,6 +92,8 @@ class NeoForgePlatform : Platform {
     override fun onPlayerQuit(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 
     override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<LevelTickEvent.Pre> { it.level.castOrNull<ServerLevel>()?.run(consumer) }
+
+    override fun onPlayerTick(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerTickEvent.Post> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 
     override fun onPlayerChangeWorld(consumer: (ServerPlayer, ServerLevel, ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerEvent.PlayerChangedDimensionEvent> { event ->
         val player = event.entity.castOrNull<ServerPlayer>() ?: return@addListener
@@ -142,6 +149,16 @@ class NeoForgePlatform : Platform {
             ) {
                 event.setCanceled(true)
             }
+        }
+
+    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, BlockEvent.EntityPlaceEvent::class.java) { event ->
+            val level = event.level.castOrNull<ServerLevel>() ?: return@addListener
+            consumer.invoke(level, event.pos, event.placedBlock, event.entity)
+        }
+
+    override fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit) = NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, BlockEvent.BreakEvent::class.java) { event ->
+            val level = event.level.castOrNull<ServerLevel>() ?: return@addListener
+            consumer.invoke(level, event.pos, event.state, event.player)
         }
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = NeoForge.EVENT_BUS.addListener<RegisterCommandsEvent> { event -> event.dispatcher.run(consumer) }
