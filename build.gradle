@@ -2,7 +2,7 @@ import static org.gradle.api.file.DuplicatesStrategy.INCLUDE
 
 //file:noinspection GroovyAssignabilityCheck
 plugins {
-    id 'com.gradleup.shadow' version '9.+'
+    id 'com.gradleup.shadow' version '9.2.2'
     id 'idea'
     id 'java-library'
     id 'net.minecraftforge.gradle' version '6.+'

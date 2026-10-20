@@ -348,6 +348,7 @@ public class Schematic {
     private void setBlocks(World world, int xBase, int yBase, int zBase) {
         long setTime = 0;
         long relightTime = 0;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         // CubicChunks makes cubic worlds implement ICubicWorld
         if (cubicChunks && ((ICubicWorld) world).isCubicWorld()) {
             log.debug("Setting cube blockstates");
@@ -358,6 +359,7 @@ public class Schematic {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
                         Cube cube = (Cube)cubicWorld.getCubeFromCubeCoords((xBase>>4)+cubeX, (yBase>>4)+cubeY, (zBase>>4)+cubeZ);
+                        Map<BlockPos, TileEntity> tileEntityMap = cube.getTileEntityMap();
                         ExtendedBlockStorage storage = cube.getStorage();
                         boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
@@ -367,6 +369,10 @@ public class Schematic {
                                     int sy = (cubeY << 4) + y - (yBase & 0x0F);
                                     int sz = (cubeZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
+                                        if (!tileEntityMap.isEmpty()) {
+                                            pos.setPos(xBase + sx, yBase + sy, zBase + sz);
+                                            if (tileEntityMap.containsKey(pos)) world.removeTileEntity(pos.toImmutable());
+                                        }
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(AIR)) {
                                             if (Objects.isNull(storage))
@@ -393,6 +399,7 @@ public class Schematic {
                     long setStart = System.nanoTime();
                     // Get the chunk only once for efficiency
                     Chunk chunk = world.getChunk((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
+                    Map<BlockPos, TileEntity> tileEntityMap = chunk.getTileEntityMap();
                     ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
                     for (int storageY = 0; storageY <= (height >> 4) + 1; storageY++) {
                         // Get the storage only once for efficiency
@@ -405,6 +412,10 @@ public class Schematic {
                                     int sy = (storageY << 4) + y - (yBase & 0x0F);
                                     int sz = (chunkZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
+                                        if (!tileEntityMap.isEmpty()) {
+                                            pos.setPos(xBase + sx, yBase + sy, zBase + sz);
+                                            if (tileEntityMap.containsKey(pos)) world.removeTileEntity(pos.toImmutable());
+                                        }
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(AIR)) {
                                             if (Objects.isNull(storage)) {
