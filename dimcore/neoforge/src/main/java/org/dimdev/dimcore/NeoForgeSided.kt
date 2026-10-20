@@ -1,6 +1,7 @@
 package org.dimdev.dimcore
 
 import com.mojang.serialization.Codec
+import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -63,6 +64,10 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
                 return attachment as V
             }
 
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
+                throw UnsupportedOperationException("Holders for Data Values not supported.")
+            }
+
             override fun createRegistry(): Registry<T> = NeoForgeRegistries.ATTACHMENT_TYPES.cast()
         }
 
@@ -71,6 +76,12 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
                 val type = supplier() as CreativeTabType
                 queue(Registries.CREATIVE_MODE_TAB, name, CreativeModeTab.builder().apply(type.block).build())
                 return DeferredHolder.create<CreativeModeTab, CreativeModeTab>(Registries.CREATIVE_MODE_TAB, id(name)) as V
+            }
+
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
+                val type = supplier() as CreativeTabType
+                queue(Registries.CREATIVE_MODE_TAB, name, CreativeModeTab.builder().apply(type.block).build())
+                return DeferredHolder.create<CreativeModeTab, CreativeModeTab>(Registries.CREATIVE_MODE_TAB, id(name)) as Holder<V>
             }
 
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
@@ -83,6 +94,11 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
                 val value = supplier()
                 queue(resourceKey, name, value as Any)
                 return value
+            }
+
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
+                queue(resourceKey, name, supplier() as Any)
+                return DeferredHolder.create<T, V>(resourceKey, id(name)) as Holder<V>
             }
 
             override fun createRegistry(): Registry<T> = target

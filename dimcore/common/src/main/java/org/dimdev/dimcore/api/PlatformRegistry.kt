@@ -73,8 +73,6 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
     val registry: Registry<T> = register.createRegistry()
     val modid = sided.modId()
 
-    protected val queue = mutableListOf<T>()
-
     /**
      * Creates a new entry in this registry.
      *
@@ -84,7 +82,9 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
      * @return The entry created.
      */
     open fun <V : T> create(name: String, entry: () -> V): V =
-        register.register(name, entry).also { queue.add(it.cast()) }
+        register.register(name, entry)
+
+    open fun <V : T> createHolder(name: String, entry: () -> V): Holder<V> = register.registerHolder(name, entry)
 
     /**
      * Handles the registration of this registry into the platform specific one.
@@ -93,11 +93,10 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
      */
     open fun register() {}
 
-    open fun allHolders(): Collection<T> = this.queue.toList()
-
     abstract class EntryRegister<T> {
         abstract fun createRegistry(): Registry<T>
         abstract fun <V : T> register(name: String, supplier: () -> V): V
+        abstract fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V>
     }
 
     open class StructureProcessorPlatformRegistry(sided: ISided<*>) : PlatformRegistry<StructureProcessorType<*>>(
@@ -186,16 +185,16 @@ abstract class PlatformRegistry<T: Any>(registryKey: ResourceKey<Registry<T>>, r
         fun <T : B> create(id: String, codec: MapCodec<T>, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): Type<T> = create(id) { Type(codec, streamCodec) }
         fun <T : B> create(id: String, codec: MapCodec<B>): Type<B> = create(id) { Type(codec, null) }
 
-        val codec = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
-        val streamCodec = ByteBufCodecs.registry(registryKey).dispatch({ it.type }, { it.streamCodec })
+        val codec: Codec<B> = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
+        val streamCodec: StreamCodec<RegistryFriendlyByteBuf, B> = ByteBufCodecs.registry(registryKey).dispatch({ it.type }, { it.streamCodec })
     }
 
     open class BuilderTypePlatformRegistry<B : BuilderTypeHasHolder<B, C>, C : BuilderTypeHasHolder<B, C>>(registryKey: ResourceKey<Registry<BuilderType<B, C>>>, sided: ISided<*>, synced: Boolean = false) : PlatformRegistry<BuilderType<B, C>>(registryKey, sided, synced) {
         fun <T : B, V: C> create(id: String, codec: MapCodec<T>, builderCodec: MapCodec<V>, builderSupplier: () -> V, streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>? = null): BuilderType<T, V> = create(id) { BuilderType(codec, builderCodec, builderSupplier, streamCodec) }
 
-        val codec = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
-        val builderCodec = this.registry.byNameCodec().dispatch({ it.type }, { it.builderCodec })
-        val streamCodec = ByteBufCodecs.registry(registryKey)
+        val codec: Codec<B> = this.registry.byNameCodec().dispatch({ it.type }, { it.codec })
+        val builderCodec: Codec<C> = this.registry.byNameCodec().dispatch({ it.type }, { it.builderCodec })
+        val streamCodec: StreamCodec<RegistryFriendlyByteBuf, BuilderType<B, C>> = ByteBufCodecs.registry(registryKey)
     }
 
     open class BlockItemPlatformRegistry(protected val sided: ISided<*>) {

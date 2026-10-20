@@ -25,7 +25,7 @@ import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal
 import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.tag.ModWorldTags
+import org.dimdev.dimdoors.tag.DimensionTypeTags
 import org.dimdev.dimdoors.util.TagUtils
 import org.dimdev.dimdoors.world.ModDimensions.isLimboDimension
 
@@ -87,7 +87,7 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
 
     override fun customServerAiStep() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(TagUtils.isIn(this.level(), ModWorldTags.MONOLITHS_CAN_EXIST))) {
+        if (!(TagUtils.isIn(this.level(), DimensionTypeTags.MONOLITHS_CAN_EXIST))) {
             this.remove(RemovalReason.DISCARDED)
             super.customServerAiStep()
             return
@@ -247,7 +247,7 @@ class MonolithEntity(type: EntityType<out MonolithEntity>, world: Level) : Mob(t
 
     override fun checkSpawnRules(world: LevelAccessor, spawnReason: MobSpawnType): Boolean {
         //TODO: Verify that isn't an situations where world isn't an instance of Level where relevant to monolith spawning.
-        if (world is Level && TagUtils.isIn(world, ModWorldTags.MONOLITHS_CAN_EXIST)) {
+        if (world is Level && TagUtils.isIn(world, DimensionTypeTags.MONOLITHS_CAN_EXIST)) {
             if (spawnReason == MobSpawnType.CHUNK_GENERATION) {
                 return super.checkSpawnRules(world, spawnReason)
             }

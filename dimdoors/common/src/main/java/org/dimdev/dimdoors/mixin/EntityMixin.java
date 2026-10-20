@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,6 +24,8 @@ public abstract class EntityMixin implements LastPositionProvider {
     @Nullable
     public abstract MinecraftServer getServer();
 
+    @Shadow @Final protected RandomSource
+            random;
     private Vec3 lastPos;
 
     @Inject(method = "checkInsideBlocks()V", at = @At("TAIL"))

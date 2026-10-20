@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.*
+import org.dimdev.dimcore.api.errata.session.Errata
 import org.dimdev.dimcore.api.event.PlayerTeleportEvents
 import org.dimdev.dimdoors.ModRegistries.register
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback
@@ -30,10 +31,12 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.client.ModRecipeBookTypes
 import org.dimdev.dimdoors.command.ModCommands
 import org.dimdev.dimdoors.criteria.ModCriteria
+import org.dimdev.dimdoors.effect.ModMobEffects
 import org.dimdev.dimdoors.enchantment.ModEnchantmentEffects
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.entity.ModEntityTypes.MASK
 import org.dimdev.dimdoors.entity.ModEntityTypes.MONOLITH
+import org.dimdev.dimdoors.entity.mask.MaskEntity
 import org.dimdev.dimdoors.entity.stat.ModStats
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.item.ModArmorMaterials
@@ -56,7 +59,6 @@ import org.dimdev.dimdoors.pockets.modifier.Modifiers
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
-import org.dimdev.dimcore.api.errata.session.Errata
 import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
@@ -73,7 +75,6 @@ import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
 import org.dimdev.dimdoors.world.pocket.type.addon.PortalColorProvider
-import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon
 import org.slf4j.Logger
 
 class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsSided<*>>>, EntityAttributeProvider, PacketProvider, RegistrationHooks, PackProvider, ServerReloadListenerProvider {
@@ -99,6 +100,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         ModRecipeSerializers.register()
         ModScreenHandlerTypes.register()
         ModSoundEvents.register()
+        ModMobEffects.register()
         ModFluids.register()
         ModEntityTypes.register()
         ModItems.register()
@@ -160,7 +162,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
 
     override fun registerEntityAttributes(register: EntityAttributeRegister) {
         register.register(MONOLITH, Mob::createMobAttributes)
-        register.register(MASK, Mob::createMobAttributes)
+        register.register(MASK, MaskEntity::createAttributes)
     }
 
     override fun registerPacks(register: PackRegister) {
@@ -187,6 +189,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         packetRegister.registerClientPacket(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithAggroParticles)
         packetRegister.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithTeleportParticles)
         packetRegister.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, ClientPacketListener::onRenderBreakBlock)
+        packetRegister.registerClientPacket(MaskCatchAnimS2CPacket.TYPE, MaskCatchAnimS2CPacket.STREAM_CODEC, ClientPacketListener::onMaskCatch)
 
         packetRegister.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC) { packet, player -> ServerPacketHandler.onAttackBlock(player, packet) }
 
@@ -274,22 +277,20 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             platform.onAttackBlock(AttackBlockCallbackListener())
             platform.onAttackBlock(PocketAttackBlockCallbackListener())
 
-            platform.onBeforeBlockBreak(PlayerBlockBreakEventBeforeListener())
-
+            platform.onBeforeBlockBreak { level, pos, state, player -> PlayerBlockBreakEventBeforeListener().shouldCancel(level, pos, state, player) }
 
 
             platform.onUseItem(UseItemCallbackListener())
             UseItemOnBlockCallback.EVENT.register(UseItemOnBlockCallbackListener())
             platform.onUseBlock(UseBlockCallbackListener())
-            platform.onBeforeBlockPlace { level: Level, pos: BlockPos, _, placer: Entity -> shouldCancelBlockModification(level, pos, placer)
-            }
+            platform.onBeforeBlockPlace { level: Level, pos: BlockPos, _, placer: Entity -> shouldCancelBlockModification(level, pos, placer) }
 
             UseItemOnBlockCallback.EVENT.register(UseDoorItemOnBlockCallbackListener())
 
             platform.onServerLevelTick(Decay::tick)
         }
 
-        private fun shouldCancelBlockModification(level: Level, pos: BlockPos, actor: Entity?): Boolean = !(actor is Player && actor.isCreative) && PocketListenerUtil.getAddon<PreventBlockModificationAddon>(PocketAddons.PREVENT_BLOCK_MODIFICATION_ADDON, level, pos) != null
+        private fun shouldCancelBlockModification(level: Level, pos: BlockPos, actor: Entity?): Boolean = !(actor is Player && actor.isCreative) && PocketListenerUtil.getAddon(PocketAddons.PREVENT_BLOCK_MODIFICATION_ADDON, level, pos) != null
 
         @JvmStatic
         fun getDimensionalDoorItemRegistrar(): DimensionalDoorItemRegistrar = DimensionalDoorItemRegistrar

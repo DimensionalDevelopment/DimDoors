@@ -79,6 +79,11 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField
     val MONOLITH_SPAWNER = registerRegular("monolith_spawner", { SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, it) })
 
+    @JvmField val MASK = registerRegular("mask", ::MaskItem) {
+        stacksTo(1)
+        fireResistant()
+    }
+
     @JvmField val MASK_WAND = registerRegular("mask_wand", ::MaskWandItem) {
         stacksTo(1)
     }

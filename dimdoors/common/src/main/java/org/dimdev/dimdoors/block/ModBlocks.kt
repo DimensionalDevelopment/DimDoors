@@ -424,6 +424,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(DIMENSIONAL_PORTAL)
         ModBlockEntityTypes.DIALING_DOOR.addBlock(DIALING_DOOR)
         ModBlockEntityTypes.GENERIC_RIFT.addBlock(LIMINAL_TRANSMITTER)
+        ModBlockEntityTypes.MASK_HOME.addBlock(MASK_HOME)
     }
 
     @JvmStatic

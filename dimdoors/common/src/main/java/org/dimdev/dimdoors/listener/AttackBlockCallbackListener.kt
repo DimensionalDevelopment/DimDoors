@@ -14,11 +14,12 @@ class AttackBlockCallbackListener : Platform.AttackBlockCallback {
     override fun attack(player: Player, hand: InteractionHand, pos: BlockPos, direction: Direction): InteractionResult {
         val world = player.level()
 
-        if (!world.isClientSide) return InteractionResult.PASS
         val item = player.getItemInHand(hand).item
         if (item !is ExtendedItem) {
             return InteractionResult.PASS
         }
+
+        if (!world.isClientSide) return InteractionResult.SUCCESS
 
         val result = item.onAttackBlock(world, player, hand, pos, direction)
         if (result.sendPacket) {

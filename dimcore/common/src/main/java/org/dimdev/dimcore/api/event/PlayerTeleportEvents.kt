@@ -6,6 +6,12 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.util.SimpleEvent
 
 object PlayerTeleportEvents {
+    @JvmField
+    val ALLOW: SimpleEvent<(ServerPlayer, ServerLevel, Vec3) -> Boolean> = SimpleEvent.of { listeners -> { player, level, pos ->
+            listeners.all { listener -> listener.invoke(player, level, pos) }
+        }
+    }
+
     @JvmField val BEFORE: SimpleEvent<(ServerPlayer, ServerLevel, Vec3) -> Unit> = event()
 
     @JvmField

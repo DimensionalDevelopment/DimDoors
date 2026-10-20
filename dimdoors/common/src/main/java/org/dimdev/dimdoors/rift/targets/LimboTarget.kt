@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.TeleportUtil
+import org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
@@ -23,7 +24,18 @@ object LimboTarget : VirtualTarget<LimboTarget>(), EntityTarget {
         relativeVelocity: Vec3,
         location: Location?
     ): Boolean {
+        teleportToLimbo(entity, relativeAngle, relativeVelocity)
+
+        return true
+    }
+
+    override val type get() = VirtualTargets.LIMBO
+
+    override fun copy(): LimboTarget = this
+
+    fun teleportToLimbo(entity: Entity, relativeAngle: Rotations = entityEulerAngle(entity), relativeVelocity: Vec3 = entity.deltaMovement) {
         var teleportPos = entity.blockPosition()
+
         while (ModDimensions.LIMBO_DIMENSION.getBlockState(
                 VirtualLocation.getTopPos(
                     ModDimensions.LIMBO_DIMENSION,
@@ -39,10 +51,5 @@ object LimboTarget : VirtualTarget<LimboTarget>(), EntityTarget {
             relativeAngle,
             relativeVelocity
         )
-        return true
     }
-
-    override val type get() = VirtualTargets.LIMBO
-
-    override fun copy(): LimboTarget = this
 }

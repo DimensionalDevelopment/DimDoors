@@ -9,28 +9,11 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.Heightmap
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.DimensionalDoors.Companion.server
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.world.ModDimensions
 
 data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int, val depth: Int) {
-
-    fun projectToWorld(acceptLimbo: Boolean): Location {
-        var world = server.getLevel(this.world)!!
-
-        if (!acceptLimbo && ModDimensions.isLimboDimension(world)) {
-            world = world.server.overworld()
-        }
-
-        val spread = (DimensionalDoors.config.generalConfig.depthSpreadFactor * this.depth).toFloat()
-        val newX = (this.x + spread * 2 * (Math.random() - 0.5)).toInt()
-        val newZ = (this.z + spread * 2 * (Math.random() - 0.5)).toInt()
-        //BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));
-        val pos: BlockPos = getTopPos(world, newX, newZ).above()
-        return Location.ofWorld(world, pos)
-    }
 
     override fun toString(): String {
         return MoreObjects.toStringHelper(this)

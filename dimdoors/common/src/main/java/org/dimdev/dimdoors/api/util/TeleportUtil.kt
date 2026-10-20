@@ -112,6 +112,7 @@ object TeleportUtil {
         )
     }
 
+    @JvmStatic
     fun teleportUntargeted(entity: Entity, world: Level): Entity {
         val actualScale = entity.level().dimensionType().coordinateScale() / world.dimensionType().coordinateScale()
         return teleport(

@@ -52,7 +52,9 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>
 
         entity.setPortalCooldown()
 
-        if (!rift.teleport(entity)) return InteractionResult.PASS
+        val teleported = rift.teleport(entity)
+
+        if (!teleported) return InteractionResult.PASS
 
         postTraverseEffect(world, pos, state, rift)
 

@@ -256,8 +256,10 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         }
 
         add(ModItems.MONOLITH_SPAWNER, "Monolith Spawner")
+        add(ModItems.MASK, "Mask")
         add(ModItems.MASK_WAND, "Mask Wand")
         add(ModItems.MASK_SHARD, "Mask Shard")
+        builder.add("effect.dimdoors.chased", "Chased")
         add(ModItems.FUZZY_FIREBALL, "Fuzzy Fireball")
         add(ModItems.FABRIC_OF_FINALITY, "Fabric of Finality")
         add(ModItems.LIMINAL_LINT, "Liminal Lint")

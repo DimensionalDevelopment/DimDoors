@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -92,8 +93,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         synced: Boolean
     ): PlatformRegistry.EntryRegister<T> {
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
-            override fun createRegistry(): Registry<T> =
-                (BuiltInRegistries.REGISTRY.get(resourceKey.location()) ?: FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister()).cast()
+            override fun createRegistry(): Registry<T> = (BuiltInRegistries.REGISTRY.get(resourceKey.location()) ?: FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister()).cast()
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as DataValueType<Any>
@@ -104,12 +104,21 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
                 }
                 return attachment.cast()
             }
+
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
+                throw UnsupportedOperationException("Holders for Data Values not supported.")
+            }
         }
 
         if (resourceKey == PlatformRegistry.CreativeTabPlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
+                val type = supplier() as CreativeTabType
+                return Registry.registerForHolder(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
+            }
+
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
                 val type = supplier() as CreativeTabType
                 return Registry.registerForHolder(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(common.modId, name), FabricItemGroup.builder().apply(type.block).build()).cast()
             }
@@ -125,6 +134,8 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
                 Registry.register(target, ResourceLocation.fromNamespaceAndPath(common.modId, name), value)
                 return value
             }
+
+            override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> = Registry.registerForHolder(target, ResourceLocation.fromNamespaceAndPath(common.modId, name), supplier()).cast()
         }
     }
 }

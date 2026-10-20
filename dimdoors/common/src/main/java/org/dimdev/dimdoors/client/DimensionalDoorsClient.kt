@@ -43,7 +43,6 @@ import org.dimdev.dimdoors.compat.imgui.LocationElement
 import org.dimdev.dimdoors.compat.imgui.RotationElement
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
 import org.dimdev.dimdoors.compat.iris.IrisCompat
-import org.dimdev.dimdoors.entity.MaskEntity
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.item.ModItems
@@ -163,6 +162,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
 
     override fun initModelLayers(consumer: (ModelLayerLocation, () -> LayerDefinition) -> Unit) {
         consumer.invoke(ModEntityModelLayers.MONOLITH, MonolithModel::texturedModelData)
+        consumer.invoke(ModEntityModelLayers.MASK, MaskModel::getTexturedModelData)
     }
 
     fun preRender(ticks: Long, deltaTick: Float) {
@@ -184,11 +184,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
 
     override fun initEntityRenderers(register: ModClient.EntityRegister) {
         register.register(ModEntityTypes.MONOLITH, ::MonolithRenderer)
-        register.register(ModEntityTypes.MASK) { context: EntityRendererProvider.Context ->
-            object : EntityRenderer<MaskEntity>(context) {
-                override fun getTextureLocation(entity: MaskEntity): ResourceLocation = ResourceLocation.parse("blep")
-            }
-        }
+        register.register(ModEntityTypes.MASK, ::MaskRenderer)
 
         register.register(ModEntityTypes.FARSHOT_ENDER_PEARL, ::FarShotEnderPearlRenderer)
     }

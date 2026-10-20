@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimdoors.api.item.ExtendedItem
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket
@@ -19,6 +21,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
 
 object ServerPacketHandler {
+    private val LOGGER: Logger = LogManager.getLogger()
 
     private val DATA_MAP = mutableMapOf<UUID, PlayerSyncData>()
 
@@ -51,17 +54,21 @@ object ServerPacketHandler {
 
     fun onAttackBlock(player: ServerPlayer, packet: HitBlockWithItemC2SPacket): CustomPacketPayload? {
         player.getServer()!!.execute {
-            val item = player.getItemInHand(packet.hand).item
+            try {
+                val item = player.getItemInHand(packet.hand).item
 
 
-            if (item is ExtendedItem) {
-                item.onAttackBlock(
-                    player.level(),
-                    player,
-                    packet.hand,
-                    packet.pos,
-                    packet.direction
-                )
+                if (item is ExtendedItem) {
+                    item.onAttackBlock(
+                        player.level(),
+                        player,
+                        packet.hand,
+                        packet.pos,
+                        packet.direction
+                    )
+                }
+            } catch (exception: RuntimeException) {
+                LOGGER.error("Error handling attack-block packet for {} at {}", player.name.string, packet.pos, exception)
             }
         }
 

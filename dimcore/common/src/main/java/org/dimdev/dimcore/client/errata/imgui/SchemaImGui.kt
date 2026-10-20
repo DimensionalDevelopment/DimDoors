@@ -10,13 +10,8 @@ import net.minecraft.locale.Language
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
-import org.dimdev.dimcore.api.errata.schema.ElementIds
-import org.dimdev.dimcore.api.errata.schema.FieldNode
-import org.dimdev.dimcore.api.errata.schema.Presence
-import org.dimdev.dimcore.api.errata.schema.SchemaNode
-import org.dimdev.dimcore.api.errata.schema.SchemaNodeTypes
-import org.dimdev.dimcore.api.errata.schema.SchemaType
-import org.dimdev.dimcore.api.errata.schema.StructNode
+import org.dimdev.dimcore.api.errata.schema.*
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.client.errata.ClientSession
 import org.dimdev.dimcore.client.errata.ErrataClient
 import org.dimdev.dimcore.client.errata.element.ColorElement
@@ -51,7 +46,7 @@ object SchemaImGui : ErrataClient.View {
         renderers[type] = renderer
     }
 
-    private fun <T : SchemaNode> renderer(node: T): SchemaRenderer<T> = renderers.getValue(node.type) as SchemaRenderer<T>
+    private fun <T : SchemaNode> renderer(node: T): SchemaRenderer<T> = renderers.getValue(node.type).cast<SchemaRenderer<T>>()
 
     override fun open() = Minecraft.getInstance().setScreen(EditorScreen())
 

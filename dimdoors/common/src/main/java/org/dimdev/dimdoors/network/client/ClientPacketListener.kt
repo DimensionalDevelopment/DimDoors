@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceKey
-import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.structure.BoundingBox
@@ -141,5 +140,9 @@ object ClientPacketListener {
         clearPocketAddons()
 
         if (hadMusic) stopMusic()
+    }
+
+    fun onMaskCatch(packet: MaskCatchAnimS2CPacket) {
+        Minecraft.getInstance().gameRenderer.displayItemActivation(MaskWearerEffects.createMaskStack(packet.maskType))
     }
 }
