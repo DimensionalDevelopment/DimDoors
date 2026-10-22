@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import foundry.imgui.api.ImGuiMCEvents
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.DimCore.clientPlatform
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.client.ActionKeyMapping
+import org.dimdev.dimcore.api.client.ClientPlatform
 import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import org.dimdev.dimcore.client.DebugRenders
@@ -58,6 +60,7 @@ import org.dimdev.dimdoors.particle.client.RiftParticle
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
+import org.dimdev.dimdoors.world.DataValues
 import org.lwjgl.glfw.GLFW
 
 object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
@@ -87,6 +90,32 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
 
 
                 }
+            }
+        }
+
+        clientPlatform.onFirstPersonOverlay { graphics, player, _ ->
+            val overlay = player.inventory.getArmor(3).get(ModDataComponentTypes.MASK_TYPE)?.overlay ?: return@onFirstPersonOverlay
+            RenderSystem.disableDepthTest()
+            RenderSystem.depthMask(false)
+            RenderSystem.enableBlend()
+            graphics.blit(overlay, 0, 0, -90, 0f, 0f, graphics.guiWidth(), graphics.guiHeight(), graphics.guiWidth(), graphics.guiHeight())
+            RenderSystem.disableBlend()
+            RenderSystem.depthMask(true)
+            RenderSystem.enableDepthTest()
+        }
+
+        clientPlatform.onDebugText(ClientPlatform.DebugTextType.GAME) { list ->
+            val player = Minecraft.getInstance().player ?: return@onDebugText
+            val server = Minecraft.getInstance().singleplayerServer ?: return@onDebugText
+            val serverPlayer = server.playerList.getPlayer(player.getUUID()) ?: return@onDebugText
+            val pending = DataValues.PENDING_REAPER.get(serverPlayer)
+
+            list.add("Pending:")
+
+            if (pending != null) {
+                list.add("    " + pending.ticks + "->" + pending.entry)
+            } else {
+                list.add("    Nope")
             }
         }
 

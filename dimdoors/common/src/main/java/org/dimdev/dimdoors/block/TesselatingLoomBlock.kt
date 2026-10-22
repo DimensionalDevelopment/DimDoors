@@ -22,12 +22,11 @@ import net.minecraft.world.phys.BlockHitResult
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity
-import java.util.function.Function
 
 class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
     init {
         this.registerDefaultState(
-            this.getStateDefinition().any().setValue<Direction?, Direction?>(FACING, Direction.NORTH)
+            this.getStateDefinition().any().setValue(FACING, Direction.NORTH)
         )
     }
 
@@ -67,7 +66,7 @@ class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
         return TesselatingLoomBlockEntity(bpos, bstate)
     }
 
-    protected fun openContainer(level: Level, bpos: BlockPos, player: ServerPlayer) {
+    private fun openContainer(level: Level, bpos: BlockPos, player: ServerPlayer) {
         val be = level.getBlockEntity(bpos)
         if (be is TesselatingLoomBlockEntity) {
             player.openMenu(be)
@@ -92,9 +91,7 @@ class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
         return InteractionResult.SUCCESS
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
-        return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection())
-    }
+    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState = this.defaultBlockState().setValue(FACING, ctx.horizontalDirection)
 
     public override fun hasAnalogOutputSignal(state: BlockState): Boolean {
         return true
@@ -105,11 +102,11 @@ class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
     }
 
     public override fun rotate(state: BlockState, rotation: Rotation): BlockState {
-        return state.setValue<Direction?, Direction?>(FACING, rotation.rotate(state.getValue<Direction?>(FACING)))
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)))
     }
 
     public override fun mirror(state: BlockState, mirror: Mirror): BlockState {
-        return state.rotate(mirror.getRotation(state.getValue<Direction?>(FACING)))
+        return state.rotate(mirror.getRotation(state.getValue(FACING)))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block?, BlockState?>) {
@@ -122,11 +119,9 @@ class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
     }
 
     companion object {
-        val CODEC: MapCodec<TesselatingLoomBlock?> =
-            simpleCodec<TesselatingLoomBlock?>(Function { builder: Properties? -> TesselatingLoomBlock(builder!!) })
+        val CODEC: MapCodec<TesselatingLoomBlock> = simpleCodec(::TesselatingLoomBlock)
 
         val FACING: DirectionProperty = HorizontalDirectionalBlock.FACING
-        private const val DISPLAY_NAME = ""
 
         protected fun <T : BlockEntity> createFurnaceTicker(
             level: Level,

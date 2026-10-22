@@ -3,20 +3,17 @@ package org.dimdev.dimdoors.client
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.math.Axis
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.client.tesseract.Tesseract.draw
-import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.rift.RiftUtils
 
 class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Context) : RiftBlockEntityRenderer<DetachedRiftBlockEntity>(context) {
@@ -59,47 +56,47 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
 
     val HALF2 = Vec3(0.5, 3.5, 0.5)
 
-    private fun shouldRenderDecayRadiusDebug(): Boolean {
-        val minecraft = Minecraft.getInstance()
-        return minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).let { it.`is`(ModItems.RIFT_CONFIGURATION_TOOL) || it.`is`(ModItems.RIFT_MARKER) }
-    }
-
-    private fun renderDecayRadius(
-        renderType: RenderType,
-        vc: VertexConsumer,
-        rift: DetachedRiftBlockEntity,
-        matrices: PoseStack
-    ) {
-        val radius = rift.decayRadius
-        if (radius <= 0) {
-            return
-        }
-
-        var color = rift.color
-        if (color == RGBA.NONE) {
-            color = DEFAULT_COLOR
-        }
-
-        val alpha: Float = DECAY_RADIUS_ALPHA * color.alpha
-
-        matrices.pushPose()
-        matrices.translate(0.5f, 0.5f, 0.5f)
-
-        RenderUtils.renderSolidColorSphere(
-            renderType,
-            vc,
-            matrices,
-            (radius + 1).toFloat(),
-            color.red,
-            color.green,
-            color.blue,
-            alpha,
-            DECAY_RADIUS_LATITUDE_SEGMENTS,
-            DECAY_RADIUS_LONGITUDE_SEGMENTS
-        )
-
-        matrices.popPose()
-    }
+//    private fun shouldRenderDecayRadiusDebug(): Boolean {
+//        val minecraft = Minecraft.getInstance()
+//        return minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).let { it.`is`(ModItems.RIFT_CONFIGURATION_TOOL) || it.`is`(ModItems.RIFT_MARKER) }
+//    }
+//
+//    private fun renderDecayRadius(
+//        renderType: RenderType,
+//        vc: VertexConsumer,
+//        rift: DetachedRiftBlockEntity,
+//        matrices: PoseStack
+//    ) {
+//        val radius = rift.decayRadius
+//        if (radius <= 0) {
+//            return
+//        }
+//
+//        var color = rift.color
+//        if (color == RGBA.NONE) {
+//            color = DEFAULT_COLOR
+//        }
+//
+//        val alpha: Float = DECAY_RADIUS_ALPHA * color.alpha
+//
+//        matrices.pushPose()
+//        matrices.translate(0.5f, 0.5f, 0.5f)
+//
+//        RenderUtils.renderSolidColorSphere(
+//            renderType,
+//            vc,
+//            matrices,
+//            (radius + 1).toFloat(),
+//            color.red,
+//            color.green,
+//            color.blue,
+//            alpha,
+//            DECAY_RADIUS_LATITUDE_SEGMENTS,
+//            DECAY_RADIUS_LONGITUDE_SEGMENTS
+//        )
+//
+//        matrices.popPose()
+//    }
 
     private fun renderCrack(vc: MultiBufferSource, matrices: PoseStack, rift: DetachedRiftBlockEntity) = matrices.pusPop {
         matrices.translate(0.5f, 0.5f, 0.5f)

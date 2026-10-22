@@ -6,6 +6,7 @@
   "refmap": "dimcore.refmap.json",
   "client": [
     "client.DimensionSpecialEffectsMixin",
+    "client.GuiMixin",
     "client.LevelRenderDimensionalEffectsMixin"
   ],
   "mixins": [

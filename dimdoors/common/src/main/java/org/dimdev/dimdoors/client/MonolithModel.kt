@@ -5,11 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.model.EntityModel
 import net.minecraft.client.model.geom.ModelPart
-import net.minecraft.client.model.geom.PartPose
-import net.minecraft.client.model.geom.builders.CubeListBuilder
 import net.minecraft.client.model.geom.builders.LayerDefinition
-import net.minecraft.client.model.geom.builders.MeshDefinition
 import net.minecraft.client.renderer.entity.EntityRendererProvider
+import org.dimdev.dimcore.client.models.create
+import org.dimdev.dimcore.client.models.part
 import org.dimdev.dimdoors.entity.MonolithEntity
 import kotlin.math.sin
 
@@ -61,18 +60,10 @@ class MonolithModel(context: EntityRendererProvider.Context) :
     }
 
     companion object {
-        val texturedModelData: LayerDefinition
-            get() {
-                val modelData =
-                    MeshDefinition()
-                val modelPartData = modelData.getRoot()
-                modelPartData.addOrReplaceChild(
-                    "body",
-                    CubeListBuilder.create().texOffs(1, 0)
-                        .addBox(-23.5f, -54f, -6f, 47f, 108f, 12f, false),
-                    PartPose.ZERO
-                )
-                return LayerDefinition.create(modelData, 128, 128)
+        val texturedModelData: LayerDefinition = create(128, 128) {
+            part("body", 0f, 0f, 0f) {
+                box(-23.5f, -54f, -6f, 47f, 108f, 12f)
             }
+        }
     }
 }

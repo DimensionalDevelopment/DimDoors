@@ -29,7 +29,7 @@ object RenderUtils {
 
     fun renderSolidColorSphere(
         renderType: RenderType,
-        vc: VertexConsumer,
+        buffer: MultiBufferSource,
         matrices: PoseStack,
         radius: Float,
         red: Float,
@@ -37,7 +37,8 @@ object RenderUtils {
         blue: Float,
         alpha: Float,
         latitudeSegments: Int,
-        longitudeSegments: Int
+        longitudeSegments: Int,
+        fraction: Float = 1f
     ) {
         val mode = renderType.mode()
         if (mode != VertexFormat.Mode.QUADS && mode != VertexFormat.Mode.TRIANGLES) {
@@ -49,7 +50,10 @@ object RenderUtils {
             return
         }
 
+        val vc = buffer.getBuffer(renderType)
+
         val pose = matrices.last()
+        val sweep = Mth.TWO_PI * fraction
         for (latitude in 0..<latitudeSegments) {
             val theta0 = Mth.PI * latitude / latitudeSegments
             val theta1 = Mth.PI * (latitude + 1) / latitudeSegments
@@ -57,8 +61,8 @@ object RenderUtils {
             val v1 = (latitude + 1).toFloat() / latitudeSegments
 
             for (longitude in 0..<longitudeSegments) {
-                val phi0 = Mth.TWO_PI * longitude / longitudeSegments
-                val phi1 = Mth.TWO_PI * (longitude + 1) / longitudeSegments
+                val phi0 = sweep * longitude / longitudeSegments
+                val phi1 = sweep * (longitude + 1) / longitudeSegments
                 val u0 = longitude.toFloat() / longitudeSegments
                 val u1 = (longitude + 1).toFloat() / longitudeSegments
 
@@ -77,6 +81,68 @@ object RenderUtils {
                 }
             }
         }
+
+        if (fraction < 1f) {
+            addSolidColorSphereCap(vc, pose, format, mode, radius, 0f, false, latitudeSegments, red, green, blue, alpha)
+            addSolidColorSphereCap(vc, pose, format, mode, radius, sweep, true, latitudeSegments, red, green, blue, alpha)
+        }
+    }
+
+    private fun addSolidColorSphereCap(
+        vc: VertexConsumer,
+        pose: PoseStack.Pose,
+        format: VertexFormat,
+        mode: VertexFormat.Mode,
+        radius: Float,
+        phi: Float,
+        end: Boolean,
+        latitudeSegments: Int,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ) {
+        val side = if (end) 1f else -1f
+        val normalX = -side * Mth.sin(phi)
+        val normalZ = side * Mth.cos(phi)
+
+        for (latitude in 0..<latitudeSegments) {
+            val theta0 = Mth.PI * (if (end) latitude + 1 else latitude) / latitudeSegments
+            val theta1 = Mth.PI * (if (end) latitude else latitude + 1) / latitudeSegments
+
+            if (mode == VertexFormat.Mode.QUADS) {
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta0, phi, 0f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta0, phi, 1f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta1, phi, 1f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta1, phi, 0f, normalX, normalZ, red, green, blue, alpha)
+            } else {
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta0, phi, 0f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta0, phi, 1f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta1, phi, 1f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta0, phi, 0f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta1, phi, 1f, normalX, normalZ, red, green, blue, alpha)
+                addSolidColorSphereCapVertex(vc, pose, format, radius, theta1, phi, 0f, normalX, normalZ, red, green, blue, alpha)
+            }
+        }
+    }
+
+    private fun addSolidColorSphereCapVertex(
+        vc: VertexConsumer,
+        pose: PoseStack.Pose,
+        format: VertexFormat,
+        radius: Float,
+        theta: Float,
+        phi: Float,
+        rim: Float,
+        normalX: Float,
+        normalZ: Float,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ) {
+        val rimRadius = radius * rim * Mth.sin(theta)
+        addSolidColorVertex(vc, pose, format, rimRadius * Mth.cos(phi), radius * Mth.cos(theta), rimRadius * Mth.sin(phi), rim, theta / Mth.PI, normalX, 0f, normalZ, red, green, blue, alpha)
     }
 
     private fun addSolidColorSphereVertex(
@@ -97,7 +163,27 @@ object RenderUtils {
         val normalX = sinTheta * Mth.cos(phi)
         val normalY = Mth.cos(theta)
         val normalZ = sinTheta * Mth.sin(phi)
-        val next = vc.addVertex(pose, radius * normalX, radius * normalY, radius * normalZ)
+        addSolidColorVertex(vc, pose, format, radius * normalX, radius * normalY, radius * normalZ, u, v, normalX, normalY, normalZ, red, green, blue, alpha)
+    }
+
+    private fun addSolidColorVertex(
+        vc: VertexConsumer,
+        pose: PoseStack.Pose,
+        format: VertexFormat,
+        x: Float,
+        y: Float,
+        z: Float,
+        u: Float,
+        v: Float,
+        normalX: Float,
+        normalY: Float,
+        normalZ: Float,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ) {
+        val next = vc.addVertex(pose, x, y, z)
 
         if (format.contains(VertexFormatElement.COLOR)) {
             next.setColor(red, green, blue, alpha)

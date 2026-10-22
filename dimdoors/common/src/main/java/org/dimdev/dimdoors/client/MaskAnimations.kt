@@ -14,9 +14,47 @@ object MaskAnimations {
         this.addAnimation(name, AnimationChannel(AnimationChannel.Targets.ROTATION, *frames))
     }
 
+    interface KeyFrameFabricator {
+        fun frame(time: Float, x: Float, y: Float, z: Float)
+    }
+
+    open class KeyFrameFabricatorImpl(private val function: (Float, Float, Float, Float) -> Keyframe, val target: AnimationChannel.Target) : KeyFrameFabricator {
+        lateinit var currentList: MutableList<Keyframe>
+
+        override fun frame(time: Float, x: Float, y: Float, z: Float) {
+            currentList += function.invoke(time, x, y, z)
+        }
+    }
+
+    object RotationFabricator : KeyFrameFabricatorImpl(::rotation, AnimationChannel.Targets.ROTATION)
+    object PositionFabricator : KeyFrameFabricatorImpl(::position, AnimationChannel.Targets.POSITION)
+
+    fun AnimationDefinition.Builder.frane(name: String, channel: AnimationChannel.Target, function: (Float, Float, Float, Float) -> Keyframe, vararg values: Float) {
+        check(values.isNotEmpty() && values.size % 4 == 0)
+        val list = values.toList().chunked(4).map { (time, x, y, z) -> function.invoke(time, x, y, z) }.toTypedArray()
+
+        this.addAnimation(name, AnimationChannel(channel, *list))
+    }
+
+    fun AnimationDefinition.Builder.useFabricator(fabricator: KeyFrameFabricatorImpl, name: String, block: KeyFrameFabricator.() -> Unit) {
+        fabricator.currentList = mutableListOf()
+
+        block(fabricator)
+
+        this.addAnimation(name, AnimationChannel(fabricator.target, *fabricator.currentList.toTypedArray()))
+    }
+
+    fun AnimationDefinition.Builder.rotation(name: String, block: KeyFrameFabricator.() -> Unit) = useFabricator(RotationFabricator, name, block)
+    fun AnimationDefinition.Builder.position(name: String, block: KeyFrameFabricator.() -> Unit) = useFabricator(PositionFabricator, name, block)
+
+    fun AnimationDefinition.Builder.rotation(name: String, vararg values: Float) = frane(name, AnimationChannel.Targets.ROTATION, ::rotation, *values)
+    fun AnimationDefinition.Builder.position(name: String, vararg values: Float) = frane(name, AnimationChannel.Targets.POSITION, ::position, *values)
+
     fun AnimationDefinition.Builder.addPosition(name: String, vararg frames: Keyframe) {
         this.addAnimation(name, AnimationChannel(AnimationChannel.Targets.POSITION, *frames))
     }
+
+
 
     @JvmField
     val SPOTTED: AnimationDefinition = animation(1.66667f) {
@@ -92,12 +130,6 @@ object MaskAnimations {
 
         )
 
-        addPosition("middlerightlimb",
-            rotation(0.0f, 0f, 0f, 0f),
-            rotation(0.5f, 1f, 0f, 1f),
-            rotation(0.7917f, 0f, 0f, 0f)
-
-        )
         addRotation("bottomrightlimb",
             rotation(0.0f, 0f, 0f, 0f),
             rotation(0.5f, 0f, -100f, 10f),
@@ -231,7 +263,7 @@ object MaskAnimations {
     val IDLE = animation(3.5f) {
         looping()
         addPosition("mask",
-            rotation(0.0f, 0f, 0f, 0f),
+            position(0.0f, 0f, 0f, 0f),
             position(0.5f, 0f, 0.5f, 0f),
             position(1.0f, 0f, 1.5f, 0f),
             position(1.5f, 0f, 2f, 0f),
@@ -366,6 +398,30 @@ object MaskAnimations {
             rotation(3.1667f, 2.5f, -0.16f, 7.5f),
             rotation(3.5833f, 0f, 0f, 0f)
         )
+    }
+
+    val STUNNED: AnimationDefinition = animation(0.75f) {
+        rotation("spin") {
+            frame(0.0f, 0.0f, 0.0f, 0.0f)
+            frame(0.5f, 0.0f, 180.0f, 0.0f)
+        }
+
+        position("spin") {
+            frame(0.0f, 0.0f, 0.0f, 0.0f)
+            frame(0.25f, 0.0f, 1.66f, 0.0f)
+            frame(0.5f, 0.0f, 1.66f, 0.0f)
+            frame(0.75f, 0.0f, 1.66f, 0.0f)
+        }
+
+        rotation("fall") {
+            frame(0.5f, 0.0f, 0.0f, 0.0f)
+            frame(0.75f, 90.0f, 0.0f, 0.0f)
+        }
+
+        rotation("mask") {
+            frame(0.0f, 0.0f, 0.0f, 0.0f)
+            frame(0.5f, 0.0f, 0.0f, 45.0f)
+        }
     }
 
     private fun position(timestamp: Float, x: Float, y: Float, z: Float): Keyframe {

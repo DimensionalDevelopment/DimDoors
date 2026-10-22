@@ -51,10 +51,9 @@ import java.util.function.BiConsumer
 import kotlin.math.cos
 
 class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(entityType, level), VibrationSystem {
-    @JvmField
     val idleState: AnimationState = AnimationState()
-    @JvmField
     val spottedState: AnimationState = AnimationState()
+    val stunnedState: AnimationState = AnimationState()
 
     var home: BlockPos? = null
     var waypoints: List<BlockPos> = emptyList()
@@ -156,8 +155,9 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(ent
         super.tick()
 
         if (level().isClientSide) {
-            idleState.animateWhen(state != MaskState.CHASING, tickCount)
-            spottedState.animateWhen(state == MaskState.CHASING, tickCount)
+            idleState.animateWhen(state != MaskState.CHASING && state != MaskState.STUNNED, tickCount)
+            spottedState.animateWhen(state == MaskState.CHASING && state != MaskState.STUNNED, tickCount)
+            stunnedState.animateWhen(state == MaskState.STUNNED, tickCount)
         } else {
             VibrationSystem.Ticker.tick(level(), vibrations, listenerUser)
         }
