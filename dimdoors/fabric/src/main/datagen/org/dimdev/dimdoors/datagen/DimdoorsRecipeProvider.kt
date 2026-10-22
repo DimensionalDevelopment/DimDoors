@@ -322,7 +322,7 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, door)
             .group("dimensional_doors")
             .unlockedBy("inventory_changed", block.hasItems())
-            .pattern("XOX")
+            .pattern(if (block == ModBlocks.QUARTZ_DOOR) "XO" else "XOX")
             .define('X', block)
             .define('O', ConventionalItemTags.ENDER_PEARLS)
             .save(exporter)

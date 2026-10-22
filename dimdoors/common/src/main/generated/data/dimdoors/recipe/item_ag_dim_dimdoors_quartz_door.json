@@ -11,7 +11,7 @@
     }
   },
   "pattern": [
-    "XOX"
+    "XO"
   ],
   "result": {
     "count": 1,
