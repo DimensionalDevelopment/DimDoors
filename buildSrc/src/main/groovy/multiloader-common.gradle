@@ -86,6 +86,13 @@ repositories {
         }
     }
 
+    maven {
+        url = 'https://maven.blamejared.com'
+        content {
+            includeGroup 'noobanidus.mods.lootr'
+        }
+    }
+
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {

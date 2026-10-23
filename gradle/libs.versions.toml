@@ -2,6 +2,7 @@
 kotlin = "2.4.0"
 flk = "1.14.1+kotlin.2.4.20"
 kff = "5.12.0"
+lootr = "1.21.1-1.11.38.128"
 
 [libraries]
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
@@ -44,6 +45,11 @@ sodium-neoforge = { group = "net.caffeinemc", name = "sodium-neoforge-mod", vers
 #cloth config
 cloth-config-fabric = { group = "me.shedaniel.cloth", name = "cloth-config-fabric", version = "15.0.140" }
 cloth-config-neoforge = { group = "me.shedaniel.cloth", name = "cloth-config-neoforge", version = "15.0.140" }
+
+#iris
+lootr-common = { group = "noobanidus.mods.lootr", name = "lootr-common", version.ref = "lootr" }
+lootr-fabric = { group = "noobanidus.mods.lootr", name = "lootr-fabric", version.ref = "lootr" }
+lootr-neoforge = { group = "noobanidus.mods.lootr", name = "lootr-neoforge", version.ref = "lootr" }
 
 #wthit
 wthit-api-neoforge = { group = "mcp.mobius.waila", name = "wthit-api", version = "neo-12.5.3" }

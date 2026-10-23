@@ -21,8 +21,8 @@ abstract class ClientPlatform {
     abstract fun onClientPlayerJoin(listener: () -> Unit)
     abstract fun onDebugText(type: DebugTextType, listener: (MutableList<String>) -> Unit)
     abstract fun onFirstPersonOverlay(listener: (GuiGraphics, Player, DeltaTracker) -> Unit)
-    fun fluidSprite(fluid: Fluid): TextureAtlasSprite = Minecraft.getInstance().blockRenderer.blockModelShaper.getParticleIcon(fluid.defaultFluidState().createLegacyBlock())
-    fun fluidTint(fluid: Fluid, level: BlockAndTintGetter?, pos: BlockPos?): Int = Minecraft.getInstance().blockColors.getColor(fluid.defaultFluidState().createLegacyBlock(), level, pos, 0)
+    open fun fluidSprite(fluid: Fluid): TextureAtlasSprite = Minecraft.getInstance().blockRenderer.blockModelShaper.getParticleIcon(fluid.defaultFluidState().createLegacyBlock())
+    open fun fluidTint(fluid: Fluid, level: BlockAndTintGetter?, pos: BlockPos?): Int = Minecraft.getInstance().blockColors.getColor(fluid.defaultFluidState().createLegacyBlock(), level, pos, 0)
 
     fun registerCustomItemRenderer(renderer: CustomItemRenderer, vararg items: ItemLike) {
         items.forEach {

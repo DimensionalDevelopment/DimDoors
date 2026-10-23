@@ -50,6 +50,7 @@ dependencies {
 
     compileOnly libs.sodium.neoforge
     compileOnly libs.iris.neoforge
+    compileOnly libs.lootr.neoforge
 
     switch (recipe_viewer?.toString()) {
         case "rei" -> {

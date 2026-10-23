@@ -54,6 +54,8 @@ dependencies {
 
     modCompileOnly libs.jei.api.fabric
 
+    modCompileOnly libs.lootr.fabric
+
     switch (recipe_viewer) {
         case "rei" -> {
 

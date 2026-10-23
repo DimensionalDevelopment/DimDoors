@@ -79,6 +79,8 @@ dependencies {
     sharedCompileOnly libs.jei.api.common
 
     sharedCompileOnly libs.imguimc.common
+
+    sharedCompileOnly libs.lootr.common
 }
 
 artifacts {
