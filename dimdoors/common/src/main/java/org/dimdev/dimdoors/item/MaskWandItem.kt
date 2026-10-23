@@ -15,8 +15,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.item.AttackBlockResult
 import org.dimdev.dimdoors.api.item.ExtendedItem
-import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.block.entity.MaskHomeBlockEntity
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.entity.mask.MaskEntity
 import org.dimdev.dimdoors.entity.mask.MaskMode
@@ -36,7 +34,6 @@ class MaskWandItem(settings: Properties) : Item(settings), ExtendedItem {
         val player = context.player ?: return InteractionResult.PASS
         if (!player.isCreative) return InteractionResult.PASS
         if (player.isShiftKeyDown) return use(context.level, player, context.hand).result
-        if (context.level.getBlockState(context.clickedPos).`is`(ModBlocks.MASK_HOME)) return InteractionResult.PASS
 
         val stack = context.itemInHand
         val waypoints = stack.getOrDefault(ModDataComponentTypes.MASK_WAND_WAYPOINTS, emptyList())
@@ -58,24 +55,17 @@ class MaskWandItem(settings: Properties) : Item(settings), ExtendedItem {
         val stack = player.getItemInHand(hand)
         val waypoints = stack.getOrDefault(ModDataComponentTypes.MASK_WAND_WAYPOINTS, emptyList())
 
-        val existing = world.getBlockEntity(pos) as? MaskHomeBlockEntity
-        if (existing != null) {
-            if (player.isShiftKeyDown) existing.mask(world)?.bind(pos, waypoints)
-            return AttackBlockResult.success(false)
-        }
-
         val homePos = pos.relative(direction)
         if (!world.getBlockState(homePos).canBeReplaced()) return AttackBlockResult.fail(false)
 
-        world.setBlockAndUpdate(homePos, ModBlocks.MASK_HOME.defaultBlockState())
-
         val mask = MaskEntity(ModEntityTypes.MASK, world)
-        mask.maskType = stack.getOrDefault(ModDataComponentTypes.MASK_WAND_TYPE, MaskType.CYCLOP)
+        mask.maskType = stack.getOrDefault(ModDataComponentTypes.MASK_TYPE, MaskType.CYCLOP)
         mask.bind(homePos, waypoints)
         mask.moveTo(Vec3.atBottomCenterOf(homePos))
         world.addFreshEntity(mask)
 
-        (world.getBlockEntity(homePos) as? MaskHomeBlockEntity)?.maskId = mask.uuid
+        mask.home = homePos
+
         return AttackBlockResult.success(false)
     }
 

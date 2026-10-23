@@ -23,9 +23,7 @@ import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.DimCore.clientPlatform
 import org.dimdev.dimcore.DimCore.platform
-import org.dimdev.dimcore.api.client.ActionKeyMapping
-import org.dimdev.dimcore.api.client.ClientPlatform
-import org.dimdev.dimcore.api.client.ModClient
+import org.dimdev.dimcore.api.client.*
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import org.dimdev.dimcore.client.DebugRenders
 import org.dimdev.dimcore.client.RenderUtils
@@ -35,9 +33,6 @@ import org.dimdev.dimcore.client.node.RenderNodes
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
@@ -63,7 +58,7 @@ import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.world.DataValues
 import org.lwjgl.glfw.GLFW
 
-object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
+object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRendererProvider, CustomItemRendererProvider {
     var renderTick: Float = 0f
         private set
 
@@ -165,25 +160,20 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         )
     }
 
-    override fun initBlockEntityRenderers(register: ModClient.BlockEntityRegister) {
-        register.register<EntranceRiftBlockEntity.Impl>(
-            ModBlockEntityTypes.ENTRANCE_RIFT,
-            ::EntranceRiftBlockEntityRenderer
-        )
-        register.register<DetachedRiftBlockEntity>(ModBlockEntityTypes.DETACHED_RIFT, ::DetachedRiftBlockEntityRenderer)
-        register.register<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, ::DialingDoorBlockEntityRenderer)
+    override fun registerEntityRenderers(register: EntityRendererRegister) {
+        register.registerBlockEntity(ModBlockEntityTypes.ENTRANCE_RIFT, ::EntranceRiftBlockEntityRenderer)
+        register.registerBlockEntity(ModBlockEntityTypes.DETACHED_RIFT, ::DetachedRiftBlockEntityRenderer)
+        register.registerBlockEntity(ModBlockEntityTypes.DIALING_DOOR, ::DialingDoorBlockEntityRenderer)
+
+        register.registerEntity(ModEntityTypes.MONOLITH, ::MonolithRenderer)
+        register.registerEntity(ModEntityTypes.MASK, ::MaskRenderer)
+        register.registerEntity(ModEntityTypes.FARSHOT_ENDER_PEARL, ::FarShotEnderPearlRenderer)
     }
 
     override fun initShaders(shaderRegister: (ResourceLocation, VertexFormat, (ShaderInstance) -> Unit) -> Unit) {
-        shaderRegister.invoke(DimensionalDoors.id("dimensional_portal"), DefaultVertexFormat.POSITION) {
-            ModShaders.dimensionalPortal = it
-        }
-        shaderRegister.invoke(DimensionalDoors.id("chromatic_geometry"), DefaultVertexFormat.NEW_ENTITY) {
-            ModShaders.chromaticGeometry = it
-        }
-        shaderRegister.invoke(DimensionalDoors.id("chromatic_composite"), DefaultVertexFormat.POSITION_TEX) {
-            ModShaders.chromaticComposite = it
-        }
+        shaderRegister.invoke(DimensionalDoors.id("dimensional_portal"), DefaultVertexFormat.POSITION) { ModShaders.dimensionalPortal = it }
+        shaderRegister.invoke(DimensionalDoors.id("chromatic_geometry"), DefaultVertexFormat.NEW_ENTITY) { ModShaders.chromaticGeometry = it }
+        shaderRegister.invoke(DimensionalDoors.id("chromatic_composite"), DefaultVertexFormat.POSITION_TEX) { ModShaders.chromaticComposite = it }
     }
 
     override fun initItemProperties(consumer: (Item, ResourceLocation, ClampedItemPropertyFunction) -> Unit) {
@@ -234,13 +224,6 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
         )
     }
 
-    override fun initEntityRenderers(register: ModClient.EntityRegister) {
-        register.register(ModEntityTypes.MONOLITH, ::MonolithRenderer)
-        register.register(ModEntityTypes.MASK, ::MaskRenderer)
-
-        register.register(ModEntityTypes.FARSHOT_ENDER_PEARL, ::FarShotEnderPearlRenderer)
-    }
-
     override fun delayedInit() {
         EnvironmentAddonClient.init()
         initGeneratedDoorCutouts()
@@ -279,4 +262,16 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>> {
 
     @JvmStatic
     lateinit var clientSided: IDimDoorsClientSided<*>
+
+    override fun register(register: CustomItemRendererRegister) {
+        MaskRenderer
+
+        register.register({ stack, ctx, poseStack, buffers, light, overlay ->
+            MaskItemRenderer.render(stack, ctx, poseStack, buffers, light, overlay)
+
+//            org.dimdev.dimdoors.client.RenderUtils.renderSolidColorSphere(RenderType.debugQuads(), buffers, poseStack, 0.01f, 0f, 1f, 0f, 1f, 12, 12, 1f)
+
+//            org.dimdev.dimdoors.client.RenderUtils.renderSolidColorSphere(RenderType.debugQuads(), buffers, poseStack, 0.5f, 1f, 1f, 1f, 0.25f, 12, 12, 1f)
+        }, ModItems.MASK)
+    }
 }

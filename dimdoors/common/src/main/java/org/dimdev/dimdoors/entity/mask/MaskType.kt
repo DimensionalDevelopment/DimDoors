@@ -18,6 +18,7 @@ enum class MaskType(private val serializedName: String, val detectionRange: Doub
     val isSighted get() = sightHalfAngle > 0
 
     val overlay = if(hasOverlay) id("textures/other/blur/${serializedName}_blur.png") else null
+    val texture = id("textures/mob/mask/${serializedName}.png")
 
     override fun getSerializedName() = serializedName
 

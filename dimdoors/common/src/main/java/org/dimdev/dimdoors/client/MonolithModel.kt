@@ -12,8 +12,7 @@ import org.dimdev.dimcore.client.models.part
 import org.dimdev.dimdoors.entity.MonolithEntity
 import kotlin.math.sin
 
-class MonolithModel(context: EntityRendererProvider.Context) :
-    EntityModel<MonolithEntity>(RenderTypes::getMonolith) {
+class MonolithModel(context: EntityRendererProvider.Context) : EntityModel<MonolithEntity>(RenderTypes::getMonolith) {
     private val body: ModelPart = context.bakeLayer(ModEntityModelLayers.MONOLITH)
     private var aggro = 0
     private var id = 0

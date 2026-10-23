@@ -56,23 +56,9 @@ object PortalColorGui {
 
         ImGui.end()
 
-        //        ImGui.begin("Dyes");
-//        if(ImGui.inputInt("Value", dyeId)) {
-//            var value = dyeId.get();
-//
-//            if(MathUtil.between(value, 0, 15)) {
-//                var dye = DyeColor.values()[value];
-//
-//                var ints = PortalColors.DYES.getOrDefault(dye, PortalColors.OVERWORLD);
-//                System.arraycopy(ints, 0, colors, 0, 16);
-//
-//                ModShaders.setPortalColors(ints);
-//            }
-//        }
-//        ImGui.end();
-
         RiftCrackRenderer.ChromaticAberration.render()
     }
+    
 
     private fun renderColor(name: String, index: Int) {
         val color = colors[index]

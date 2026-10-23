@@ -12,6 +12,5 @@ object ModBlockEntityTypes : PlatformRegistry.BlockEntityTypePlatformRegistry(Di
     val DIALING_DOOR = create("dialing_door", ::DialingDoorBlockEntity) { ModBlocks.DIALING_DOOR }
     val TESSELATING_LOOM = create("tesselating_loom", ::TesselatingLoomBlockEntity) { ModBlocks.TESSELATING_LOOM }
     val GENERIC_RIFT = create("generic_rift", { pos: BlockPos, state: BlockState -> RiftBlockEntity.Impl(pos, state) }) { ModBlocks.LIMINAL_TRANSMITTER }
-    val MASK_HOME = create("mask_home", ::MaskHomeBlockEntity) { ModBlocks.MASK_HOME }
 }
 

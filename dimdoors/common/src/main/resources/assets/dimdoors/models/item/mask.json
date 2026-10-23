@@ -1,6 +1,29 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "dimdoors:item/mask_shard"
+  "parent": "builtin/entity",
+  "display": {
+    "firstperson_righthand": {
+      "translation": [0, 4, 0]
+    },
+    "firstperson_lefthand": {
+      "translation": [0, 3.75, 0]
+    },
+    "ground": {
+      "translation": [0, 5, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "gui": {
+      "rotation": [-180, 0, -180],
+      "translation": [0, 4, 0]
+    },
+    "head": {
+      "translation": [0, 7, -6],
+      "scale": [1.75, 1.75, 1]
+    },
+    "fixed": {
+      "translation": [0, 4, 0]
+    },
+    "on_shelf": {
+      "rotation": [-180, 0, -180]
+    }
   }
 }

@@ -35,7 +35,6 @@ import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.PlacedContent
 import org.dimdev.dimcore.api.event.PlayerTeleportEvents
 import org.dimdev.dimdoors.ModGameRules
-import org.dimdev.dimdoors.block.entity.MaskHomeBlockEntity
 import org.dimdev.dimdoors.effect.ModMobEffects
 import org.dimdev.dimdoors.effect.createInstance
 import org.dimdev.dimdoors.entity.ModEntityTypes
@@ -50,7 +49,7 @@ import java.util.*
 import java.util.function.BiConsumer
 import kotlin.math.cos
 
-class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(entityType, level), VibrationSystem {
+class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level? = null) : Mob(entityType, level), VibrationSystem {
     val idleState: AnimationState = AnimationState()
     val spottedState: AnimationState = AnimationState()
     val stunnedState: AnimationState = AnimationState()
@@ -170,9 +169,6 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(ent
             initialized = true
             if (maskType == MaskType.BLACK && targetId == null) return discard()
             if (maskType == MaskType.RANDOM && ModDimensions.isPocketDimension(level)) maskType = MaskType.random(random)
-            checkHome(level)
-        } else if (tickCount % 40 == 0) {
-            checkHome(level)
         }
 
         if (frozen) return
@@ -292,19 +288,6 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(ent
         }
     }
 
-    private fun checkHome(level: ServerLevel) {
-        val pos = home ?: return
-        if (!level.isLoaded(pos)) return
-
-        val homeEntity = level.getBlockEntity(pos) as? MaskHomeBlockEntity
-        if (homeEntity == null) {
-            home = null
-            mode = MaskMode.WANDER
-        } else if (homeEntity.maskId != uuid) {
-            homeEntity.maskId = uuid
-        }
-    }
-
     fun flyToward(target: Vec3, speed: Double): Boolean {
         val offset = target.subtract(position())
         val distance = offset.length()
@@ -399,7 +382,7 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(ent
         super.addAdditionalSaveData(nbt)
         nbt.putString("mask_type", maskType.getSerializedName())
         nbt.putString("mode", mode.getSerializedName())
-        home?.let { nbt.putLong("home_offset", it.subtract(blockPosition()).asLong()) }
+        home?.let { nbt.putLong("home_pos", it.asLong()) }
         nbt.putLongArray("waypoints", waypoints.map { it.asLong() }.toLongArray())
         nbt.putInt("waypoint_index", waypointIndex)
         nbt.putBoolean("waypoint_reverse", waypointReverse)
@@ -410,7 +393,7 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level) : Mob(ent
         super.readAdditionalSaveData(nbt)
         maskType = MaskType.CODEC.byName(nbt.getString("mask_type"), MaskType.CYCLOP)
         mode = MaskMode.CODEC.byName(nbt.getString("mode"), MaskMode.GUARD)
-        home = if (nbt.contains("home_offset")) blockPosition().offset(BlockPos.of(nbt.getLong("home_offset"))) else null
+        home = if (nbt.contains("home_pos")) BlockPos.of(nbt.getLong("home_pos")) else null
         waypoints = nbt.getLongArray("waypoints").map(BlockPos::of)
         waypointIndex = nbt.getInt("waypoint_index")
         waypointReverse = nbt.getBoolean("waypoint_reverse")
