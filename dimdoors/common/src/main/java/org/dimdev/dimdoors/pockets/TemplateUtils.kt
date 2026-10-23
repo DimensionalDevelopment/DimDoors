@@ -58,8 +58,7 @@ object TemplateUtils {
             }
         }
 
-        randomizable.setLootTable(table)
-        randomizable.setLootTableSeed(world.getRandom().nextLong())
+        randomizable.setLootTable(table, world.getRandom().nextLong())
     }
 
     fun registerRifts(

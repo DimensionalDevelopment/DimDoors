@@ -85,10 +85,8 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         if (setupLootTables)  // temp
             pocket.blockEntities.forEach { (blockPos: BlockPos?, blockEntity: BlockEntity?) ->
                 if (blockEntity is Container) { // comment in if needed
-                    if (blockEntity.isEmpty) {
-                        if (blockEntity is RandomizableContainerBlockEntity) {
-                            TemplateUtils.setupLootTable(world, blockEntity, LOGGER)
-                        }
+                    if (blockEntity is RandomizableContainerBlockEntity && blockEntity.lootTable == null && blockEntity.isEmpty) {
+                        TemplateUtils.setupLootTable(world, blockEntity, LOGGER)
                     }
                 }
             }
