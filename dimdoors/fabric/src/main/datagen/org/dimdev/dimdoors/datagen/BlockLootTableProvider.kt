@@ -24,7 +24,6 @@ class BlockLootTableProvider(dataGenerator: FabricDataOutput, completableFuture:
         add(ModBlocks.STONE_DOOR) { createDoorTable(it) }
         add(ModBlocks.DIALING_DOOR) { createDoorTable(it) }
 
-//        this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
         dropWhenSilkTouch(ModBlocks.MARKING_PLATE)
 
         add(ModBlocks.SOLID_STATIC) { blockx -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER) }
@@ -52,6 +51,7 @@ class BlockLootTableProvider(dataGenerator: FabricDataOutput, completableFuture:
         dropSelf(ModBlocks.DRIFTWOOD_LOG)
         dropSelf(ModBlocks.DRIFTWOOD_PLANKS)
         dropSelf(ModBlocks.DRIFTWOOD_LEAVES)
+        dropSelf(ModBlocks.DRIFTWOOD_CHEST)
         add(ModBlocks.DRIFTWOOD_LEAVES) { block ->
             val registryLookup = registries.lookupOrThrow(Registries.ENCHANTMENT)
             createLeavesDrops(block, ModBlocks.DRIFTWOOD_SAPLING, *NORMAL_LEAVES_SAPLING_CHANCES).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0f)).`when`(doesNotHaveShearsOrSilkTouch()).add(applyExplosionCondition(block, LootItem.lootTableItem(ModItems.FRAYED_FILAMENT)).`when`(BonusLevelTableCondition.bonusLevelFlatChance(registryLookup.getOrThrow(Enchantments.FORTUNE), 0.005f, 0.0055555557f, 0.00625f, 0.008333334f, 0.025f))))

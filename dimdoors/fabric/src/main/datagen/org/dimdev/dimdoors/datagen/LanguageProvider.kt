@@ -116,6 +116,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         addEntry(ModBlocks.STONE_SLAB)
         addEntry(ModBlocks.STONE_STAIRS)
         addEntry(ModBlocks.STONE_WALL)
+        addEntry(ModBlocks.DRIFTWOOD_CHEST)
 
         ModBlocks.DecayGroupSet.SETS.forEach(::addBlockSet)
 

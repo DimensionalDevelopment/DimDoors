@@ -12,7 +12,9 @@ import net.minecraft.client.renderer.DimensionSpecialEffects
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
+import net.minecraft.client.renderer.blockentity.ChestRenderer
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
+import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
@@ -36,6 +38,7 @@ import org.dimdev.dimcore.client.node.RenderNodes
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.block.entity.DriftwoodChestBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect
@@ -167,6 +170,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
         register.registerBlockEntity(ModBlockEntityTypes.ENTRANCE_RIFT, ::EntranceRiftBlockEntityRenderer)
         register.registerBlockEntity(ModBlockEntityTypes.DETACHED_RIFT, ::DetachedRiftBlockEntityRenderer)
         register.registerBlockEntity(ModBlockEntityTypes.DIALING_DOOR, ::DialingDoorBlockEntityRenderer)
+        register.registerBlockEntity(ModBlockEntityTypes.DRIFTWOOD_CHEST, ::ChestRenderer)
 
         register.registerEntity(ModEntityTypes.MONOLITH, ::MonolithRenderer)
         register.registerEntity(ModEntityTypes.MASK, ::MaskRenderer)
@@ -242,6 +246,22 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
             ModBlocks.DRIFTWOOD_DOOR,
             ModBlocks.DIALING_DOOR
         )
+
+        clientPlatform.registerCustomItemRenderer(object : CustomItemRenderer {
+            val blockEntity = DriftwoodChestBlockEntity(BlockPos.ZERO, ModBlocks.DRIFTWOOD_CHEST.defaultBlockState())
+
+            override fun render(
+                stack: ItemStack,
+                ctx: ItemDisplayContext,
+                poseStack: PoseStack,
+                buffers: MultiBufferSource,
+                light: Int,
+                overlay: Int
+            ) {
+                Minecraft.getInstance().blockEntityRenderDispatcher.renderItem(blockEntity, poseStack, buffers, light, overlay)
+            }
+        }, ModBlocks.DRIFTWOOD_CHEST)
+
         clientPlatform.registerCustomItemRenderer({ stack, ctx, poseStack, buffers, light, overlay ->
             MaskItemRenderer.render(stack, ctx, poseStack, buffers, light, overlay)
         }, ModItems.MASK)

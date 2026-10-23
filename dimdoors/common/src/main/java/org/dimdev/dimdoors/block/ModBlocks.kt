@@ -316,6 +316,11 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         }
     }
 
+    val DRIFTWOOD_CHEST = decay("driftwood_chest") {
+        block(::DriftwoodChestBlock)
+        blockProperties(Blocks.CHEST)
+    }
+
     @JvmField val DARK_SAND = decay("dark_sand") {
         blockProperties(Blocks.SAND) {
             mapColor(MapColor.COLOR_BLACK)

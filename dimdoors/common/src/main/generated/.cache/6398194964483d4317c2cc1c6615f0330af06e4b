@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-19T16:02:11.9768203	DimensionalDoors/Abstraction Decay Patterns
+// 1.21.1	2026-10-23T10:27:44.630939	DimensionalDoors/Abstraction Decay Patterns
 1e9118bcc5c56798e273767f3425bee35552421c data\dimdoors\decay_patterns\dark_sand_wall.json
 5a2e588177bc26540c99a9b1b865f17694cadc77 data\dimdoors\decay_patterns\rail.json
 3788ee94bcf0324671cbc74aebcb8e7568b5109f data\dimdoors\decay_patterns\trapped_chest.json
@@ -62,7 +62,7 @@ f3bad0220f44febe738d2aa9c959a53639d7d597 data\dimdoors\decay_patterns\crying_obs
 bb5a846def911879f77830dbe00c96ad9293b9eb data\dimdoors\decay_patterns\blue_terracotta_slab.json
 44267dc0cde7ee37502d817987565d292f005f63 data\dimdoors\decay_patterns\iron_block.json
 7eb3c3d013ffdd14154ec03ee18a5f1c7402f5b2 data\dimdoors\decay_patterns\snow_block.json
-92f5f8457de227a36a10066023e9e49663a33a7c data\dimdoors\decay_patterns\basalt.json
+fbec81ce4743231bf384956a7c2b551943c74036 data\dimdoors\decay_patterns\basalt.json
 b38cc869323577dd1a71ed2afebbfcd11ca9fe89 data\dimdoors\decay_patterns\placeholder_4_4.json
 0f1f49db3ea52adc935cf8fad5f29af3571c287b data\dimdoors\decay_patterns\bone_block.json
 f85e8bebda53f358ef2bb2bb50691fb4e1c257ca data\dimdoors\decay_patterns\terracotta_stairs_from_light_gray_terracotta_stairs.json

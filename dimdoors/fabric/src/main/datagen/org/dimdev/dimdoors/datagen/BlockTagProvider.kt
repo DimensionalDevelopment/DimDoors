@@ -947,6 +947,12 @@ class BlockTagProvider(output: FabricDataOutput, lookupProvider: CompletableFutu
                 BlockTags.MINEABLE_WITH_AXE
         )
 
+        add(ModBlocks.DRIFTWOOD_PLANKS,
+            ConventionalBlockTags.CHESTS,
+            ConventionalBlockTags.WOODEN_CHESTS,
+            BlockTags.MINEABLE_WITH_AXE
+        )
+
         add(ModBlocks.DRIFTWOOD_LEAVES,
                 BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE,
                 BlockTags.COMPLETES_FIND_TREE_TUTORIAL,

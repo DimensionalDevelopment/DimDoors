@@ -58,7 +58,7 @@ object PortalColorGui {
 
         RiftCrackRenderer.ChromaticAberration.render()
     }
-    
+
 
     private fun renderColor(name: String, index: Int) {
         val color = colors[index]

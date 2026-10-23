@@ -52,6 +52,7 @@
     "client.PlaceRecipeMixin",
     "client.PostChainMixin",
     "client.PostProcessShaderMixin",
+    "client.SheetsMixin",
     "client.UniformMixin"
   ],
   "injectors": {

@@ -66,6 +66,14 @@ class DimdoorsRecipeProvider(dataGenerator: PackOutput, completableFuture: Compl
             .unlockedBy("inventory_changed", ModBlocks.DRIFTWOOD_LOG.hasItems())
             .save(exporter)
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_CHEST)
+            .define('#', ModBlocks.DRIFTWOOD_PLANKS)
+            .pattern("###")
+            .pattern("# #")
+            .pattern("###")
+            .unlockedBy("inventory_changed", ModBlocks.DRIFTWOOD_PLANKS.hasItems())
+            .save(exporter)
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DRIFTWOOD_PLANKS, 4)
             .requires(ModItemTags.DRIFTWOOD_LOGS)
             .unlockedBy("inventory_changed", has(ModItemTags.DRIFTWOOD_LOGS))
