@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry
@@ -27,7 +26,10 @@ import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
 import org.dimdev.dimcore.FabricResourceLoader
-import org.dimdev.dimcore.api.client.*
+import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
+import org.dimdev.dimcore.api.client.EntityRendererProvider
+import org.dimdev.dimcore.api.client.IClientSided
+import org.dimdev.dimcore.api.client.ModClient
 import java.io.IOException
 
 open class FabricClientSided<V : FabricClientSided<V, T>, T : ModClient<in V>>(private val client: T
@@ -61,20 +63,6 @@ open class FabricClientSided<V : FabricClientSided<V, T>, T : ModClient<in V>>(p
         val mod: Any = client
         if (mod is ClientReloadListenerProvider) mod.registerClientReloadListeners(::registerClientLoader)
         if (mod is EntityRendererProvider) mod.registerEntityRenderers(FabricEntityRendererProvider)
-        if (mod is CustomItemRendererProvider) mod.register { renderer, item ->
-            val dynamicItemRenderer = BuiltinItemRendererRegistry.DynamicItemRenderer { stack, mode, matrices, vertexConsumers, light, overlay ->
-                    renderer.render(
-                        stack,
-                        mode,
-                        matrices,
-                        vertexConsumers,
-                        light,
-                        overlay
-                    )
-                }
-
-            item.forEach { BuiltinItemRendererRegistry.INSTANCE.register(it, dynamicItemRenderer) }
-        }
 
         client.delayedInit()
     }

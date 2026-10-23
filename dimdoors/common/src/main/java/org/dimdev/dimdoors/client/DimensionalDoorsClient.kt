@@ -2,12 +2,14 @@ package org.dimdev.dimdoors.client
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import foundry.imgui.api.ImGuiMCEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.renderer.DimensionSpecialEffects
+import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
@@ -17,6 +19,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.CrossbowItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
@@ -58,7 +61,7 @@ import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.world.DataValues
 import org.lwjgl.glfw.GLFW
 
-object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRendererProvider, CustomItemRendererProvider {
+object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRendererProvider {
     var renderTick: Float = 0f
         private set
 
@@ -239,6 +242,9 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
             ModBlocks.DRIFTWOOD_DOOR,
             ModBlocks.DIALING_DOOR
         )
+        clientPlatform.registerCustomItemRenderer({ stack, ctx, poseStack, buffers, light, overlay ->
+            MaskItemRenderer.render(stack, ctx, poseStack, buffers, light, overlay)
+        }, ModItems.MASK)
     }
 
 
@@ -262,16 +268,4 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
 
     @JvmStatic
     lateinit var clientSided: IDimDoorsClientSided<*>
-
-    override fun register(register: CustomItemRendererRegister) {
-        MaskRenderer
-
-        register.register({ stack, ctx, poseStack, buffers, light, overlay ->
-            MaskItemRenderer.render(stack, ctx, poseStack, buffers, light, overlay)
-
-//            org.dimdev.dimdoors.client.RenderUtils.renderSolidColorSphere(RenderType.debugQuads(), buffers, poseStack, 0.01f, 0f, 1f, 0f, 1f, 12, 12, 1f)
-
-//            org.dimdev.dimdoors.client.RenderUtils.renderSolidColorSphere(RenderType.debugQuads(), buffers, poseStack, 0.5f, 1f, 1f, 1f, 0.25f, 12, 12, 1f)
-        }, ModItems.MASK)
-    }
 }

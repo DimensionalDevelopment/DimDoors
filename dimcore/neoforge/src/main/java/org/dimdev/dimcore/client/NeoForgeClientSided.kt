@@ -1,14 +1,10 @@
 package org.dimdev.dimcore.client
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.KeyMapping
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.screens.inventory.MenuAccess
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer
-import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
@@ -22,18 +18,18 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
-import net.minecraft.world.item.ItemDisplayContext
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.event.*
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent
 import org.dimdev.dimcore.NeoforgeResourceLoader
-import org.dimdev.dimcore.api.client.*
+import org.dimdev.dimcore.api.client.ClientReloadListenerProvider
+import org.dimdev.dimcore.api.client.EntityRendererRegister
+import org.dimdev.dimcore.api.client.IClientSided
+import org.dimdev.dimcore.api.client.ModClient
 import org.dimdev.dimcore.api.ext.id
 import org.dimdev.dimcore.api.fluid.FluidDetails
 import java.io.IOException
@@ -107,36 +103,6 @@ open class NeoForgeClientSided<V : NeoForgeClientSided<V, T>, T : ModClient<in V
                         event.registerBlockEntityRenderer(type, provider)
                     }
                 })
-            }
-        }
-
-        if(mod is CustomItemRendererProvider) {
-            bus.addListener<RegisterClientExtensionsEvent> { event ->
-                fun CustomItemRenderer.extension(): IClientItemExtensions {
-                    val itemRenderer = this
-
-                    val renderer = object : BlockEntityWithoutLevelRenderer(
-                        Minecraft.getInstance().blockEntityRenderDispatcher,
-                        Minecraft.getInstance().entityModels
-                    ) {
-                        override fun renderByItem(
-                            stack: ItemStack,
-                            displayContext: ItemDisplayContext,
-                            poseStack: PoseStack,
-                            buffer: MultiBufferSource,
-                            packedLight: Int,
-                            packedOverlay: Int
-                        ) {
-                            itemRenderer.render(stack, displayContext, poseStack, buffer, packedLight, packedOverlay)
-                        }
-                    }
-
-                    return object : IClientItemExtensions { override fun getCustomRenderer(): BlockEntityWithoutLevelRenderer = renderer }
-                }
-
-                mod.register { renderer, item ->
-                    event.registerItem(renderer.extension(), *item)
-                }
             }
         }
 

@@ -20,7 +20,7 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers
 import net.neoforged.neoforge.common.NeoForge
 import org.dimdev.dimcore.api.client.ClientPlatform
 
-class NeoForgeClientPlatform : ClientPlatform {
+class NeoForgeClientPlatform : ClientPlatform() {
     private val loginRunnables = mutableListOf<() -> Unit>()
     private val systemInfoProivders = mutableListOf<(MutableList<String>) -> Unit>()
     private val gameInfoProivders = mutableListOf<(MutableList<String>) -> Unit>()
