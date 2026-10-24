@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import kotlin.jvm.optionals.getOrNull
 
 abstract class PocketGeneratorReference<T : PocketGeneratorReference<T>>(
     protected val weight: Equation
@@ -28,10 +29,12 @@ abstract class PocketGeneratorReference<T : PocketGeneratorReference<T>>(
     }
 
     override fun prepareAndPlacePocket(parameters: PocketGenerationContext, setupLoot: Boolean?): Pocket<*, *>? {
-        val generator = getReferencedPocketGenerator(parameters).value()
+        val holder = getReferencedPocketGenerator(parameters)
+        val generator = holder.value()
 
         val builder: Pocket.PocketBuilder<*, *> = generator.pocketBuilder(parameters)
             .virtualLocation(parameters.sourceVirtualLocation) // TODO: virtualLocation thing still makes little sense
+        holder.unwrapKey().getOrNull()?.let { builder.generator(it) }
         generator.applyModifiers(parameters, builder)
 
         val pocket = generator.prepareAndPlacePocket(parameters, builder)

@@ -12,7 +12,7 @@ object DelvingTarget : VirtualTarget<DelvingTarget>() {
         val room = PocketRegistry.instance.getPocketAt(owner) ?: return null
         val registry = DungeonRegistry.instance
 
-        val dungeon = registry.dungeonOf(room) ?: registry.create(PocketGenerator.ALL_DUNGEONS, room.virtualLocation.copy(depth = 0))
+        val dungeon = registry.dungeonOf(room) ?: registry.create(PocketGenerator.ALL_DUNGEONS, room.virtualLocation.copy(depth = 0), owner)
         return registry.generateRoom(dungeon, room.virtualLocation.depth + 1, owner)
     }
 

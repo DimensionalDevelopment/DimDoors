@@ -15,7 +15,7 @@ class DungeonTarget(private val dungeonGroup: ResourceKey<VirtualPocket>) : Virt
         val location = owner.providedLocation ?: return null
         val registry = DungeonRegistry.instance
 
-        val dungeon = registry.create(dungeonGroup, VirtualLocation(location.worldId, location.x, location.z, 0))
+        val dungeon = registry.create(dungeonGroup, VirtualLocation(location.worldId, location.x, location.z, 0), owner)
         return registry.generateRoom(dungeon, 1, owner)
     }
 

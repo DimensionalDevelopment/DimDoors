@@ -5,9 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
+import java.util.Optional
 
 class PrivatePocket : Pocket<PrivatePocket, PrivatePocket.PrivatePocketBuilder>, DyeableAddon.DyeablePocket {
     constructor(
@@ -16,8 +18,9 @@ class PrivatePocket : Pocket<PrivatePocket, PrivatePocket.PrivatePocketBuilder>,
         range: Int,
         box: BoundingBox,
         virtualLocation: VirtualLocation,
-        addons: MutableList<PocketAddon>
-    ) : super(id, world, range, box, virtualLocation, addons)
+        addons: MutableList<PocketAddon>,
+        generator: Optional<ResourceKey<PocketGenerator<*>>>
+    ) : super(id, world, range, box, virtualLocation, addons, generator)
 
     constructor()
 

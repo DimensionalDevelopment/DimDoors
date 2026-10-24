@@ -12,9 +12,11 @@ import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
+import org.dimdev.dimdoors.rift.targets.DelvingTarget
 import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
@@ -26,8 +28,8 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
 
     override fun type(): Type<DungeonRegistry> = SubsystemTypes.DUNGEON
 
-    fun create(theme: ResourceKey<VirtualPocket>, root: VirtualLocation): UUID = UUID.randomUUID().also { id ->
-        dungeons[id] = Dungeon(theme, root)
+    fun create(theme: ResourceKey<VirtualPocket>, root: VirtualLocation, gate: Vertex): UUID = UUID.randomUUID().also { id ->
+        dungeons[id] = Dungeon(theme, root, gate)
         RiftGraph.getInstance().addVertex(id, RegistryVertices.DUNGEON)
         setDirty()
     }
@@ -48,18 +50,27 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
             return null
         }
 
-        RiftGraph.getInstance().addEdge(id, PocketInfo(pocket.world, pocket.id).uuid)
+        val graph = RiftGraph.getInstance()
+        graph.addEdge(id, PocketInfo(pocket.world, pocket.id).uuid)
+
+        pocket.blockEntities.values.filterIsInstance<Rift>()
+            .filter { it.data.destination === DelvingTarget }
+            .mapNotNull { RiftRegistry.instance.idAt(it.location) }
+            .forEach { graph.addEdge(id, it) }
+
+        graph.removeEdge(id, owner.id)
 
         val entrance = PocketRegistry.instance.getPocketEntrance(pocket)
         TemplateUtils.linkRifts(owner, entrance)
         return entrance?.blockEntity?.castOrNull<Target>()
     }
 
-    data class Dungeon(val theme: ResourceKey<VirtualPocket>, val root: VirtualLocation) {
+    data class Dungeon(val theme: ResourceKey<VirtualPocket>, val root: VirtualLocation, val gate: Vertex) {
         companion object {
             val CODEC: Codec<Dungeon> = RecordCodecBuilder.create { instance -> instance.group(
                     Schemas.registryKey(ModRegistryKeys.POCKET_GROUPS).fieldOf("theme").forGetter(Dungeon::theme),
-                    VirtualLocation.CODEC.fieldOf("root").forGetter(Dungeon::root)
+                    VirtualLocation.CODEC.fieldOf("root").forGetter(Dungeon::root),
+                    Vertex.CODEC.fieldOf("gate").forGetter(Dungeon::gate)
                 ).apply(instance, ::Dungeon)
             }
         }

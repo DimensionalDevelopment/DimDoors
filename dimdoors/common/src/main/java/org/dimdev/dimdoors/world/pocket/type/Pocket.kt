@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type
 
 import com.mojang.datafixers.Products.P1
-import com.mojang.datafixers.Products.P6
+import com.mojang.datafixers.Products.P7
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.Util
@@ -16,14 +16,19 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.ModRegistryKeys
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.network.ServerPacketHandler
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddonType
+import java.util.Optional
 import java.util.function.Consumer
+import kotlin.jvm.optionals.getOrNull
 import kotlin.streams.asSequence
 
 abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : AbstractPocket<T, V>, AddonProvider {
@@ -34,17 +39,21 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
     lateinit var virtualLocation: VirtualLocation
 
+    var generator: ResourceKey<PocketGenerator<*>>? = null
+
     constructor(
         id: Int,
         world: ResourceKey<Level>,
         range: Int,
         box: BoundingBox,
         virtualLocation: VirtualLocation,
-        addons: MutableList<PocketAddon>
+        addons: MutableList<PocketAddon>,
+        generator: Optional<ResourceKey<PocketGenerator<*>>>
     ) : super(id, world) {
         this.range = range
         this.box = box
         this.virtualLocation = virtualLocation
+        this.generator = generator.getOrNull()
 
         addons.forEach { addon -> this.addons[addon.type] = addon }
     }
@@ -213,6 +222,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         protected var size: Vec3i = Vec3i(0, 0, 0)
         protected var expected: Vec3i = Vec3i(0, 0, 0)
         protected var virtualLocation: VirtualLocation? = null
+        protected var generator: ResourceKey<PocketGenerator<*>>? = null
         protected var range: Int = -1
 
         constructor(addons: MutableList<PocketAddon.PocketBuilderAddon<*, *>>) {
@@ -261,6 +271,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
                 )
             )
             virtualLocation?.let { instance.virtualLocation = it }
+            generator?.let { instance.generator = it }
 
             addons.values.forEach(Consumer { addon: PocketAddon.PocketBuilderAddon<*, *>? -> addon!!.apply(instance) })
 
@@ -274,6 +285,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             copy.size = size
             copy.expected = expected
             copy.virtualLocation = virtualLocation
+            copy.generator = generator
             copy.addons = addons.toMutableMap()
             return copy
         }
@@ -309,6 +321,11 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             return self
         }
 
+        fun generator(generator: ResourceKey<PocketGenerator<*>>): P {
+            this.generator = generator
+            return self
+        }
+
         fun range(range: Int): P {
             this.range = range
             return self
@@ -327,12 +344,13 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         @JvmField
         var KEY: String = "pocket"
 
-        fun <T : Pocket<*, *>> commonPocketFields(instance: RecordCodecBuilder.Instance<T>): P6<RecordCodecBuilder.Mu<T>, Int, ResourceKey<Level>, Int, BoundingBox, VirtualLocation, MutableList<PocketAddon>> {
+        fun <T : Pocket<*, *>> commonPocketFields(instance: RecordCodecBuilder.Instance<T>): P7<RecordCodecBuilder.Mu<T>, Int, ResourceKey<Level>, Int, BoundingBox, VirtualLocation, MutableList<PocketAddon>, Optional<ResourceKey<PocketGenerator<*>>>> {
             return commonFields(instance)
                 .and(Codec.INT.fieldOf("range").forGetter(Pocket<*, *>::getRange))
                 .and(BoundingBox.CODEC.fieldOf("box").forGetter(Pocket<*, *>::box))
                 .and(VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(Pocket<*, *>::virtualLocation))
                 .and(PocketAddon.LIST_CODEC.fieldOf("addons").forGetter { it.addons.values.toMutableList() })
+                .and(ResourceKey.codec(ModRegistryKeys.POCKET_GENERATOR).optionalFieldOf("generator").nullableForGetter(Pocket<*, *>::generator))
         }
     }
 }

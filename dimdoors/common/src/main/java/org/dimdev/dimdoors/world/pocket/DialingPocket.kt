@@ -5,11 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
+import java.util.Optional
 
 class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon.DyeablePocket {
     var address: DialingAddress = DialingAddress.DEFAULT
@@ -21,8 +23,9 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
         box: BoundingBox,
         virtualLocation: VirtualLocation,
         addons: MutableList<PocketAddon>,
+        generator: Optional<ResourceKey<PocketGenerator<*>>>,
         address: DialingAddress
-    ) : super(id, world, range, box, virtualLocation, addons) {
+    ) : super(id, world, range, box, virtualLocation, addons, generator) {
         this.address = address
     }
 
