@@ -4,15 +4,33 @@ import net.minecraft.client.renderer.Sheets
 import net.minecraft.client.resources.model.Material
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.properties.ChestType
-import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.block.entity.DriftwoodChestBlockEntity
 
 object ModSheets {
-    val DRIFTWOOD_CHEST = ChestMaterial.create(DimensionalDoors.MOD_ID, "driftwood")
+    private val MATERIALS = mutableMapOf<BlockEntityType<*>, (BlockEntity, ChestType, Boolean) -> Material?>()
+
+    fun registerMaterial(blockEntityType: BlockEntityType<*>, function: (BlockEntity, ChestType, Boolean) -> Material?) {
+        MATERIALS[blockEntityType] = function
+    }
+
+    data class LootrChestMaterial(val normal: Material, val openned: Material) {
+        fun choose(isOpen: Boolean): Material {
+            return if(isOpen) openned else normal
+        }
+
+        companion object {
+            fun create(modid: String, name: String): LootrChestMaterial {
+                return LootrChestMaterial(
+                    ChestMaterial.chestMaterial(modid, "${name}_lootr"),
+                    ChestMaterial.chestMaterial(modid, "${name}_lootr_opened"),
+                )
+            }
+        }
+    }
 
     data class ChestMaterial(val normal: Material, val left: Material, val right: Material) {
-        fun choose(type: ChestType, holiday: Boolean): Material = when(type) {
+        fun choose(type: ChestType): Material = when(type) {
             ChestType.SINGLE -> normal
             ChestType.LEFT -> left
             ChestType.RIGHT -> right
@@ -27,7 +45,7 @@ object ModSheets {
                 )
             }
 
-            private fun chestMaterial(modid: String, chestName: String): Material {
+            fun chestMaterial(modid: String, chestName: String): Material {
                 return Material(Sheets.CHEST_SHEET, ResourceLocation.fromNamespaceAndPath(modid, "entity/chest/$chestName"))
             }
         }
@@ -36,9 +54,6 @@ object ModSheets {
 
     @JvmStatic
     fun chestMaterial(blockEntity: BlockEntity, chestType: ChestType, holiday: Boolean): Material? {
-        return when(blockEntity) {
-            is DriftwoodChestBlockEntity -> DRIFTWOOD_CHEST.choose(chestType, holiday)
-            else -> null
-        }
+        return MATERIALS[blockEntity.type]?.invoke(blockEntity, chestType, holiday)
     }
 }

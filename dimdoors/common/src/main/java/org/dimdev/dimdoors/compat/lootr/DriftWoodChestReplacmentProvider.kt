@@ -1,0 +1,3 @@
+package org.dimdev.dimdoors.compat.lootr
+
+class DriftWoodChestReplacmentProvider

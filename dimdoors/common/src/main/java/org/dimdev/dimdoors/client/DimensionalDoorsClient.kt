@@ -2,26 +2,22 @@ package org.dimdev.dimdoors.client
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import foundry.imgui.api.ImGuiMCEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.renderer.DimensionSpecialEffects
-import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.blockentity.ChestRenderer
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
-import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.CrossbowItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
@@ -49,6 +45,7 @@ import org.dimdev.dimdoors.compat.imgui.LocationElement
 import org.dimdev.dimdoors.compat.imgui.PortalColorGui
 import org.dimdev.dimdoors.compat.imgui.RotationElement
 import org.dimdev.dimdoors.compat.iris.IrisCompat
+import org.dimdev.dimdoors.compat.lootr.LootrClientCompat
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.item.ModDataComponentTypes
@@ -175,6 +172,8 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
         register.registerEntity(ModEntityTypes.MONOLITH, ::MonolithRenderer)
         register.registerEntity(ModEntityTypes.MASK, ::MaskRenderer)
         register.registerEntity(ModEntityTypes.FARSHOT_ENDER_PEARL, ::FarShotEnderPearlRenderer)
+
+        if(platform.isModLoaded("lootr")) LootrClientCompat.registerEntities(register)
     }
 
     override fun initShaders(shaderRegister: (ResourceLocation, VertexFormat, (ShaderInstance) -> Unit) -> Unit) {
@@ -247,24 +246,19 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
             ModBlocks.DIALING_DOOR
         )
 
-        clientPlatform.registerCustomItemRenderer(object : CustomItemRenderer {
-            val blockEntity = DriftwoodChestBlockEntity(BlockPos.ZERO, ModBlocks.DRIFTWOOD_CHEST.defaultBlockState())
-
-            override fun render(
-                stack: ItemStack,
-                ctx: ItemDisplayContext,
-                poseStack: PoseStack,
-                buffers: MultiBufferSource,
-                light: Int,
-                overlay: Int
-            ) {
-                Minecraft.getInstance().blockEntityRenderDispatcher.renderItem(blockEntity, poseStack, buffers, light, overlay)
-            }
-        }, ModBlocks.DRIFTWOOD_CHEST)
+        clientPlatform.registerCustomItemRenderer(CustomBlockEntityItemRenderer(ModBlocks.DRIFTWOOD_CHEST,::DriftwoodChestBlockEntity), ModBlocks.DRIFTWOOD_CHEST)
 
         clientPlatform.registerCustomItemRenderer({ stack, ctx, poseStack, buffers, light, overlay ->
             MaskItemRenderer.render(stack, ctx, poseStack, buffers, light, overlay)
         }, ModItems.MASK)
+
+        val driftwood_chest_sheet = ModSheets.ChestMaterial.create(modId, "driftwood")
+
+        ModSheets.registerMaterial(ModBlockEntityTypes.DRIFTWOOD_CHEST) { _, type, holiday ->
+            return@registerMaterial driftwood_chest_sheet.choose(type)
+        }
+
+        if(platform.isModLoaded("lootry")) LootrClientCompat.register()
     }
 
 
