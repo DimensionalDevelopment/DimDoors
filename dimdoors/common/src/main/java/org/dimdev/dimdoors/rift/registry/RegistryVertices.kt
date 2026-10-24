@@ -12,4 +12,5 @@ object RegistryVertices : PlatformRegistry<RegistryVertex>(ModRegistryKeys.REGIS
     val RIFT = create("rift") { Rift }
     val ENTRANCE = create("entrance") { PocketEntrancePointer }
     val RIFT_PLACEHOLDER = create("rift_placeholder") { RiftPlaceholder }
+    val DUNGEON = create("dungeon") { DungeonVertex }
 }

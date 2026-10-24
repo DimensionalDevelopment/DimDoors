@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget.NoneTarget
 object VirtualTargets : MapCodecPlatformRegistry<VirtualTarget<*>>(ModRegistryKeys.VIRTUAL_TARGET, DimensionalDoors.getSided()) {
     val AVAILABLE_LINK = create("available_link") { AvailableLinkTarget.CODEC }
     val DUNGEON = create("dungeon") { DungeonTarget.CODEC }
+    val DELVING = create("delving") { DelvingTarget.codec }
     val TEMPLATE= create("template") { TemplateTarget.CODEC }
     val ESCAPE = create("escape") { EscapeTarget.CODEC }
     val RIFT_REFERENCE = create("rift_reference") { RiftReference.CODEC }

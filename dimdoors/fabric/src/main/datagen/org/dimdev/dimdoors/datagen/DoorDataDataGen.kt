@@ -25,16 +25,6 @@ object DoorDataDataGen {
             .builder()
         )
 
-        val dungeonBuilder = DungeonTarget.builder()
-            .acceptedGroups(mutableSetOf(0))
-            .newRiftWeight(1.0f)
-            .weightMaximum(100.0)
-            .coordFactor(1.0)
-            .noLinkBack(false)
-            .positiveDepthFactor(10000.0)
-            .negativeDepthFactor(160.0)
-            .noLink(false)
-
         val properties = LinkProperties.builder {
             entranceWeight(0.0f)
             groups(0, 1)
@@ -44,19 +34,19 @@ object DoorDataDataGen {
         }
 
         ctx.register(key(Blocks.CRIMSON_DOOR), RiftDataList.of(
-            dungeonBuilder.dungeonGroup(PocketGenerator.NETHER_DUNGEONS).build(),
+            DungeonTarget(PocketGenerator.NETHER_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )
 
         ctx.register(key(ModBlocks.AMALGAM_DOOR), RiftDataList.of(
-            dungeonBuilder.dungeonGroup(PocketGenerator.MYTH_DUNGEONS).build(),
+            DungeonTarget(PocketGenerator.MYTH_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )
 
         ctx.register(key(ModBlocks.STONE_DOOR), RiftDataList.of(
-            dungeonBuilder.dungeonGroup(PocketGenerator.ALL_DUNGEONS).build(),
+            DungeonTarget(PocketGenerator.ALL_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )

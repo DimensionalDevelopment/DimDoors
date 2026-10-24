@@ -61,15 +61,7 @@ interface DefaultDungeonDestinations {
             get() = getGateway(PocketGenerator.ALL_DUNGEONS)
 
         fun getGateway(resourceLocation: ResourceKey<VirtualPocket>): DungeonTarget {
-            return DungeonTarget.builder()
-                .dungeonGroup(resourceLocation)
-                .acceptedGroups(mutableSetOf(0))
-                .coordFactor(1.0)
-                .negativeDepthFactor(Double.POSITIVE_INFINITY)
-                .positiveDepthFactor(160.0)
-                .weightMaximum(300.0) // Link further away
-                .newRiftWeight(1f)
-                .build()
+            return DungeonTarget(resourceLocation)
         }
 
         // TODO: lower weights?
