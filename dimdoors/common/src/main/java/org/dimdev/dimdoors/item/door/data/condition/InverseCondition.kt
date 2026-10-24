@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import java.util.function.Function
 
-@JvmRecord
 data class InverseCondition(val condition: Condition) : Condition {
     override val type get() = Conditions.INVERSE
 

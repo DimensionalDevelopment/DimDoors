@@ -258,7 +258,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
             return@registerMaterial driftwood_chest_sheet.choose(type)
         }
 
-        if(platform.isModLoaded("lootry")) LootrClientCompat.register()
+        if(platform.isModLoaded("lootr")) LootrClientCompat.register()
     }
 
 

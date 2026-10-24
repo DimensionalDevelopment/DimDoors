@@ -95,7 +95,6 @@ object DimensionalDoorBlockRegistrar {
 
     private data class DoorProductionRule(val selector: DoorProductionSelector, val production: DoorProduction)
 
-    @JvmRecord
     data class GeneratedDoorContext(
         val originalId: ResourceLocation,
         val generatedId: ResourceLocation,

@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.client.ModSheets
 
 object LootrClientCompat {
     fun register() {
-        val rift_wood_lootr = ModSheets.LootrChestMaterial.create(DimensionalDoors.MOD_ID, "driftwood_lootr")
+        val rift_wood_lootr = ModSheets.LootrChestMaterial.create(DimensionalDoors.MOD_ID, "driftwood")
         ModSheets.registerMaterial(BlockEntities.DRIFTWOOD_LOOTR_CHEST) { blockEntity, type, _ ->
             blockEntity.cast<LootrChestBlockEntity>()?.hasClientOpened(Minecraft.getInstance().player)?.let { rift_wood_lootr.choose(it) }
         }

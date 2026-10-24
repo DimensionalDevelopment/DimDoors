@@ -8,6 +8,7 @@ object Blocks : PlatformRegistry.BlockItemPlatformRegistry(DimensionalDoors.getS
     val DRIFTWOOD_LOOTR_CHEST = create("driftwood_lootr_chest") {
         block(::LootrDriftwoodChestBlock)
         blockProperties = { LootrConstants.CHEST_PROPERTIES }
+        item()
     }
 
     fun register() {}

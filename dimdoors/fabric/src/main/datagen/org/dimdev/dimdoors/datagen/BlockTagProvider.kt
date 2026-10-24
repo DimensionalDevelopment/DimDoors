@@ -12,6 +12,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.tag.ModBlockTags
 import java.util.concurrent.CompletableFuture
@@ -947,7 +948,7 @@ class BlockTagProvider(output: FabricDataOutput, lookupProvider: CompletableFutu
                 BlockTags.MINEABLE_WITH_AXE
         )
 
-        add(ModBlocks.DRIFTWOOD_PLANKS,
+        add(ModBlocks.DRIFTWOOD_CHEST,
             ConventionalBlockTags.CHESTS,
             ConventionalBlockTags.WOODEN_CHESTS,
             BlockTags.MINEABLE_WITH_AXE
@@ -1147,6 +1148,11 @@ class BlockTagProvider(output: FabricDataOutput, lookupProvider: CompletableFutu
         add(ModBlocks.DIALING_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE)
 
         add(ModBlocks.LIMINAL_TRANSMITTER, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+
+        add(ModBlocks.DRIFTWOOD_CHEST, Registries.BLOCK.tag("converts_riftwood"))
+        addOptional(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("lootr", "chests")), "dimdoors:driftwood_lootr_chest")
+        addOptional(BlockTags.MINEABLE_WITH_AXE, "dimdoors:driftwood_lootr_chest")
+        addOptional(BlockTags.GUARDED_BY_PIGLINS, "dimdoors:driftwood_lootr_chest")
 
 
         setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL)

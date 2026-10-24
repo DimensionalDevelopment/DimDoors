@@ -9,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimdoors.particle.ModParticleTypes
 
-@JvmRecord
 data class RiftParticleOptions(val color: Float, val averageAge: Int) : ParticleOptions {
     override fun getType(): ParticleType<*> {
         return ModParticleTypes.RIFT

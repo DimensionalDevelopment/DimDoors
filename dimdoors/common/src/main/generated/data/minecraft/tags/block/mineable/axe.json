@@ -2,7 +2,7 @@
   "values": [
     "dimdoors:driftwood_log",
     "dimdoors:driftwood_planks",
-    "dimdoors:driftwood_planks",
+    "dimdoors:driftwood_chest",
     "dimdoors:driftwood_sapling",
     "dimdoors:driftwood_fence",
     "dimdoors:driftwood_gate",
@@ -11,6 +11,10 @@
     "dimdoors:driftwood_stairs",
     "dimdoors:driftwood_door",
     "dimdoors:driftwood_trapdoor",
-    "dimdoors:tesselating_loom"
+    "dimdoors:tesselating_loom",
+    {
+      "id": "dimdoors:driftwood_lootr_chest",
+      "required": false
+    }
   ]
 }

@@ -470,7 +470,6 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         block { AncientFabricBlock(this@ancientFabric) }
     }.also { ANCIENT_FABRIC_BLOCKS[this] = it }
 
-    @JvmRecord
     data class DecayGroupSet(
         @JvmField val fence: Block,
         @JvmField val gate: Block,

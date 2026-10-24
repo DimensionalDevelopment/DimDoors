@@ -58,7 +58,6 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
 
     fun configSubject(hand: InteractionHand, item: Item): ConfigSubject = RiftConfigSubject(this.cast<T>(), hand, item)
 
-    @JvmRecord
     data class Deserialize<K>(val data: K, val ops: DynamicOps<K>) {
         fun <V, O> get(builder: CodecRecord<V, O>): O {
             val field = ops.get(data, builder.name).result().orElse(null) ?: return builder.defaultValue()
@@ -73,7 +72,6 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
         }
     }
 
-    @JvmRecord
     data class Serialize<K, T>(
         val data: K,
         val ops: DynamicOps<K>,

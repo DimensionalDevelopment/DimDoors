@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.api.item
 
 import net.minecraft.world.InteractionResult
 
-@JvmRecord
 data class AttackBlockResult(@JvmField val result: InteractionResult?, @JvmField val sendPacket: Boolean) {
     companion object {
         @JvmStatic

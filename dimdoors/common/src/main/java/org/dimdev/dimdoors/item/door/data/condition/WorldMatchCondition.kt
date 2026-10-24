@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import java.util.function.Function
 
-@JvmRecord
 data class WorldMatchCondition(val world: ResourceKey<Level>) : Condition {
     override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean = rift.riftLevel.dimension() == this.world
 

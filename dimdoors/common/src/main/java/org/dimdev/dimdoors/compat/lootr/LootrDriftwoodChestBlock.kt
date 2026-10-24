@@ -28,10 +28,9 @@ import noobanidus.mods.lootr.common.api.LootrAPI
 import noobanidus.mods.lootr.common.api.data.ILootrInfoProvider
 import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity
-import org.dimdev.dimdoors.block.entity.DriftwoodChestBlockEntity
 
 class LootrDriftwoodChestBlock(properties: Properties) : ChestBlock(properties, { BlockEntities.DRIFTWOOD_LOOTR_CHEST }) {
-    override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity = DriftwoodChestBlockEntity(pos, state)
+    override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity = DriftwoodLootrChestBlockEntity(pos, state)
 
 
     override fun getExplosionResistance(): Float {
@@ -124,7 +123,7 @@ class LootrDriftwoodChestBlock(properties: Properties) : ChestBlock(properties, 
         pState: BlockState,
         pBlockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T> {
-        return { level, pos, state, blockEntity: T -> ILootrBlockEntity.ticker(level, pos, state, blockEntity) }
+        return BlockEntityTicker { level, pos, state, blockEntity -> ILootrBlockEntity.ticker(level, pos, state, blockEntity) }
     }
 
     public override fun tick(pState: BlockState, pLevel: ServerLevel, pPos: BlockPos, pRandom: RandomSource) {

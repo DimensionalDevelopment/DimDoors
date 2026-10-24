@@ -109,7 +109,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         dataPackRegistries.forEach { it.register(event) }
     }
 
-    @JvmRecord
     private data class DataPackRegistryRegistration<T>(
         val key: ResourceKey<Registry<T>>,
         val codec: Codec<T>,
@@ -151,7 +150,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
     }
 
 
-    @JvmRecord
     private data class PlayPayloadHandlerReturnable<T : CustomPacketPayload>(val packetFunction: (T, ServerPlayer) -> CustomPacketPayload?) : IPayloadHandler<T> {
         override fun handle(payload: T, context: IPayloadContext) {
             val returnPayload = packetFunction.invoke(payload, context.player() as ServerPlayer) ?: return
@@ -223,7 +221,6 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         })
     }
 
-    @JvmRecord
     private data class PackInfo(val id: String?, val name: String?, val defaultedOn: Boolean) {
         fun create(modId: String?, type: PackType): Pack? {
             val resourcePath = ModList.get().getModFileById(modId).getFile().findResource("resourcepacks", id)

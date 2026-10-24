@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.pockets.generator
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
 import net.minecraft.world.Container
@@ -83,7 +82,7 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         val world = parameters.world
 
         if (setupLootTables)  // temp
-            pocket.blockEntities.forEach { (blockPos: BlockPos?, blockEntity: BlockEntity?) ->
+            pocket.blockEntities.forEach { (_, blockEntity: BlockEntity) ->
                 if (blockEntity is Container) { // comment in if needed
                     if (blockEntity is RandomizableContainerBlockEntity && blockEntity.lootTable == null && blockEntity.isEmpty) {
                         TemplateUtils.setupLootTable(world, blockEntity, LOGGER)

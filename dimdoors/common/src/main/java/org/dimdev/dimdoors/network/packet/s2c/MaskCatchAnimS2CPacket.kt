@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimdoors.DimensionalDoors.Companion.id
 import org.dimdev.dimdoors.entity.mask.MaskType
 
-@JvmRecord
 data class MaskCatchAnimS2CPacket(val maskType: MaskType) : CustomPacketPayload {
     override fun type(): CustomPacketPayload.Type<MaskCatchAnimS2CPacket> {
         return TYPE

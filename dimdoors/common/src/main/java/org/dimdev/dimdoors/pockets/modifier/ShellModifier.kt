@@ -92,7 +92,6 @@ data class ShellModifier(val layers: MutableList<Layer>, val boxToDrawAround: Bo
     }
 
 
-    @JvmRecord
     data class Layer(val blockState: BlockState, val thickness: Equation) {
         fun getThickness(variableMap: MutableMap<String, Double>): Int {
             return thickness.apply(variableMap).toInt()

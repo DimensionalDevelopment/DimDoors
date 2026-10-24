@@ -130,7 +130,6 @@ open class NeoForgeClientSided<V : NeoForgeClientSided<V, T>, T : ModClient<in V
         }
     }
 
-    @JvmRecord
     data class FluidExtension(
         val flowing: ResourceLocation,
         val still: ResourceLocation,

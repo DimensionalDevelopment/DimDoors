@@ -117,6 +117,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         addEntry(ModBlocks.STONE_STAIRS)
         addEntry(ModBlocks.STONE_WALL)
         addEntry(ModBlocks.DRIFTWOOD_CHEST)
+        add("block.dimdoors.driftwood_lootr_chest", "Driftwood Loot Chest")
 
         ModBlocks.DecayGroupSet.SETS.forEach(::addBlockSet)
 

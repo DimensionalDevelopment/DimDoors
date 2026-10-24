@@ -15,7 +15,6 @@ class RiftTrackedCriterion : SimpleCriterionTrigger<RiftTrackedCriterion.Trigger
 
     override fun codec() = TriggerInstance.Companion.CODEC
 
-    @JvmRecord
     data class TriggerInstance(private val player: Optional<ContextAwarePredicate>) : SimpleInstance {
         override fun player(): Optional<ContextAwarePredicate> = player
 

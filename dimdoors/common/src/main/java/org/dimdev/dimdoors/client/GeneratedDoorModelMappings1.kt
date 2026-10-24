@@ -69,13 +69,11 @@ object GeneratedDoorModelMappings {
      * @param source the vanilla item model the generated door item borrows
      * @param portal the portal model whose orientation matches `source`
      */
-    @JvmRecord
     data class ItemMapping(
         val source: ModelResourceLocation,
         val portal: ResourceLocation?
     )
 
-    @JvmRecord
     data class Mappings(
         val blocks: List<Block>,
         val blockModels: MutableMap<ModelResourceLocation, ModelResourceLocation>,
