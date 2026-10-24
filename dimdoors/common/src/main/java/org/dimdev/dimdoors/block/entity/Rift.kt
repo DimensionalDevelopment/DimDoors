@@ -123,12 +123,6 @@ interface Rift : Target {
         LinkPropertiesRegistry.instance.setDetached(rift, this.isDetached)
     }
 
-    fun handleSourceMoved(location: Location) {
-        this.data.destination = location.asTarget()
-        this.setChanged()
-        this.updateColor()
-    }
-
     fun handleTargetGone(location: Location) {
         val data = this.data
 

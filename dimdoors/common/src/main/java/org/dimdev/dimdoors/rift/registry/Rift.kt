@@ -12,10 +12,11 @@ object Rift : RegistryVertex() {
     override fun sourceGone(self: UUID, source: Vertex, location: Location?) {
         super.sourceGone(self, source, location)
 
-        val self = source.providedLocation ?: return
-        RiftUtils.runIfRiftAt(self) { rift ->
-            if (source.type is Rift) {
-                rift.handleSourceGone(location)
+        getLocation(self)?.let {
+            RiftUtils.runIfRiftAt(it) { rift ->
+                if (source.type is Rift) {
+                    rift.handleSourceGone(location)
+                }
             }
         }
     }
@@ -23,25 +24,20 @@ object Rift : RegistryVertex() {
     override fun targetGone(self: UUID, target: Vertex, location: Location?) {
         super.targetGone(self, target, location)
 
-        val self = target.providedLocation ?: return
-        RiftUtils.runIfRiftAt(self) { rift ->
-            if (target.type is Rift && location != null) {
-                rift.handleTargetGone(location)
+        getLocation(self)?.let {
+            RiftUtils.runIfRiftAt(it) { rift ->
+                if (target.type is Rift && location != null) {
+                    rift.handleTargetGone(location)
+                }
+                rift.updateColor()
             }
-            rift.updateColor()
         }
     }
 
     override fun targetMoved(self: UUID, target: Vertex) {
         super.targetMoved(self, target)
 
-        val self = target.providedLocation ?: return
-        RiftUtils.runIfRiftAt(self) { rift ->
-            if (target.type is Rift) {
-                RiftRegistry.instance.locationOf(target.id)?.let(rift::handleSourceMoved)
-            }
-            rift.updateColor()
-        }
+        getLocation(self)?.let { RiftUtils.runIfRiftAt(it) { rift -> rift.updateColor() } }
     }
 
     override fun targetChanged(self: UUID, target: Vertex) {

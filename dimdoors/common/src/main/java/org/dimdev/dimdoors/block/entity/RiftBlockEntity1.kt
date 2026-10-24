@@ -14,10 +14,9 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.errata.subject.ConfigSubject
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.RiftConfigSubject
 
 open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), Rift {
@@ -119,13 +118,6 @@ open class RiftBlockEntity<T : RiftBlockEntity<T>>(type: BlockEntityType<T>, pos
     override fun onlyOpCanSetNbt() = true
 
     override fun setChanged() = super.setChanged()
-
-    override fun handleSourceMoved(location: Location) {
-        this.data.destination = location.asTarget()
-        this.setChanged()
-        this.updateColor()
-    }
-
 
     override val riftBlockPos: BlockPos get() = blockPos
 
