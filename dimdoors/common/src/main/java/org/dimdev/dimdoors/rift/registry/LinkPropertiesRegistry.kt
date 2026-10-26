@@ -3,17 +3,19 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes.PROPERTIES
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutableMapOf()) : SubSystem<LinkPropertiesRegistry>() {
     data class Entry(var properties: LinkProperties? = null, var isDetached: Boolean = false) {
         companion object {
             val CODEC = RecordCodecBuilder.create { instance -> instance.group(
-                LinkProperties.CODEC.fieldOf("properties").forGetter(Entry::properties),
+                LinkProperties.CODEC.optionalFieldOf("properties").nullableForGetter(Entry::properties),
                 Codec.BOOL.fieldOf("isDetached").forGetter(Entry::isDetached)
-                ).apply(instance, ::Entry)
+                ).apply(instance) { a, b -> Entry(a.getOrNull(), b) }
             }
         }
     }
