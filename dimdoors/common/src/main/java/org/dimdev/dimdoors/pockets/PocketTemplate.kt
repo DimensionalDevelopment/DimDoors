@@ -35,8 +35,7 @@ sealed interface PocketTemplate {
 
         override fun place(pocket: Pocket<*, *>) {
             pocket.size = template.size
-            val world = DimensionalDoors.getWorld(pocket.world)!!
-            template.placeInWorld(world, BlockPos.ZERO, pocket.origin, SETTINGS, world.random, 0)
+            DimensionalDoors.getWorld(pocket.world)?.let { template.placeInWorld(it, BlockPos.ZERO, pocket.origin, SETTINGS, it.random, 0) }
         }
 
         companion object {
