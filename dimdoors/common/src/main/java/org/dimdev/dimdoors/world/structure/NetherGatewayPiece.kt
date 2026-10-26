@@ -14,13 +14,14 @@ import net.minecraft.world.level.chunk.ChunkGenerator
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor
 import net.minecraft.world.level.levelgen.structure.structures.NetherFortressPieces
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations
 import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
+import org.dimdev.dimdoors.rift.registry.RiftRegistry
 import org.dimdev.dimdoors.world.ModStructuresPieces
-import java.util.function.Consumer
 
 class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
     constructor(
@@ -120,12 +121,17 @@ class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
 
         // Place the transient door
         placeBlock(level, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState(), 3, 3, 3, box)
-        level.getBlockEntity<EntranceRiftBlockEntity.Impl?>(getWorldPos(3, 3, 3), ModBlockEntityTypes.ENTRANCE_RIFT)
-            .ifPresent(
-                Consumer { rift: EntranceRiftBlockEntity.Impl? ->
-                    rift!!.properties = DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES
-                    rift.setDestination(DefaultDungeonDestinations.getGateway(PocketGenerator.NETHER_DUNGEONS))
-                })
+        level.getBlockEntity(getWorldPos(3, 3, 3), ModBlockEntityTypes.ENTRANCE_RIFT).ifPresent { rift ->
+            rift.data.destination = DefaultDungeonDestinations.getGateway(PocketGenerator.NETHER_DUNGEONS)
+            LinkPropertiesRegistry.instance.setProperties(
+                RiftRegistry.instance.getRiftOrPlaceholder(
+                    Location.ofWorld(
+                        level.level,
+                        rift.blockPos
+                    )
+                ), DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES
+            )
+        }
 
         for (x in 0..6) {
             for (z in 0..6) {
