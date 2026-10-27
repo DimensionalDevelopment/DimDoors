@@ -8,6 +8,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.errata.reference.ReferenceSource
 import org.dimdev.dimcore.api.errata.reference.ReferenceSources
 
@@ -17,6 +18,7 @@ object Schemas {
     @JvmField val FLOAT = SchemaCodec(Codec.FLOAT, FloatNode())
     @JvmField val DOUBLE = SchemaCodec(Codec.DOUBLE, DoubleNode())
     @JvmField val STRING = SchemaCodec(Codec.STRING, StringNode())
+    @JvmField val LEVEL = SchemaCodec(Level.RESOURCE_KEY_CODEC, StringNode()).element(ElementIds.LEVEL_RESOURCE_KEY)
 
     fun int(min: Int, max: Int, default: Int = min): SchemaCodec<Int> = SchemaCodec(Codec.INT.xmap({ it.coerceIn(min, max) }, { it }),
         IntNode(default, min, max)
@@ -55,4 +57,5 @@ fun <A> SchemaCodec<A>.setOf(): SchemaCodec<MutableSet<A>> = SchemaCodec(delegat
 
 object ElementIds {
     @JvmField val COLOR: ResourceLocation = ResourceLocation.fromNamespaceAndPath("dimcore", "color")
+    @JvmField val LEVEL_RESOURCE_KEY: ResourceLocation = ResourceLocation.fromNamespaceAndPath("dimcore", "level_resouce_key")
 }

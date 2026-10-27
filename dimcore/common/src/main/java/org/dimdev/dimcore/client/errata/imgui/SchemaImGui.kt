@@ -15,6 +15,7 @@ import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.client.errata.ClientSession
 import org.dimdev.dimcore.client.errata.ErrataClient
 import org.dimdev.dimcore.client.errata.element.ColorElement
+import org.dimdev.dimcore.client.errata.element.LevelResourceKeyElement
 import org.dimdev.dimcore.client.errata.element.SchemaElements
 import org.dimdev.dimcore.client.errata.imgui.render.*
 
@@ -39,6 +40,7 @@ object SchemaImGui : ErrataClient.View {
         register(SchemaNodeTypes.UNTYPED, UntypedRenderer)
         register(SchemaNodeTypes.ELEMENT, ElementRenderer)
         SchemaElements.register(ElementIds.COLOR, ColorElement)
+        SchemaElements.register(ElementIds.LEVEL_RESOURCE_KEY, LevelResourceKeyElement)
         ImGuiMCEvents.INSTANCE.preRenderImGuiEvent { render() }
     }
 
