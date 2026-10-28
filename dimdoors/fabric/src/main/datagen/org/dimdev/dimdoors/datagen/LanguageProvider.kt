@@ -246,6 +246,11 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(1, "to an infernal dungeon.")
         }
 
+        addDoorAutoGen(ModBlocks.DRIFTWOOD_DOOR, "Hub Door") {
+            info(0, "Create a path way to a ")
+            info(1, "shared universal space.")
+        }
+
         addDisc(ModItems.CREEPY_RECORD, "Stevenrs11 - Creepy")
 
         addEntry(ModItems.ETERNAL_FLUID_BUCKET)

@@ -15,6 +15,7 @@ object SubsystemTypes : PlatformRegistry<SubSystem.Type<*>>(ModRegistryKeys.SUBS
     val PROPERTIES = create("properties_registry", ::LinkPropertiesRegistry, LinkPropertiesRegistry.CODEC)
     val LEVEL_SPACE = create("level_space_registry", ::LevelSpaceRegistry, LevelSpaceRegistry.CODEC)
     val DUNGEON = create("dungeon_registry", ::DungeonRegistry, DungeonRegistry.CODEC)
+    val HUB = create("hub_registry", ::HubRegistry, HubRegistry.CODEC)
 
     private fun <T : SubSystem<T>> create(
         name: String,

@@ -13,4 +13,6 @@ object RegistryVertices : PlatformRegistry<RegistryVertex>(ModRegistryKeys.REGIS
     val ENTRANCE = create("entrance") { PocketEntrancePointer }
     val RIFT_PLACEHOLDER = create("rift_placeholder") { RiftPlaceholder }
     val DUNGEON = create("dungeon") { DungeonVertex }
+    val HUB_ENTRANCE = create("hub_entrance") { PlayerTrackerPointer.create(SubsystemTypes.HUB, PlayerTrackerPointer.Variant.Entrance) }
+    val HUB_EXIT = create("hub_exit") { PlayerTrackerPointer.create(SubsystemTypes.HUB, PlayerTrackerPointer.Variant.Exit) }
 }

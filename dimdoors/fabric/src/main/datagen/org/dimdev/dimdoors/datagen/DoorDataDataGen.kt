@@ -10,11 +10,7 @@ import org.dimdev.dimdoors.item.door.data.RiftDataList
 import org.dimdev.dimdoors.item.door.data.condition.Condition
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.targets.DungeonTarget
-import org.dimdev.dimdoors.rift.targets.EscapeTarget
-import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget
-import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget
-import org.dimdev.dimdoors.rift.targets.PublicPocketTarget
+import org.dimdev.dimdoors.rift.targets.*
 import org.dimdev.dimdoors.world.ModDimensions
 
 object DoorDataDataGen {
@@ -55,6 +51,8 @@ object DoorDataDataGen {
         ctx.register(key(Blocks.IRON_DOOR), RiftDataList.of(PublicPocketTarget, Condition.alwaysTrue()))
 
         ctx.register(key(Blocks.OAK_DOOR), RiftDataList.of(EscapeTarget.of(true), Condition.alwaysTrue()))
+
+        ctx.register(key(ModBlocks.DRIFTWOOD_DOOR), RiftDataList.of(HubPocketTarget, Condition.alwaysTrue()))
     }
 
     private fun key(door: Block): ResourceKey<RiftDataList> = ModRegistryKeys.DOOR_DATA.key(door.builtInRegistryHolder().key().location())

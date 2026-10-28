@@ -65,6 +65,12 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
         return entrance?.blockEntity?.castOrNull<Target>()
     }
 
+    fun linkToRoot(id: UUID, owner: Vertex): Target? {
+        val gate = dungeons[id]?.gate ?: return null
+        TemplateUtils.linkRifts(owner, gate)
+        return gate.providedLocation?.blockEntity?.castOrNull<Target>()
+    }
+
     data class Dungeon(val theme: ResourceKey<VirtualPocket>, val root: VirtualLocation, val gate: Vertex) {
         companion object {
             val CODEC: Codec<Dungeon> = RecordCodecBuilder.create { instance -> instance.group(

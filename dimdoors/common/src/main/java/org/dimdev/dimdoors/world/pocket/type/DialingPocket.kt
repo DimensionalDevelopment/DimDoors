@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.pocket
+package org.dimdev.dimdoors.world.pocket.type
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -7,11 +7,10 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.DialingAddress
-import org.dimdev.dimdoors.world.pocket.type.Pocket
-import org.dimdev.dimdoors.world.pocket.type.Pockets
+import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import java.util.Optional
+import java.util.*
 
 class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon.DyeablePocket {
     var address: DialingAddress = DialingAddress.DEFAULT
@@ -51,7 +50,7 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
         override fun build(): DialingPocket {
             val pocket = super.build()
             address?.let { pocket.address = it }
-            
+
             return pocket
         }
 

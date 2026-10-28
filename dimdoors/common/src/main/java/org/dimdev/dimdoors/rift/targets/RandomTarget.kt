@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.rift.registry.*
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.math.*

@@ -8,15 +8,15 @@ import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
 import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.DialingPocket
 import org.dimdev.dimdoors.world.pocket.PocketInfo
+import org.dimdev.dimdoors.world.pocket.type.DialingPocket
 import java.util.*
 
 class DialingRegistry(
     locations: MutableMap<UUID, UUID> = mutableMapOf(),
     private var dialingPockets: HashBiMap<DialingAddress, PocketInfo> = HashBiMap.create<DialingAddress, PocketInfo>(),
     private var playertoAddress: MutableMap<UUID, DialingAddress> = HashMap<UUID, DialingAddress>()
-) : PlayerTrackingSubSystem<DialingAddress?, DialingPocket, DialingRegistry>(locations) {
+) : PlayerTrackingSubSystem<DialingAddress, DialingPocket, DialingRegistry>(locations) {
 
     override fun getKeyFromPlayer(playerUUID: UUID?): DialingAddress? {
         return playertoAddress[playerUUID]

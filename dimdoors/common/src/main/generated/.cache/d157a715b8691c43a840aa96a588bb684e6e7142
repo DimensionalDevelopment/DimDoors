@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-24T08:13:22.754232	DimensionalDoors/Dimdoors: Dynamic Registries
+// 1.21.1	2026-10-28T11:25:31.839492	DimensionalDoors/Dimdoors: Dynamic Registries
 7cc83ffd0caec7705d52736dc9d60b2b82a6b39a data\dimdoors\worldgen\noise\limbo\strand_a.json
 2b7be9e22d26b06078f0a6329073debe577c2e71 data\dimdoors\worldgen\configured_feature\decayed_block_ore.json
 fb6a1517852f31ca30d7fd0bd36713fd7f00aeaa data\dimdoors\enchantment\trepidation.json
@@ -15,6 +15,7 @@ f1f12eddf4348762336bed731e613b34d0ab74e3 data\dimdoors\painting_variant\eyes.jso
 61ed0c05b62e0df2f32d9b4d1150b72b8a782c6d data\dimdoors\worldgen\noise\limbo\terrain.json
 e07940fc692014ccec52244d390491f4eea44305 data\dimdoors\enchantment\rending.json
 f04629d646c4145139f455dbf35e8bcaf737a7ae data\dimdoors\painting_variant\freedom.json
+9c90972394f519c6dabd1080ee0d99515abf00c3 data\dimdoors\door\data\driftwood_door.json
 2114f87839558018a66a7f6891fb4a76164655ab data\minecraft\door\data\crimson_door.json
 72a2b15ef67b04b86c38450bd5fe3688a14f0d19 data\dimdoors\jukebox_song\creepy.json
 800b58380552fe5b921bbadb65dfbfff666b5c3a data\dimdoors\worldgen\template_pool\enclosed_quartz_gateway.json

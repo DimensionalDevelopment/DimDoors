@@ -14,11 +14,11 @@ import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.DialingRegistry
 import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.DialingPocket
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.world.pocket.type.DialingPocket
 import java.util.*
 
-interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress?, DialingPocket, DialingRegistry> {
+interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPocket, DialingRegistry> {
     val address: DialingAddress
 
     override fun processEntity(

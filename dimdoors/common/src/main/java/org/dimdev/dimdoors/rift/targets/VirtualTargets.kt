@@ -9,6 +9,7 @@ object VirtualTargets : MapCodecPlatformRegistry<VirtualTarget<*>>(ModRegistryKe
     val AVAILABLE_LINK = create("available_link") { AvailableLinkTarget.CODEC }
     val DUNGEON = create("dungeon") { DungeonTarget.CODEC }
     val DELVING = create("delving") { DelvingTarget.codec }
+    val EXTENSION = create("extension") { ExtensionTarget.codec }
     val TEMPLATE= create("template") { TemplateTarget.CODEC }
     val ESCAPE = create("escape") { EscapeTarget.CODEC }
     val RIFT_REFERENCE = create("rift_reference") { RiftReference.CODEC }
@@ -21,6 +22,8 @@ object VirtualTargets : MapCodecPlatformRegistry<VirtualTarget<*>>(ModRegistryKe
     val PRIVATE_POCKET_EXIT = create("private_pocket_exit") { PrivatePocketExitTarget.codec }
     val DIALING = create("dialing") { DialingTargetImpl.CODEC }
     val DIALING_EXIT = create("dialing_pocket_exit") { DialingExitTarget.codec }
+    val HUB = create("hub") { HubPocketTarget.codec }
+    val HUB_EXIT = create("hub_pocket_exit") { HubPocketExitTarget.codec }
     val UNSTABLE = create("unstable") { UnstableTarget.codec }
     val ID_MARKER = create("id_marker") { IdMarker.CODEC }
     val NONE = create("none") { NoneTarget.codec }

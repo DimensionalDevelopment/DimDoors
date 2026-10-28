@@ -13,8 +13,8 @@ import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.DialingPocket
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.world.pocket.type.DialingPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 object PocketGenerator {
@@ -24,6 +24,7 @@ object PocketGenerator {
     @JvmField val PUBLIC: ResourceKey<VirtualPocket> = group("public")
     @JvmField val PRIVATE: ResourceKey<VirtualPocket> = group("private")
     @JvmField val DIALING: ResourceKey<VirtualPocket> = group("dialing")
+    @JvmField val HUB: ResourceKey<VirtualPocket> = group("hub")
     @JvmField val NETHER_DUNGEONS: ResourceKey<VirtualPocket> = group("nether")
     @JvmField val MYTH_DUNGEONS: ResourceKey<VirtualPocket> = group("myth")
     @JvmField val RUINS_DUNGEONS: ResourceKey<VirtualPocket> = group("ruins")
@@ -47,6 +48,10 @@ object PocketGenerator {
     @JvmStatic
     fun generatePrivatePocketV2(virtualLocation: VirtualLocation): Pocket<*, *>? =
         generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), PRIVATE, virtualLocation, null, null)
+
+    @JvmStatic
+    fun generateHubPocket(virtualLocation: VirtualLocation): Pocket<*, *>? =
+        generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), HUB, virtualLocation, null, null)
 
     @JvmStatic
     fun generatePublicPocketV2(virtualLocation: VirtualLocation, linkTo: VirtualTarget<*>?, linkProperties: LinkProperties?): Pocket<*, *>? =

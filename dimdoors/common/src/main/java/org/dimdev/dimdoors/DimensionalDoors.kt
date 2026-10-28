@@ -63,6 +63,7 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
 import org.dimdev.dimdoors.rift.registry.*
+import org.dimdev.dimdoors.rift.registry.RiftGraph
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
