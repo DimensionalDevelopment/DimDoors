@@ -6,13 +6,14 @@ import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.rift.registry.DungeonRegistry
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.world.pocket.VirtualLocation
 
 object DelvingTarget : VirtualTarget<DelvingTarget>() {
     override fun receiveOther(owner: Vertex): Target? {
         val room = PocketRegistry.instance.getPocketAt(owner) ?: return null
         val registry = DungeonRegistry.instance
 
-        val dungeon = registry.dungeonOf(room) ?: registry.create(PocketGenerator.ALL_DUNGEONS, room.virtualLocation.copy(depth = 0), owner)
+        val dungeon = registry.dungeonOf(room) ?: registry.create(PocketGenerator.ALL_DUNGEONS, room.virtualLocation.copy(depth = VirtualLocation.baseDepth(room.virtualLocation.world)), owner)
         return registry.generateRoom(dungeon, room.virtualLocation.depth + 1, owner)
     }
 

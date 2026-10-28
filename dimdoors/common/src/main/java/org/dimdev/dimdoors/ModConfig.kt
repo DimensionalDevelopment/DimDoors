@@ -146,6 +146,8 @@ data class ModConfig(
     }
 
     class Limbo {
+        @JvmField val canUseEscapeDoorInLimbo: Boolean = false
+
         @JvmField
         var genericDeathMessages: Boolean = false
         @JvmField

@@ -41,7 +41,7 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
 
     fun generateRoom(id: UUID, depth: Int, owner: Vertex): Target? {
         val dungeon = dungeons[id] ?: return null
-        val location = VirtualLocation(dungeon.root.world, dungeon.root.x, dungeon.root.z, depth)
+        val location = VirtualLocation.fromLocation(owner).copy(depth = depth)
 
         val pocket = PocketGenerator.generateDungeonPocketV2(location, RiftReference(owner), null, dungeon.theme)
 

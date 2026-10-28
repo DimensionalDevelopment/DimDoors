@@ -8,10 +8,10 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.levelgen.Heightmap
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimcore.api.errata.schema.setOf
+import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
@@ -23,7 +23,6 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.rift.registry.*
-import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.math.*
@@ -85,7 +84,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
                 virtualLocationHere.depth + depth.roundToInt()
             )
 
-            if (virtualLocation.depth <= 0) {
+            if (virtualLocation.depth <= VirtualLocation.baseDepth(virtualLocation.world)) {
                 // This will lead to the overworld
                 val world: ServerLevel = DimensionalDoors.getWorld(virtualLocation.world)!!
                 var pos = world.getHeightmapPos(

@@ -13,8 +13,7 @@ object PublicPocketTarget : RestoringTarget<PublicPocketTarget>() {
         val riftVirtualLocation = fromLocation(owner)
         val newVirtualLocation: VirtualLocation?
         val depth = riftVirtualLocation.depth + 1
-        newVirtualLocation =
-            VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth)
+        newVirtualLocation = VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth)
         val pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, owner.providedLocation!!.asTarget(), null)
 
         return instance.getPocketEntrance(pocket)

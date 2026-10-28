@@ -12,11 +12,12 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation
 
 class DungeonTarget(private val dungeonGroup: ResourceKey<VirtualPocket>) : VirtualTarget<DungeonTarget>() {
     override fun receiveOther(owner: Vertex): Target? {
-        val location = owner.providedLocation ?: return null
+        owner.providedLocation ?: return null
         val registry = DungeonRegistry.instance
+        val root = VirtualLocation.fromLocation(owner)
 
-        val dungeon = registry.create(dungeonGroup, VirtualLocation(location.worldId, location.x, location.z, 0), owner)
-        return registry.generateRoom(dungeon, 1, owner)
+        val dungeon = registry.create(dungeonGroup, root, owner)
+        return registry.generateRoom(dungeon, root.depth + 1, owner)
     }
 
     override fun copy(): DungeonTarget {

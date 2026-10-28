@@ -39,11 +39,19 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
             val location = provider.providedLocation!!
 
             return when {
-                ModDimensions.isPocketDimension(location.worldId) -> instance.getPocketDirectory(location.worldId).getPocketAt(location.blockPos)?.virtualLocation
+                ModDimensions.isPocketDimension(location.worldId) -> {
+                    val pocket = instance.getPocketDirectory(location.worldId).getPocketAt(location.blockPos)
+                        ?: return VirtualLocation(Level.OVERWORLD, location.x, location.z, baseDepth(Level.OVERWORLD))
+                    val entrance = instance.getPocketEntrance(pocket)?.blockPos ?: location.blockPos
+                    val scale = pocket.virtualLocation.depth + 1
+                    pocket.virtualLocation.let { it.copy(x = it.x + (location.x - entrance.x) * scale, z = it.z + (location.z - entrance.z) * scale) }
+                }
                 ModDimensions.isLimboDimension(location.world) -> VirtualLocation(location.worldId, location.x, location.z, DimensionalDoors.config.dungeonsConfig.maxDungeonDepth) // TODO: convert to interface on worldprovider
-                else -> VirtualLocation(location.worldId, location.x, location.z, 5) // TODO: nether coordinate transform
-            }?.let { VirtualLocation(location.worldId, location.x, location.z, it.depth) } ?: VirtualLocation(Level.OVERWORLD, location.x, location.z, 5)
+                else -> VirtualLocation(location.worldId, location.x, location.z, baseDepth(location.worldId))
+            }
         }
+
+        fun baseDepth(world: ResourceKey<Level>): Int = if(world == Level.NETHER) 8 else 1
 
         @JvmStatic
         fun getTopPos(world: Level, x: Int, z: Int): BlockPos {
