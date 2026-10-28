@@ -5,16 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.errata.schema.Schemas
-import org.dimdev.dimcore.api.util.EntityUtils
+import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
@@ -26,6 +24,7 @@ import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
+import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import java.util.*
 
 class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {
@@ -37,111 +36,106 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
         relativeVelocity: Vec3,
         location: Location?
     ): Boolean {
-        var entity = entity
-        if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {
-//        chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim")); TODO: Decide a proper alternate to spam
+        val level = entity.level()
+
+        if (level.isClientSide) return false
+
+        val isLimbo = ModDimensions.isLimboDimension(level)
+        val isPocket = ModDimensions.isPocketDimension(level)
+
+        if (!isPocket && !isLimbo) {
+            chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim"))
             return false
         }
-        if (ModDimensions.isLimboDimension(entity.level()) && !this.canEscapeLimbo) {
-//        chat(entity, Component.translatable("rifts.destinations.escape.cannot_escape_limbo")); TODO: Decide a proper alternate to spam
+
+        if (entity !is ServerPlayer) return false //TODO: Determine what other entity types should do when escaping.
+
+        if (isLimbo && !canEscapeLimbo) {
+            chat(entity, Component.translatable("rifts.destinations.escape.cannot_escape_limbo"))
             return false
         }
 
-
-        if (entity.level().isClientSide) return false
-        if (entity is ServerPlayer) { //TODO: Determine what other entity types should do when escaping.
-
-            var destLevel: ServerLevel? = null
-            var destPos: BlockPos? = null
-
-            if (DimensionalDoors.config.limboConfig.tryPlayerBedSpawn) {
-                val level = DimensionalDoors.getWorld(entity.respawnDimension)
-
-                if (level != null) {
-                    destLevel = level
-                    destPos = entity.respawnPosition
-                }
+        val destLoc = when {
+            isLimbo || DimensionalDoors.config.limboConfig.canUseEscapeDoorInLimbo -> limboReturn(entity)
+            else -> VirtualLocation.fromLocation(owner).let { root ->
+                DimensionalDoors.getWorld(root.world)?.let { ofWorld(it, getHeightmapPosSafe(it, root.x, root.z)) }
             }
-
-
-            if (destLevel == null) {
-                val targetWorld = DimensionalDoors.config.limboConfig.escapeTargetWorld
-                destLevel = server.overworld()
-
-                val level = DimensionalDoors.getWorld(targetWorld)
-
-                if (level != null) {
-                    destLevel = level
-                }
-
-                destPos =
-                    (if (DimensionalDoors.config.limboConfig.defaultToWorldSpawn) destLevel.sharedSpawnPos else entity.blockPosition())
-            }
-
-            /*
-        if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
-        //Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
-        TeleportUtil.teleport(entity, destLoc.getWorld(), destLoc.getBlockPos(), relativeAngle, relativeVelocity);
-        } else {
-        if (destLoc == null) {
-            chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.did_not_use_rift"));
-        } else {
-            chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.rift_has_closed"));
         }
-        if (ModDimensions.LIMBO_DIMENSION != null) {
-            TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
-        }
-        }
-         */
 
-            val destLoc: Location? = randomizeLimboReturn(
+        if (destLoc != null) {
+            val destLevel = destLoc.world
+            TeleportUtil.teleport(
+                entity,
                 destLevel,
-                destPos,
-                DimensionalDoors.config.limboConfig.limboReturnDistanceMin,
-                DimensionalDoors.config.limboConfig.limboReturnDistanceMax
-            ) //todo add minimum radius
+                destLoc.blockPos,
+                relativeAngle,
+                relativeVelocity
+            ).fallDistance = -500f
+            destLevel.setBlockAndUpdate(destLoc.blockPos, Blocks.AIR.defaultBlockState())
+            destLevel.setBlockAndUpdate(destLoc.blockPos.offset(0, 1, 0), Blocks.AIR.defaultBlockState())
 
-            if (destLoc != null && this.canEscapeLimbo) {
-                val location = destLoc //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
-
-                val level = location.world
-                entity = TeleportUtil.teleport(entity, level, location.blockPos, relativeAngle, relativeVelocity)
-                entity.fallDistance = -500f
-                level.setBlockAndUpdate(location.blockPos, Blocks.AIR.defaultBlockState())
-                level.setBlockAndUpdate(location.blockPos.offset(0, 1, 0), Blocks.AIR.defaultBlockState())
-
-                if (DimensionalDoors.config.limboConfig.decaySurroundings) {
-                    val random = RandomSource.create()
-                    BlockPos.withinManhattan(location.blockPos.offset(0, -3, 0), 3, 2, 3)
-                        .forEach { pos ->
-                            if (random.nextFloat() < (1 / (location.blockPos.distSqr(pos)
-                                    .toFloat())) * DimensionalDoors.config.limboConfig.limboBlocksCorruptingExitWorldAmount
-                            ) {
-                                decayBlock(level, pos)
-                            }
+            if (DimensionalDoors.config.limboConfig.decaySurroundings) {
+                val random = RandomSource.create()
+                BlockPos.withinManhattan(destLoc.blockPos.offset(0, -3, 0), 3, 2, 3)
+                    .forEach { pos ->
+                        if (random.nextFloat() < (1 / (destLoc.blockPos.distSqr(pos)
+                                .toFloat())) * DimensionalDoors.config.limboConfig.limboBlocksCorruptingExitWorldAmount
+                        ) {
+                            decayBlock(destLevel, pos)
                         }
-                }
-            } else {
-                EntityUtils.chat(
-                    entity,
-                    Component.translatable(if (destLoc == null) "rifts.destinations.escape.did_not_use_rift" else "rifts.destinations.escape.rift_has_closed")
-                )
-
-                val location = owner.providedLocation!!
-
-                entity = TeleportUtil.teleport(
-                    entity,
-                    ModDimensions.LIMBO_DIMENSION,
-                    BlockPos(location.x, location.y, location.z),
-                    relativeAngle,
-                    relativeVelocity
-                )
-                entity.fallDistance = -500f
+                    }
             }
-            return true
         } else {
-            return false // No escape info for that entity
+            chat(
+                entity,
+                Component.translatable("rifts.destinations.escape.did_not_use_rift")
+            )
+
+            val ownerLocation = owner.providedLocation!!
+
+            TeleportUtil.teleport(
+                entity,
+                ModDimensions.LIMBO_DIMENSION,
+                BlockPos(ownerLocation.x, ownerLocation.y, ownerLocation.z),
+                relativeAngle,
+                relativeVelocity
+            ).fallDistance = -500f
         }
+        return true
+    }
+
+    private fun limboReturn(entity: ServerPlayer): Location? {
+        var destLevel: ServerLevel? = null
+        var destPos: BlockPos? = null
+
+        if (DimensionalDoors.config.limboConfig.tryPlayerBedSpawn) {
+            DimensionalDoors.getWorld(entity.respawnDimension).run {
+                destLevel = this
+                destPos = entity.respawnPosition
+            }
+        }
+
+
+        if (destLevel == null) {
+            val targetWorld = DimensionalDoors.config.limboConfig.escapeTargetWorld
+            destLevel = server.overworld()
+
+            val level = DimensionalDoors.getWorld(targetWorld)
+
+            if (level != null) {
+                destLevel = level
+            }
+
+            destPos =
+                (if (DimensionalDoors.config.limboConfig.defaultToWorldSpawn) destLevel.sharedSpawnPos else entity.blockPosition())
+        }
+
+        return randomizeLimboReturn(
+            destLevel,
+            destPos,
+            DimensionalDoors.config.limboConfig.limboReturnDistanceMin,
+            DimensionalDoors.config.limboConfig.limboReturnDistanceMax
+        )
     }
 
     override val type get() = VirtualTargets.ESCAPE
@@ -152,13 +146,12 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
 
     companion object {
         // TODO: createRift option
-        private val targetWorldResourceKey: ResourceKey<Level?>? = null
 
         val CODEC: MapCodec<EscapeTarget> = RecordCodecBuilder.mapCodec { instance -> instance.group(
-                Schemas.BOOL.fieldOf("canEscapeLimbo").forGetter(EscapeTarget::canEscapeLimbo)
-            ).apply(
-                instance, ::EscapeTarget
-            )
+            Schemas.BOOL.fieldOf("canEscapeLimbo").forGetter(EscapeTarget::canEscapeLimbo)
+        ).apply(
+            instance, ::EscapeTarget
+        )
         }
 
         fun of(canEscapeLimbo: Boolean) = EscapeTarget(canEscapeLimbo)
