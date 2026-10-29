@@ -28,68 +28,109 @@
 # 6.3.0
 ------
 
+### Requirements
+- Now requires Fabric Language Kotlin 1.14.1+ on Fabric or Kotlin for Forge 5+ on NeoForge.
 - Bumped up minimum supported versions for the following dependencies:
-    - Fabric Loader: 0.18.4
+    - Fabric Loader: 0.19.5
     - NeoForge: 21.1.228
-- Bumped minimum supported version for mod compatibility for following mods.
-    - Sable: 2.0.3
-    - Simulated: 1.3.0
-    - Aeronautics: 1.3.0
+- Supported versions for optional mod compatibility:
+    - Sable: 2.0.5 (exact)
+    - imguimc: 1.2.5 (exact)
     - Sodium: 0.8.12
     - Iris: 1.8.14-beta.1+1.21.1
-- Reworked dimensional registry storage into separate rift, rift-link, pocket, and private-pocket saves. Old worlds will automatically be updated;
-- Old Rift Key functional stripped away in favor of temporarily changing target dimensional door into target key type.
-- Fixed dimensional doors and dimensional portals not teleporting when used in valid open states.
-- Re-enabled rift spread decay and fixed the `decaysIntoAir` config option.
-- Endermen spawned by a rift no long target the player.
-- Fixed generated dimensional doors crashing when the source door already had waterlogging support.
+
+### Breaking / Removed
+- Reworked dimensional registry storage into separate saves (rift graph, rifts, pockets, private pockets, dialing, link properties, level space, dungeons, hub). Rift and pocket data from 6.2 worlds is not migrated.
+- The config now lives in `config/dimdoors/` as plain JSON. The old `dimdoors-config.json5` is not read.
+- Removed Create and Simulated compatibility from DimDoors. It is moving to Dimensional Industry.
+- Removed the chunk loading pocket addon.
+- Removed deprecated virtual types (Local, Relative, Global) and their corresponding language entries.
+- Replaced the config option for Rift Signature usage in private pockets with the `pocketsRiftSignaturesWorkInPrivatePockets` gamerule.
+- Removed old translations for German, French (Canada), Italian, Dutch, Romanian, Russian, and Chinese (Simplified). Will be readded as new fresh translations are completed.
+
+### New
+- Added the Dialing Door. It is a door with a combination lock on it. Similar to a quartz dimensional door except the target door is tied to the sequence on a combo lock instead of player uuid.
+- Added the Hub Door (dimensional Driftwood Door). Leads to a single hub pocket shared by every player.
+- Dungeons are now tracked as a whole. The gateway or door you enter through sets the dungeon's theme, and doors deeper inside stay in that theme.
+- Masks now have real behavior.
+    - Five types (Cyclop, Echo, Enlightened, Foresight, Sculking) that guard, patrol, or wander. They spot players by sight, by vibration, or when blocks are placed or broken nearby. Placed with the Mask Wand.
+    - Getting caught puts a cursed Mask on your head. It slowly withers you, gets worse each time you're caught again, and adds an effect based on the mask type. Teleporting while masked sends you to Limbo, where the mask burns off.
+    - Hitting a patrolling mask stuns it for 3 seconds. Landing on a stunned mask from above shatters it and drops a Mask Shard.
+    - Added the Chased effect and the `dungeonReaper` gamerule (off by default). Shattering a mask, or being spotted while the gamerule is on, makes you Chased. While Chased, arriving in a dungeon spawns a Black mask where you came in after 10 seconds, and it hunts you. Returning to a root dimension clears it.
+- Added Farshot.
+    - Bow that uses ender pearls like arrows, letting them be fired further than they can be thrown. Hitting an entity swaps places with it, and firing a pearl at a detached rift lets you teleport through it.
+- Added the Driftwood Chest.
+- Added Lootr compatibility. Driftwood chests and loot table chests in pockets become Lootr chests.
+- Added the Rift Marker. A creative tool for pocket builders that tags rifts with sequential ids.
+- The Rift Configuration Tool now opens an in-game editor. Requires imguimc and operator permissions.
+- Added the ability to change the colors of the dimensional portal effect.
+    - Personal pockets now have a custom set of colors based on the color they're dyed.
+    - Pockets can have their own custom portal colors.
+    - With imguimc installed, pressing N opens a portal color editor.
+- Rifts now have a chromatic aberration effect. Works with Iris shaderpacks.
+- Added Limbo Air. It fills Limbo and makes blocks next to it decay.
 - Added a config option for generic Limbo death messages. (Immodial)
 - Added custom equip sounds for World Thread and Garment of Reality armors. (Immodial)
+- WIP:
+    - Liminal Transmitter. Place it on a detached rift to send redstone signals through it.
+    - Monolith editing. Right click a Monolith with a Monolith Spawner to open the editor.
+    - `dimdoors:extension` rift target. Backend only, no door uses it yet.
+
+### Changes
+- Introduced a new system for rift based growth where rifts grow slower with a weight to them that increases the chance. This is the first step to future proper reintroduction of rift scars. For now, once an exposed rift's size goes above 20, it will start unraveling blocks around it.
+- Re-enabled rift spread decay and fixed the `decaysIntoAir` config option.
+- Old Rift Key functionality stripped away in favor of temporarily changing the target dimensional door into the key's target. A new `temp` target restores the door to its original target.
+- Reworked dimensional portal rendering. The portal effect now fills the full door and trapdoor volume instead of a plane.
+- Updated dimensional door and trapdoor item models.
+- Made gold and quartz doors non-occluding.
+- Rift core tesseract visuals now fade in and out.
+- Tweaked Monolith aggro to ignore invisible players.
+- `/dimteleport` now requires permission level 2 instead of 4 and supports entity selectors.
+- `/pocket` command now has a target instead of a locator, which refers to an entity to send to the pocket. Old functionality can be accomplished with `execute at <locator> run pocket ...`
+- Command blocks that are powered or meant to automatically start will now do so when pockets are generated.
+- Updated pocket syncing to include the entire pocket bounding box.
+- Moved the lab chain into the Myth pocket group.
+- Updated Sable compatibility for the new rift system.
 - Cleaned up translations and display text for items, generated doors, advancements, and config options.
 - Updated Portuguese (Brazil) translations. (Kawwabi)
-- Removed old translations for German, French (Canada), Italian, Dutch, Romanian, Russian, and Chinese (Simplified). Will be readded as new fresh translations are completed.
+
+### Pack Makers
+- Added `portal_colors.json` for datapack creators to customize portal colors per dimension or pocket type.
+- Added support for the `.nbt` format in the schematic pocket generator type. Updated jsons to match.
+- Schematics in Sponge v1 and v2 format are now upgraded to v3 and run through Minecraft's data fixers on load.
+- Added DimensionType tags for controlling where Unraveled Fabric can decay and where Monoliths can exist.
+- Dungeon room doors use the new `dimdoors:delving` rift target to go one level deeper within the same dungeon.
+
+### Fixes
+- Fixed generated dimensional doors crashing when the source door already had waterlogging support.
 - Corrected gray and light gray terracotta spelling error across all assets. (Immodial)
 - Fixed armor enchantability and equipment tags for head, leg, and foot armor pieces. (Immodial)
 - Fixed a server-side crash risk caused by client-side logging usage.
-- Improved Create sliding door compatibility, including mixed double doors, redstone, waterlogging, and folding-door visuals.
-- Updated Create contraption and Sable compatibility for the new rift system.
-- Fixed the issue in sable compat where sublevels connected a sublevel that dimensional door being teleported to disappear
-- Command blocks that are powered or meant to automatically start will now do so when pockets are generated.
-- `/dimteleport` command's permission level has been changedhas entity selector support.
-- `/pocket` command now has a target instead of a locator, which refers to an entity to send to the pocket. Old functionality can be accomplished with execute at <locator> run pocket ...
-- Introduced a new system for rift based growth where rifts grow slower with a weight to them that increases the chance. This the first step to future proper reintroduction of rift scars. For now when an exposed rift is weight 20 or higher, it will start unraveling blocks around it.
-- Abstracted most Rift code into common interface
-- Improved resource loading.
-- Removed deprecated virtual type (Local, Relative, Global) and their corresponding language entries.
-- Fixed issue where on singleplayer game is lock up upon reentering a game without restarting.
-- Added the Dialing door. It is a door with a combination lock on it. Similar to a quartz dimensional door except the target door is tied to the sequence on a combo lock isntead of player uuid.
-- Reduced code duplication by alot.  
-- Added DimensionType tags for controlling where Unraveled Fabric can decay and where Monoliths can exist.
-- Added Limbo Air to Limbo so blocks and entities in Limbo air do not decay.
-- Added the `pocketsRiftSignaturesWorkInPrivatePockets` gamerule for controlling Rift Signature usage in private pockets. Removed old config option as well.
-- Added fade in and out animation to missed Rift Tesseract visuals.
-- Reworked dimensional portal rendering. It is the full door now.
-- Updated dimensional door and trapdoor item models.
-- Updated pocket syncing to include the entire pocket bounding box.
-- Added support for '.nbt' format in schematic pocket generator type. Updated jsons to match.
-- Fixed Dialing Doors playing incorrect door sounds.
-- Fixed Sliding Dimensional Doors showing normal open door visuals.
+- Fixed an issue in Sable compat where sublevels connected to a sublevel a dimensional door teleported to would disappear.
+- Fixed the game locking up in singleplayer when re-entering a world without restarting.
 - Fixed Dimensional Eraser bloop sound not playing.
-- Fixed clouds appearing in Limbo.
 - Fixed Eternal Fluid not flowing during Limbo generation.
 - Fixed Rift Signatures and Rift Reference targets not working correctly.
 - Fixed Minecraft decay block datagen causing rotation issues.
 - Fixed auto generated doors appearing in Chipped content.
-- Tweaked Monolith aggro to ignore invisible players.
-- Made gold and quartz doors non-occluding.
-- Updated portal effect of dimensional door and trap door to be a full volume vs plane.
-- Nuke chunkloading pocket addon.
-- Added the ability to change the colors of the dimensional portal effect. 
-  - Personal pockets now have a custom set of colors based on the current color their dyed too.
-  - Pockets can their own custom portal colors
-  - Added new file `portal_colors.json` for datapack creators to customize portal colors per dimension or pocket type.
-- Imguimc support
-  - Pressing in N opens a portal color edtior.
-- Fixed several pockets having no loot and misconfigured doors. 
-- Added Farshot.
-  - Bow that uses enderpearls like arrows allowing them to fired further than they can thrown. Additional effects is swapping with entity when hit and firing a pearl at a detached rift lets you teleport through it.
+- Fixed several pockets having no loot and misconfigured doors.
+
+### Dev
+- Ported the mod to Kotlin.
+- Abstracted most Rift code into a common interface. Blocks that only need rift behavior can use a generic rift block entity, and any block entity implementing it leaves a rift when broken.
+- Split the dimensional registry into subsystems connected by a rift graph.
+- Reduced code duplication by a lot and improved resource loading.
+
+# Dimensional Core 1.0.0
+------
+Shared library split out of DimDoors. It ships bundled inside DimDoors 6.3.0, so there is nothing extra to install.
+
+### Features
+- Multiloader platform layer for Fabric and NeoForge: registries (including synced registries), creative tabs, command argument types, and platform events such as server start and stop.
+- Item, fluid, and energy transfer API with Fabric and NeoForge backends. Supports custom transfer types and fluid rendering details.
+- Errata: a framework for schema-driven in-game ImGui editors, with server-side permission checks. Requires imguimc on the client.
+- Render node effect pipeline for post-processing effects that works with vanilla, Sodium, and Iris, with or without a shaderpack.
+- Custom item renderers.
+- Codec-based config files.
+- Custom dimension sky, cloud, and weather rendering hooks on Fabric.
+- Command builders driven by registered types.
