@@ -20,7 +20,7 @@ abstract class TemplateTarget<V, T: TemplateTarget<V, T>> : RestoringTarget<T>()
 
     override fun makeLinkTarget(owner: Vertex): Location? {
         val template = processedTemplate() ?: return null
-        val virtualLocation = VirtualLocation.fromLocation(owner).also { it.depth + 1 }
+        val virtualLocation = VirtualLocation.fromLocation(owner).run { copy(depth = depth + 1) }
 
         val pocket = PocketGenerationHelper.generateFromVirtualPocket(
             template,
