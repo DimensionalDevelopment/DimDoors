@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.util.schematic
 
+import com.mojang.serialization.DataResult
 import com.mojang.serialization.Dynamic
+import com.mojang.serialization.OptionalDynamic
 import net.minecraft.SharedConstants
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
@@ -17,11 +19,11 @@ object SchematicUpgrader {
     fun update(tag: CompoundTag): CompoundTag {
         var upgraded: Dynamic<Tag> = toV3(Dynamic(NbtOps.INSTANCE, tag))
         val current = SharedConstants.getCurrentVersion().dataVersion.version
-        val dataVersion = upgraded.get("Schematic").get("DataVersion").asInt(current)
+        val dataVersion = upgraded["Schematic"]["DataVersion"].asInt(current)
 
         if (dataVersion < current) {
             upgraded = DataFixers.getDataFixer().update(SchematicDataFixer.SCHEMATIC, upgraded, dataVersion, current)
-            upgraded = upgraded.update("Schematic") { it.set("DataVersion", it.createInt(current)) }
+            upgraded = upgraded.update("Schematic") { it.set("DataVersion", current) }
         }
 
         return upgraded.value as CompoundTag
@@ -29,8 +31,8 @@ object SchematicUpgrader {
 
     @JvmStatic
     fun <T> toV3(root: Dynamic<T>): Dynamic<T> {
-        var schematic = root.get("Schematic").result().getOrNull() ?: root
-        val version = schematic.get("Version").asInt(1)
+        var schematic = root["Schematic"].getOrNull() ?: root
+        val version = schematic["Version"].asInt(1)
 
         if (version < 2) schematic = v1ToV2(schematic)
         if (version < 3) schematic = v2ToV3(schematic)
@@ -39,62 +41,60 @@ object SchematicUpgrader {
     }
 
     private fun <T> v1ToV2(v1: Dynamic<T>): Dynamic<T> {
-        var v2 = v1.set("Version", v1.createInt(2)).set("DataVersion", v1.createInt(V1_DATA_VERSION)).remove("TileEntities")
-
-        v1.get("TileEntities").result().getOrNull()?.let { tileEntities ->
-            v2 = v2.set("BlockEntities", v1.createList(tileEntities.asStream().map { it.remove("ContentVersion") }))
-        }
-
-        return v2
+        val v2 = v1.set("Version", 2).set("DataVersion", V1_DATA_VERSION) - "TileEntities"
+        return copyList(v1, "TileEntities", v2, "BlockEntities") { it - "ContentVersion" }
     }
 
     private fun <T> v2ToV3(v2: Dynamic<T>): Dynamic<T> {
-        val width = v2.get("Width").asInt(0) and 0xFFFF
-        val length = v2.get("Length").asInt(0) and 0xFFFF
-        val height = v2.get("Height").asInt(0) and 0xFFFF
-        val dataVersion = (v2.get("DataVersion").asNumber().result().getOrNull()
-            ?: v2.get("Data Version").asNumber().result().getOrNull())?.toInt()
-            ?: V1_DATA_VERSION
+        val width = v2["Width"].asInt(0) and 0xFFFF
+        val length = v2["Length"].asInt(0) and 0xFFFF
+        val height = v2["Height"].asInt(0) and 0xFFFF
+        val dataVersion = v2["DataVersion"].asInt(v2["Data Version"].asInt(V1_DATA_VERSION))
 
-        var blocks = copy(v2, "Palette", v2.emptyMap(), "Palette")
-        blocks = copy(v2, "BlockData", blocks, "Data")
-        v2.get("BlockEntities").result().getOrNull()?.let { blockEntities ->
-            blocks = blocks.set("BlockEntities", v2.createList(blockEntities.asStream().map { nestExtraData(it) }))
-        }
+        var blocks = copy(v2, "BlockData", v2.copy(v2.emptyMap(), "Palette"), "Data")
+        blocks = v2.copyList(blocks, "BlockEntities") { nestExtraData(it) }
 
-        var v3 = v2.emptyMap()
-            .set("Version", v2.createInt(3))
-            .set("DataVersion", v2.createInt(dataVersion))
-        v3 = copy(v2, "Metadata", v3, "Metadata")
-        v3 = copy(v2, "Width", v3, "Width")
-        v3 = copy(v2, "Height", v3, "Height")
-        v3 = copy(v2, "Length", v3, "Length")
-        v3 = copy(v2, "Offset", v3, "Offset")
-        v3 = v3.set("Blocks", blocks)
+        var v3 = v2.copy(v2.emptyMap().set("Version", 3).set("DataVersion", dataVersion), "Metadata", "Width", "Height", "Length", "Offset").set("Blocks", blocks)
+        v3 = copyList(v2, "Entities", v3, "Entities") { nestExtraData(it) }
 
-        val biomePalette = v2.get("BiomePalette").result().getOrNull()
-        val biomeData = v2.get("BiomeData").asByteBufferOpt().result().getOrNull()
+        val biomePalette = v2["BiomePalette"].getOrNull()
+        val biomeData = v2["BiomeData"].asByteBufferOpt().getOrNull()
         if (biomePalette != null && biomeData != null) {
             v3 = v3.set("Biomes", v2.emptyMap()
                 .set("Palette", biomePalette)
                 .set("Data", v2.createByteList(expandBiomes(biomeData, width, height, length))))
         }
 
-        v2.get("Entities").result().getOrNull()?.let { entities ->
-            v3 = v3.set("Entities", v2.createList(entities.asStream().map { nestExtraData(it) }))
-        }
-
         return v3
     }
 
-    private fun <T> nestExtraData(entry: Dynamic<T>): Dynamic<T> {
-        var nested = copy(entry, "Pos", entry.emptyMap(), "Pos")
-        (entry.get("Id").result().getOrNull() ?: entry.get("id").result().getOrNull())?.let { nested = nested.set("Id", it) }
-        return nested.set("Data", entry.remove("Pos").remove("Id").remove("id"))
+    private fun <T> nestExtraData(entry: Dynamic<T>): Dynamic<T> =
+        entry.copy(copy(entry, "id", entry.emptyMap(), "Id"), "Pos", "Id").set("Data", entry - "Pos" - "Id" - "id")
+
+    fun <T> OptionalDynamic<T>.getOrNull(): Dynamic<T>? {
+        return this.result().getOrNull()
     }
 
-    private fun <T> copy(from: Dynamic<T>, key: String, to: Dynamic<T>, newKey: String): Dynamic<T> {
-        return from.get(key).result().getOrNull()?.let { to.set(newKey, it) } ?: to
+    fun <T> Dynamic<T>.set(key: String, value: Int): Dynamic<T> {
+        return this.set(key, this.createInt(value))
+    }
+
+    operator fun <T> Dynamic<T>.minus(key: String): Dynamic<T> = this.remove(key)
+
+    private fun <T> Dynamic<T>.copy(to: Dynamic<T>, vararg keys: String): Dynamic<T> = keys.fold(to) { acc, key -> copy(this, key, acc, key) }
+
+    fun <T> DataResult<T>.getOrNull(): T? = this.result().orElse(null)
+
+    private fun <T> copy(from: Dynamic<T>, fromKey: String, to: Dynamic<T>, toKey: String): Dynamic<T> {
+        return from[fromKey].getOrNull()?.let { to.set(toKey, it) } ?: to
+    }
+
+    private fun <T> Dynamic<T>.copyList(to: Dynamic<T>, key: String, transform: (Dynamic<T>) -> Dynamic<T>): Dynamic<T> {
+        return copyList(this, key, to, key, transform)
+    }
+
+    private fun <T> copyList(from: Dynamic<T>, fromKey: String, to: Dynamic<T>, toKey: String, transform: (Dynamic<T>) -> Dynamic<T>): Dynamic<T> {
+        return from[fromKey].getOrNull()?.let { to.set(toKey, to.createList(it.asStream().map { entry -> transform(entry) })) } ?: to
     }
 
     private fun expandBiomes(columns: ByteBuffer, width: Int, height: Int, length: Int): ByteBuffer {
@@ -123,7 +123,7 @@ object SchematicUpgrader {
         return value
     }
 
-    private fun writeVarInt(output: ByteArrayOutputStream, value: Int) {
+    internal fun writeVarInt(output: ByteArrayOutputStream, value: Int) {
         var remaining = value
         while (remaining and 0x7F.inv() != 0) {
             output.write((remaining and 0x7F) or 0x80)

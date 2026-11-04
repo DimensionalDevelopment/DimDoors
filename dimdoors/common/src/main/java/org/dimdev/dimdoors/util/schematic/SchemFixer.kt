@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.datafixers.schemas.Schema
 import net.minecraft.SharedConstants
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.NbtAccounter
 import net.minecraft.nbt.NbtIo
 import java.io.IOException
@@ -51,14 +52,14 @@ object SchemFixer {
     }
 
     @JvmStatic
-    fun fixInPath(thing: String) {
+    fun fixInPath(thing: String, registries: HolderLookup.Provider) {
         try {
             val lolPath = Paths.get(thing)
             Files.walk(lolPath, 6).use { pathStream ->
                 pathStream.filter { it.toString().endsWith(".schem") }.forEach { path ->
                     try {
                         val loadedSchem = Schematic.fromNbt(NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap()))
-                        NbtIo.writeCompressed(Schematic.toNbt(loadedSchem), path)
+                        NbtIo.writeCompressed(Schematic.toNbt(loadedSchem, registries), path)
                         println("Fixed $path")
                     } catch (e: IOException) {
                         throw RuntimeException(e)

@@ -6,9 +6,11 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import io.netty.buffer.Unpooled
 import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
+import net.minecraft.network.VarInt
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.Music
@@ -16,7 +18,7 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.tags.TagKey
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition
-import java.util.*
+import java.nio.ByteBuffer
 import java.util.function.Function
 import kotlin.jvm.optionals.getOrNull
 
@@ -73,7 +75,14 @@ object CodecUtils {
             it.entries.map { Pair(it.key, it.value) }
         })
 
-    var INT_ARRAY_CODEC: Codec<IntArray> = Codec.INT_STREAM.xmap({ obj -> obj.toArray() }, { array -> Arrays.stream(array) })
+    var INT_ARRAY_CODEC: Codec<IntArray> = Codec.BYTE_BUFFER.xmap({ data ->
+        val buf = Unpooled.wrappedBuffer(data)
+        buildList { while (buf.isReadable) add(VarInt.read(buf)) }.toIntArray()
+    }, { array ->
+        val buf = Unpooled.buffer()
+        array.forEach { data -> VarInt.write(buf, data) }
+        return@xmap ByteBuffer.wrap(buf.array().copyOf(buf.writerIndex()))
+    })
 
     class TagOrElementLocation<T>(id: ResourceLocation, tag: Boolean, registryResourceKey: ResourceKey<Registry<T>>) {
         private var tag: TagKey<T>? = null
