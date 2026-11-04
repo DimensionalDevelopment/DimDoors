@@ -29,12 +29,12 @@ object RiftUtils {
         showRiftTimer.trigger()
     }
 
-    fun <T : Rift> registerFunction(rift: T): T {
+    fun <T : Rift<*>> registerFunction(rift: T): T {
         rift.register()
         return rift
     }
 
-    fun runIfRiftAt(location: Location, consumer: (Rift) -> Unit) = location.blockEntity?.castOrNull<Rift>()?.run(consumer)
+    fun runIfRiftAt(location: Location, consumer: (Rift<*>) -> Unit) = location.blockEntity?.castOrNull<Rift<*>>()?.run(consumer)
 
     data class PortalPlane(
         val normal: Vec3,

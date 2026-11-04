@@ -19,7 +19,7 @@ abstract class TemplateModifier<V, T: TemplateTarget<V, T>>(val ids: MutableList
     override fun apply(parameters: PocketGenerationContext, manager: RiftManager) {
         val template = createTarget(template)
 
-        manager.foreachConsume { id, rift: Rift ->
+        manager.foreachConsume { id, rift: Rift<*> ->
             if (ids.contains(id)) {
                 rift.setDestination(template.copy())
                 return@foreachConsume true

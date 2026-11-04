@@ -34,7 +34,7 @@ data class RelativeReferenceModifier(val point_a: Int, val point_b: Int, val con
             .toString()
     }
 
-    private fun addLink(rift: Rift, link: VirtualTarget<*>): Boolean {
+    private fun addLink(rift: Rift<*>, link: VirtualTarget<*>): Boolean {
         rift.setDestination(link)
         return true
     }

@@ -62,7 +62,7 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
         val graph = RiftGraph.getInstance()
         graph.addEdge(id, PocketInfo(pocket.world, pocket.id).uuid)
 
-        pocket.blockEntities.values.filterIsInstance<Rift>()
+        pocket.blockEntities.values.filterIsInstance<Rift<*>>()
             .filter { it.data.destination === DelvingTarget }
             .mapNotNull { RiftRegistry.instance.idAt(it.location) }
             .forEach { graph.addEdge(id, it) }

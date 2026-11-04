@@ -42,7 +42,7 @@ import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
-abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
+abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
     settings: Properties,
     blockSetType: BlockSetType,
     addWaterlog: Boolean
@@ -53,7 +53,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
 
     override fun validStateForTraversal(state: BlockState) = state.block === this && state.getValue(OPEN)
 
-    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) {
+    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) {
         closeDoorBehind(level, pos)
         closeDoorBehind(level, pos.above())
     }

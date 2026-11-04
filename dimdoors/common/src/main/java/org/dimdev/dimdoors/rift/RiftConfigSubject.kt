@@ -10,31 +10,30 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.entity.BlockEntity
 import org.dimdev.dimcore.api.errata.schema.*
-import org.dimdev.dimcore.api.errata.subject.BlockEntitySubject
+import org.dimdev.dimcore.api.errata.subject.ConfigSubject
 import org.dimdev.dimcore.api.ext.at
 import org.dimdev.dimcore.api.ext.putAt
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.block.entity.CodecRecord
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity
-import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.block.entity.*
 import kotlin.jvm.optionals.getOrNull
 
-class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, item: Item) : BlockEntitySubject<T>(rift, hand, item) {
-    override val title: Component get() = blockEntity.blockState.block.name
+class RiftConfigSubject<T : Rift<T>>(val rift: T, private val hand: InteractionHand, private val item: Item) : ConfigSubject {
+    override val title: Component get() = rift.riftBlockState.block.name
 
     override fun schema(player: ServerPlayer): StructNode {
         val data = RiftData.CODEC.node as StructNode
-        val fields = listOf(
+        val fields = mutableListOf(
             FieldNode(
                 DATA,
                 data.copy(fields = data.fields.filterNot { it.name in HIDDEN_DATA }),
                 Presence.Required
             )
-        ) + blockEntity.configRecords.map { FieldNode(it.name, it.node ?: UntypedNode, Presence.Required) }
+        ).also(rift::gatherFieldNodes)
 
         return StructNode(
-            BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockEntity.type) ?: DimensionalDoors.id("rift"),
+            (rift as? BlockEntity)?.type?.let(BuiltInRegistries.BLOCK_ENTITY_TYPE::getKey) ?: DimensionalDoors.id("rift"),
             fields
         )
     }
@@ -43,18 +42,18 @@ class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, 
         val ops = ops(player)
         val tag = CompoundTag()
 
-        RiftData.CODEC.encodeStart(ops, blockEntity.data).result().getOrNull()?.let { data ->
+        RiftData.CODEC.encodeStart(ops, rift.data).result().getOrNull()?.let { data ->
             if (data is CompoundTag) HIDDEN_DATA.forEach(data::remove)
             tag.put(DATA, data)
         }
-        blockEntity.configRecords.forEach { record -> record.encode(blockEntity, ops).result().getOrNull()?.let { tag.put(record.name, it) } }
+
+        rift.writeUniqueData(Serialize.nbt(null, tag, rift))
 
         return tag
     }
 
     override fun write(player: ServerPlayer, value: CompoundTag, paths: List<List<String>>): DataResult<Unit> {
         val ops = ops(player)
-        val rift = blockEntity
         val dataPaths = paths.filter { it.firstOrNull() == DATA }
         var data: RiftData? = null
 
@@ -66,13 +65,6 @@ class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, 
             data = decoded.result().getOrNull() ?: return DataResult.error { "$DATA: ${decoded.error().get().message()}" }
         }
 
-        val pending = mutableMapOf<String, () -> Unit>()
-        for (record in rift.configRecords) {
-            val tag = value.get(record.name) ?: continue
-            val result = record.prepare(rift, tag, ops)
-            pending[record.name] = result.result().getOrNull() ?: return DataResult.error { "${record.name}: ${result.error().get().message()}" }
-        }
-
         data?.let {
             val destination = it.destination
             it.destination = rift.data.destination
@@ -80,14 +72,16 @@ class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, 
             if (listOf(DATA, "destination") in dataPaths) rift.setDestination(destination)
         }
 
-        for (path in paths) {
-            if (path.firstOrNull() != DATA) path.firstOrNull()?.let(pending::get)?.invoke()
-        }
+        val unique = CompoundTag().also { rift.writeUniqueData(Serialize.nbt(player.server.registryAccess(), it, rift)) }
+        paths.filter { it.firstOrNull() != DATA }.forEach { unique.putAt(it, value.at(it)) }
+        rift.readUniqueData(Deserialize.nbt(player.server.registryAccess(), unique))
 
         rift.updateColor()
         rift.sync()
         return DataResult.success(Unit)
     }
+
+    override fun isValid(player: ServerPlayer): Boolean = player.level() === rift.riftLevel && player.canInteractWithBlock(rift.riftBlockPos, 0.0) && player.getItemInHand(hand).`is`(item)
 
     private fun ops(player: ServerPlayer): DynamicOps<Tag> = player.server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
 
@@ -96,7 +90,5 @@ class RiftConfigSubject<T : RiftBlockEntity<T>>(rift: T, hand: InteractionHand, 
         private val HIDDEN_DATA = setOf("properties", "forcedColor")
 
         val CodecRecord<*, *>.node: SchemaNode? get() = (codec as? SchemaCodec<*>)?.node
-
-        fun <T, V> CodecRecord<T, V>.prepare(subject: T, tag: Tag, ops: DynamicOps<Tag>): DataResult<() -> Unit> = parse(ops, tag).map { value -> { setter(subject, value) } }
     }
 }

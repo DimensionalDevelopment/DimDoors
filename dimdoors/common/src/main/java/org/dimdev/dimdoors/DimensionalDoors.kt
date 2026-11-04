@@ -321,7 +321,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             var pos = pos
             if (player.isCreative && !config.doorsConfig.placeRiftsInCreativeMode) return
 
-            if (blockEntity is Rift) {
+            if (blockEntity is Rift<*>) {
                 if (state.block is DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) { pos = pos.below() }
 
                 var detachedState = ModBlocks.DETACHED_RIFT.defaultBlockState()

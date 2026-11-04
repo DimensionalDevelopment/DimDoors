@@ -203,7 +203,7 @@ object DimensionalDoorBlockRegistrar {
         get() = mappedDoorBlocks
 
 
-    abstract class AutoGenDimensionalDoorBlock<T : EntranceRiftBlockEntity<*>>(
+    abstract class AutoGenDimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
         settings: Properties,
         originalBlock: DoorSoundProvider
     ) : DimensionalDoorBlock<T>(

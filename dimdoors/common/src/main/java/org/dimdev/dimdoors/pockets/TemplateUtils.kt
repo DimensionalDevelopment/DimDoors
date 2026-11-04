@@ -62,13 +62,13 @@ object TemplateUtils {
     }
 
     fun registerRifts(
-        rifts: MutableList<out Rift>,
+        rifts: MutableList<out Rift<*>>,
         linkTo: VirtualTarget<*>?,
         linkProperties: LinkProperties?,
         pocket: Pocket<*, *>
     ) {
         val world: ServerLevel = DimensionalDoors.getWorld(pocket.world)!!
-        val entranceWeights = mutableMapOf<Rift, Float>()
+        val entranceWeights = mutableMapOf<Rift<*>, Float>()
 
         // Add logging to debug
         DimensionalDoors.LOGGER.info("Registering {} rifts for pocket {}", rifts.size, pocket.id)
@@ -134,12 +134,12 @@ object TemplateUtils {
 
     fun linkRifts(from: LocationProvider?, to: LocationProvider?) {
         val toLocation = to?.providedLocation ?: return
-        val fromBe = from?.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return
+        val fromBe = from?.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return
 
         fromBe.setDestination(toLocation.asTarget())
         fromBe.markStateChanged()
 
-        val toBe = to.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return
+        val toBe = to.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return
         val properties = toBe.properties ?: return
 
         toBe.properties = properties.withLinksRemaining(properties.linksRemaining - 1)

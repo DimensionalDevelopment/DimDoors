@@ -48,7 +48,7 @@ class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem
 
         val result = super.place(context)
         if (result == InteractionResult.SUCCESS || result == InteractionResult.CONSUME) {
-            context.level.getBlockEntity(context.clickedPos)?.castOrNull<Rift>()?.also { rift ->
+            context.level.getBlockEntity(context.clickedPos)?.castOrNull<Rift<*>>()?.also { rift ->
                 rift.copyFrom(detachedRiftBlockEntity)
                 rift.updateType()
             }

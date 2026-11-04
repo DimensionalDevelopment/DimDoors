@@ -153,7 +153,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
     companion object {
         private val ESCAPE_TARGET = EscapeTarget(true)
         @JvmStatic
-        fun attemptTeleport(entity: Entity, rift: Rift): Boolean {
+        fun attemptTeleport(entity: Entity, rift: Rift<*>): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport

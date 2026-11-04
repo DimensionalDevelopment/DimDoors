@@ -161,7 +161,7 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         fun getSource(itemStack: ItemStack) = itemStack.get(ModDataComponentTypes.DESTINATION)
 
-        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): Rift? {
+        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): Rift<*>? {
             var pos = pos
 
             pos = normalizeRiftProviderPos(world, pos)

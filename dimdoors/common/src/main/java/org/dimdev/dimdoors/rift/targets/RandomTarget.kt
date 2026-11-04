@@ -101,7 +101,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
 
                 val loc = owner.providedLocation!!
 
-                val thisRift = loc.blockEntity!!.cast<Rift>()
+                val thisRift = loc.blockEntity!!.cast<Rift<*>>()
                 val riftEntity = world.getBlockEntity(pos)!!.cast<DetachedRiftBlockEntity>()
                 // TODO: Should the rift not be configured like the other link
 
@@ -119,7 +119,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
                 // Make a new dungeon pocket
 
 
-                val thisRift = owner.providedLocation?.blockEntity as Rift?
+                val thisRift = owner.providedLocation?.blockEntity as Rift<*>?
                 val newLink = thisRift?.properties?.toBuilder()?.linksRemaining(0)?.build()
 
                 val linkBack = if (this.isNoLinkBack) NoneTarget else RiftReference(owner)
@@ -139,7 +139,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
             }
         } else {
             // An existing rift was selected
-            val riftEntity = selectedLink.blockEntity as Rift?
+            val riftEntity = selectedLink.blockEntity as Rift<*>?
 
             // Link the rifts if necessary and teleport the entity
             if (!this.isNoLink) TemplateUtils.linkRifts(owner, selectedLink)

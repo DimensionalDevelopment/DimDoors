@@ -124,7 +124,7 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
 
         val SHAPE = Shapes.create(0.0, 0.0, 0.0, 1.0, 2.0/16.0, 1.0) + Shapes.create(2.0/16.0, 2.0/16.0, 2.0/16.0, 14.0/16.0, 4.0/16.0, 14.0/16.0)
 
-        fun attemptRedstoneTransmission(owner: Vertex, strength: Int, rift: Rift): Boolean {
+        fun attemptRedstoneTransmission(owner: Vertex, strength: Int, rift: Rift<*>): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport

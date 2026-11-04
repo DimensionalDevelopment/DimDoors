@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.pockets.modifier
 
-import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.targets.IdMarker
@@ -10,16 +9,16 @@ import kotlin.math.max
 class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
                                             private var maxId: Int = 0
 ) {
-    private val map: MutableMap<Int, Rift>
+    private val map: MutableMap<Int, Rift<*>>
 
-    val rifts: MutableList<Rift>
+    val rifts: MutableList<Rift<*>>
 
     init {
         if (skipGatheringRifts) {
             map = mutableMapOf()
             rifts = mutableListOf()
         } else {
-            rifts = pocket.blockEntities.values.filterIsInstance<Rift>().toMutableList()
+            rifts = pocket.blockEntities.values.filterIsInstance<Rift<*>>().toMutableList()
 
             map = rifts.mapNotNull { rift -> rift.data.destination.castOrNull<IdMarker>()?.id?.takeIf { it >= 0 }?.let { it to rift } }.toMap().toMutableMap()
             maxId = map.keys.maxByOrNull { it } ?: -1
@@ -27,7 +26,7 @@ class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
     }
 
     //TODO add javadocs
-    fun add(rift: Rift): Boolean {
+    fun add(rift: Rift<*>): Boolean {
         rifts.add(rift)
 
         val id = rift.data.destination.castOrNull<IdMarker>()?.id?.takeIf { it >= 0 } ?: return false
@@ -39,10 +38,10 @@ class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
         return true
     }
 
-    fun consume(id: Int, consumer: (Rift) -> Boolean): Boolean {
+    fun consume(id: Int, consumer: (Rift<*>) -> Boolean): Boolean {
         map[id]?.takeIf(consumer) ?: return false
         map.remove(id)
-        return true;
+        return true
     }
 
     fun nextId(): Int {
@@ -53,10 +52,10 @@ class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
         return !map.containsKey(id)
     }
 
-    fun foreachConsume(consumer: (Int, Rift) -> Boolean) {
+    fun foreachConsume(consumer: (Int, Rift<*>) -> Boolean) {
         map.entries.removeIf { consumer(it.key, it.value) }
     }
-    operator fun get(id: Int): Rift? {
+    operator fun get(id: Int): Rift<*>? {
         return map[id]
     }
 }

@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.rift.registry.Vertex
 abstract class RestoringTarget<T : VirtualTarget<T>> : VirtualTarget<T>() {
     override fun receiveOther(owner: Vertex): Target? {
         val reference = this.makeLinkTarget(owner)?.asTarget() ?: return null
-        val rift = owner.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return null
+        val rift = owner.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return null
         rift.setDestination(reference)
         return reference
 

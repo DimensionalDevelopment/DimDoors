@@ -3,12 +3,18 @@ package org.dimdev.dimdoors.block.entity
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import org.dimdev.dimcore.api.errata.schema.FieldNode
+import org.dimdev.dimcore.api.errata.subject.ConfigSubject
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.rift.RiftConfigSubject
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.registry.RiftRegistry
@@ -17,9 +23,17 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import java.util.function.Consumer
 
-interface Rift : Target {
+interface Rift<R: Rift<R>> : Target {
 
     var data: RiftData
+
+    fun gatherFieldNodes(list: MutableList<FieldNode>) {}
+
+    fun <T> writeUniqueData(serialize: Serialize<T, out R>) {}
+    fun <T> readUniqueData(deserialize: Deserialize<T>) {}
+
+    fun configSubject(hand: InteractionHand, item: Item): ConfigSubject = RiftConfigSubject(this.cast(), hand, item)
+
 
     fun setDestination(destination: VirtualTarget<*>) {
 
@@ -159,7 +173,7 @@ interface Rift : Target {
         }
     }
 
-    fun <T : Rift> copyFrom(rift: T) {
+    fun copyFrom(rift: Rift<*>) {
         this.data = rift.data.copy()
     }
 
@@ -208,4 +222,6 @@ interface Rift : Target {
             this.riftBlockPos
         )
     }
+
+
 }

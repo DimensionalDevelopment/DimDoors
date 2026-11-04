@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.FieldNode
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
@@ -92,17 +93,17 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         textConsumer.accept(Component.literal("Decay radius: " + this.decayRadius))
     }
 
-    override fun deserialize(nbt: Deserialize<Tag>) {
+    override fun <T> deserialize(nbt: Deserialize<T>) {
         super.deserialize(nbt)
-        spawnedEndermanId = nbt.get<DetachedRiftBlockEntity, Int>(SPAWNED_ENDERMAN_ID_BUILDER)
-        curveID = nbt.get<DetachedRiftBlockEntity, Int>(CURVE_ID_BUILDER)
-        riftYaw = nbt.get<DetachedRiftBlockEntity, Float>(RIFT_YAW_BUILDER)
-        weight = nbt.get<DetachedRiftBlockEntity, Int>(WEIGHT_BUILDER)
-        updateTimer = nbt.get<DetachedRiftBlockEntity, Int>(UPDATE_TIMER_BUILDER)
+        spawnedEndermanId = nbt.get(SPAWNED_ENDERMAN_ID_BUILDER)
+        curveID = nbt.get(CURVE_ID_BUILDER)
+        riftYaw = nbt.get(RIFT_YAW_BUILDER)
+        weight = nbt.get(WEIGHT_BUILDER)
+        updateTimer = nbt.get(UPDATE_TIMER_BUILDER)
     }
 
 
-    override fun serialize(serialize: Serialize<Tag, DetachedRiftBlockEntity>) {
+    override fun <T> serialize(serialize: Serialize<T, DetachedRiftBlockEntity>) {
         super.serialize(serialize)
         serialize.put(SPAWNED_ENDERMAN_ID_BUILDER)
         serialize.put(CURVE_ID_BUILDER)
@@ -126,8 +127,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
             nbt.putInt("weight", weight)
         }
     }
-
-    override val configRecords: List<CodecRecord<DetachedRiftBlockEntity, *>> get() = listOf(WEIGHT_BUILDER, CURVE_ID_BUILDER, RIFT_YAW_BUILDER)
 
     override val isDetached: Boolean get() = true
 
@@ -221,6 +220,19 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
                 }
             }
         }
+    }
+
+    override fun <T> writeUniqueData(serialize: Serialize<T, out DetachedRiftBlockEntity>) {
+        super.writeUniqueData(serialize)
+        serialize.put(RIFT_YAW_BUILDER)
+        serialize.put(WEIGHT_BUILDER)
+        serialize.put(CURVE_ID_BUILDER)
+    }
+
+    override fun gatherFieldNodes(list: MutableList<FieldNode>) {
+        list.add(RIFT_YAW_BUILDER.fieldNode)
+        list.add(WEIGHT_BUILDER.fieldNode)
+        list.add(CURVE_ID_BUILDER.fieldNode)
     }
 
     companion object {

@@ -13,7 +13,7 @@ class TempTarget(private val temp: VirtualTarget<*>, private val original: Virtu
     override val type get() = VirtualTargets.TEMP
 
     override fun receiveOther(owner: Vertex): Target? {
-        val rift = owner.providedLocation?.blockEntity?.castOrNull<Rift>() ?: return temp
+        val rift = owner.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return temp
         rift.takeIf { original === NoneTarget }?.castOrNull<RiftVariantProvider>()?.revertToBaseVariant(rift.riftLevel as ServerLevel, rift.riftBlockPos, rift.riftBlockState) ?: rift.setDestination(original)
         return temp
     }

@@ -57,7 +57,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
 
     override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
-    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) = rift.detach()
+    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) = rift.detach()
 
     override fun getPortalPlane(state: BlockState, pos: BlockPos) = ofDoor(state, pos)
 

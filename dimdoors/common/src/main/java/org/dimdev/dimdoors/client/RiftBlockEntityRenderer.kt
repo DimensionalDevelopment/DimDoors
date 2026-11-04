@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.client.RenderUtils.renderTextLines
 import org.dimdev.dimdoors.item.ModItems
 
-abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : Rift {
+abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : Rift<T> {
 
 
     override fun render(rift: T, tickDelta: Float, matrices: PoseStack, multiBufferSource: MultiBufferSource, breakingProgress: Int, alpha: Int) {

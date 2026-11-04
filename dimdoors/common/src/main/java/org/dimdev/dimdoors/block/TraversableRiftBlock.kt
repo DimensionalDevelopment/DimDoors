@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.RiftUtils
 
-interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
+interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
     override fun customDestroy(level: Level, pos: BlockPos, state: BlockState, i: Int, j: Int): Boolean? {
         val blockEntity = getRift(level, pos, state) ?: return null
 
@@ -61,7 +61,7 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<*>> : RiftProvider<T>
         return InteractionResult.SUCCESS
     }
 
-    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift) {}
+    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) {}
 
     fun validStateForTraversal(state: BlockState): Boolean = true
 

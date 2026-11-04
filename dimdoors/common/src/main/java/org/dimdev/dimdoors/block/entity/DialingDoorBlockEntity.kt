@@ -2,10 +2,10 @@ package org.dimdev.dimdoors.block.entity
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Rotations
-import net.minecraft.nbt.Tag
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.FieldNode
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.DialingAddress
@@ -17,17 +17,21 @@ import org.dimdev.dimdoors.util.Copyable
 class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, pos, state), DialingTarget, Copyable<DialingTarget> {
     override var address = DialingAddress.DEFAULT
 
-    override fun serialize(serialize: Serialize<Tag, DialingDoorBlockEntity>) {
-        super.serialize(serialize)
+
+    override fun <T> writeUniqueData(serialize: Serialize<T, out DialingDoorBlockEntity>) {
+        super.writeUniqueData(serialize)
         serialize.put(DIALING_ADDRESS_BUILDER)
     }
 
-    override fun deserialize(nbt: Deserialize<Tag>) {
-        super.deserialize(nbt)
-        this.address = nbt.get(DIALING_ADDRESS_BUILDER)
+    override fun <T> readUniqueData(deserialize: Deserialize<T>) {
+        super.readUniqueData(deserialize)
+        this.address = deserialize.get(DIALING_ADDRESS_BUILDER)
     }
 
-    override val configRecords: List<CodecRecord<DialingDoorBlockEntity, *>> get() = listOf(DIALING_ADDRESS_BUILDER)
+    override fun gatherFieldNodes(list: MutableList<FieldNode>) {
+        super.gatherFieldNodes(list)
+        list.add(DIALING_ADDRESS_BUILDER.fieldNode)
+    }
 
     fun turnDial(type: DialingAddress.DialType) {
         updateAddress(address.turnDial(type))
@@ -66,7 +70,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
     }
 
     companion object {
-        private val DIALING_ADDRESS_BUILDER = CodecRecord<DialingDoorBlockEntity, DialingAddress>(
+        private val DIALING_ADDRESS_BUILDER = CodecRecord(
             "address",
             DialingAddress.CODEC,
             DialingAddress.DEFAULT,

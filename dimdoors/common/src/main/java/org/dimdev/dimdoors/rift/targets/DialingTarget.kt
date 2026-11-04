@@ -35,7 +35,7 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPo
     ): Boolean {
         val received = target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, null)
         if (received) {
-            (this as? Rift)?.takeIf { !it.isRegistered }?.let {
+            (this as? Rift<*>)?.takeIf { !it.isRegistered }?.let {
                 DimensionalDoors.LOGGER.warn(
                     "Dialing source at {} was not registered before setting return exit; registering now.",
                     this.location
