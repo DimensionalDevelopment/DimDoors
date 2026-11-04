@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client.tesseract
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.LightTexture
+import net.minecraft.client.renderer.texture.OverlayTexture
 import org.dimdev.dimdoors.api.util.RGBA
 import org.joml.Matrix4f
 import org.joml.Vector4f
@@ -26,7 +27,7 @@ class Plane(vec1: Vector4f, vec2: Vector4f, vec3: Vector4f, vec4: Vector4f) {
             vc.addVertex(model, vector.x(), vector.y(), vector.z())
                 .setColor(color.red, color.green, color.blue, color.alpha)
                 .setUv(u.toFloat(), v.toFloat())
-                .setOverlay(0)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(LightTexture.FULL_BRIGHT)
                 .setNormal(0f, 0f, 0f)
         }

@@ -15,7 +15,7 @@ data class RGBA(val red: Float, val green: Float, val blue: Float, val alpha: Fl
                 Schemas.float(0f, 1f).fieldOf("red").forGetter(RGBA::red),
                 Schemas.float(0f, 1f).fieldOf("green").forGetter(RGBA::green),
                 Schemas.float(0f, 1f).fieldOf("blue").forGetter(RGBA::blue),
-                Schemas.float(0f, 1f).fieldOf("alpha").forGetter(RGBA::alpha)
+                Schemas.float(0f, 1f, 1f).fieldOf("alpha").forGetter(RGBA::alpha)
             ).apply(instance, ::RGBA)
         }.element(ElementIds.COLOR)
 
