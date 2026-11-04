@@ -19,10 +19,9 @@ class HubPocket  : Pocket<HubPocket, HubPocket.Builder> {
         virtualLocation: VirtualLocation,
         addons: MutableList<PocketAddon>,
         generator: Optional<ResourceKey<PocketGenerator<*>>>,
-    ) : super(id, world, range, box, virtualLocation, addons, generator) {
-    }
+    ) : super(id, world, range, box, virtualLocation, addons, generator)
 
-    constructor()
+    constructor() : super()
 
     class Builder : PocketBuilder<HubPocket, Builder> {
 
@@ -45,7 +44,7 @@ class HubPocket  : Pocket<HubPocket, HubPocket.Builder> {
         override fun pocket() = HubPocket()
 
         companion object {
-            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec<Builder> { instance ->
+            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec { instance ->
                 commonFields<Builder>(instance).apply(instance, ::Builder)
             }
         }
@@ -54,9 +53,7 @@ class HubPocket  : Pocket<HubPocket, HubPocket.Builder> {
     override val type get() = Pockets.HUB
 
     companion object {
-        val CODEC: MapCodec<HubPocket> = RecordCodecBuilder.mapCodec<HubPocket> { instance -> commonPocketFields<HubPocket>(instance)
-            .apply(instance, ::HubPocket)
-        }
+        val CODEC: MapCodec<HubPocket> = RecordCodecBuilder.mapCodec { instance -> commonPocketFields<HubPocket>(instance).apply(instance, ::HubPocket) }
 
         fun builderHubPocket(): Builder {
             return Builder()

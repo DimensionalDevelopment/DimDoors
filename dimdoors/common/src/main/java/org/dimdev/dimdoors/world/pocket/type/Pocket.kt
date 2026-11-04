@@ -26,7 +26,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddonType
-import java.util.Optional
+import java.util.*
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 import kotlin.streams.asSequence
@@ -263,11 +263,11 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
             instance.setRange(range)
             instance.box = BoundingBox.fromCorners(
-                Vec3i(origin.getX(), origin.getY(), origin.getZ()),
+                Vec3i(origin.x, origin.y, origin.z),
                 Vec3i(
-                    origin.getX() + size.getX() - 1,
-                    origin.getY() + size.getY() - 1,
-                    origin.getZ() + size.getZ() - 1
+                    origin.x + size.x - 1,
+                    origin.y + size.y - 1,
+                    origin.z + size.z - 1
                 )
             )
             virtualLocation?.let { instance.virtualLocation = it }

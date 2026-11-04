@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import java.util.Optional
+import java.util.*
 
 class PrivatePocket : Pocket<PrivatePocket, PrivatePocket.PrivatePocketBuilder>, DyeableAddon.DyeablePocket {
     constructor(
@@ -22,7 +22,7 @@ class PrivatePocket : Pocket<PrivatePocket, PrivatePocket.PrivatePocketBuilder>,
         generator: Optional<ResourceKey<PocketGenerator<*>>>
     ) : super(id, world, range, box, virtualLocation, addons, generator)
 
-    constructor()
+    constructor() : super()
 
     open class PrivatePocketBuilder : PocketBuilder<PrivatePocket, PrivatePocketBuilder>, DyeableAddon.DyeablePocketBuilder<PrivatePocket, PrivatePocketBuilder> {
         protected constructor(addons: MutableList<PocketAddon.PocketBuilderAddon<*, *>>) : super(addons)

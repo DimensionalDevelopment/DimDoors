@@ -28,7 +28,7 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
         this.address = address
     }
 
-    constructor()
+    constructor() : super()
 
     class Builder : PocketBuilder<DialingPocket, Builder> {
         private var address: DialingAddress? = null

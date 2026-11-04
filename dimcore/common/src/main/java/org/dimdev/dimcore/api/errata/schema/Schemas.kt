@@ -29,7 +29,7 @@ object Schemas {
     )
 
     fun <O> record(id: ResourceLocation, builder: (RecordCodecBuilder.Instance<O>) -> App<RecordCodecBuilder.Mu<O>, O>): SchemaCodec<O> {
-        val codec = RecordCodecBuilder.mapCodec<O> { builder(it) }
+        val codec = RecordCodecBuilder.mapCodec { builder(it) }
         return SchemaCodec(codec.codec(), codec.schema(id))
     }
 

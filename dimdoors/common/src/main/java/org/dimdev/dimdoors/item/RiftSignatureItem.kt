@@ -14,9 +14,8 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
-import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.client.ToolTipHelper
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.ModGameRules
 import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.block.ModBlocks
@@ -26,20 +25,19 @@ import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.world.ModDimensions
-import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
 open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : Item(settings) {
     override fun isFoil(stack: ItemStack): Boolean = stack.has(ModDataComponentTypes.DESTINATION)
 
     override fun useOn(itemUsageContext: UseOnContext): InteractionResult {
-        val world = itemUsageContext.getLevel()
+        val world = itemUsageContext.level
 
         if (world.isClientSide()) return InteractionResult.SUCCESS
 
-        val player = itemUsageContext.getPlayer()
+        val player = itemUsageContext.player
 
-        if (ModDimensions.isPrivatePocketDimension(world) && !world.getGameRules()
+        if (ModDimensions.isPrivatePocketDimension(world) && !world.gameRules
                 .getBoolean(ModGameRules.RIFT_SIGNATURE_WORKS_IN_PRIVATE_POCKETS)
         ) {
             player!!.displayClientMessage(
@@ -49,16 +47,16 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
         }
 
         // get block one block above the clicked block
-        var pos = itemUsageContext.getClickedPos()
+        var pos = itemUsageContext.clickedPos
         var state = world.getBlockState(pos)
-        val side = itemUsageContext.getClickedFace()
+        val side = itemUsageContext.clickedFace
 
 
-        val stack = itemUsageContext.getItemInHand()
+        val stack = itemUsageContext.itemInHand
 
-        if (!((state.canBeReplaced() || state.getBlock() is RiftVariantProvider) && player!!.mayUseItemAt(
+        if (!((state.canBeReplaced() || state.block is RiftVariantProvider) && player!!.mayUseItemAt(
                 pos,
-                side.getOpposite(),
+                side.opposite,
                 stack
             ))
         ) {
@@ -69,7 +67,7 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
         pos = normalizeRiftProviderPos(world, pos)
         state = world.getBlockState(pos)
 
-        if (!(state.canBeReplaced() || state.getBlock() is RiftVariantProvider)) {
+        if (!(state.canBeReplaced() || state.block is RiftVariantProvider)) {
             return InteractionResult.FAIL
         }
 
@@ -77,12 +75,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         if (rotatedLocation == null) {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, RotatedLocation(world.dimension(), pos, player!!.getYRot(), 0f))
-            player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true)
+            setSource(stack, RotatedLocation(world.dimension(), pos, player!!.yRot, 0f))
+            player.displayClientMessage(Component.translatable("${this.descriptionId}.stored"), true)
             world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START, SoundSource.BLOCKS, 0.6f, 1f)
         } else {
             rotatedLocation = normalizeRiftProviderLocation(rotatedLocation)
-            val source = RotatedLocation(world.dimension(), pos, player!!.getYRot(), 0f)
+            val source = RotatedLocation(world.dimension(), pos, player!!.yRot, 0f)
 
             val target = rotatedLocation.asTarget()
 
@@ -94,12 +92,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
             stack.hurtAndBreak(
                 1,
                 player.serverLevel(),
-                serverPlayer,
-                Consumer { a: Item? -> }) // TODO: calculate damage based on position?
+                serverPlayer
+            ) { } // TODO: calculate damage based on position?
             if (shouldclear) {
                 clearSource(stack)
             }
-            player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true)
+            player.displayClientMessage(Component.translatable("${this.descriptionId}.created"), true)
             // null = send sound to the player too, we have to do this because this code is not run client-side
             world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END, SoundSource.BLOCKS, 0.6f, 1f)
         }
@@ -126,12 +124,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
             )
             list.add(
                 Component.translatable(
-                    this.getDescriptionId() + ".bound.info1",
+                    "${this.descriptionId}.bound.info1",
                     transform.worldId.location().toString()
                 )
             )
         } else {
-            ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".unbound.info")
+            ToolTipHelper.processTranslation(list, "${this.descriptionId}.unbound.info")
         }
     }
 
@@ -139,7 +137,7 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
         const val ID: String = "rift_signature"
         private fun normalizeRiftProviderPos(world: Level, pos: BlockPos): BlockPos {
             val state = world.getBlockState(pos)
-            if (state.hasProperty<DoubleBlockHalf?>(DoorBlock.HALF) && state.getValue<DoubleBlockHalf?>(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+            if (state.hasProperty(DoorBlock.HALF) && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
                 return pos.below()
             }
             return pos

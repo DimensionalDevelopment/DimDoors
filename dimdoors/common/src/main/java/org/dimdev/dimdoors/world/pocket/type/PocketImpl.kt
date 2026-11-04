@@ -8,8 +8,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import java.util.Optional
-import java.util.function.Function
+import java.util.*
 
 class PocketImpl : Pocket<PocketImpl, PocketImpl.Builder> {
     constructor(
