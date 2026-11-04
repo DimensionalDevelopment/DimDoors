@@ -20,18 +20,22 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
+import org.dimdev.dimcore.api.VisualOutline
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.api.rift.target.RedstoneTarget
+import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity
+import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.particle.client.RiftParticleOptions
 import org.dimdev.dimdoors.world.ModDimensions.isPocketDimension
 import kotlin.jvm.optionals.getOrNull
 
-class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings), RedstoneTarget, RiftProvider<DetachedRiftBlockEntity> {
+class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings), RedstoneTarget, RiftProvider<DetachedRiftBlockEntity>, VisualOutline {
     init {
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.POWER, 0))
     }
@@ -59,7 +63,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         val level = location.world
         val pos = location.blockPos
 
-        var state = level.getBlockState(pos);
+        var state = level.getBlockState(pos)
 
         if(state.getValue(BlockStateProperties.POWER) == strength) return false
 
@@ -102,15 +106,20 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
 
     public override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.ENTITYBLOCK_ANIMATED
 
-    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
+    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
+            Shapes.block()
+        else
+            Shapes.empty()
 
-    override fun getVisualShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
-
-    public override fun getOcclusionShape(state: BlockState, level: BlockGetter, pos: BlockPos): VoxelShape {
+    override fun getVisualShape(
+        state: BlockState,
+        level: BlockGetter,
+        pos: BlockPos,
+        context: CollisionContext
+    ): VoxelShape {
         return Shapes.empty()
     }
-
-    public override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
 
     override fun <T : BlockEntity> getTicker(
         world: Level,

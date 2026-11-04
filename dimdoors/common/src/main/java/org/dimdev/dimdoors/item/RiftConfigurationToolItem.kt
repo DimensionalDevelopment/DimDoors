@@ -2,29 +2,23 @@ package org.dimdev.dimdoors.item
 
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
-import net.minecraft.world.entity.player.Player
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.level.Level
+import net.minecraft.world.item.context.UseOnContext
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.errata.session.Errata
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity
-import org.dimdev.dimdoors.item.RaycastHelper.findDetachRift
-import org.dimdev.dimdoors.item.RaycastHelper.hitsRift
+import org.dimdev.dimdoors.block.entity.Rift
 
-class RiftConfigurationToolItem internal constructor(properties: Properties) : Item(properties.stacksTo(1)) {
-    override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack?> {
-        val stack = player.getItemInHand(hand)
+class RiftConfigurationToolItem internal constructor(properties: Properties) : Item(properties.stacksTo(1)), DetachRiftInteracting {
+    override fun useOn(context: UseOnContext): InteractionResult {
+        val rift = context.level.getBlockEntity(context.clickedPos) as? Rift<*> ?: return InteractionResult.PASS
+        if (context.level.isClientSide) return InteractionResult.SUCCESS
+        val player = context.player as? ServerPlayer ?: return InteractionResult.PASS
 
-        if (world.isClientSide || player !is ServerPlayer) return InteractionResultHolder.fail<ItemStack?>(stack)
-
-        val hit = findDetachRift(player, RaycastHelper.RIFT)
-        if (hitsRift(hit, world)) (world.getBlockEntity(hit.blockPos) as? RiftBlockEntity<*>)?.let { Errata.open(player, it.configSubject(hand, this)) }
-
-        return InteractionResultHolder.success<ItemStack?>(stack)
+        Errata.open(player, rift.configSubject(context.hand, this))
+        return InteractionResult.SUCCESS
     }
 
     override fun appendHoverText(

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
@@ -16,12 +17,12 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.portal.DimensionTransition
+import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.item.RaycastHelper.hitsDetachedRift
-import org.dimdev.dimdoors.item.RaycastHelper.projectileCast
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 
 class FarShotEnderPearlEntity : ThrowableItemProjectile {
     private val setTargetOnFire: Boolean
@@ -181,9 +182,9 @@ class FarShotEnderPearlEntity : ThrowableItemProjectile {
         if (this.owner?.castOrNull<ServerPlayer>()?.isAlive == true && !this.isAlive && this.level().gameRules.getBoolean(GameRules.RULE_ENDER_PEARLS_VANISH_ON_DEATH)) {
             this.discard()
         } else {
-            val hit = projectileCast(this, this::canHitEntity)
+            val hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity).castOrNull<BlockHitResult>()
 
-            if (hitsDetachedRift(hit, this.level())) {
+            if (hit != null && hit.type == HitResult.Type.BLOCK && this.level().getBlockEntity(hit.blockPos) is DetachedRiftBlockEntity) {
                 this.onHit(hit)
             }
 

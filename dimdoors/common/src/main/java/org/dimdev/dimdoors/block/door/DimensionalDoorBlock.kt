@@ -4,7 +4,9 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -20,15 +22,20 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockSetType
+import net.minecraft.world.level.block.state.properties.DoorHingeSide
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.level.material.PushReaction
 import net.minecraft.world.level.storage.loot.LootParams
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
+import org.dimdev.dimcore.api.VisualOutline
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
+import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 import org.dimdev.dimdoors.api.util.horizontalFacing
 import org.dimdev.dimdoors.api.util.math.*
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
@@ -37,6 +44,7 @@ import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.joml.Matrix4d
@@ -46,7 +54,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
     settings: Properties,
     blockSetType: BlockSetType,
     addWaterlog: Boolean
-) : WaterLoggableDoorBlock(settings.pushReaction(PushReaction.BLOCK), blockSetType, addWaterlog), TraversableRiftBlock<T> {
+) : WaterLoggableDoorBlock(settings.pushReaction(PushReaction.BLOCK), blockSetType, addWaterlog), TraversableRiftBlock<T>, VisualOutline {
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)
 
     override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
@@ -67,6 +75,42 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
         return super.customDestroy(level, pos, state, i, j)
     }
+
+    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
+            Shapes.block()
+        else
+            super.getShape(state, level, pos, context)
+
+    override fun getVisualShape(
+        state: BlockState,
+        level: BlockGetter,
+        pos: BlockPos,
+        context: CollisionContext
+    ): VoxelShape {
+        val direction = state.getValue(FACING)
+        val flag = !state.getValue(OPEN)
+        val flag1 = state.getValue(HINGE) == DoorHingeSide.RIGHT
+
+        return when (direction) {
+            Direction.SOUTH -> if(flag) SOUTH_AABB else (if(flag1) EAST_AABB else WEST_AABB)
+            Direction.WEST -> if(flag) WEST_AABB else (if(flag1) SOUTH_AABB else NORTH_AABB)
+            Direction.NORTH -> if(flag) NORTH_AABB else (if(flag1) WEST_AABB else EAST_AABB)
+            else -> if(flag) EAST_AABB else (if(flag1) NORTH_AABB else SOUTH_AABB)
+        }
+    }
+
+    public override fun useItemOn(
+        stack: ItemStack,
+        state: BlockState,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
+        hand: InteractionHand,
+        hitResult: BlockHitResult
+    ): ItemInteractionResult =
+        if (stack.item is DetachRiftInteracting) ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+        else super.useItemOn(stack, state, level, pos, player, hand, hitResult)
 
     public override fun useWithoutItem(
         state: BlockState,

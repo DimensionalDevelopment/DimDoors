@@ -19,23 +19,22 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
+import org.dimdev.dimcore.api.VisualOutline
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
+import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 import org.dimdev.dimdoors.api.util.horizontalFacing
-import org.dimdev.dimdoors.api.util.math.eulerAngle
-import org.dimdev.dimdoors.api.util.math.plus
-import org.dimdev.dimdoors.api.util.math.times
-import org.dimdev.dimdoors.api.util.math.inverseRotateLocal
-import org.dimdev.dimdoors.api.util.math.inverseTranslateLocal
-import org.dimdev.dimdoors.api.util.math.rotateLocal
+import org.dimdev.dimdoors.api.util.math.*
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
 class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings),
-    TraversableRiftBlock<EntranceRiftBlockEntity.Impl> {
+    TraversableRiftBlock<EntranceRiftBlockEntity.Impl>, VisualOutline {
     init {
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false))
     }
@@ -47,11 +46,20 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
         builder.add(FACING)
     }
 
-    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
+    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
+            Shapes.block()
+        else
+            Shapes.empty()
 
-    public override fun getOcclusionShape(state: BlockState, level: BlockGetter, pos: BlockPos): VoxelShape = Shapes.empty()
-
-    public override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
+    override fun getVisualShape(
+        state: BlockState,
+        level: BlockGetter,
+        pos: BlockPos,
+        context: CollisionContext
+    ): VoxelShape {
+        return Shapes.empty()
+    }
 
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)
 

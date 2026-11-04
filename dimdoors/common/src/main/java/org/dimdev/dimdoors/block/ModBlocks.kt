@@ -57,6 +57,7 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
         block(::DetachedRiftBlock)
         blockProperties {
             noCollission()
+            noTerrainParticles()
             noLootTable()
             mapColor(MapColor.COLOR_BLACK)
             strength(-1.0f, 3600000.0f)

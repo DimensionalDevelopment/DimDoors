@@ -10,7 +10,8 @@
     "ServerChunkCachePlotGuardMixin",
     "ServerPlayerPlotRescueMixin",
     "ServerPlayerSubLevelTrackingCleanupMixin",
-    "SubLevelHoldingChunkMapAccessor"
+    "SubLevelHoldingChunkMapAccessor",
+    "TheFasterEntityCollisionContextMixin"
   ],
   "injectors": {
     "defaultRequire": 1

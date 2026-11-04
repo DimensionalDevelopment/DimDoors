@@ -7,6 +7,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
@@ -15,8 +16,7 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.item.RaycastHelper
-import org.dimdev.dimdoors.item.RaycastHelper.DETACH
+import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.sqrt
@@ -26,7 +26,7 @@ open class EntranceRiftBlockItem(
     settings: Properties,
     private val setupFunction: (EntranceRiftBlockEntity<*>) -> Unit = {},
     private var hasToolTip: Boolean = true
-) : BlockItem(block, settings) {
+) : BlockItem(block, settings), DetachRiftInteracting {
 
     constructor(block: Block, settings: Properties, setupFunction: (EntranceRiftBlockEntity<*>) -> Unit) : this(
         block,
@@ -46,8 +46,10 @@ open class EntranceRiftBlockItem(
         }
     }
 
+    override fun useOn(context: UseOnContext): InteractionResult = place(DimDoorBlockPlaceContext(context))
+
     override fun place(ctx: BlockPlaceContext): InteractionResult {
-        val context = DimDoorBlockPlaceContext(ctx, RaycastHelper.findDetachRift(ctx.player!!, DETACH))
+        val context = ctx as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL
 
         var pos = context.clickedPos
 

@@ -8,12 +8,11 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.EntityHitResult
-import net.minecraft.world.phys.HitResult
-import org.dimdev.dimdoors.item.RaycastHelper.raycast
 import org.dimdev.dimdoors.rift.targets.LimboTarget
 import org.dimdev.dimdoors.sound.ModSoundEvents
 
@@ -21,10 +20,9 @@ class DimensionalEraserItem(settings: Properties) : DimDoorsItem(settings) {
     override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack?> {
         val stack = player.getItemInHand(hand)
 
-        val hit = raycast(player, 1.0f) { a: Entity? -> a !is Player }
+        val target = (ProjectileUtil.getHitResultOnViewVector(player, { it !is Player }, player.entityInteractionRange()) as? EntityHitResult)?.entity
 
-        if (!world.isClientSide() && hit != null && hit.type == HitResult.Type.ENTITY) {
-            val target = (hit as EntityHitResult).entity
+        if (!world.isClientSide() && target != null) {
             if (target is ServerPlayer) {
                 LimboTarget.teleportToLimbo(target)
             } else {

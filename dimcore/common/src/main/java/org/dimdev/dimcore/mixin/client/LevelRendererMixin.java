@@ -12,6 +12,12 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.dimdev.dimcore.api.VisualOutline;
 import org.dimdev.dimcore.client.DebugRenders;
 import org.dimdev.dimcore.client.node.RenderNodes;
 import org.joml.Matrix4f;
@@ -41,6 +47,11 @@ public class LevelRendererMixin {
         poseStack.translate(-camX, -camY, -camZ);
         DebugRenders.render(poseStack, buffers);
         poseStack.popPose();
+    }
+
+    @WrapOperation(method = "renderHitOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+    private VoxelShape dimcore$visualOutline(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context, Operation<VoxelShape> original) {
+        return state.getBlock() instanceof VisualOutline ? state.getVisualShape(level, pos, context) : original.call(state, level, pos, context);
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

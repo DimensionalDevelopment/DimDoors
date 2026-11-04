@@ -14,23 +14,18 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.SwordItem
 import net.minecraft.world.item.Tiers
 import net.minecraft.world.item.TooltipFlag
+import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
-import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.world.phys.HitResult
 import org.dimdev.dimcore.api.client.ToolTipHelper
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.item.RaycastHelper.DETACH
-import org.dimdev.dimdoors.item.RaycastHelper.findDetachRift
-import org.dimdev.dimdoors.item.RaycastHelper.hitsDetachedRift
-import org.dimdev.dimdoors.item.RaycastHelper.hitsLivingEntity
-import org.dimdev.dimdoors.item.RaycastHelper.hitsRift
-import org.dimdev.dimdoors.item.RaycastHelper.raycast
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.atan2
 
-class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
+class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings), DetachRiftInteracting {
     override fun appendHoverText(
         itemStack: ItemStack,
         level: TooltipContext,
@@ -42,57 +37,57 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
 
     override fun isValidRepairItem(item: ItemStack, repairingItem: ItemStack) = ModItems.STABLE_FABRIC == repairingItem.item
 
-    override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack?> {
-        val stack = player.getItemInHand(hand)
-        var hit = raycast(player, 0.0f) { obj -> LivingEntity::class.java.isInstance(obj) }
+    override fun useOn(context: UseOnContext): InteractionResult {
+        val level = context.level
+        val pos = context.clickedPos
+        val rift = level.getBlockEntity(pos) as? DetachedRiftBlockEntity ?: return InteractionResult.PASS
+        if (level.isClientSide) return InteractionResult.SUCCESS
+        val serverPlayer = context.player as? ServerPlayer ?: return InteractionResult.PASS
 
-        if (hit == null || hit.type == HitResult.Type.MISS) {
-            hit = raycast(player, 1.0f) { obj -> LivingEntity::class.java.isInstance(obj) }
-        }
+        level.setBlockAndUpdate(
+            pos,
+            ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(
+                DimensionalPortalBlock.FACING,
+                context.clickedFace.opposite
+            )
+        )
+        level.getBlockEntity(pos)?.castOrNull<Rift<*>>()?.copyFrom(rift)
+        context.itemInHand.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer) {}
+        return InteractionResult.SUCCESS
+    }
 
-        if (hit == null) {
-            hit = findDetachRift(player, DETACH)
-        }
-
-        if (world.isClientSide) {
-            if (hitsLivingEntity(hit) || hitsRift(hit, world)) {
-                return InteractionResultHolder<ItemStack?>(InteractionResult.SUCCESS, stack)
-            } else {
-                player.displayClientMessage(Component.translatable("${this.descriptionId}.rift_miss"), true)
-                triggerRiftCoreHighlight()
-                return InteractionResultHolder<ItemStack?>(InteractionResult.FAIL, stack)
-            }
-        }
-
-//        val equipmentSlot = if (hand == InteractionHand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND
-
-        val serverPlayer = player as ServerPlayer
-
-        if (hitsLivingEntity(hit)) {
-//        double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
-//        // TODO: gaussian, instead or random
-//        double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
-//        double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
-//
-//        var playerVec = player.position();
-//        var entityVec = hit.getLocation();
-//        var offsetDirection = playerVec.subtract(entityVec).normalize();
-//        offsetDirection = offsetDirection.yRot((float) (offsetRotationYaw * Math.PI) / 180);
-//
-//        Vec3 added = entityVec.add(offsetDirection.scale(offsetDistance));
-//        BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
-//        while (world.getBlockState(teleportPosition).blocksMotion())
-//        teleportPosition = teleportPosition.above();
-//        player.teleportTo(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
-//        player.setYRot((float) (Math.random() * 2 * Math.PI));
-//
-//        stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+    override fun interactLivingEntity(
+        stack: ItemStack,
+        player: Player,
+        interactionTarget: LivingEntity,
+        usedHand: InteractionHand
+    ): InteractionResult {
+        if (player is ServerPlayer) {
+            //        double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
+    //        // TODO: gaussian, instead or random
+    //        double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
+    //        double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
+    //
+    //        var playerVec = player.position();
+    //        var entityVec = hit.getLocation();
+    //        var offsetDirection = playerVec.subtract(entityVec).normalize();
+    //        offsetDirection = offsetDirection.yRot((float) (offsetRotationYaw * Math.PI) / 180);
+    //
+    //        Vec3 added = entityVec.add(offsetDirection.scale(offsetDistance));
+    //        BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
+    //        while (world.getBlockState(teleportPosition).blocksMotion())
+    //        teleportPosition = teleportPosition.above();
+    //        player.teleportTo(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
+    //        player.setYRot((float) (Math.random() * 2 * Math.PI));
+    //
+    //        stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
 
 
             // Determine target position directly from the hit location
 
+            val world = interactionTarget.level();
 
-            val targetVec = hit.getLocation()
+            val targetVec = interactionTarget.position()
 
             var teleportPosition = BlockPos(targetVec.x().toInt(), targetVec.y().toInt(), targetVec.z().toInt())
 
@@ -123,28 +118,19 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
             player.yRot = yaw
 
 
-            // Apply damage to the item stack
-            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer) {}
+            stack.hurtAndBreak(1, player.serverLevel(), player) {}
 
-            return InteractionResultHolder(InteractionResult.SUCCESS, stack)
-        } else if (hitsDetachedRift(hit, world)) {
-            val blockHitResult = hit as BlockHitResult
-            val pos = blockHitResult.blockPos
-            val rift = world.getBlockEntity(blockHitResult.blockPos) as Rift?
+            return InteractionResult.SUCCESS
+        } else return InteractionResult.SUCCESS
+    }
 
-            world.setBlockAndUpdate(
-                pos,
-                ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(
-                    DimensionalPortalBlock.FACING,
-                    blockHitResult.direction.opposite
-                )
-            )
-            val entranceRift = world.getBlockEntity(pos) as Rift?
-            entranceRift!!.copyFrom(rift!!)
-            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer) {}
-            return InteractionResultHolder<ItemStack?>(InteractionResult.SUCCESS, stack)
+    override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+        if (world.isClientSide) {
+            player.displayClientMessage(Component.translatable("${this.descriptionId}.rift_miss"), true)
+            triggerRiftCoreHighlight()
         }
-        return InteractionResultHolder<ItemStack?>(InteractionResult.FAIL, stack)
+
+        return InteractionResultHolder<ItemStack>(InteractionResult.FAIL, player.getItemInHand(hand))
     }
 
     companion object {
