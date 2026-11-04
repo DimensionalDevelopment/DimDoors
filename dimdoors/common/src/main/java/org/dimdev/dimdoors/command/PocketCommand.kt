@@ -16,8 +16,8 @@ import net.minecraft.commands.arguments.ResourceLocationArgument
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument
 import net.minecraft.core.*
 import net.minecraft.core.registries.Registries
-import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Component.literal
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
@@ -31,8 +31,6 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimcore.api.Type
-import org.dimdev.dimcore.command.TypeCommands
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
@@ -49,8 +47,6 @@ import org.dimdev.dimdoors.util.CodecUtils
 import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
 import org.dimdev.dimdoors.world.pocket.type.PocketColor
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environment
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.EnvironmentAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environments
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
@@ -98,10 +94,11 @@ object PocketCommand {
                         execute {
                             placePocket(
                                 source!!,
-                            ResourceLocationArgument.getId(this, "id"),
-                            resourceKey,
-                            null,
-                            BlockPosArgument.getLoadedBlockPos(this, "source_pos"))
+                                ResourceLocationArgument.getId(this, "id"),
+                                resourceKey,
+                                null,
+                                BlockPosArgument.getLoadedBlockPos(this, "source_pos")
+                            )
 
                         }
                     }
@@ -110,34 +107,22 @@ object PocketCommand {
         }
     }
 
-    private fun pocketOf(ctx: CommandContext<CommandSourceStack>) = ctx.source.player?.let { instance.getPocketAt(it.location) }
+    private fun pocketOf(ctx: CommandContext<CommandSourceStack>) =
+        ctx.source.player?.let { instance.getPocketAt(it.location) }
 
-    private fun <B : Any> editEnvironment(
-        name: String,
-        registry: Registry<out Type<B>>,
-        read: (EnvironmentAddon) -> B,
-        write: (EnvironmentAddon, B) -> Environment
-    ) = TypeCommands.branch(name, registry, current = { ctx -> pocketOf(ctx)?.getAddon(PocketAddons.ENVIRONMENT_ADDON)?.let(read) }) { ctx, value ->
-        val pocket = pocketOf(ctx) ?: run {
-            ctx.source.sendFailure("Not in a pocket.".literal())
-            return@branch 0
-        }
-
-        val addon = pocket.createOrGet(PocketAddons.ENVIRONMENT_ADDON)
-        addon.environment = write(addon, value)
-        pocket.syncClientAddons()
-
-        ctx.source.sendSuccess({ "Pocket $name updated.".literal() }, true)
-        1
-    }
-
-    fun register(dispatcher: CommandDispatcher<CommandSourceStack>): LiteralCommandNode<CommandSourceStack> = dispatcher.register("pocket") {
-            requires { source -> source.hasPermission(2) }
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>): LiteralCommandNode<CommandSourceStack> =
+        dispatcher.register("pocket") {
+            requires { source -> source.hasPermission(2) and (source.player != null) }
 
             literal("edit") {
                 literal("dye") {
                     argument("color", StringArgumentType.string()) {
-                        suggests { _, builder -> SharedSuggestionProvider.suggest(PocketColor.entries.map { it.serializedName }.toTypedArray(), builder) }
+                        suggests { _, builder ->
+                            SharedSuggestionProvider.suggest(
+                                PocketColor.entries.map { it.serializedName }.toTypedArray(),
+                                builder
+                            )
+                        }
                         execute {
                             val player = source.playerOrException
 
@@ -147,14 +132,15 @@ object PocketCommand {
                                 return@execute 0
                             }
 
-                            val color = StringArgumentType.getString(this, "color").let { PocketColor.from(it) } ?: run {
-                                source.sendFailure("Invalid color.".literal())
-                                return@execute 0
-                            }
+                            val color =
+                                StringArgumentType.getString(this, "color").let { PocketColor.from(it) } ?: run {
+                                    source.sendFailure("Invalid color.".literal())
+                                    return@execute 0
+                                }
 
 
 
-                            if(color.color == null) {
+                            if (color.color == null) {
                                 source.sendSuccess({ "Pocket forgot what color it had.".literal() }, false)
                                 pocket.removeAddon(PocketAddons.DYEABLE_ADDON)
 
@@ -171,7 +157,7 @@ object PocketCommand {
                     }
                 }
 
-                then(TypeCommands.branch("environment", Environments.registry, current = { ctx -> pocketOf(ctx)?.getAddon(PocketAddons.ENVIRONMENT_ADDON)?.environment }) { ctx, value ->
+                branch("environment", Environments.registry, current = { ctx -> pocketOf(ctx)?.getAddon(PocketAddons.ENVIRONMENT_ADDON)?.environment }) { ctx, value ->
                     val pocket = pocketOf(ctx) ?: run {
                         ctx.source.sendFailure("Not in a pocket.".literal())
                         return@branch 0
@@ -183,15 +169,15 @@ object PocketCommand {
 
                     ctx.source.sendSuccess({ "Pocket environment updated.".literal() }, true)
                     1
-                })
-
-
-                then(editEnvironment("environment", Environments.registry, { it.environment }) { _, environment -> environment })
-
+                }
 
                 literal("music") {
                     argument("track", ResourceLocationArgument.id()) {
-                        suggests { ctx, builder -> SharedSuggestionProvider.suggestResource(ctx.source.registryAccess().registryOrThrow(Registries.SOUND_EVENT).keySet(), builder) }
+                        suggests { ctx, builder ->
+                            SharedSuggestionProvider.suggestResource(
+                                ctx.source.registryAccess().registryOrThrow(Registries.SOUND_EVENT).keySet(), builder
+                            )
+                        }
                         execute {
                             val player = source.playerOrException
 
@@ -203,12 +189,14 @@ object PocketCommand {
 
                             val id = ResourceLocationArgument.getId(this, "track")
 
-                            val music: Holder<SoundEvent> = source.registryAccess().registry(Registries.SOUND_EVENT).flatMap { it.getHolder(id) }.getOrNull() ?: run {
-                                source.sendFailure("Invalid music".literal())
-                                return@execute 0
-                            }
+                            val music: Holder<SoundEvent> =
+                                source.registryAccess().registry(Registries.SOUND_EVENT).flatMap { it.getHolder(id) }
+                                    .getOrNull() ?: run {
+                                    source.sendFailure("Invalid music".literal())
+                                    return@execute 0
+                                }
 
-                            pocket.createOrGet(PocketAddons.MUSIC_ADDON)?.music = music.music()
+                            pocket.createOrGet(PocketAddons.MUSIC_ADDON).music = music.music()
                             pocket.syncClientAddons()
 
                             source.sendSuccess({ "Pocket music set to $id".literal() }, true)
@@ -225,21 +213,19 @@ object PocketCommand {
             }
 
             literal("dump") {
-                    requires { src -> src.hasPermission(4) }
-                    execute {
-                        val source = this.source ?: return@execute 0
-                        source.sendSuccess({ literal("Dumping pocket data") }, false)
+                requires { src -> src.hasPermission(4) }
 
-                        CompletableFuture.runAsync {
-                            runCatching { PocketLoader.dump() }.onFailure { LOGGER.error("Error dumping pocket data", it) }
-                        }.thenRun {
-                            source.server.execute {
-                                source.sendSuccess({ literal("Dumped pocket data") }, false)
-                            }
+                execute {
+                    CompletableFuture.runAsync {
+                        runCatching { PocketLoader.dump() }.onFailure { LOGGER.error("Error dumping pocket data", it) }
+                    }.thenRun {
+                        source.server.execute {
+                            source.sendSuccess({ literal("Dumped pocket data") }, false)
                         }
-                        Command.SINGLE_SUCCESS
                     }
+                    Command.SINGLE_SUCCESS
                 }
+            }
         }
 
     @Throws(CommandSyntaxException::class)
@@ -264,10 +250,12 @@ object PocketCommand {
                 sourceLevel = player.serverLevel()
                 sourcePos = normalizeSourcePos(sourceLevel, selectedSourcePos)
             }
+
             targetEntity != null -> {
                 sourceLevel = targetEntity.level() as ServerLevel
                 sourcePos = normalizeSourcePos(sourceLevel, targetEntity.blockPosition())
             }
+
             else -> {
                 sourceLevel = player.serverLevel()
                 sourcePos = normalizeSourcePos(sourceLevel, player.blockPosition())
@@ -311,7 +299,7 @@ object PocketCommand {
             return 0
         }
 
-        if(RiftSignatureItem.getOrCreateRift(sourceLevel, sourcePos) == null) {
+        if (RiftSignatureItem.getOrCreateRift(sourceLevel, sourcePos) == null) {
             source.sendFailure(literal("Could not create or convert a rift at " + sourcePos.toShortString() + "."))
             return 0
         }
@@ -326,7 +314,9 @@ object PocketCommand {
 
         source.sendSuccess({
             literal(
-                ("Linked ${sourcePos.toShortString()} to $id in ${pocketLevel.dimension().location()} at ${entrance.blockPos.toShortString()}")
+                ("Linked ${sourcePos.toShortString()} to $id in ${
+                    pocketLevel.dimension().location()
+                } at ${entrance.blockPos.toShortString()}")
             )
         }, false)
         return Command.SINGLE_SUCCESS
@@ -341,8 +331,9 @@ object PocketCommand {
         return sourcePos
     }
 
-    private fun canUseSource(player: ServerPlayer, sourcePos: BlockPos, sourceState: BlockState): Boolean = (sourceState.canBeReplaced() || sourceState.block is RiftVariantProvider)
-            && player.mayUseItemAt(sourcePos, Direction.UP, ItemStack.EMPTY)
+    private fun canUseSource(player: ServerPlayer, sourcePos: BlockPos, sourceState: BlockState): Boolean =
+        (sourceState.canBeReplaced() || sourceState.block is RiftVariantProvider)
+                && player.mayUseItemAt(sourcePos, Direction.UP, ItemStack.EMPTY)
 
     fun <T : PocketCreator> getSuggestions(
         access: RegistryAccess,
@@ -360,4 +351,4 @@ object PocketCommand {
 
 private fun Holder<SoundEvent>.music(): Music = CodecUtils.createMusic(this)
 
-private fun String.literal() = Component.literal(this)
+fun String.literal(): MutableComponent = literal(this)
