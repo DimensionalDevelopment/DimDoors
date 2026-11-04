@@ -3,15 +3,13 @@ package org.dimdev.dimdoors.rift.targets
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import org.dimdev.dimcore.api.errata.schema.Schemas
-import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.nullableForGetter
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import kotlin.jvm.optionals.getOrNull
 
@@ -27,8 +25,7 @@ class TemplateTarget(private val template: Holder<VirtualPocket>?) : RestoringTa
             riftVirtualLocation.z,
             depth
         )
-        val pocket = PocketGenerator.generateFromVirtualPocket(
-            DimensionalDoors.getWorld(ModDimensions.DUNGEON),
+        val pocket = PocketGenerationHelper.generateFromVirtualPocket(
             template,
             newVirtualLocation,
             owner.providedLocation!!.asTarget(),

@@ -3,7 +3,9 @@ package org.dimdev.dimdoors.pockets.virtual.selection
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
@@ -11,7 +13,7 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
 
 // TODO: Override equals
-class PathSelector(private val path: ResourceLocation) : AbstractVirtualPocketList<PathSelector>() {
+class PathSelector(level: ResourceKey<Level>, private val path: ResourceLocation) : AbstractVirtualPocketList<PathSelector>(level) {
     private var initalized = false
 
     override val type get() = VirtualPockets.PATH_SELECTOR
@@ -52,7 +54,7 @@ class PathSelector(private val path: ResourceLocation) : AbstractVirtualPocketLi
 
     companion object {
         val CODEC: MapCodec<PathSelector> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(ResourceLocation.CODEC.fieldOf("path").forGetter(PathSelector::path)).apply(instance, ::PathSelector)
+            VirtualPocket.commonFields(instance).and(ResourceLocation.CODEC.fieldOf("path").forGetter(PathSelector::path)).apply(instance, ::PathSelector)
         }
 
         const val KEY: String = "path"

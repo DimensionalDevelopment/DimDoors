@@ -7,7 +7,8 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry
@@ -82,7 +83,7 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
     override fun getKey(uuid: UUID?): UUID? = uuid
 
     override fun createPocket(virtualLocation: VirtualLocation): PrivatePocket? {
-        val pocket = PocketGenerator.generatePrivatePocketV2(
+        val pocket = PocketGenerationHelper.PRIVATE.generatePocket(
             VirtualLocation(
                 virtualLocation.world,
                 virtualLocation.x,

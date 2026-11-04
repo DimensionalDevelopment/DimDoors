@@ -7,10 +7,13 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.rift.targets.LocationProvider
+import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.concurrent.ConcurrentHashMap
 
 interface PocketCreator {
+    val level: ResourceKey<Level> get() = ModDimensions.DUNGEON
+
     fun prepareAndPlacePocket(parameters: PocketGenerationContext): Pocket<*, *>?
 
     fun prepareAndPlacePocket(parameters: PocketGenerationContext, setupLoot: Boolean?): Pocket<*, *>?

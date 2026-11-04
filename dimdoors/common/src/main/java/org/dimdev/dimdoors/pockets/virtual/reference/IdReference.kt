@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.ModRegistryKeys
@@ -12,9 +13,10 @@ import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
+import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 
-class IdReference(weight: Equation,private val id: ResourceKey<PocketGenerator<*>>) : PocketGeneratorReference<IdReference>(weight) {
+class IdReference(level: ResourceKey<Level> = ModDimensions.DUNGEON, weight: Equation = Equation.FIVE, private val id: ResourceKey<PocketGenerator<*>>) : PocketGeneratorReference<IdReference>(level, weight) {
     override fun getWeight(parameters: PocketGenerationContext): Double {
         if (parameters.lookupHolderOptional(id) == null) {
             return 0.0

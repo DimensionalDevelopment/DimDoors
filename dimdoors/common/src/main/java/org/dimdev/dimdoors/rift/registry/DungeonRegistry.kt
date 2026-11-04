@@ -13,8 +13,8 @@ import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.pockets.PocketGenerator
 import org.dimdev.dimdoors.pockets.TemplateUtils
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.targets.DelvingTarget
 import org.dimdev.dimdoors.rift.targets.RiftReference
@@ -43,7 +43,7 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
         val dungeon = dungeons[id] ?: return null
         val location = VirtualLocation.fromLocation(owner).copy(depth = depth)
 
-        val pocket = PocketGenerator.generateDungeonPocketV2(location, RiftReference(owner), null, dungeon.theme)
+        val pocket = dungeon.theme.generatePocket(location, RiftReference(owner))
 
         if (pocket == null) {
             LOGGER.error("Failed to generate room for dungeon {} at {} from {}.", id, location, owner)

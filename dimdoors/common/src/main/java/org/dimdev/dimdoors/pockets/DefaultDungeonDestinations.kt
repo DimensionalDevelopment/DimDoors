@@ -58,7 +58,7 @@ interface DefaultDungeonDestinations {
                 ).build()
 
         val gateway: DungeonTarget
-            get() = getGateway(PocketGenerator.ALL_DUNGEONS)
+            get() = getGateway(PocketGenerationHelper.ALL_DUNGEONS)
 
         fun getGateway(resourceLocation: ResourceKey<VirtualPocket>): DungeonTarget {
             return DungeonTarget(resourceLocation)

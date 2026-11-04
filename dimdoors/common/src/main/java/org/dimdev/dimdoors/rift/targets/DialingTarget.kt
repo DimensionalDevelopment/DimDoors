@@ -4,12 +4,14 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.DialingRegistry
 import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
@@ -19,7 +21,7 @@ import org.dimdev.dimdoors.world.pocket.type.DialingPocket
 import java.util.*
 
 interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPocket, DialingRegistry> {
-    val address: DialingAddress
+    var address: DialingAddress
 
     override fun processEntity(
         owner: Vertex,
@@ -52,12 +54,13 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPo
     override fun getKey(uuid: UUID?): DialingAddress? = this.address
 
     override fun createPocket(virtualLocation: VirtualLocation): DialingPocket? {
-        val pocket = PocketGenerator.generateDialingPocket(
-            VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1),
-            this.address
-        )
+        val pocket = PocketGenerationHelper.DIALING.generatePocket(
+            VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1).also { it.castOrNull<DialingTarget>()?.also { it.address = address } })
 
-        if (pocket is DialingPocket) return pocket
+        if (pocket is DialingPocket) {
+            pocket.address = address
+            return pocket
+        }
         return null
     }
 

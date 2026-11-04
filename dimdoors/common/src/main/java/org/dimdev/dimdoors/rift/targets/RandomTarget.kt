@@ -20,8 +20,9 @@ import org.dimdev.dimdoors.api.util.math.MathUtil
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper.ALL_DUNGEONS
 import org.dimdev.dimdoors.pockets.TemplateUtils
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
@@ -189,7 +190,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
         linkTo: VirtualTarget<*>,
         props: LinkProperties?
     ): Pocket<*, *>? {
-        return PocketGenerator.generateDungeonPocketV2(location, linkTo, props)
+        return ALL_DUNGEONS.generatePocket(location, linkTo, props)
     }
 
     private fun sq(a: Double): Double {

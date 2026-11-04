@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 
-class DialingTargetImpl(override val address: DialingAddress) : VirtualTarget<DialingTargetImpl>(), DialingTarget {
+class DialingTargetImpl(override var address: DialingAddress) : VirtualTarget<DialingTargetImpl>(), DialingTarget {
     override val type get() = VirtualTargets.DIALING
 
     override fun copy(): DialingTargetImpl {

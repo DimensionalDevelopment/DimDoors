@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.MapCodec
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper.PUBLIC
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
@@ -14,7 +15,7 @@ object PublicPocketTarget : RestoringTarget<PublicPocketTarget>() {
         val newVirtualLocation: VirtualLocation?
         val depth = riftVirtualLocation.depth + 1
         newVirtualLocation = VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth)
-        val pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, owner.providedLocation!!.asTarget(), null)
+        val pocket = PUBLIC.generatePocket(newVirtualLocation, owner.providedLocation!!.asTarget())
 
         return instance.getPocketEntrance(pocket)
     }

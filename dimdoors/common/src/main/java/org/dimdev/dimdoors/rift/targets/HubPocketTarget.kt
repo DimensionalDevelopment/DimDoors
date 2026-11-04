@@ -6,10 +6,11 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.generatePocket
+import org.dimdev.dimdoors.rift.registry.HubRegistry
 import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.HubRegistry
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.HubPocket
 import java.util.*
@@ -50,7 +51,7 @@ object HubPocketTarget : VirtualTarget<HubPocketTarget>(), PlayerTrackingEntranc
     override fun getKey(uuid: UUID?): HubRegistry.HubKey = HubRegistry.HubKey
 
     override fun createPocket(virtualLocation: VirtualLocation): HubPocket? {
-        val pocket = PocketGenerator.generateHubPocket(
+        val pocket = PocketGenerationHelper.HUB.generatePocket(
             VirtualLocation(
                 virtualLocation.world,
                 virtualLocation.x,

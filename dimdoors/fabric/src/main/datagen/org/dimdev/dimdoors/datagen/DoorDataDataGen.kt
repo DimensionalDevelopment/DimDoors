@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.api.util.key
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.item.door.data.RiftDataList
 import org.dimdev.dimdoors.item.door.data.condition.Condition
-import org.dimdev.dimdoors.pockets.PocketGenerator
+import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.targets.*
 import org.dimdev.dimdoors.world.ModDimensions
@@ -30,19 +30,19 @@ object DoorDataDataGen {
         }
 
         ctx.register(key(Blocks.CRIMSON_DOOR), RiftDataList.of(
-            DungeonTarget(PocketGenerator.NETHER_DUNGEONS),
+            DungeonTarget(PocketGenerationHelper.NETHER_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )
 
         ctx.register(key(ModBlocks.AMALGAM_DOOR), RiftDataList.of(
-            DungeonTarget(PocketGenerator.MYTH_DUNGEONS),
+            DungeonTarget(PocketGenerationHelper.MYTH_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )
 
         ctx.register(key(ModBlocks.STONE_DOOR), RiftDataList.of(
-            DungeonTarget(PocketGenerator.ALL_DUNGEONS),
+            DungeonTarget(PocketGenerationHelper.ALL_DUNGEONS),
             properties,
             Condition.alwaysTrue())
         )

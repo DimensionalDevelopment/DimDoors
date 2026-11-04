@@ -5,6 +5,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
+import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.HolderWeightedList
 import org.dimdev.dimdoors.api.util.math.Equation
@@ -14,11 +16,12 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import java.util.stream.Stream
 
 class TagReference(
+    level: ResourceKey<Level>,
     weight: Equation,
     private val required: List<String>,
     private val blackList: List<String>,
     private val exact: Boolean
-) : PocketGeneratorReference<TagReference>(weight) {
+) : PocketGeneratorReference<TagReference>(level, weight) {
     private var pockets: HolderWeightedList<PocketGenerator<*>, PocketGenerationContext>? = null
 
     override val type get() = VirtualPockets.TAG_REFERENCE

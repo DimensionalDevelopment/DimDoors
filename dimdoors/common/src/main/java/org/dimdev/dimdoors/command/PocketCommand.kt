@@ -46,7 +46,6 @@ import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.util.CodecUtils
-import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
 import org.dimdev.dimdoors.world.pocket.type.PocketColor
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
@@ -283,8 +282,8 @@ object PocketCommand {
             return 0
         }
 
-        val pocketLevel = sourceLevel.server.getLevel(ModDimensions.DUNGEON) ?: run {
-            source.sendFailure(literal("Could not resolve the dungeon pocket world."))
+        val pocketLevel = sourceLevel.server.getLevel(creator.level) ?: run {
+            source.sendFailure(literal("Could not resolve the pocket world ${creator.level.location()}."))
             return 0
         }
 
