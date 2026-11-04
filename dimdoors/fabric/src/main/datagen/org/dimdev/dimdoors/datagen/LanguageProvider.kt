@@ -195,16 +195,6 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(2, "Operators only.")
         }
 
-        addEntry(ModItems.RIFT_MARKER) {
-            info(0, "Right click a rift to set")
-            info(1, "it to an id for pocket")
-            info(2, "config in a datapack.")
-            info(3, "Shift left click a rift to clear it,")
-            info(4, "or anything else to reset the counter.")
-            info(5, "Creative only.")
-        }
-
-
         addEntry(ModItems.RIFT_STABILIZER) {
             info("Use on a rift's core to stop its growth.")
             add("stabilized", "The rift has been stabilized and will stop growing")

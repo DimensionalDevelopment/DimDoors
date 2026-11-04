@@ -19,14 +19,14 @@ abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRender
     override fun render(rift: T, tickDelta: Float, matrices: PoseStack, multiBufferSource: MultiBufferSource, breakingProgress: Int, alpha: Int) {
         val minecraft = Minecraft.getInstance()
 
-        if (minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).let { it.`is`(ModItems.RIFT_CONFIGURATION_TOOL) || it.`is`(ModItems.RIFT_MARKER) }) {
+        if (minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).`is`(ModItems.RIFT_CONFIGURATION_TOOL)) {
             matrices.pushPose()
 
             matrices.translate(0.5, 1.25, 0.5)
             matrices.mulPose(minecraft.blockEntityRenderDispatcher.camera.rotation())
             matrices.scale(0.025f, -0.025f, 0.025f)
             val texts = mutableListOf<Component>().also{ rift.gatherDebug(it::add) }
-            renderTextLines(texts, matrices, multiBufferSource, context.getFont(), LightTexture.FULL_BRIGHT)
+            renderTextLines(texts, matrices, multiBufferSource, context.font, LightTexture.FULL_BRIGHT)
 
             matrices.popPose()
         }
