@@ -63,7 +63,6 @@ object ServerPacketHandler {
 
                 return SyncPocketAddonsS2CPacket(
                     pocket.world,
-                    pocket.box,
                     pocket.getAddons { a -> a.type.isSyncable }
                 )
             }

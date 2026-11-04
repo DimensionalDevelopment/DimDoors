@@ -7,7 +7,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceKey
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.levelgen.structure.BoundingBox
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
@@ -34,8 +33,6 @@ object ClientPacketListener {
 
     var pocketWorld: ResourceKey<Level>? = null
         private set
-    var area: BoundingBox? = null
-        private set
     var addons = mutableMapOf<BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>, PocketAddon>()
         private set
 
@@ -53,7 +50,6 @@ object ClientPacketListener {
 
     fun clearPocketAddons() {
         pocketWorld = null
-        area = null
         addons = mutableMapOf()
     }
 
@@ -67,7 +63,6 @@ object ClientPacketListener {
         val hadMusic = hasMusicAddon()
 
         pocketWorld = packet.world
-        area = packet.box
         addons = packet.addons.associateBy { it.type }.toMutableMap()
 
         if (hadMusic || hasMusicAddon()) stopMusic()
@@ -124,10 +119,6 @@ object ClientPacketListener {
 
     fun <T : PocketAddon> getAddonClient(type: PocketAddonType<T, *>, world: Level, pos: BlockPos): T? {
         if (world.dimension() != pocketWorld) return null
-
-        if (!area!!.isInside(pos.x, pos.y, pos.z)) return null
-
-
         return addons[type]?.cast()
     }
 
