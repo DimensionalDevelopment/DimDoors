@@ -53,7 +53,6 @@ import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener
 import org.dimdev.dimdoors.listener.pocket.*
 import org.dimdev.dimdoors.network.ServerPacketHandler
 import org.dimdev.dimdoors.network.client.ClientPacketListener
-import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket
 import org.dimdev.dimdoors.network.packet.s2c.*
 import org.dimdev.dimdoors.particle.ModParticleTypes
 import org.dimdev.dimdoors.pockets.PocketLoader
@@ -201,8 +200,6 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         packetRegister.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, ClientPacketListener::onMonolithTeleportParticles)
         packetRegister.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, ClientPacketListener::onRenderBreakBlock)
         packetRegister.registerClientPacket(MaskCatchAnimS2CPacket.TYPE, MaskCatchAnimS2CPacket.STREAM_CODEC, ClientPacketListener::onMaskCatch)
-
-        packetRegister.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC) { packet, player -> ServerPacketHandler.onAttackBlock(player, packet) }
 
         packetRegister.registerClientPacket(PortalColorsS2CPacket.TYPE, PortalColorsS2CPacket.STREAM_CODEC, ClientPacketListener::onPortalColors)
         packetRegister.registerClientPacket(ClearPocketS2CPacket.TYPE, ClearPocketS2CPacket.STREAM_CODEC, ClientPacketListener::onClearPocket)

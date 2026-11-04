@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.api.item
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
-import org.dimdev.dimdoors.api.item.AttackBlockResult.Companion.fail
 
 interface ExtendedItem {
     // TODO: add javadocs
@@ -18,7 +18,7 @@ interface ExtendedItem {
         hand: InteractionHand,
         pos: BlockPos,
         direction: Direction
-    ): AttackBlockResult {
-        return fail(false)
+    ): InteractionResult {
+        return InteractionResult.FAIL
     }
 }

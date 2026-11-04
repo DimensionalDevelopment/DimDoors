@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimdoors.api.item.AttackBlockResult
 import org.dimdev.dimdoors.api.item.ExtendedItem
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.entity.mask.MaskEntity
@@ -48,15 +47,15 @@ class MaskWandItem(settings: Properties) : Item(settings), ExtendedItem {
         return InteractionResult.sidedSuccess(context.level.isClientSide)
     }
 
-    override fun onAttackBlock(world: Level, player: Player, hand: InteractionHand, pos: BlockPos, direction: Direction): AttackBlockResult {
-        if (!player.isCreative) return AttackBlockResult.fail(false)
-        if (world !is ServerLevel) return AttackBlockResult.success(true)
+    override fun onAttackBlock(world: Level, player: Player, hand: InteractionHand, pos: BlockPos, direction: Direction): InteractionResult {
+        if (!player.isCreative) return InteractionResult.FAIL
+        if (world !is ServerLevel) return InteractionResult.SUCCESS
 
         val stack = player.getItemInHand(hand)
         val waypoints = stack.getOrDefault(ModDataComponentTypes.MASK_WAND_WAYPOINTS, emptyList())
 
         val homePos = pos.relative(direction)
-        if (!world.getBlockState(homePos).canBeReplaced()) return AttackBlockResult.fail(false)
+        if (!world.getBlockState(homePos).canBeReplaced()) return InteractionResult.FAIL
 
         val mask = MaskEntity(ModEntityTypes.MASK, world)
         mask.maskType = stack.getOrDefault(ModDataComponentTypes.MASK_TYPE, MaskType.CYCLOP)
@@ -66,7 +65,7 @@ class MaskWandItem(settings: Properties) : Item(settings), ExtendedItem {
 
         mask.home = homePos
 
-        return AttackBlockResult.success(false)
+        return InteractionResult.SUCCESS
     }
 
     private fun MaskEntity.bind(homePos: BlockPos, absoluteWaypoints: List<BlockPos>) {

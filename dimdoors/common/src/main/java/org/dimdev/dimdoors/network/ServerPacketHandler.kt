@@ -10,8 +10,6 @@ import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
-import org.dimdev.dimdoors.api.item.ExtendedItem
-import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket
 import org.dimdev.dimdoors.network.packet.s2c.ClearPocketS2CPacket
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket
 import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket
@@ -50,29 +48,6 @@ object ServerPacketHandler {
         } else {
             sendPacket(player, PlayerInventorySlotUpdateS2CPacket(player.getInventory().selected, stack))
         }
-    }
-
-    fun onAttackBlock(player: ServerPlayer, packet: HitBlockWithItemC2SPacket): CustomPacketPayload? {
-        player.getServer()!!.execute {
-            try {
-                val item = player.getItemInHand(packet.hand).item
-
-
-                if (item is ExtendedItem) {
-                    item.onAttackBlock(
-                        player.level(),
-                        player,
-                        packet.hand,
-                        packet.pos,
-                        packet.direction
-                    )
-                }
-            } catch (exception: RuntimeException) {
-                LOGGER.error("Error handling attack-block packet for {} at {}", player.name.string, packet.pos, exception)
-            }
-        }
-
-        return null
     }
 
     class PlayerSyncData {
