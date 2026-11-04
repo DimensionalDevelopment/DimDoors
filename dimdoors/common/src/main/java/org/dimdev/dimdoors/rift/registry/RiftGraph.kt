@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.world.pocket.PocketInfo
+import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.builder.GraphTypeBuilder
@@ -76,6 +78,10 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
     fun changed(id: UUID) {
         val changed = Vertex(id, vertices[id] ?: return)
         sources(id).forEach { vertices[it]?.targetChanged(it, changed) }
+    }
+
+    fun chained(parent: Pocket<*, *>, child: Pocket<*, *>) {
+        sources(PocketInfo(parent.world, parent.id).uuid).forEach { vertices[it]?.pocketChained(it, child) }
     }
 
     fun targets(id: UUID): Set<UUID> {

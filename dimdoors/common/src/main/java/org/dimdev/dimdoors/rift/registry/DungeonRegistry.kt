@@ -50,6 +50,15 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
             return null
         }
 
+        addRoom(id, pocket)
+        RiftGraph.getInstance().removeEdge(id, owner.id)
+
+        val entrance = PocketRegistry.instance.getPocketEntrance(pocket)
+        TemplateUtils.linkRifts(owner, entrance)
+        return entrance?.blockEntity?.castOrNull<Target>()
+    }
+
+    fun addRoom(id: UUID, pocket: Pocket<*, *>) {
         val graph = RiftGraph.getInstance()
         graph.addEdge(id, PocketInfo(pocket.world, pocket.id).uuid)
 
@@ -57,12 +66,6 @@ class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<Dun
             .filter { it.data.destination === DelvingTarget }
             .mapNotNull { RiftRegistry.instance.idAt(it.location) }
             .forEach { graph.addEdge(id, it) }
-
-        graph.removeEdge(id, owner.id)
-
-        val entrance = PocketRegistry.instance.getPocketEntrance(pocket)
-        TemplateUtils.linkRifts(owner, entrance)
-        return entrance?.blockEntity?.castOrNull<Target>()
     }
 
     fun linkToRoot(id: UUID, owner: Vertex): Target? {

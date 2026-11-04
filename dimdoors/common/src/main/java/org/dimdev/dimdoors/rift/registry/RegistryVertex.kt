@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.serialization.Codec
 import org.dimdev.dimdoors.ModRegistries
 import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
 
 abstract class RegistryVertex {
@@ -18,6 +19,8 @@ abstract class RegistryVertex {
     open fun targetMoved(self: UUID, target: Vertex) {}
 
     open fun targetChanged(self: UUID, target: Vertex) {}
+
+    open fun pocketChained(self: UUID, pocket: Pocket<*, *>) {}
 
     companion object {
         val CODEC = Codec.lazyInitialized { ModRegistries.REGISTRY_VERTEX_TYPE.byNameCodec() }
