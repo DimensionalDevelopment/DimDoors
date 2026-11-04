@@ -1,4 +1,5 @@
 {
-  "path": "dimdoors:hub/",
-  "type": "dimdoors:path"
+  "type": "dimdoors:id",
+  "id": "dimdoors:hub",
+  "level": "dimdoors:personal_pockets"
 }

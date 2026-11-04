@@ -1,4 +1,5 @@
-  {
-    "path": "dimdoors:public/",
-    "type": "dimdoors:path"
-  }
+{
+  "type": "dimdoors:id",
+  "id": "dimdoors:public",
+  "level": "dimdoors:public_pockets"
+}

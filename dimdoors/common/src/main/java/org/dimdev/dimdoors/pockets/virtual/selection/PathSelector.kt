@@ -38,7 +38,7 @@ class PathSelector(level: ResourceKey<Level>, private val path: ResourceLocation
 
     private fun initialize(context: PocketGenerationContext) {
         if (!initalized) {
-            context.provider.lookup(ModRegistryKeys.VIRTUAL_POCKET).stream()
+            context.provider.lookup(ModRegistryKeys.POCKET_GROUPS).stream()
                 .flatMap { it.listElements() }
                 .filter(::checkKey)
                 .map(Holder.Reference<VirtualPocket>::value)

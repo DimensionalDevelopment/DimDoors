@@ -220,8 +220,6 @@ object PocketCommand {
             }
 
             literal("create") {
-
-                placeOption("virtual_pocket", ModRegistryKeys.VIRTUAL_POCKET)
                 placeOption("pocket_group", ModRegistryKeys.POCKET_GROUPS)
                 placeOption("pocket_generator", ModRegistryKeys.POCKET_GENERATOR)
             }

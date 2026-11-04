@@ -1,4 +1,5 @@
 {
-  "path": "dimdoors:dialing/",
-  "type": "dimdoors:path"
+  "type": "dimdoors:id",
+  "id": "dimdoors:dialing",
+  "level": "dimdoors:public_pockets"
 }

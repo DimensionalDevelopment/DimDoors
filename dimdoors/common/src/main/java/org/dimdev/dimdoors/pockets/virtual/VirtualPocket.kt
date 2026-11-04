@@ -37,7 +37,7 @@ interface VirtualPocket : Weighted<PocketGenerationContext>, PocketCreator {
         }
 
         @JvmField
-        val HOLDER_CODEC: Codec<Holder<VirtualPocket>> = RegistryFileCodec.create(ModRegistryKeys.VIRTUAL_POCKET, CODEC)
+        val HOLDER_CODEC: Codec<Holder<VirtualPocket>> = RegistryFileCodec.create(ModRegistryKeys.POCKET_GROUPS, CODEC)
 
         fun <T : VirtualPocket> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, ResourceKey<Level>> = instance.group(ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("level", ModDimensions.DUNGEON).forGetter { it.level })
     }

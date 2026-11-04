@@ -46,7 +46,6 @@ object ModRegistryKeys {
 
     @JvmField val MODIFIER = "virtual_pocket_type".type<Modifier>()
     @JvmField val POCKET_GENERATOR = "pockets/generators".dynamic<PocketGenerator<*>>()
-    @JvmField val VIRTUAL_POCKET = "pockets/virtual".dynamic<VirtualPocket>()
     @JvmField val POCKET_GROUPS = "pockets/groups".dynamic<VirtualPocket>()
     @JvmField val RIFT_DATA = "pockets/rift_data".dynamic<RiftData>()
     @JvmField val DOOR_DATA = "door/data".dynamic<RiftDataList>()

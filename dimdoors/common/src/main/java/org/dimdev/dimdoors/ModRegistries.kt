@@ -33,7 +33,6 @@ object ModRegistries {
 
     @JvmStatic fun register() {
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GENERATOR, PocketGenerator.CODEC)
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.VIRTUAL_POCKET, VirtualPocket.CODEC)
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GROUPS, VirtualPocket.CODEC)
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.RIFT_DATA, RiftData.CODEC)
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC)
