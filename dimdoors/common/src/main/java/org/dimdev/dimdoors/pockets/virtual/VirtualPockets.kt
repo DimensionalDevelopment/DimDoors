@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket.NoneVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.reference.IdReference
 import org.dimdev.dimdoors.pockets.virtual.reference.TagReference
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector

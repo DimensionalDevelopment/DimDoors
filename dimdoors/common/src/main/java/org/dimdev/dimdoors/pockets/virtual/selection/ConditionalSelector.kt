@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
+import org.dimdev.dimdoors.pockets.virtual.NoneVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
@@ -37,7 +38,7 @@ class ConditionalSelector(val pocketMap: MutableList<ConditionalPocket>) : Imple
 
     private fun getNextPocket(parameters: PocketGenerationContext): VirtualPocket {
         val map = parameters.toVariableMap(mutableMapOf())
-        return pocketMap.firstOrNull { it.condition.asBoolean(map) }?.pocket ?: ImplementedVirtualPocket.NoneVirtualPocket.NONE
+        return pocketMap.firstOrNull { it.condition.asBoolean(map) }?.pocket ?: NoneVirtualPocket.NONE
     }
 
     data class ConditionalPocket(val condition: Equation, val pocket: VirtualPocket) {
