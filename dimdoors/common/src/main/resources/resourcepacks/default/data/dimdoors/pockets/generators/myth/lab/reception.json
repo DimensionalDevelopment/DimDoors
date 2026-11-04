@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:lab/lab_hallway.schem",
+  "id": "dimdoors:myth/lab/reception.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -11,9 +11,14 @@
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
-      "type": "dimdoors:template",
+      "type": "dimdoors:generator",
       "ids": [2],
-      "templateId": "dimdoors:lab/reception"
+      "template": "dimdoors:myth/lab/right_lab_hallway"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [3],
+      "rift_data": "dimdoors:default_dungeon"
     }
   ]
 }

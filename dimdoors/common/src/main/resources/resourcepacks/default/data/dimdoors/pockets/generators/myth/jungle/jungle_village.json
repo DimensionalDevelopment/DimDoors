@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:lab/telecommunications.schem",
+  "id": "dimdoors:myth/jungle/jungle_village.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -11,9 +11,9 @@
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
-      "type": "dimdoors:template",
+      "type": "dimdoors:generator",
       "ids": [2],
-      "templateId": "dimdoors:lab/lab_experimentation"
+      "template": "dimdoors:myth/jungle/jungle_boss"
     }
   ]
 }

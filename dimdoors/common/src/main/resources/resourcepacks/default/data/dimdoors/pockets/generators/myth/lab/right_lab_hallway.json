@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/jungle_spire.schem",
+  "id": "dimdoors:myth/lab/right_lab_hallway.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -11,9 +11,9 @@
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
-      "type": "dimdoors:template",
+      "type": "dimdoors:generator",
       "ids": [2],
-      "templateId": "dimdoors:myth/jungle_village"
+      "template": "dimdoors:myth/lab/left_lab_hallway"
     }
   ]
 }

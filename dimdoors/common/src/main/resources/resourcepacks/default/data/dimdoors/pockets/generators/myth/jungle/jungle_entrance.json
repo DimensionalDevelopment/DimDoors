@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/jungle_entrance.schem",
+  "id": "dimdoors:myth/jungle/jungle_entrance.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -16,9 +16,9 @@
       "rift_data": "dimdoors:default_dungeon"
     },
     {
-      "type": "dimdoors:template",
+      "type": "dimdoors:generator",
       "ids": [3],
-      "templateId": "dimdoors:myth/jungle_spire"
+      "template": "dimdoors:myth/jungle/jungle_spire"
     }
   ],
   "tags": ["myth"]

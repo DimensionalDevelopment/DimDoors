@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:myth/jungle_boss.schem",
+  "id": "dimdoors:myth/jungle/jungle_spire.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -9,7 +9,11 @@
       "type": "dimdoors:rift_data",
       "ids": [1],
       "rift_data": "dimdoors:pocket_entrance"
+    },
+    {
+      "type": "dimdoors:generator",
+      "ids": [2],
+      "template": "dimdoors:myth/jungle/jungle_village"
     }
-  ],
-  "tags": ["myth"]
+  ]
 }

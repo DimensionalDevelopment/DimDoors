@@ -4,11 +4,13 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
+import net.minecraft.resources.RegistryFileCodec
 import net.minecraft.world.Container
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity
 import org.apache.logging.log4j.LogManager
 import org.dimdev.dimcore.api.MapCodecHasHolder
+import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.Weighted
 import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.api.util.mutableList
@@ -139,6 +141,7 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     companion object {
         private val LOGGER = LogManager.getLogger()
         val CODEC = PocketGenerators.codec
+        val HOLDER_CODEC: Codec<Holder<PocketGenerator<*>>> = RegistryFileCodec.create(ModRegistryKeys.POCKET_GENERATOR, CODEC)
 
         fun <T : PocketGenerator<T>> commonFields(instance: RecordCodecBuilder.Instance<T>) = instance.group(
             AbstractPocket.BUILDER_CODEC.optionalFieldOf("builder").nullableForGetter { it.builder },

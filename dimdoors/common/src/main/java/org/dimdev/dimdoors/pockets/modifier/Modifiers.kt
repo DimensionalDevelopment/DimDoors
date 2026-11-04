@@ -11,5 +11,6 @@ object Modifiers : PlatformRegistry.MapCodecPlatformRegistry<Modifier>(ModRegist
     val RIFT_DATA = create(RiftDataModifier.KEY) { RiftDataModifier.CODEC }
     val RELATIVE_REFERENCE = create(RelativeReferenceModifier.KEY) { RelativeReferenceModifier.CODEC }
     val OFFSET = create(OffsetModifier.KEY) { OffsetModifier.CODEC }
-    val TEMPLATE = create(TemplateModifier.KEY) { TemplateModifier.CODEC }
+    val GENERATOR = create("generator") { GeneratorModifier.CODEC }
+    val SELECTOR = create("selector") { SelectorModifier.CODEC }
 }

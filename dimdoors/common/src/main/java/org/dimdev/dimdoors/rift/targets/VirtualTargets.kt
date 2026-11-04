@@ -10,7 +10,8 @@ object VirtualTargets : MapCodecPlatformRegistry<VirtualTarget<*>>(ModRegistryKe
     val DUNGEON = create("dungeon") { DungeonTarget.CODEC }
     val DELVING = create("delving") { DelvingTarget.codec }
     val EXTENSION = create("extension") { ExtensionTarget.codec }
-    val TEMPLATE= create("template") { TemplateTarget.CODEC }
+    val SELECTOR= create("selector") { SelectorTarget.CODEC }
+    val GENERATOR = create("generator") { GeneratorTarget.CODEC }
     val ESCAPE = create("escape") { EscapeTarget.CODEC }
     val RIFT_REFERENCE = create("rift_reference") { RiftReference.CODEC }
     val TEMP = create("temp") { TempTarget.CODEC }

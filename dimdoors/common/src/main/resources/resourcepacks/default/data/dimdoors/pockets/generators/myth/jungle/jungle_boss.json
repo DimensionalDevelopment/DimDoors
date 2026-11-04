@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:lab/left_lab_hallway.schem",
+  "id": "dimdoors:myth/jungle/jungle_boss.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -9,11 +9,7 @@
       "type": "dimdoors:rift_data",
       "ids": [1],
       "rift_data": "dimdoors:pocket_entrance"
-    },
-    {
-      "type": "dimdoors:template",
-      "ids": [2],
-      "templateId": "dimdoors:lab/lab_01"
     }
-  ]
+  ],
+  "tags": ["myth"]
 }

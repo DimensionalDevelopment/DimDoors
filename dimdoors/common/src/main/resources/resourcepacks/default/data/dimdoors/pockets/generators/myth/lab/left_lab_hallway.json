@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dimdoors:lab/lab_01.schem",
+  "id": "dimdoors:myth/lab/left_lab_hallway.schem",
   "builder": {
     "type": "dimdoors:pocket"
   },
@@ -11,14 +11,9 @@
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
-      "type": "dimdoors:template",
+      "type": "dimdoors:generator",
       "ids": [2],
-      "templateId": "dimdoors:lab/lab_experimentation"
-    },
-    {
-      "type": "dimdoors:rift_data",
-      "ids": [0],
-      "rift_data": "dimdoors:default_dungeon"
+      "template": "dimdoors:myth/lab/lab_01"
     }
   ]
 }

@@ -1,19 +1,23 @@
 package org.dimdev.dimdoors.pockets.modifier
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.Holder
+import net.minecraft.core.Registry
+import net.minecraft.resources.ResourceKey
+import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
-import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.targets.TemplateTarget
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import java.util.stream.IntStream
+import java.util.stream.Stream
 
-data class TemplateModifier(val templateId: Holder<VirtualPocket>, val ids: MutableList<Int>) : Modifier {
-    override val type get() = Modifiers.TEMPLATE
+abstract class TemplateModifier<V, T: TemplateTarget<V, T>>(val ids: MutableList<Int>) : Modifier {
+    abstract val template: ResourceKey<V>
 
     override fun apply(parameters: PocketGenerationContext, manager: RiftManager) {
-        val template = TemplateTarget(templateId)
+        val template = createTarget(template)
 
         manager.foreachConsume { id, rift: Rift ->
             if (ids.contains(id)) {
@@ -25,20 +29,25 @@ data class TemplateModifier(val templateId: Holder<VirtualPocket>, val ids: Muta
         }
     }
 
+    abstract fun createTarget(key: ResourceKey<V>): T
+
     override fun apply(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>) {}
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
-                    VirtualPocket.HOLDER_CODEC.fieldOf("templateId").forGetter(TemplateModifier::templateId),
-                    Codec.INT_STREAM.xmap(
-                        { obj -> obj.boxed() },
-                         { integerStream -> integerStream.mapToInt { obj -> obj.toInt() } })
-                        .xmap(
-                            { obj -> obj.toList() },
-                            { obj -> obj.stream() }).fieldOf("ids")
-                        .forGetter(TemplateModifier::ids)
-                ).apply(
-                    instance, ::TemplateModifier)
+        val IDS_CODEC = Codec.INT_STREAM.xmap(
+            IntStream::boxed,
+            { integerStream -> integerStream.mapToInt(Int::toInt) })
+            .xmap(
+                Stream<Int>::toList,
+                MutableList<Int>::stream
+            ).fieldOf("ids")
+
+        fun <V : Any, T : TemplateTarget<V, T>, R: TemplateModifier<V, T>> codec(key: ResourceKey<Registry<V>>, function: (MutableList<Int>, ResourceKey<V>) -> R): MapCodec<R> =
+            RecordCodecBuilder.mapCodec { instance ->
+                instance.group(
+                    IDS_CODEC.forGetter { it.ids },
+                    Schemas.registryKey(key).fieldOf("template").forGetter { it.template }
+                ).apply(instance, function)
             }
 
         const val KEY: String = "template"
