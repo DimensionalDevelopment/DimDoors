@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceKey
+import net.minecraft.tags.TagKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.HolderWeightedList
@@ -18,8 +19,8 @@ import java.util.stream.Stream
 class TagReference(
     level: ResourceKey<Level>,
     weight: Equation,
-    private val required: List<String>,
-    private val blackList: List<String>,
+    private val required: List<TagKey<PocketGenerator<*>>>,
+    private val blackList: List<TagKey<PocketGenerator<*>>>,
     private val exact: Boolean
 ) : PocketGeneratorReference<TagReference>(level, weight) {
     private var pockets: HolderWeightedList<PocketGenerator<*>, PocketGenerationContext>? = null
@@ -48,8 +49,8 @@ class TagReference(
     companion object {
         val CODEC: MapCodec<TagReference> = RecordCodecBuilder.mapCodec { instance ->
             commonFields(instance)
-                .and(Codec.STRING.listOf().optionalFieldOf("required", listOf()).forGetter(TagReference::required))
-                .and(Codec.STRING.listOf().optionalFieldOf("blackList", listOf()).forGetter(TagReference::blackList))
+                .and(TagKey.codec(ModRegistryKeys.POCKET_GENERATOR).listOf().optionalFieldOf("required", listOf()).forGetter(TagReference::required))
+                .and(TagKey.codec(ModRegistryKeys.POCKET_GENERATOR).listOf().optionalFieldOf("blackList", listOf()).forGetter(TagReference::blackList))
                 .and(Codec.BOOL.optionalFieldOf("exact", false).forGetter(TagReference::exact))
                 .apply(instance, ::TagReference)
         }
@@ -57,7 +58,7 @@ class TagReference(
         const val KEY: String = "tag"
 
         @JvmStatic
-        fun getPocketsMatchingTags(references: Stream<Holder.Reference<PocketGenerator<*>>>, required: List<String>, blackList: List<String>, exact: Boolean): HolderWeightedList<PocketGenerator<*>, PocketGenerationContext> =
-            HolderWeightedList(references.filter { it.value().checkTags(required, blackList, exact) }.toList())
+        fun getPocketsMatchingTags(references: Stream<Holder.Reference<PocketGenerator<*>>>, required: List<TagKey<PocketGenerator<*>>>, blackList: List<TagKey<PocketGenerator<*>>>, exact: Boolean): HolderWeightedList<PocketGenerator<*>, PocketGenerationContext> =
+            HolderWeightedList(references.filter { ref -> required.all { ref.`is`(it) } && blackList.none { ref.`is`(it) } && (!exact || ref.tags().count() == required.size.toLong()) }.toList())
     }
 }

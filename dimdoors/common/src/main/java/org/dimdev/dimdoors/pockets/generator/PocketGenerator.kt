@@ -30,7 +30,6 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     protected val weight: Equation,
     protected val setupLoot: Boolean?,
     protected val modifiers: MutableList<Holder<Modifier>>,
-    protected val tags: MutableList<String>
 ) : Weighted<PocketGenerationContext>, PocketCreator, MapCodecHasHolder<PocketGenerator<*>> {
 
     abstract fun prepareAndPlacePocket(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>): Pocket<*, *>
@@ -108,22 +107,6 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         return RiftManager(pocket)
     }
 
-    // why would you want to check for exact tags, but still need a blackList? Good question, but there is probably some use case for it.
-    fun checkTags(required: List<String>?, blackList: List<String>?, exact: Boolean): Boolean {
-        if (exact && required!!.size != tags.size) return false
-        if (required != null) {
-            for (req in required) {
-                if (!tags.contains(req)) return false
-            }
-        }
-        if (blackList != null) {
-            for (black in blackList) {
-                if (tags.contains(black)) return false
-            }
-        }
-        return true
-    }
-
     fun pocketBuilder(parameters: PocketGenerationContext): Pocket.PocketBuilder<*, *> { // TODO: PocketBuilder from json
         if (builder == null) {
             return builder().expand(getSize(parameters))
@@ -148,7 +131,6 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
             Equation.CODEC.optionalFieldOf("weight", Equation.FIVE).forGetter { it.weight },
             Codec.BOOL.optionalFieldOf("setup_loot").nullableForGetter { it.setupLoot },
             Modifier.HOLDER_CODEC.mutableList().fieldOf("modifiers").forGetter { it.modifiers },
-            Codec.STRING.mutableList().optionalFieldOf("tags", mutableListOf()).forGetter { it.tags }
         )
     }
 }

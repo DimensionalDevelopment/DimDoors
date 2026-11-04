@@ -1,6 +1,6 @@
-[
-    {
-      "path": "dimdoors:dungeon/",
-      "type": "dimdoors:path"
-    }
-]
+{
+  "type": "dimdoors:tag",
+  "required": [
+    "dimdoors:dungeon"
+  ]
+}

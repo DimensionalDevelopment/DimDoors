@@ -1,5 +1,6 @@
 {
   "type": "dimdoors:schematic",
+  "weight": 2,
       "id": "dimdoors:classic/ruins/exit_ruins_with_hidden_door.schem",
   "builder": {
     "type": "dimdoors:pocket"

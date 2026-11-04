@@ -1,4 +1,4 @@
 {
   "type": "dimdoors:tag",
-  "required": ["nether"]
+  "required": ["dimdoors:nether"]
 }

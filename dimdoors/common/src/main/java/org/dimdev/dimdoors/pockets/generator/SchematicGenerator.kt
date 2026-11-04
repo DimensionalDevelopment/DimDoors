@@ -21,9 +21,8 @@ class SchematicGenerator(
     weight: Equation,
     setupLoot: Boolean?,
     modifiers: MutableList<Holder<Modifier>>,
-    tags: MutableList<String>,
     private val templateID: ResourceLocation
-) : PocketGenerator<SchematicGenerator>(builder, weight, setupLoot, modifiers, tags) {
+) : PocketGenerator<SchematicGenerator>(builder, weight, setupLoot, modifiers) {
 
     override fun prepareAndPlacePocket(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>): Pocket<*, *> {
         val world = parameters.world
@@ -47,8 +46,8 @@ class SchematicGenerator(
     companion object {
         val CODEC: MapCodec<SchematicGenerator> = RecordCodecBuilder.mapCodec { instance -> commonFields(instance)
             .and(ResourceLocation.CODEC.fieldOf("id").forGetter { it.templateID })
-            .apply(instance) { builder, weight, setupLoot, modifiers, tags, id ->
-                SchematicGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, tags, id)
+            .apply(instance) { builder, weight, setupLoot, modifiers, id ->
+                SchematicGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, id)
             }
         }
 

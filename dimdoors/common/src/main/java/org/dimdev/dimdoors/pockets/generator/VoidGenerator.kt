@@ -17,11 +17,10 @@ class VoidGenerator(
     weight: Equation,
     setupLoot: Boolean?,
     modifiers: MutableList<Holder<Modifier>>,
-    tags: MutableList<String>,
     private val height: Equation,
     private val width: Equation,
     private val length: Equation
-) : PocketGenerator<VoidGenerator>(builder, weight, setupLoot, modifiers, tags) {
+) : PocketGenerator<VoidGenerator>(builder, weight, setupLoot, modifiers) {
 
     override fun prepareAndPlacePocket(
         parameters: PocketGenerationContext,
@@ -54,8 +53,8 @@ class VoidGenerator(
                     .and(Equation.CODEC.fieldOf("height").forGetter(VoidGenerator::height))
                     .and(Equation.CODEC.fieldOf("width").forGetter(VoidGenerator::width))
                     .and(Equation.CODEC.fieldOf("length").forGetter(VoidGenerator::length))
-                    .apply(instance) { builder, weight, setupLoot, modifiers, tags, height, width, length ->
-                        VoidGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, tags, height, width, length)
+                    .apply(instance) { builder, weight, setupLoot, modifiers, height, width, length ->
+                        VoidGenerator(builder.getOrNull(), weight, setupLoot.getOrNull(), modifiers, height, width, length)
                     }
             }
 
