@@ -148,10 +148,6 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(2, "any nearby rifts.")
         }
 
-        addDoorAutoGen(ModBlocks.GOLD_DOOR, "Dimensional Gold Door") {
-            info(0, "Similar to a Dimensional Door")
-            info(1, "but shinier")
-        }
 
         addEntry(ModBlocks.DIALING_DOOR) {}
 
@@ -231,7 +227,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             info(3, "can not maintain.")
         }
 
-        addDoorAutoGen(Blocks.CRIMSON_DOOR, "Myth Door") {
+        addDoorAutoGen(Blocks.CRIMSON_DOOR, "Nether Door") {
             info(0, "Create a gateway to")
             info(1, "to an infernal dungeon.")
         }
@@ -239,6 +235,11 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         addDoorAutoGen(ModBlocks.DRIFTWOOD_DOOR, "Hub Door") {
             info(0, "Create a path way to a ")
             info(1, "shared universal space.")
+        }
+
+        add(ModItems.TAILORS_EYEPIECE, "Tailor's Eyepiece") {
+            info(0, "Wear to unveil")
+            info(1, "hidden things.")
         }
 
         addDisc(ModItems.CREEPY_RECORD, "Stevenrs11 - Creepy")

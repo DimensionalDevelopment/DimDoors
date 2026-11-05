@@ -211,6 +211,7 @@ object RenderUtils {
         poseStack: PoseStack,
         buffer: MultiBufferSource,
         font: Font,
+        color: Int,
         packedLight: Int
     ) {
         if (lines.isEmpty()) return
@@ -233,7 +234,7 @@ object RenderUtils {
                 line,
                 textX,
                 textY,
-                553648127,
+                color,
                 false,
                 matrix4f,
                 buffer,

@@ -12,13 +12,18 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.blockentity.ChestRenderer
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction
+import net.minecraft.client.resources.model.Material
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.inventory.InventoryMenu
 import net.minecraft.world.item.CrossbowItem
+import net.minecraft.world.item.DyeColor
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.FlowingFluid
 import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.phys.Vec3
@@ -62,6 +67,7 @@ import org.dimdev.dimdoors.world.DataValues
 import org.lwjgl.glfw.GLFW
 
 object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRendererProvider {
+    var eyePieceActive: Boolean = false
     var renderTick: Float = 0f
         private set
 
@@ -231,6 +237,23 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
     }
 
     override fun delayedInit() {
+        clientPlatform.onClientTick { eyePieceActive = Minecraft.getInstance().player?.getItemBySlot(EquipmentSlot.HEAD)?.`is`(ModItems.TAILORS_EYEPIECE) == true }
+
+        val wearingTailorsEyePiece = { eyePieceActive }
+
+        fun registerEyepieceAlt(block: Block) {
+            val resource = block.builtInRegistryHolder().key().location();
+            val baseMaterial = Material(InventoryMenu.BLOCK_ATLAS, resource.withPrefix("block/"))
+            val altTexture = resource.withPrefix("block/eyepiece_alternate/")
+
+            SpriteOverrides.register(baseMaterial, altTexture, wearingTailorsEyePiece)
+        }
+
+        DyeColor.entries.forEach {
+            ModBlocks.ancientFabricFromDye(it)?.run(::registerEyepieceAlt)
+            ModBlocks.fabricFromDye(it)?.run(::registerEyepieceAlt)
+        }
+
         EnvironmentAddonClient.init()
         initGeneratedDoorCutouts()
         clientPlatform.register(

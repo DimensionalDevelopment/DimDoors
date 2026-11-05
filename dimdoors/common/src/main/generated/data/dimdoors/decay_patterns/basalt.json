@@ -1,8 +1,8 @@
 {
   "type": "dimdoors:compound",
   "conditions": {
-    "type": "dimdoors:block",
-    "entry": "#dimdoors:decays_to/basalt"
+    "type": "dimdoors:fluid",
+    "entry": "minecraft:lava"
   },
   "result": {
     "type": "dimdoors:single_block",

@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
 
 object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSided()) {
+
     private val creativeTabs = CreativeTabPlatformRegistry(DimensionalDoors.getSided())
 
     val DIMENSIONAL_DOORS: CreativeTab = creativeTabs.create("dimensional_doors") {
@@ -119,6 +120,8 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val CLOD = registerDecay("clod")
     @JvmField val GARMENT_OF_REALITY_ARMOR: ArmorSet = registerArmorSet("garment_of_reality", ModArmorMaterials.GARMENT_OF_REALITY) { stacksTo(1) }
     @JvmField val WORLD_THREAD_ARMOR: ArmorSet = registerArmorSet("world_thread", ModArmorMaterials.WORLD_THREAD) { stacksTo(1) }
+
+    @JvmField val TAILORS_EYEPIECE = registerRegular("tailors_eyepiece", ::TailorsEyePieceItem)
 
     fun registerRegular(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Item = register(name, item, DIMENSIONAL_DOORS, block)
     fun registerDecay(name: String, item: (Item.Properties) -> Item = ::Item, block: Item.Properties.() -> Unit = {}): Item = register(name, item, DECAY, block)

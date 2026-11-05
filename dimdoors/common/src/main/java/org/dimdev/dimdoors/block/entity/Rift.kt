@@ -94,6 +94,9 @@ interface Rift<R: Rift<R>> : Target {
             this.setChanged()
         }
 
+    //Color used when showing text related to a rift with the Tailor's EyePiece
+    val textColor: Int get() = 0x20FFFFFF
+
     val target: Target
         get() {
             val data = this.data

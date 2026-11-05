@@ -18,6 +18,7 @@ import net.minecraft.core.*
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component.literal
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.network.chat.Style
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
@@ -351,4 +352,7 @@ object PocketCommand {
 
 private fun Holder<SoundEvent>.music(): Music = CodecUtils.createMusic(this)
 
-fun String.literal(): MutableComponent = literal(this)
+fun String.literal(style: Style? = null): MutableComponent {
+    val component = literal(this)
+    return if(style != null) component.withStyle(style) else component
+}

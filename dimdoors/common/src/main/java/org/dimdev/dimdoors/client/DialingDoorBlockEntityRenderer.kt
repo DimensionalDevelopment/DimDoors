@@ -6,9 +6,13 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import net.minecraft.world.level.block.DoorBlock
+import org.dimdev.dimdoors.api.Fonts
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer.renderDimensionalPortal
 import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
+import org.dimdev.dimdoors.command.literal
 
 class DialingDoorBlockEntityRenderer(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<DialingDoorBlockEntity> {
     override fun render(
@@ -43,29 +47,30 @@ class DialingDoorBlockEntityRenderer(private val context: BlockEntityRendererPro
 
         matrixStack.mulPose(Axis.YP.rotationDegrees(-front.toYRot()))
 
-
         val address = blockEntity.address
+
+        val style = Style.EMPTY.withFont(if(DimensionalDoorsClient.eyePieceActive) null else Fonts.QUILLITERATE)
 
         matrixStack.pushPose()
         matrixStack.translate(-1.5 * VOXEL_SIZE, 10.1 * VOXEL_SIZE, 0.0)
-        renderText(address.dial1.toInt().toString(), matrixStack, vertexConsumerProvider, light, font)
+        renderText(address.dial1.toInt().toString().literal(style), matrixStack, vertexConsumerProvider, light, font)
         matrixStack.popPose()
 
         matrixStack.pushPose()
         matrixStack.translate(-1.5 * VOXEL_SIZE, 3.7 * VOXEL_SIZE, 0.0)
-        renderText(address.dial2.toInt().toString(), matrixStack, vertexConsumerProvider, light, font)
+        renderText(address.dial2.toInt().toString().literal(style), matrixStack, vertexConsumerProvider, light, font)
         matrixStack.popPose()
 
         matrixStack.pushPose()
         matrixStack.translate(-1.5 * VOXEL_SIZE, -3.3 * VOXEL_SIZE, 0.0)
-        renderText(address.dial3.toInt().toString(), matrixStack, vertexConsumerProvider, light, font)
+        renderText(address.dial3.toInt().toString().literal(style), matrixStack, vertexConsumerProvider, light, font)
         matrixStack.popPose()
 
         matrixStack.popPose()
     }
 
     private fun renderText(
-        text: String,
+        text: Component,
         matrixStack: PoseStack,
         vertexConsumerProvider: MultiBufferSource,
         light: Int,

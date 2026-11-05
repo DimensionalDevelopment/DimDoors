@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
-import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.RGBA
@@ -39,64 +38,8 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
             )
         }
 
-//        if (this.shouldRenderDecayRadiusDebug()) {
-//            val renderType = RenderType.debugStructureQuads()
-//            this.renderDecayRadius(renderType, multiBufferSource.getBuffer(renderType), rift, matrices)
-//        }
-
-//        HALF.drawBox(matrices, multiBufferSource, 0.125, 0x8800ff00.toInt())
-//        HALF2.drawBox(matrices, multiBufferSource, 0.125, 0x8800ff00.toInt())
-//
-//        org.dimdev.dimcore.client.RenderUtils.drawLine(matrices, multiBufferSource, 0.125, 0xffffffff.toInt(), HALF, HALF2)
-
         this.renderCrack(multiBufferSource, matrices, rift)
     }
-
-    val HALF = Vec3(0.5, 0.5, 0.5)
-
-    val HALF2 = Vec3(0.5, 3.5, 0.5)
-
-//    private fun shouldRenderDecayRadiusDebug(): Boolean {
-//        val minecraft = Minecraft.getInstance()
-//        return minecraft.player != null && minecraft.player!!.getItemInHand(InteractionHand.MAIN_HAND).let { it.`is`(ModItems.RIFT_CONFIGURATION_TOOL) || it.`is`(ModItems.RIFT_MARKER) }
-//    }
-//
-//    private fun renderDecayRadius(
-//        renderType: RenderType,
-//        vc: VertexConsumer,
-//        rift: DetachedRiftBlockEntity,
-//        matrices: PoseStack
-//    ) {
-//        val radius = rift.decayRadius
-//        if (radius <= 0) {
-//            return
-//        }
-//
-//        var color = rift.color
-//        if (color == RGBA.NONE) {
-//            color = DEFAULT_COLOR
-//        }
-//
-//        val alpha: Float = DECAY_RADIUS_ALPHA * color.alpha
-//
-//        matrices.pushPose()
-//        matrices.translate(0.5f, 0.5f, 0.5f)
-//
-//        RenderUtils.renderSolidColorSphere(
-//            renderType,
-//            vc,
-//            matrices,
-//            (radius + 1).toFloat(),
-//            color.red,
-//            color.green,
-//            color.blue,
-//            alpha,
-//            DECAY_RADIUS_LATITUDE_SEGMENTS,
-//            DECAY_RADIUS_LONGITUDE_SEGMENTS
-//        )
-//
-//        matrices.popPose()
-//    }
 
     private fun renderCrack(vc: MultiBufferSource, matrices: PoseStack, rift: DetachedRiftBlockEntity) = matrices.pusPop {
         matrices.translate(0.5f, 0.5f, 0.5f)
@@ -139,9 +82,6 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
     companion object {
         val TESSERACT_PATH: ResourceLocation = DimensionalDoors.id("textures/other/tesseract.png")
         private val DEFAULT_COLOR = RGBA(1f, 0.5f, 1f, 1f)
-        private const val DECAY_RADIUS_ALPHA = 0.18f
-        private const val DECAY_RADIUS_LATITUDE_SEGMENTS = 12
-        private const val DECAY_RADIUS_LONGITUDE_SEGMENTS = 24
     }
 }
 
