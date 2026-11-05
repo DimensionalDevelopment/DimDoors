@@ -13,7 +13,7 @@ import java.util.*
 data class PocketInfo(val world: ResourceKey<Level>, val id: Int) {
     override fun toString() = "${world.location()}#$id"
 
-    val uuid: UUID get() = UUID(world.hashCode().toLong(), id.toLong())
+    val uuid: UUID get() = UUID(world.location().hashCode().toLong(), id.toLong())
 
     companion object {
         @JvmField

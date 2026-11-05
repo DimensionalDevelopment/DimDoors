@@ -40,6 +40,7 @@ object ModSoundEvents : PlatformRegistry<SoundEvent>(Registries.SOUND_EVENT, Bui
     val TESSELATING_WEAVE: SoundEvent = register("tesselating_weave")
     @JvmField
     val THEY_STARE_BACK: SoundEvent = register("they_stare_back")
+    val DIMINAL_WAIT: SoundEvent = register("diminalwait")
 
     private fun register(id: String): SoundEvent {
         return create(id) {

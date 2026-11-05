@@ -2,7 +2,13 @@
   "type": "dimdoors:schematic",
   "id": "dimdoors:dungeon/waiting_room.schem",
   "builder": {
-    "type": "dimdoors:pocket"
+    "type": "dimdoors:pocket",
+    "addons": [
+      {
+        "type": "dimdoors:music",
+        "music": "dimdoors:diminalwait"
+      }
+    ]
   },
   "modifiers": [
     {

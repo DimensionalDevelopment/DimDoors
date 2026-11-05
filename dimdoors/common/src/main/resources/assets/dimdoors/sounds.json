@@ -93,5 +93,10 @@
       "dimdoors:equip_thread_5",
       "dimdoors:equip_thread_6"
     ]
+  },
+  "diminalwait": {
+    "sounds": [
+      "dimdoors:diminalwait"
+    ]
   }
 }
