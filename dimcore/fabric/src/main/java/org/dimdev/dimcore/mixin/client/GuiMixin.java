@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import org.dimdev.dimcore.api.event.CameraOverlayEvents;
+import org.dimdev.dimcore.api.event.HudEvents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,5 +20,10 @@ public abstract class GuiMixin {
     @Inject(method = "renderCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
     private void renderHelmetOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         CameraOverlayEvents.OVERLAYS.invoker().invoke(guiGraphics, minecraft.player, deltaTracker);
+    }
+
+    @Inject(method = "renderEffects", at = @At("RETURN"))
+    private void renderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        HudEvents.RENDER.invoker().invoke(guiGraphics, minecraft.player, deltaTracker);
     }
 }

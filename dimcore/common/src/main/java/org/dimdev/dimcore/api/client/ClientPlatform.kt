@@ -19,8 +19,10 @@ abstract class ClientPlatform {
     abstract fun register(type: RenderType, vararg blocks: Block)
 
     abstract fun onClientPlayerJoin(listener: () -> Unit)
+    abstract fun onClientTick(listener: () -> Unit)
     abstract fun onDebugText(type: DebugTextType, listener: (MutableList<String>) -> Unit)
     abstract fun onFirstPersonOverlay(listener: (GuiGraphics, Player, DeltaTracker) -> Unit)
+    abstract fun onHudRender(listener: (GuiGraphics, Player, DeltaTracker) -> Unit)
     open fun fluidSprite(fluid: Fluid): TextureAtlasSprite = Minecraft.getInstance().blockRenderer.blockModelShaper.getParticleIcon(fluid.defaultFluidState().createLegacyBlock())
     open fun fluidTint(fluid: Fluid, level: BlockAndTintGetter?, pos: BlockPos?): Int = Minecraft.getInstance().blockColors.getColor(fluid.defaultFluidState().createLegacyBlock(), level, pos, 0)
 

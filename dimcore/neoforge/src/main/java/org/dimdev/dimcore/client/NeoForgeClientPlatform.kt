@@ -13,6 +13,7 @@ import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent
+import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions
@@ -25,6 +26,7 @@ class NeoForgeClientPlatform : ClientPlatform() {
     private val systemInfoProivders = mutableListOf<(MutableList<String>) -> Unit>()
     private val gameInfoProivders = mutableListOf<(MutableList<String>) -> Unit>()
     private val overlays = mutableListOf<(GuiGraphics, Player, DeltaTracker) -> Unit>()
+    private val hudRenderers = mutableListOf<(GuiGraphics, Player, DeltaTracker) -> Unit>()
 
     init {
 
@@ -39,8 +41,15 @@ class NeoForgeClientPlatform : ClientPlatform() {
         NeoForge.EVENT_BUS.addListener<RenderGuiLayerEvent.Post> { event ->
             val minecraft = Minecraft.getInstance()
             val player = minecraft.player ?: return@addListener
-            if (event.name != VanillaGuiLayers.CAMERA_OVERLAYS || !minecraft.options.cameraType.isFirstPerson || player.isScoping) return@addListener
+            if (event.name != VanillaGuiLayers.CAMERA_OVERLAYS || minecraft.options.hideGui || !minecraft.options.cameraType.isFirstPerson || player.isScoping) return@addListener
             overlays.forEach { it(event.guiGraphics, player, event.partialTick) }
+        }
+
+        NeoForge.EVENT_BUS.addListener<RenderGuiLayerEvent.Post> { event ->
+            val minecraft = Minecraft.getInstance()
+            val player = minecraft.player ?: return@addListener
+            if (event.name != VanillaGuiLayers.EFFECTS || minecraft.options.hideGui) return@addListener
+            hudRenderers.forEach { it(event.guiGraphics, player, event.partialTick) }
         }
     }
 
@@ -48,6 +57,10 @@ class NeoForgeClientPlatform : ClientPlatform() {
 
     override fun onClientPlayerJoin(listener: () -> Unit) {
         loginRunnables.add(listener)
+    }
+
+    override fun onClientTick(listener: () -> Unit) {
+        NeoForge.EVENT_BUS.addListener<ClientTickEvent.Post> { listener() }
     }
 
     override fun onDebugText(
@@ -62,6 +75,10 @@ class NeoForgeClientPlatform : ClientPlatform() {
 
     override fun onFirstPersonOverlay(listener: (GuiGraphics, Player, DeltaTracker) -> Unit) {
         overlays.add(listener)
+    }
+
+    override fun onHudRender(listener: (GuiGraphics, Player, DeltaTracker) -> Unit) {
+        hudRenderers.add(listener)
     }
 
     override fun fluidSprite(fluid: Fluid): TextureAtlasSprite = fluid.extensions.stillTexture.let { Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(it) }
