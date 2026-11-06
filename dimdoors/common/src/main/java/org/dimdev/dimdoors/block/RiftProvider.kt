@@ -9,10 +9,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.block.entity.RecordCodecUsingBlockEntity
 import org.dimdev.dimdoors.block.entity.Rift
 
-interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEntity where T : RecordCodecUsingBlockEntity<T>, T : Rift<T> {
+interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEntity where T : BlockEntity, T : Rift<T> {
     fun getRift(world: Level, pos: BlockPos, state: BlockState): T? {
         val rifPos = getRiftPos(world, pos, state)
 

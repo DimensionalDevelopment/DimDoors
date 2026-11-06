@@ -10,15 +10,17 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.server.TickTask
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.errata.schema.FieldNode
 import org.dimdev.dimcore.api.errata.schema.Presence
 import org.dimdev.dimcore.api.errata.schema.UntypedNode
+import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.rift.RiftConfigSubject.Companion.node
 import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator
 
-open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, pos: BlockPos, state: BlockState) : RecordCodecUsingBlockEntity<V>(type, pos, state), Rift<V> {
+open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), Rift<V>, RecordCodecProvider<V> {
     override var data: RiftData = RiftData()
     override var isStateDirty: Boolean = false
     override var isDeleteRift: Boolean = true
@@ -26,7 +28,7 @@ open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, 
 
     override fun loadAdditional(nbt: CompoundTag, provider: HolderLookup.Provider) {
         prepareTag(nbt)
-        super.loadAdditional(nbt, provider)
+        Serialize.nbt(provider, nbt, this.cast<V>()).also(::serialize)
     }
 
     protected open fun prepareTag(nbt: CompoundTag) {
@@ -55,6 +57,8 @@ open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, 
                 })
             }
     }
+
+    public override fun saveAdditional(nbt: CompoundTag, provider: HolderLookup.Provider) { Serialize.nbt(provider, nbt, this.cast<V>()).also(::serialize) }
 
     override fun <T> serialize(serialize: Serialize<T, V>) {
         serialize.put(RIFT_DATA_BUILDER)
