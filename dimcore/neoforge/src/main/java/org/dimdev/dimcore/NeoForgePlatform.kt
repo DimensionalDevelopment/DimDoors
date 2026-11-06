@@ -35,6 +35,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent
 import net.neoforged.neoforge.event.level.BlockEvent
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent
 import net.neoforged.neoforge.event.server.ServerStartedEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
 import net.neoforged.neoforge.event.server.ServerStoppedEvent
@@ -78,6 +79,8 @@ class NeoForgePlatform : Platform {
     override fun bucketAmount(): Long = 1000
 
     override val configRoot: Path get() = FMLPaths.CONFIGDIR.get()
+
+    override fun onServerAboutToStart(consumer: (MinecraftServer) -> Unit) = NeoForge.EVENT_BUS.addListener<ServerAboutToStartEvent> { event -> event.server.run(consumer) }
 
     override fun onServerStarting(consumer: (MinecraftServer) -> Unit) = NeoForge.EVENT_BUS.addListener<ServerStartingEvent> { event -> event.server.run(consumer) }
 

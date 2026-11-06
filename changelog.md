@@ -77,6 +77,8 @@
     - Swaps out the fabric and ancient fabric's texture to ones with lines and X respectively for better visibility.
     - Displays debug text formally tied to rift configuration tool including the Size of a rift and what id when it has one.
     - Makes a dialing door's runes show up as numbers vs quilliterate font.
+- Added the ability to migrate older worlds all the way to 1.20.1 to new formats.
+- Added new sound track Diminal Wait (by Ultrio from Discord) to the waiting_room dungeon pocket.
 - WIP:
     - Liminal Transmitter. Place it on a detached rift to send redstone signals through it.
     - Monolith editing. Right click a Monolith with a Monolith Spawner to open the editor.

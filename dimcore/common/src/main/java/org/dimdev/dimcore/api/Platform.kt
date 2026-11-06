@@ -28,6 +28,7 @@ interface Platform {
     fun bucketAmount(): Long
     val configRoot: Path
 
+    fun onServerAboutToStart(consumer: (MinecraftServer) -> Unit)
     fun onServerStarting(consumer: (MinecraftServer) -> Unit)
     fun onServerStarted(consumer: (MinecraftServer) -> Unit)
     fun onServerStopping(consumer: (MinecraftServer) -> Unit)

@@ -59,6 +59,8 @@ class FabricPlatform : Platform {
 
     override val configRoot: Path get() = FabricLoader.getInstance().configDir
 
+    override fun onServerAboutToStart(consumer: (MinecraftServer) -> Unit) = SERVER_STARTING.register { consumer(it) }
+
     override fun onServerStarting(consumer: (MinecraftServer) -> Unit) = SERVER_STARTING.register { consumer(it) }
 
     override fun onServerStarted(consumer: (MinecraftServer) -> Unit) = SERVER_STARTED.register { consumer(it) }

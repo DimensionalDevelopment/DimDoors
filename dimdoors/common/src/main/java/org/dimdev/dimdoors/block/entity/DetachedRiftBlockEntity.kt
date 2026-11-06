@@ -114,12 +114,9 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     override fun prepareTag(nbt: CompoundTag) {
         super.prepareTag(nbt)
-        if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC.toInt()) || nbt.contains(
-                "stablized",
-                Tag.TAG_ANY_NUMERIC.toInt()
-            )
-        ) {
-            var weight = nbt.getInt("weight")
+
+        if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC.toInt()) || nbt.contains("stablized", Tag.TAG_ANY_NUMERIC.toInt())) {
+            var weight = 5
 
             if (nbt.getBoolean("stablized")) weight = 0
             if (nbt.getBoolean("closing")) weight = -100

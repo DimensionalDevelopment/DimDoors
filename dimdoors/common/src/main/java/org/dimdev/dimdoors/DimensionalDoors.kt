@@ -278,9 +278,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         private fun registerListeners() {
 //        sided.onPlayerQuit(player -> PocketCommand.logSetting.remove(player.getUUID()));
 
-            platform.onServerStarted { server ->
-//                LegacyDimensionalRegistryMigrator.migrateIfNeeded(server)
-            }
+            platform.onServerAboutToStart(LegacyDimensionalRegistryMigrator::migrateIfNeeded)
 
             platform.onAttackBlock(AttackBlockCallbackListener())
             platform.onAttackBlock(PocketAttackBlockCallbackListener())
