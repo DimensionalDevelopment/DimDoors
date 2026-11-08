@@ -117,7 +117,7 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     public override fun canBeReplaced(blockState: BlockState, blockPlaceContext: BlockPlaceContext) = super.canBeReplaced(blockState, blockPlaceContext) || blockState.block === ModBlocks.DETACHED_RIFT
 
-    public override fun getDrops(state: BlockState, params: LootParams.Builder): List<ItemStack> = getEffectiveBlockState(state).getDrops(params)
+    public override fun getDrops(state: BlockState, params: LootParams.Builder): List<ItemStack> = getVisualBlockState(state).getDrops(params)
 
     public override fun getInteractionShape(
         blockState: BlockState,
@@ -128,9 +128,7 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
     override fun transformation(state: BlockState, pos: BlockPos): Matrix4dc = Matrix4d().inverseTranslateLocal(pos.above().center)
 
     override fun rotator(state: BlockState, pos: BlockPos): Matrix4dc = Matrix4d().inverseRotateLocal(state.horizontalFacing!!.eulerAngle)
-
-    fun getEffectiveBlockState(state: BlockState) = state
-
+    
     override fun <R : BlockEntity> getTicker(
         level: Level,
         state: BlockState,
