@@ -17,11 +17,10 @@ import org.dimdev.dimcore.api.errata.schema.FieldNode
 import org.dimdev.dimcore.api.errata.schema.Presence
 import org.dimdev.dimcore.api.errata.schema.UntypedNode
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimdoors.rift.RiftConfigSubject.Companion.node
-import org.dimdev.dimdoors.block.entity.RiftData
-import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.rift.RiftConfigSubject.Companion.node
+import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator
 
 abstract class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), BlockEntityRift<V>, RecordCodecProvider<V> {
     var riftData: RiftData = RiftData(); private set
@@ -38,7 +37,7 @@ abstract class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out 
 
     override fun loadAdditional(nbt: CompoundTag, provider: HolderLookup.Provider) {
         prepareTag(nbt)
-        Serialize.nbt(provider, nbt, this.cast<V>()).also(::serialize)
+        Deserialize.nbt(provider, nbt).also(::deserialize)
     }
 
     protected open fun prepareTag(nbt: CompoundTag) {
