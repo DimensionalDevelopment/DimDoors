@@ -9,10 +9,13 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.HubRegistry
-import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.world.pocket.type.HubPocket
+import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.rift.registry.HubRegistry
+import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import java.util.*
 
 object HubPocketTarget : VirtualTarget<HubPocketTarget>(), PlayerTrackingEntranceTarget<HubRegistry.HubKey, HubPocket, HubRegistry> {
@@ -29,7 +32,7 @@ object HubPocketTarget : VirtualTarget<HubPocketTarget>(), PlayerTrackingEntranc
     ): Boolean {
         val received = target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, null)
         if (received) {
-            subsystem.setRift(uuid, PlayerTrackerPointer.Variant.Exit, owner)
+            subsystem.setRift(uuid, PlayerTrackingSubSystem.Variant.Exit, owner)
         }
         return received
     }

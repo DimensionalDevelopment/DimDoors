@@ -19,8 +19,9 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.world.ModStructuresPieces
 
 class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
@@ -122,9 +123,9 @@ class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
         // Place the transient door
         placeBlock(level, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState(), 3, 3, 3, box)
         level.getBlockEntity(getWorldPos(3, 3, 3), ModBlockEntityTypes.ENTRANCE_RIFT).ifPresent { rift ->
-            rift.data.destination = DefaultDungeonDestinations.getGateway(PocketGenerationHelper.NETHER_DUNGEONS)
+            rift.data().destination = DefaultDungeonDestinations.getGateway(PocketGenerationHelper.NETHER_DUNGEONS)
             LinkPropertiesRegistry.instance.setProperties(
-                RiftRegistry.instance.getRiftOrPlaceholder(
+                LocationRiftRegistry.instance.getRiftOrPlaceholder(
                     Location.ofWorld(
                         level.level,
                         rift.blockPos

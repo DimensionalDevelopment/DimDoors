@@ -24,6 +24,11 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
+import org.dimdev.dimdoors.rift.targets.VirtualTarget
+import org.dimdev.dimdoors.api.util.Weighted
+import org.dimdev.dimdoors.api.util.mutableList
+import org.dimdev.dimdoors.api.util.nullableForGetter
+import java.util.*
 
 abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     protected val builder: AbstractPocket.AbstractPocketBuilder<*, *>?,
@@ -92,11 +97,13 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
             }
 
         manager.rifts.forEach { rift ->
-            val destination = rift.data.destination
+            val destination = rift.data().destination
             if (destination === VirtualTarget.NoneTarget) {
+                val pos = rift.self().blockPos
+
                 LOGGER.warn(
                     "Pocket {} in {}: rift at {} (relative {}) has no destination. Its schematic block entity is missing rift data, or no modifier assigned it an id.",
-                    pocket.id, world.dimension().location(), rift.riftBlockPos.toShortString(), rift.riftBlockPos.subtract(pocket.origin).toShortString()
+                    pocket.id, world.dimension().location(), pos.toShortString(), pos.subtract(pocket.origin).toShortString()
                 )
             }
         }

@@ -7,7 +7,7 @@ import net.minecraft.world.level.biome.Biome
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 
 data class BiomeCondition(val biome: ResourceKey<Biome>) : Condition {
-    override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean = rift.riftLevel.getBiome(rift.blockPos).`is`(biome)
+    override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean = rift.level?.getBiome(rift.blockPos)?.`is`(biome) == true
 
     override val type get() = Conditions.BIOME
 

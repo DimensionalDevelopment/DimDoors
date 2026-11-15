@@ -5,21 +5,24 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import org.dimdev.dimdoors.api.util.nullableForGetter
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.rift.targets.VirtualTarget
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 
 class RiftDataModifier(private val doorData: Holder<RiftData>?, private val ids: MutableList<Int>) : Modifier {
     override val type get() = Modifiers.RIFT_DATA
 
     override fun apply(parameters: PocketGenerationContext, manager: RiftManager) {
-        val riftConsumer: (Rift<*>) -> Unit = if (doorData == null) {
+        val riftConsumer: (BlockEntityRift<*>) -> Unit = if (doorData == null) {
             { rift -> rift.setDestination(VirtualTarget.NoneTarget) }
         } else {
-            { rift -> rift.data = doorData.value().copy() }
+            { rift -> rift.setRiftData(doorData.value().copy()) }
         }
 
         manager.foreachConsume { id, rift ->

@@ -28,18 +28,18 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations
+import org.dimdev.dimdoors.rift.Rift
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.targets.EscapeTarget
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.util.LevelSpaceHelper
-import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import org.dimdev.dimdoors.world.ModDimensions.isLimboDimension
 import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
 import org.joml.Matrix4d
 
-open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected constructor(
+abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected constructor(
     type: BlockEntityType<T>,
     pos: BlockPos,
     state: BlockState
@@ -73,9 +73,9 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
     }
 
     fun teleport(entity: Entity): Boolean {
-        val status: Boolean = attemptTeleport(entity, this)
+        val status: Boolean = attemptTeleport(entity, this, providedLocation)
 
-        if (this.isStateDirty && !this.data.alwaysDelete) this.setChanged()
+        if (this.isStateDirty && !this.riftData.alwaysDelete) this.setChanged()
 
         return status
     }
@@ -114,12 +114,12 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
             return state.block.castOrNull<RiftProvider<*>>()?.isTall(state) ?: false
         }
 
-    fun setPortalDestination(world: ServerLevel) {
-        if (isLimboDimension(world)) {
-            this.setDestination(ESCAPE_TARGET)
+    fun setPortalDestination(location: Location) {
+        if (isLimboDimension(location.worldId)) {
+            this.setDestination(location, ESCAPE_TARGET)
         } else {
-            this.setDestination(DefaultDungeonDestinations.gateway)
-            this.properties = DefaultDungeonDestinations.POCKET_LINK_PROPERTIES
+            this.setDestination(location, DefaultDungeonDestinations.gateway)
+            this.setProperties(location, DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)
         }
     }
 
@@ -134,7 +134,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
     }
 
     fun hasTraversed(level: Level?, previousPosition: Vec3, currentPosition: Vec3): Boolean {
-        return plane == null || !plane!!.isTraversed(level, previousPosition, currentPosition)
+        return plane == null || plane?.isTraversed(previousPosition, currentPosition) != true
     }
 
     override fun detach() {
@@ -145,15 +145,17 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
             worldPosition,
             ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged)
         )
-        level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { a -> a.data = this.data }
+        level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { a -> a.setRiftData(this.riftData) }
     }
 
-    class Impl(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<Impl>(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state)
+    class Impl(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<Impl>(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state) {
+        override val name: String = "Entrance Rift"
+    }
 
     companion object {
         private val ESCAPE_TARGET = EscapeTarget(true)
         @JvmStatic
-        fun attemptTeleport(entity: Entity, rift: Rift<*>): Boolean {
+         fun <H: LocationProvider> attemptTeleport(entity: Entity, rift: Rift<*, H, *>, holder: H): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport
@@ -162,15 +164,16 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                 var relativeAngle = Rotations(entity.xRot, entity.yRot, 0f)
                 var relativeVelocity = entity.deltaMovement
 
-                val target = rift.target
+                val target = rift.target(holder)
                 val location = target.castOrNull<LocationProvider>()?.providedLocation
+                val loc = holder.providedLocation!!
 
-                val state = rift.riftLevel.getBlockState(rift.riftBlockPos)
+                val state = loc.blockState
                 val block = state.block
 
                 if (block is CoordinateTransformerBlock) {
-                    val blockPos = rift.riftBlockPos
-                    val sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(rift.riftLevel as ServerLevel, blockPos, entity, entity.position(), relativeAngle, relativeVelocity)
+                    val blockPos = loc.blockPos
+                    val sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(loc.world, blockPos, entity, entity.position(), relativeAngle, relativeVelocity)
                     val transformationBuilder = block.transformation(state, blockPos)
                     val rotatorBuilder = block.rotator(state, blockPos)
                     relativePos = block.transformTo(transformationBuilder, sourceFrame.pos)
@@ -178,7 +181,7 @@ open class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected con
                     relativeVelocity = block.rotateTo(rotatorBuilder, sourceFrame.velocity)
                 }
 
-                val owner = rift.location.riftOrPlaceholder().rift()
+                val owner = rift.vertex(holder)
                 val entityTarget = target.`as`(Targets.ENTITY, owner)
                 if (entityTarget!!.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, location)) {
                     val vLoc = fromLocation(ofWorld(entity.level() as ServerLevel, entity.blockPosition()))

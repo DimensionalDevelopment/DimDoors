@@ -7,8 +7,8 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext
 
 class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem(block, properties), DetachRiftInteracting {
@@ -29,7 +29,7 @@ class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem
 
         val result = super.place(context)
         if (result == InteractionResult.SUCCESS || result == InteractionResult.CONSUME) {
-            context.level.getBlockEntity(context.clickedPos)?.castOrNull<Rift<*>>()?.also { rift ->
+            context.level.getBlockEntity(context.clickedPos)?.castOrNull<BlockEntityRift<*>>()?.also { rift ->
                 rift.copyFrom(detachedRiftBlockEntity)
                 rift.updateType()
             }

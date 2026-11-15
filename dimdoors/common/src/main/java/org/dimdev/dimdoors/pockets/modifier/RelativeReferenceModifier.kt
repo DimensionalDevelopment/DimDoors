@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.util.StringRepresentable
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.type.Pocket
@@ -13,8 +13,8 @@ data class RelativeReferenceModifier(val point_a: Int, val point_b: Int, val con
     override val type get() = Modifiers.RELATIVE_REFERENCE
 
     override fun apply(parameters: PocketGenerationContext, manager: RiftManager) {
-        val riftA = manager[point_a]?.location ?: return
-        val riftB = manager[point_b]?.location ?: return
+        val riftA = manager[point_a]?.location() ?: return
+        val riftB = manager[point_b]?.location() ?: return
 
         val link1 = riftB.asTarget()
         val link2 = riftA.asTarget()
@@ -34,7 +34,7 @@ data class RelativeReferenceModifier(val point_a: Int, val point_b: Int, val con
             .toString()
     }
 
-    private fun addLink(rift: Rift<*>, link: VirtualTarget<*>): Boolean {
+    private fun addLink(rift: BlockEntityRift<*>, link: VirtualTarget<*>): Boolean {
         rift.setDestination(link)
         return true
     }

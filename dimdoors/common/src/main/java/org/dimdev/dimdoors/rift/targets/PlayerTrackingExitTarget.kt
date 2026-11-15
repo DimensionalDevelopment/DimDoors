@@ -9,7 +9,6 @@ import org.dimdev.dimcore.api.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
@@ -29,7 +28,7 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
 
         val registry = this.subsystem
 
-        val destLoc = registry.getLocation(uuid, PlayerTrackerPointer.Variant.Exit)
+        val destLoc = registry.getLocation(uuid, PlayerTrackingSubSystem.Variant.Exit)
         val pocket: Pocket<*, *>? = registry.getPocketFromPlayer(uuid)
 
         val location = owner.providedLocation!!
@@ -40,7 +39,7 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
             if (pocket == currentPocket) {
                 registry.setRift(
                     uuid,
-                    PlayerTrackerPointer.Variant.Entrance,
+                    PlayerTrackingSubSystem.Variant.Entrance,
                     owner.id
                 )
             }

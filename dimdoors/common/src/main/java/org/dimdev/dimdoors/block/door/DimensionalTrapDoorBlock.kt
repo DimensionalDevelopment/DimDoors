@@ -45,6 +45,11 @@ import org.dimdev.dimdoors.block.TraversableRiftBlock
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofTrapdoor
+import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.api.util.math.eulerAngle
+import org.dimdev.dimdoors.api.util.horizontalFacing
+import org.dimdev.dimdoors.api.util.math.inverseRotateLocal
+import org.dimdev.dimdoors.api.util.math.inverseTranslateLocal
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
@@ -143,8 +148,8 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState) = getRift(world, pos, state)
 
-    override fun revertToBaseVariant(world: ServerLevel, pos: BlockPos, state: BlockState) {
-        world.setBlock(pos, getVisualBlockState(state), UPDATE_CLIENTS or UPDATE_KNOWN_SHAPE)
+    override fun revertToBaseVariant(location: Location) {
+        location.world.setBlock(location.blockPos, getVisualBlockState(location.blockState), UPDATE_CLIENTS or UPDATE_KNOWN_SHAPE)
     }
 
     override fun closeRift(level: Level, pos: BlockPos, state: BlockState) {

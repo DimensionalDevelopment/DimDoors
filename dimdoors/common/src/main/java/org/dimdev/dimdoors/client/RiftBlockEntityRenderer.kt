@@ -8,10 +8,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.block.entity.BlockEntity
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.client.DimensionalDoorsClient
 import org.dimdev.dimdoors.client.RenderUtils.renderTextLines
 
-abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : Rift<T> {
+abstract class RiftBlockEntityRenderer<T>(private val context: BlockEntityRendererProvider.Context) : BlockEntityRenderer<T> where T : BlockEntity, T : BlockEntityRift<T> {
 
 
     override fun render(rift: T, tickDelta: Float, matrices: PoseStack, multiBufferSource: MultiBufferSource, breakingProgress: Int, alpha: Int) {

@@ -9,7 +9,7 @@ import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
+import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
@@ -60,7 +60,7 @@ object PrivatePocketTarget : VirtualTarget<PrivatePocketTarget>(), PlayerTrackin
         } else {
             val received = target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, null)
             if (received) {
-                PrivateRegistry.instance.setRift(uuid, PlayerTrackerPointer.Variant.Exit, owner)
+                PrivateRegistry.instance.setRift(uuid, PlayerTrackingSubSystem.Variant.Exit, owner)
             }
             return received
         }

@@ -23,8 +23,8 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.targets.LocationProvider
@@ -124,19 +124,19 @@ class LiminalTransmitterBlock(properties: Properties) : WaterLoggableBlockWithEn
 
         val SHAPE = Shapes.create(0.0, 0.0, 0.0, 1.0, 2.0/16.0, 1.0) + Shapes.create(2.0/16.0, 2.0/16.0, 2.0/16.0, 14.0/16.0, 4.0/16.0, 14.0/16.0)
 
-        fun attemptRedstoneTransmission(owner: Vertex, strength: Int, rift: Rift<*>): Boolean {
+        fun attemptRedstoneTransmission(owner: Vertex, strength: Int, rift: BlockEntityRift<*>): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport
             try {
-                val target = rift.target
+                val target = rift.target(rift.providedLocation)
                 val location = target.castOrNull<LocationProvider>()?.providedLocation
 
                 val redstone = target.`as`(Targets.REDSTONE, owner)
 
                 return redstone?.recieveSignal(strength, location) ?: false
             } catch (e: Exception) {
-                DimensionalDoors.LOGGER.error("Redstone transmission from {} failed", rift.riftBlockPos, e)
+                DimensionalDoors.LOGGER.error("Redstone transmission from {} failed", rift.self().blockPos, e)
                 return false
             }
 

@@ -4,9 +4,12 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.SubSystem
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.builder.GraphTypeBuilder
@@ -41,11 +44,11 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
         setDirty()
     }
 
-    fun removeVertex(id: UUID, location: Location? = null): Boolean {
+    fun removeVertex(id: UUID): Boolean {
         val removed = Vertex(id, vertices[id] ?: return false)
 
-        sources(id).forEach { vertices[it]?.targetGone(it, removed, location) }
-        targets(id).forEach { vertices[it]?.sourceGone(it, removed, location) }
+        sources(id).forEach { vertices[it]?.targetGone(it, removed) }
+        targets(id).forEach { vertices[it]?.sourceGone(it, removed) }
 
         vertices.remove(id)
         graph.removeVertex(id)
@@ -70,8 +73,8 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
         setDirty()
         val sourceType = vertices[source] ?: return true
         val targetType = vertices[target] ?: return true
-        sourceType.targetGone(source, Vertex(target, targetType), null)
-        targetType.sourceGone(target, Vertex(source, sourceType), null)
+        sourceType.targetGone(source, Vertex(target, targetType))
+        targetType.sourceGone(target, Vertex(source, sourceType))
         return true
     }
 
@@ -94,7 +97,7 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
         return graph.incomingEdgesOf(id).mapTo(linkedSetOf(), graph::getEdgeSource)
     }
 
-    private fun moved(id: UUID) {
+    fun moved(id: UUID) {
         val moved = Vertex(id, vertices[id] ?: return)
 
         sources(id).forEach { vertices[it]?.targetMoved(it, moved) }
@@ -115,17 +118,13 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
         fun getInstance(): RiftGraph = getInstance(SubsystemTypes.GRAPH)!!
 
         fun registerEvents() {
-            RiftRegistry.RiftEvents.PLACEHOLDER_ADDED.register { id, _ -> getInstance().addVertex(id, RegistryVertices.RIFT_PLACEHOLDER) }
-            RiftRegistry.RiftEvents.RIFT_ADDED.register { id, _ ->
-                getInstance().addVertex(id, RegistryVertices.RIFT)
-                getInstance().changed(id)
-            }
-            RiftRegistry.RiftEvents.RIFT_REMOVED.register { id, location -> getInstance().removeVertex(id, location) }
-            RiftRegistry.RiftEvents.RIFT_MOVED.register { id, _, _ -> getInstance().moved(id) }
+            val graph = getInstance()
+
+            LocationRiftRegistry.EVENTS.registerEvents(graph)
             PocketRegistry.PocketEvents.ADDED_POCKET_ENTRANCE.register { id, location ->
                 getInstance().addVertex(id, RegistryVertices.ENTRANCE)
 
-                val rift = RiftRegistry.instance.getRift(location)
+                val rift = LocationRiftRegistry.instance.getRift(location)
                 getInstance().addEdge(id, rift)
             }
         }

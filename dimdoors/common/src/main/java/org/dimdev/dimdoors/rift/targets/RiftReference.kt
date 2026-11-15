@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.api.rift.target.TargetResolver
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.rift.VertexReferenceSource
@@ -29,9 +28,7 @@ class RiftReference(private val target: Vertex) : VirtualTarget<RiftReference>()
     override val providedLocation: Location?
         get() = target.providedLocation
 
-    override fun receiveOther(owner: Vertex): Target? {
-        return TargetResolver.target(this.target.providedLocation)
-    }
+    override fun receiveOther(owner: Vertex): Target? = target.type.getTarget(target.id)
 
     override fun register(owner: Vertex) {
         RiftGraph.getInstance().addEdge(owner.id, this.target.id)
@@ -41,7 +38,7 @@ class RiftReference(private val target: Vertex) : VirtualTarget<RiftReference>()
         RiftGraph.getInstance().removeEdge(owner.id, this.target.id)
     }
 
-    override fun shouldInvalidate(riftDeleted: Location): Boolean = target.providedLocation == null
+    override fun shouldInvalidate(): Boolean = target.providedLocation == null
 
     override fun getColor(owner: Vertex): RGBA {
         val graph = RiftGraph.getInstance()

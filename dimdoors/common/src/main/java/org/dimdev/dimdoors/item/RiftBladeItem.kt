@@ -20,8 +20,8 @@ import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.atan2
 
@@ -51,7 +51,7 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings), Det
                 context.clickedFace.opposite
             )
         )
-        level.getBlockEntity(pos)?.castOrNull<Rift<*>>()?.copyFrom(rift)
+        level.getBlockEntity(pos)?.castOrNull<BlockEntityRift<*>>()?.copyFrom(rift)
         context.itemInHand.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer) {}
         return InteractionResult.SUCCESS
     }

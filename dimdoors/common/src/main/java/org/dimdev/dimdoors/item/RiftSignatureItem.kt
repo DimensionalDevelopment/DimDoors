@@ -20,8 +20,8 @@ import org.dimdev.dimdoors.ModGameRules
 import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftVariantProvider
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.world.ModDimensions
@@ -161,7 +161,7 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         fun getSource(itemStack: ItemStack) = itemStack.get(ModDataComponentTypes.DESTINATION)
 
-        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): Rift<*>? {
+        fun getOrCreateRift(world: ServerLevel, pos: BlockPos): BlockEntityRift<*>? {
             var pos = pos
 
             pos = normalizeRiftProviderPos(world, pos)

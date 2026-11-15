@@ -16,7 +16,9 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimcore.api.ext.castOrNull
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
@@ -41,6 +43,8 @@ open class Location(val worldId: ResourceKey<Level>, val blockPos: BlockPos) : L
     val blockEntity: BlockEntity?
         get() = this.world.getBlockEntity(this.blockPos)
 
+    val rift: BlockEntityRift<*>? get() = blockEntity?.castOrNull<BlockEntityRift<*>>()
+
     val biome: Holder<Biome>
         get() = this.world.getBiome(this.blockPos)
 
@@ -57,7 +61,7 @@ open class Location(val worldId: ResourceKey<Level>, val blockPos: BlockPos) : L
     val world: ServerLevel get() { return server.getLevel(this.worldId)!! }
 
     fun asTarget(): VirtualTarget<*> = riftOrPlaceholder().rift().let(::RiftReference)
-    fun riftOrPlaceholder(): UUID = RiftRegistry.instance.getRiftOrPlaceholder(this)
+    fun riftOrPlaceholder(): UUID = LocationRiftRegistry.instance.getRiftOrPlaceholder(this)
 
     companion object {
         @JvmField

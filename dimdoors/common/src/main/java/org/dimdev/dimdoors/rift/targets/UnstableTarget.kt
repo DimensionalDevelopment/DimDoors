@@ -8,8 +8,9 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.world.ModDimensions
 
 object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {
@@ -29,7 +30,7 @@ object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {
     ): Boolean {
         val location = owner.providedLocation
 
-        val candidates = RiftRegistry.instance.rifts
+        val candidates = LocationRiftRegistry.instance.rifts
             .map { it.value }
             .filter { !ModDimensions.isPocketDimension(it.worldId) && it != location }
 

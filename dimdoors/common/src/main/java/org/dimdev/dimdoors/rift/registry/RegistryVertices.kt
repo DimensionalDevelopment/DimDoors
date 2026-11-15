@@ -3,16 +3,15 @@ package org.dimdev.dimdoors.rift.registry
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
+import org.dimdev.dimdoors.rift.registry.RiftPlaceholder
+import org.dimdev.dimdoors.rift.block.LocationRift
+import org.dimdev.dimdoors.rift.registry.DungeonVertex
+import org.dimdev.dimdoors.rift.registry.PocketEntrancePointer
 
 object RegistryVertices : PlatformRegistry<RegistryVertex>(ModRegistryKeys.REGISTRY_VERTEX_TYPE, DimensionalDoors.getSided()) {
-    val PRIVATE_ENTRANCE = create("private_entrance") { PlayerTrackerPointer.create(SubsystemTypes.PRIVATE, PlayerTrackerPointer.Variant.Entrance) }
-    val PRIVATE_EXIT = create("private_exit") { PlayerTrackerPointer.create(SubsystemTypes.PRIVATE, PlayerTrackerPointer.Variant.Exit) }
-    val DIALING_ENTRANCE = create("dialing_entrance") { PlayerTrackerPointer.create(SubsystemTypes.DIALING, PlayerTrackerPointer.Variant.Entrance) }
-    val DIALING_EXIT = create("dialing_exit") { PlayerTrackerPointer.create(SubsystemTypes.DIALING, PlayerTrackerPointer.Variant.Exit) }
-    val RIFT = create("rift") { Rift }
     val ENTRANCE = create("entrance") { PocketEntrancePointer }
-    val RIFT_PLACEHOLDER = create("rift_placeholder") { RiftPlaceholder }
     val DUNGEON = create("dungeon") { DungeonVertex }
-    val HUB_ENTRANCE = create("hub_entrance") { PlayerTrackerPointer.create(SubsystemTypes.HUB, PlayerTrackerPointer.Variant.Entrance) }
-    val HUB_EXIT = create("hub_exit") { PlayerTrackerPointer.create(SubsystemTypes.HUB, PlayerTrackerPointer.Variant.Exit) }
+
+    val RIFT_PLACEHOLDER = create("rift_placeholder") { RiftPlaceholder }
+    val LOCATION_RIFT = create("location_rift") { LocationRift }
 }

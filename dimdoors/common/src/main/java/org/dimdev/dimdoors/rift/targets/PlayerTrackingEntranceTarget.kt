@@ -11,7 +11,6 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.rift.registry.Vertex
@@ -112,8 +111,8 @@ interface PlayerTrackingEntranceTarget<O, P : Pocket<*, *>, S : PlayerTrackingSu
 
             val registry = this.subsystem
 
-            registry.setRift(playerId, PlayerTrackerPointer.Variant.Entrance, null as? UUID)
-            registry.setRift(playerId, PlayerTrackerPointer.Variant.Exit, null as? UUID)
+            registry.setRift(playerId, PlayerTrackingSubSystem.Variant.Entrance, null as? UUID)
+            registry.setRift(playerId, PlayerTrackingSubSystem.Variant.Exit, null as? UUID)
 
             registry.setNewPocket(playerId, key, pocket)
 

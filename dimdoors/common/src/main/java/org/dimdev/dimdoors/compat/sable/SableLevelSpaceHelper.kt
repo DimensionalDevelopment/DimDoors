@@ -22,10 +22,11 @@ import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.math.inverse
 import org.dimdev.dimdoors.api.util.math.transform
 import org.dimdev.dimdoors.rift.registry.LevelSpaceRegistry
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.LevelSpaceHelper
+import org.dimdev.dimdoors.api.util.Location
 import org.joml.Matrix4d
 import java.util.*
 
@@ -125,11 +126,11 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
     private fun ensureLoaded(level: ServerLevel, pos: BlockPos) {
         if (!isUnavailableNow(level, pos)) return
         val id = riftNear(level, pos) ?: return
-        RiftRegistry.instance.locationOf(id)?.let { SableSubLevels.resolve(level, id, it) }
+        LocationRiftRegistry.instance.locationOf(id)?.let { SableSubLevels.resolve(level, id, it) }
     }
 
     private fun riftNear(level: ServerLevel, pos: BlockPos): UUID? {
-        val registry = RiftRegistry.instance
+        val registry = LocationRiftRegistry.instance
         return BlockPosUtil.nearbyVertical(pos) { candidate ->
             Location.ofWorld(level, candidate).takeIf(registry::isRiftAt)?.let(registry::getRift)
         }
@@ -137,7 +138,7 @@ object SableLevelSpaceHelper : LevelSpaceHelper() {
 
     private fun trackRiftsIn(level: ServerLevel, subLevel: SubLevel) {
         if (!level.server.isReady) return
-        val registry = SubSystem.getInstance(level.server, SubsystemTypes.RIFT) ?: return
+        val registry = SubSystem.getInstance(level.server, SubsystemTypes.LOCATION_RIFT) ?: return
         val spaces = SubSystem.getInstance(level.server, SubsystemTypes.LEVEL_SPACE) ?: return
 
         for ((id, location) in registry.rifts) {

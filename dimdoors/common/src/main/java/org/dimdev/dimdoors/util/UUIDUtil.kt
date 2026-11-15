@@ -1,18 +1,15 @@
 package org.dimdev.dimdoors.util
 
 import net.minecraft.core.UUIDUtil
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.RiftRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.util.CodecUtils
 import java.util.*
 
 object UUIDExtensions {
     val MAP_CODEC = CodecUtils.mutableMap(UUIDUtil.CODEC)
 
-    val UUID.riftLocation: Location? get() = RiftRegistry.instance.locationOf(this)
-
-    fun UUID.rift(): Vertex = Vertex(this, RegistryVertices.RIFT)
+    fun UUID.rift(): Vertex = Vertex(this, RegistryVertices.LOCATION_RIFT)
 
 
     /* Simple method used to derive uuids based on a has derived from an existing UUID and two seperate Strings.*/

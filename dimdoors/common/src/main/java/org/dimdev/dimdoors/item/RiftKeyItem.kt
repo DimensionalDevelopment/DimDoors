@@ -37,9 +37,9 @@ class RiftKeyItem(settings: Properties) : Item(
 
             val rift = provider.convertToRiftProvider(level as ServerLevel, pos, state) ?: return super.useOn(context)
 
-            val original: VirtualTarget<*> = rift.data.destination
+            val original: VirtualTarget<*> = rift.data().destination
             rift.setDestination(TempTarget(temp.copy(), original.copy()))
-            context.level.playSound(null, rift.riftBlockPos, ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS)
+            context.level.playSound(null, pos, ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS)
 
             return InteractionResult.SUCCESS
         }

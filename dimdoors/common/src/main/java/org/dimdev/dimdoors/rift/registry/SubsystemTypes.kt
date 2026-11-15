@@ -4,11 +4,19 @@ import com.mojang.serialization.MapCodec
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 import org.dimdev.dimdoors.ModRegistryKeys
+import org.dimdev.dimdoors.rift.registry.LevelSpaceRegistry
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
+import org.dimdev.dimdoors.rift.registry.RiftGraph
+import org.dimdev.dimdoors.rift.registry.DialingRegistry
+import org.dimdev.dimdoors.rift.registry.HubRegistry
+import org.dimdev.dimdoors.rift.registry.DungeonRegistry
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry
 
 object SubsystemTypes : PlatformRegistry<SubSystem.Type<*>>(ModRegistryKeys.SUBSYSTEM_TYPE, getSided()) {
     val GRAPH = create("rift_graph", ::RiftGraph, RiftGraph.CODEC)
-    val RIFT = create("rift_registry", ::RiftRegistry, RiftRegistry.CODEC)
+    val LOCATION_RIFT = create("location_rift_registry", ::LocationRiftRegistry, LocationRiftRegistry.CODEC)
     val PRIVATE = create("private_registry", ::PrivateRegistry, PrivateRegistry.CODEC)
     val POCKET = create("pocket_registry", ::PocketRegistry, PocketRegistry.CODEC)
     val DIALING = create("dialing_registry", ::DialingRegistry, DialingRegistry.CODEC)

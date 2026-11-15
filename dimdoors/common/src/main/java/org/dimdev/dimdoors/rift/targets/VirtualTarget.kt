@@ -6,7 +6,6 @@ import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.util.Copyable
@@ -20,7 +19,7 @@ abstract class VirtualTarget<T : VirtualTarget<T>> : Target, Copyable<T>, MapCod
 
     open fun unregister(owner: Vertex) {}
 
-    open fun shouldInvalidate(riftDeleted: Location) = false
+    open fun shouldInvalidate() = false
 
     open fun getColor(owner: Vertex) = COLOR
 

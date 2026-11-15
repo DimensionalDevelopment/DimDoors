@@ -114,7 +114,7 @@ object DimensionalDoorItemRegistrar {
             DoorRiftDataLoader.getRiftData(access, originalItem).ifPresentOrElse(Consumer { data: RiftDataList? ->
                 val riftData = data!!.getRiftData(entranceRift)
                 entranceRift.setDestination(riftData.copyDestination())
-                riftData.properties?.let { entranceRift.properties = it }
+                riftData.properties?.let(entranceRift::setProperties)
             }) { entranceRift.setDestination(PublicPocketTarget) }
         }
 
@@ -143,7 +143,7 @@ object DimensionalDoorItemRegistrar {
                     Consumer { data: RiftDataList? ->
                         val riftData = data!!.getRiftData(entranceRift)
                         entranceRift.setDestination(riftData.copyDestination())
-                        riftData.properties?.let { entranceRift.properties = it }
+                        riftData.properties?.let(entranceRift::setProperties)
                     }) { entranceRift.setDestination(EscapeTarget(true)) }
         }
     }

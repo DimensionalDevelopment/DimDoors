@@ -1,16 +1,14 @@
 package org.dimdev.dimdoors.rift
 
 import net.minecraft.core.BlockPos
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.Half
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.util.Timer.Companion.create
 import kotlin.math.abs
@@ -29,12 +27,14 @@ object RiftUtils {
         showRiftTimer.trigger()
     }
 
-    fun <T : Rift<*>> registerFunction(rift: T): T {
-        rift.register()
-        return rift
-    }
+//    fun <T : Rift<*, *>> registerFunction(rift: T): T {
+//        rift.register()
+//        return rift
+//    }
 
-    fun runIfRiftAt(location: Location, consumer: (Rift<*>) -> Unit) = location.blockEntity?.castOrNull<Rift<*>>()?.run(consumer)
+
+
+    fun runIfRiftAt(location: Location, consumer: (BlockEntityRift<*>) -> Unit) = location.rift?.run(consumer)
 
     data class PortalPlane(
         val normal: Vec3,
@@ -44,7 +44,7 @@ object RiftUtils {
         val halfWidth: Double,
         val height: Double
     ) {
-        fun isTraversed(level: Level?, previousPos: Vec3, currentPos: Vec3): Boolean {
+        fun isTraversed(previousPos: Vec3, currentPos: Vec3): Boolean {
             val dotCurrent = normal.dot(currentPos.subtract(origin))
             val dotPrevious = normal.dot(previousPos.subtract(origin))
 

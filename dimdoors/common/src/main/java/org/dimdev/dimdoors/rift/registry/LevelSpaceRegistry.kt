@@ -4,8 +4,11 @@ import com.mojang.serialization.MapCodec
 import net.minecraft.core.UUIDUtil
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.rift.registry.SubSystem
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import java.util.*
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 
 class LevelSpaceRegistry(private val spaces: MutableMap<UUID, UUID> = mutableMapOf()) : SubSystem<LevelSpaceRegistry>() {
 
@@ -28,9 +31,9 @@ class LevelSpaceRegistry(private val spaces: MutableMap<UUID, UUID> = mutableMap
             instance.set(id, LevelSpaceHelper.INSTANCE.levelSpaceOf(location.world, location.blockPos))
 
         fun registerEvents() {
-            RiftRegistry.RiftEvents.RIFT_ADDED.register { id, location -> track(id, location) }
-            RiftRegistry.RiftEvents.RIFT_MOVED.register { id, _, to -> track(id, to) }
-            RiftRegistry.RiftEvents.RIFT_REMOVED.register { id, _ -> instance.set(id, null) }
+            LocationRiftRegistry.EVENTS.riftAddedEvent.register { id, location -> track(id, location) }
+            LocationRiftRegistry.EVENTS.riftMoveEvent.register { id, _, to -> track(id, to) }
+            LocationRiftRegistry.EVENTS.riftRemoveEvent.register { id, _ -> instance.set(id, null) }
         }
     }
 }

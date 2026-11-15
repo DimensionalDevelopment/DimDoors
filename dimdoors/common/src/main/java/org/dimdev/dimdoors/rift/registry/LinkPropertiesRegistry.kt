@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes.PROPERTIES
@@ -49,7 +51,7 @@ class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutabl
         val instance get() = getInstance(PROPERTIES)!!
 
         fun registerEvents() {
-            RiftRegistry.RiftEvents.RIFT_REMOVED.register { id, _ ->
+            LocationRiftRegistry.EVENTS.riftRemoveEvent.register { id, _ ->
                 if (instance.propertiesMap.remove(id) != null) instance.setDirty()
             }
         }

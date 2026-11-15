@@ -3,12 +3,19 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.datafixers.Products.P1
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.util.StringRepresentable
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.targets.LocationProvider
+import org.dimdev.dimdoors.rift.registry.RiftGraph
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.SubSystem
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.util.UUIDExtensions
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.util.UUIDExtensions.derive
 import java.util.*
 
 abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSubSystem<V, P, T>>(var locations: MutableMap<UUID, UUID>) : SubSystem<T>() {
@@ -17,23 +24,20 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
 
     abstract fun getPocketFromKey(uuid: V?): P?
 
-    abstract val entranceRegistryVertex: PlayerTrackerPointer
-    abstract val exitRegistryVertex: PlayerTrackerPointer
-
     fun getRift(trackingId: UUID) = locations[trackingId]
 
     private fun replaceRiftId(currentPointer: UUID, provider: LocationProvider?): UUID? {
-        RiftGraph.getInstance().removeVertex(currentPointer, null)
+        RiftGraph.getInstance().removeVertex(currentPointer)
 
         val location = provider?.providedLocation ?: return null
 
-        return RiftRegistry.instance.getRiftOrPlaceholder(location)
+        return LocationRiftRegistry.instance.getRiftOrPlaceholder(location)
     }
 
 
-    fun getRift(playerId: UUID, variant: PlayerTrackerPointer.Variant) = variant.getTrackingId(playerId, type()).let(locations::get)
+    fun getRift(playerId: UUID, variant: Variant) = variant.getTrackingId(playerId, type()).let(locations::get)
 
-    fun setRift(uuid: UUID, variant: PlayerTrackerPointer.Variant, location: LocationProvider?) {
+    fun setRift(uuid: UUID, variant: Variant, location: LocationProvider?) {
         val trackingId = variant.getTrackingId(uuid, type())
 
         val riftId = replaceRiftId(trackingId, location)
@@ -41,7 +45,7 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
         setRift(uuid, variant, riftId)
     }
 
-    open fun setRift(playerId: UUID, variant: PlayerTrackerPointer.Variant, riftId: UUID?) = setRift(variant.getTrackingId(playerId, type()), riftId)
+    open fun setRift(playerId: UUID, variant: Variant, riftId: UUID?) = setRift(variant.getTrackingId(playerId, type()), riftId)
 
     protected fun setRift(trackingId: UUID, riftId: UUID?) {
 
@@ -81,7 +85,7 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
             return null
         }
 
-        val entrance = this.getLocation(playerUUID, PlayerTrackerPointer.Variant.Entrance)
+        val entrance = this.getLocation(playerUUID, Variant.Entrance)
         if (entrance != null && PocketRegistry.instance.getPocketEntrances(pocket).contains(entrance)) {
             return entrance
         }
@@ -91,8 +95,15 @@ abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSu
 
     fun getLocation(
         playerId: UUID,
-        variant: PlayerTrackerPointer.Variant
-    ): Location? = getRift(playerId, variant)?.let(RiftRegistry.instance::locationOf)
+        variant: Variant
+    ): Location? = getRift(playerId, variant)?.let(LocationRiftRegistry.instance::locationOf)
+
+    enum class Variant(val serialized: String) : StringRepresentable {
+        Entrance("entrance"), Exit("exit");
+
+        override fun getSerializedName(): String = serialized
+        fun getTrackingId(playerId: UUID, type: Type<*>): UUID = playerId.derive(serialized, type.name)
+    }
 
     companion object {
         fun <V, P : Pocket<*, *>, T : PlayerTrackingSubSystem<V, P, T>> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, MutableMap<UUID, UUID>> {

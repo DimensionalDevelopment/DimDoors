@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.dimdev.dimdoors.api.util.math.Equation
+import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
@@ -21,6 +22,7 @@ import org.dimdev.dimdoors.rift.targets.IdMarker
 import org.dimdev.dimdoors.api.util.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import kotlin.jvm.optionals.getOrNull
 
 data class DimensionalDoorModifier(private val facing: Direction, private val doorType: Holder<Block>, private val doorData: Holder<RiftData>?, private val x: Equation, private val y: Equation, private val z: Equation) : Modifier {
 
@@ -56,7 +58,7 @@ data class DimensionalDoorModifier(private val facing: Direction, private val do
         if (doorData == null) {
             rift.setDestination(IdMarker(manager.nextId()))
         } else {
-            rift.data = doorData.value().copy()
+            rift.setRiftData(doorData.value().copy())
         }
 
         manager.add(rift)

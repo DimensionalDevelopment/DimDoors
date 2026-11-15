@@ -12,13 +12,27 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistries
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.NbtUtil
+import org.dimdev.dimdoors.world.pocket.PocketDirectory
+import org.dimdev.dimdoors.world.pocket.PocketInfo
+import org.dimdev.dimdoors.world.pocket.type.PocketColor
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget
 import org.dimdev.dimdoors.rift.targets.TempTarget
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 import org.dimdev.dimdoors.world.pocket.PocketInfo
+import org.dimdev.dimdoors.rift.registry.RegistryVertex
+import org.dimdev.dimdoors.rift.registry.RegistryVertices
+import org.dimdev.dimdoors.rift.registry.RiftGraph
+import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry
 import org.dimdev.dimdoors.world.pocket.type.PocketColor
+import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.api.util.NbtUtil
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -41,7 +55,7 @@ object LegacyDimensionalRegistryMigrator {
     private val splitTypes: List<SubSystem.Type<*>>
         get() = listOf(
             SubsystemTypes.GRAPH,
-            SubsystemTypes.RIFT,
+            SubsystemTypes.LOCATION_RIFT,
             SubsystemTypes.PRIVATE,
             SubsystemTypes.POCKET,
             SubsystemTypes.PROPERTIES
@@ -126,7 +140,7 @@ object LegacyDimensionalRegistryMigrator {
 
         val rifts = readRifts(riftTag)
         val entrances = readPocketEntrancePointers(riftTag)
-        val vertices = rifts.locations.keys.map { Vertex(it, RegistryVertices.RIFT) } + entrances.ids.values.distinct()
+        val vertices = rifts.locations.keys.map { Vertex(it, RegistryVertices.LOCATION_RIFT) } + entrances.ids.values.distinct()
             .map { Vertex(it, RegistryVertices.ENTRANCE) }
         val edges = readLinks(riftTag, entrances.ids, vertices.mapTo(hashSetOf()) { it.id })
         val playerConnections = readPlayerConnections(riftTag, rifts.locations)
@@ -136,7 +150,7 @@ object LegacyDimensionalRegistryMigrator {
 
         return Migration(
             pocketRegistry = PocketRegistry(directories),
-            riftRegistry = RiftRegistry(rifts.locations),
+            locationRiftRegistry = LocationRiftRegistry(rifts.locations),
             privateRegistry = PrivateRegistry(playerConnections, privatePockets),
             riftGraph = RiftGraph(vertices, edges),
             propertiesRegistry = LinkPropertiesRegistry(rifts.properties),
@@ -232,7 +246,7 @@ object LegacyDimensionalRegistryMigrator {
     }
 
     private fun readRifts(riftTag: CompoundTag): ParsedRifts {
-        val riftType = RegistryVertices.RIFT.typeId
+        val riftType = RegistryVertices.LOCATION_RIFT.typeId
         val locations = LinkedHashMap<UUID, Location>()
         val properties = LinkedHashMap<UUID, LinkPropertiesRegistry.Entry>()
         var dropped = 0
@@ -291,15 +305,15 @@ object LegacyDimensionalRegistryMigrator {
     private fun readPlayerConnections(riftTag: CompoundTag, rifts: Map<UUID, Location>): MutableMap<UUID, UUID> {
         val connections = LinkedHashMap<UUID, UUID>()
 
-        fun read(key: String, variant: PlayerTrackerPointer.Variant) {
+        fun read(key: String, variant: PlayerTrackingSubSystem.Variant) {
             for (entry in riftTag.compounds(key)) {
                 val rift = entry.getUUID("rift")
                 if (rift in rifts) connections[variant.getTrackingId(entry.getUUID("player"), SubsystemTypes.PRIVATE)] = rift
             }
         }
 
-        read("last_private_pocket_entrances", PlayerTrackerPointer.Variant.Entrance)
-        read("last_private_pocket_exits", PlayerTrackerPointer.Variant.Exit)
+        read("last_private_pocket_entrances", PlayerTrackingSubSystem.Variant.Entrance)
+        read("last_private_pocket_exits", PlayerTrackingSubSystem.Variant.Exit)
 
         return connections
     }
@@ -318,7 +332,7 @@ object LegacyDimensionalRegistryMigrator {
         }
 
         put(SubsystemTypes.POCKET, pocketRegistry)
-        put(SubsystemTypes.RIFT, riftRegistry)
+        put(SubsystemTypes.LOCATION_RIFT, locationRiftRegistry)
         put(SubsystemTypes.PRIVATE, privateRegistry)
         put(SubsystemTypes.GRAPH, riftGraph)
         put(SubsystemTypes.PROPERTIES, propertiesRegistry)
@@ -334,7 +348,7 @@ object LegacyDimensionalRegistryMigrator {
 
     private class Migration(
         val pocketRegistry: PocketRegistry,
-        val riftRegistry: RiftRegistry,
+        val locationRiftRegistry: LocationRiftRegistry,
         val privateRegistry: PrivateRegistry,
         val riftGraph: RiftGraph,
         val propertiesRegistry: LinkPropertiesRegistry,

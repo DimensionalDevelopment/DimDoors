@@ -17,10 +17,16 @@ import org.dimdev.dimcore.api.ext.at
 import org.dimdev.dimcore.api.ext.putAt
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.entity.*
+import org.dimdev.dimdoors.block.entity.CodecRecord
+import org.dimdev.dimdoors.block.entity.Deserialize
+import org.dimdev.dimdoors.block.entity.Serialize
+import org.dimdev.dimdoors.command.literal
+import org.dimdev.dimdoors.rift.targets.LocationProvider
 import kotlin.jvm.optionals.getOrNull
+import org.dimdev.dimdoors.block.entity.RiftData
 
-class RiftConfigSubject<T : Rift<T>>(val rift: T, private val hand: InteractionHand, private val item: Item) : ConfigSubject {
-    override val title: Component get() = rift.riftBlockState.block.name
+class RiftConfigSubject<T : Rift<T, H, *>, H: LocationProvider>(val rift: T, val holder: H, private val hand: InteractionHand, private val item: Item) : ConfigSubject {
+    override val title: Component get() = rift.name.literal() //TODO: Later turn this into a component.
 
     override fun schema(player: ServerPlayer): StructNode {
         val data = RiftData.CODEC.node as StructNode
@@ -42,7 +48,7 @@ class RiftConfigSubject<T : Rift<T>>(val rift: T, private val hand: InteractionH
         val ops = ops(player)
         val tag = CompoundTag()
 
-        RiftData.CODEC.encodeStart(ops, rift.data).result().getOrNull()?.let { data ->
+        RiftData.CODEC.encodeStart(ops, rift.data(holder)).result().getOrNull()?.let { data ->
             if (data is CompoundTag) HIDDEN_DATA.forEach(data::remove)
             tag.put(DATA, data)
         }
@@ -58,7 +64,7 @@ class RiftConfigSubject<T : Rift<T>>(val rift: T, private val hand: InteractionH
         var data: RiftData? = null
 
         if (dataPaths.isNotEmpty()) {
-            val merged = RiftData.CODEC.encodeStart(ops, rift.data).result().getOrNull() as? CompoundTag ?: return DataResult.error { "$DATA: current value did not encode" }
+            val merged = RiftData.CODEC.encodeStart(ops, rift.data(holder)).result().getOrNull() as? CompoundTag ?: return DataResult.error { "$DATA: current value did not encode" }
             dataPaths.forEach { merged.putAt(it.drop(1), value.at(it)) }
 
             val decoded = RiftData.CODEC.parse(ops, merged)
@@ -67,21 +73,24 @@ class RiftConfigSubject<T : Rift<T>>(val rift: T, private val hand: InteractionH
 
         data?.let {
             val destination = it.destination
-            it.destination = rift.data.destination
-            rift.data = it
-            if (listOf(DATA, "destination") in dataPaths) rift.setDestination(destination)
+            it.destination = rift.data(holder).destination
+            rift.setRiftData(holder, it)
+            if (listOf(DATA, "destination") in dataPaths) rift.setDestination(holder, destination)
         }
 
         val unique = CompoundTag().also { rift.writeUniqueData(Serialize.nbt(player.server.registryAccess(), it, rift)) }
         paths.filter { it.firstOrNull() != DATA }.forEach { unique.putAt(it, value.at(it)) }
         rift.readUniqueData(Deserialize.nbt(player.server.registryAccess(), unique))
 
-        rift.updateColor()
-        rift.sync()
+        rift.updateColor(holder)
+        rift.sync(holder)
         return DataResult.success(Unit)
     }
 
-    override fun isValid(player: ServerPlayer): Boolean = player.level() === rift.riftLevel && player.canInteractWithBlock(rift.riftBlockPos, 0.0) && player.getItemInHand(hand).`is`(item)
+    override fun isValid(player: ServerPlayer): Boolean {
+        val location = holder.providedLocation!!
+        return player.level() === location.world && player.canInteractWithBlock(location.blockPos, 0.0) && player.getItemInHand(hand).`is`(item)
+    }
 
     private fun ops(player: ServerPlayer): DynamicOps<Tag> = player.server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
 

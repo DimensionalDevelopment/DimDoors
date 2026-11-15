@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 
-interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEntity where T : BlockEntity, T : Rift<T> {
+interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEntity where T : BlockEntity, T : BlockEntityRift<T> {
     fun getRift(world: Level, pos: BlockPos, state: BlockState): T? {
         val rifPos = getRiftPos(world, pos, state)
 
@@ -24,7 +24,7 @@ interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEnti
 
     fun getRiftPos(world: Level, pos: BlockPos, state: BlockState): BlockPos = pos
 
-    override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState): Rift<*>? {
+    override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState): BlockEntityRift<*>? {
         var pos = pos
         pos = getRiftPos(world, pos, state)
         return getRift(world, pos, state)
@@ -41,7 +41,7 @@ interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEnti
     }
 
     override fun attemptTransfer(blockEntity: BlockEntity, blockEntityToBeTransfered: BlockEntity) {
-        if (blockEntity is Rift<*> && blockEntityToBeTransfered is Rift<*>) {
+        if (blockEntity is BlockEntityRift<*> && blockEntityToBeTransfered is BlockEntityRift<*>) {
             blockEntity.copyFrom(blockEntityToBeTransfered)
         }
     }
@@ -58,7 +58,7 @@ interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEnti
             blockPos: BlockPos,
             state: BlockState,
             rift: R?
-        ) where R : BlockEntity, R : Rift<*> {
+        ) where R : BlockEntity, R : BlockEntityRift<*> {
             rift!!.tick(level, blockPos, state)
         }
     }

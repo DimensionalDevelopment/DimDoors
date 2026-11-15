@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.RGBA
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.client.DimensionalDoorsClient
 import org.dimdev.dimdoors.client.tesseract.Tesseract.draw
 import org.dimdev.dimdoors.rift.RiftUtils
 
@@ -45,7 +46,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         matrices.translate(0.5f, 0.5f, 0.5f)
         matrices.mulPose(Axis.YP.rotationDegrees(rift.riftYaw))
 
-        val size = rift.data.size
+        val size = rift.riftData.size
 
         RiftCrackRenderer.drawCrack(
             matrices,
@@ -63,7 +64,7 @@ class DetachedRiftBlockEntityRenderer(context: BlockEntityRendererProvider.Conte
         alphaMultiplier: Float
     ) {
         val radian = (DimensionalDoorsClient.renderTick * 10 % 360) * Mth.DEG_TO_RAD
-        var color = rift.color
+        var color = rift.color()
         if (color == RGBA.NONE) {
             color = DEFAULT_COLOR
         }

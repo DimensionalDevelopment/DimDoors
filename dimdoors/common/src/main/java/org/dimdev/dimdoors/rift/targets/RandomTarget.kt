@@ -19,11 +19,15 @@ import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.math.MathUtil
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper.ALL_DUNGEONS
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.generatePocket
 import org.dimdev.dimdoors.rift.registry.*
+import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.math.*
@@ -101,26 +105,26 @@ abstract class RandomTarget<T : RandomTarget<T>>(
 
                 val loc = owner.providedLocation!!
 
-                val thisRift = loc.blockEntity!!.cast<Rift<*>>()
-                val riftEntity = world.getBlockEntity(pos)!!.cast<DetachedRiftBlockEntity>()
+                val thisRift = loc.rift
+                val riftEntity = world.getBlockEntity(pos)?.cast<DetachedRiftBlockEntity>()
                 // TODO: Should the rift not be configured like the other link
 
-                riftEntity.properties = thisRift.properties?.toBuilder()?.linksRemaining(1)?.build()
+                riftEntity?.setProperties(thisRift?.properties()?.toBuilder()?.linksRemaining(1)?.build())
 
-                if (!this.isNoLinkBack && riftEntity.properties?.isOneWay != true) TemplateUtils.linkRifts(
+                if (!this.isNoLinkBack && riftEntity?.properties()?.isOneWay != true) TemplateUtils.linkRifts(
                     ofWorld(
                         world,
                         pos
                     ), owner
                 )
                 if (!this.isNoLink) TemplateUtils.linkRifts(owner, ofWorld(world, pos))
-                return riftEntity.`as`(Targets.ENTITY, owner)
+                return riftEntity?.`as`(Targets.ENTITY, owner)
             } else {
                 // Make a new dungeon pocket
 
 
-                val thisRift = owner.providedLocation?.blockEntity as Rift<*>?
-                val newLink = thisRift?.properties?.toBuilder()?.linksRemaining(0)?.build()
+                val thisRift = owner.providedLocation?.rift
+                val newLink = thisRift?.properties()?.toBuilder()?.linksRemaining(0)?.build()
 
                 val linkBack = if (this.isNoLinkBack) NoneTarget else RiftReference(owner)
 
@@ -139,11 +143,11 @@ abstract class RandomTarget<T : RandomTarget<T>>(
             }
         } else {
             // An existing rift was selected
-            val riftEntity = selectedLink.blockEntity as Rift<*>?
+            val riftEntity = selectedLink.rift
 
             // Link the rifts if necessary and teleport the entity
             if (!this.isNoLink) TemplateUtils.linkRifts(owner, selectedLink)
-            if (!this.isNoLinkBack && !riftEntity!!.properties!!.isOneWay) TemplateUtils.linkRifts(
+            if (!this.isNoLinkBack && LocationRiftRegistry.instance.idAt(selectedLink)?.let(LinkPropertiesRegistry.instance::getProperties)?.isOneWay != true) TemplateUtils.linkRifts(
                 selectedLink,
                 owner
             )
@@ -154,7 +158,7 @@ abstract class RandomTarget<T : RandomTarget<T>>(
         val weights = mutableMapOf<Location?, Float>()
         if (this.newRiftWeight > 0) weights[null] = this.newRiftWeight
 
-        for ((id, location) in RiftRegistry.instance.rifts) {
+        for ((id, location) in LocationRiftRegistry.instance.rifts) {
             val otherVirtualLocation = VirtualLocation.fromLocation(location)
             val entry = LinkPropertiesRegistry.instance.propertiesMap[id] ?: continue
             val properties = entry.properties ?: continue

@@ -4,7 +4,7 @@ import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.rift.Rift;
 
 // FIXME: is not actually client sided
 public class WthitPlugin implements IWailaPlugin {

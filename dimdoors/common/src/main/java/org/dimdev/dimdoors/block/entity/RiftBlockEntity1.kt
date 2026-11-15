@@ -18,10 +18,20 @@ import org.dimdev.dimcore.api.errata.schema.Presence
 import org.dimdev.dimcore.api.errata.schema.UntypedNode
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.rift.RiftConfigSubject.Companion.node
+import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator
+import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 
-open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), Rift<V>, RecordCodecProvider<V> {
-    override var data: RiftData = RiftData()
+abstract class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), BlockEntityRift<V>, RecordCodecProvider<V> {
+    var riftData: RiftData = RiftData(); private set
+
+    override fun data(holder: Location): RiftData = riftData
+
+    override fun setRiftData(holder: Location, data: RiftData) {
+        riftData = data
+    }
+
     override var isStateDirty: Boolean = false
     override var isDeleteRift: Boolean = true
     private var legacyDestination: CompoundTag? = null //TODO: purge this
@@ -46,7 +56,7 @@ open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, 
         super.setLevel(level)
         if (level !is ServerLevel) return
 
-        legacyDestination?.let { data.destination = LegacyDimensionalRegistryMigrator.upgradeDestination(it, location) }
+        legacyDestination?.let { riftData.destination = LegacyDimensionalRegistryMigrator.upgradeDestination(it, providedLocation) }
             ?.also {
                 legacyDestination = null
                 level.server.tell(TickTask(level.server.tickCount) {
@@ -67,7 +77,7 @@ open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, 
     }
 
     override fun <T> deserialize(nbt: Deserialize<T>) {
-        this.data = nbt.get(RIFT_DATA_BUILDER)
+        this.riftData = nbt.get(RIFT_DATA_BUILDER)
 
         readUniqueData(nbt)
     }
@@ -89,19 +99,13 @@ open class RiftBlockEntity<V: RiftBlockEntity<V>>(type: BlockEntityType<out V>, 
 
     override fun onlyOpCanSetNbt() = true
 
-    override fun setChanged() = super.setChanged()
-
-    override val riftBlockPos: BlockPos get() = blockPos
-
-    override val riftBlockState: BlockState get() = blockState
-
-    override val riftLevel get() = level!!
-
-    class Impl(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<Impl>(ModBlockEntityTypes.GENERIC_RIFT, pos, state)
+    class Impl(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<Impl>(ModBlockEntityTypes.GENERIC_RIFT, pos, state) {
+        override val name: String = "Generic Rift"
+    }
 
     companion object {
         val CodecRecord<*, *>.fieldNode get() = FieldNode(name, node ?: UntypedNode, Presence.Required)
 
-        val RIFT_DATA_BUILDER = CodecRecord("data", RiftData.CODEC, ::RiftData, Rift<*>::data) { rift, data -> rift.data = data }
+        val RIFT_DATA_BUILDER = CodecRecord("data", RiftData.CODEC, ::RiftData, BlockEntityRift<*>::data) { rift, data -> rift.setRiftData(data) }
     }
 }

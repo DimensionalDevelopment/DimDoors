@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
-import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.blockentity.BlockEntityRift;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -29,7 +29,7 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
     }
 
     @Override
-    public @Nullable Rift convertToRiftProvider(@NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    public @Nullable BlockEntityRift<?> convertToRiftProvider(@NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull BlockState state) {
         @Nullable var blockState = this.getRiftProviderState(state);
         if (blockState == null) return null;
         world.setBlockAndUpdate(pos, blockState);

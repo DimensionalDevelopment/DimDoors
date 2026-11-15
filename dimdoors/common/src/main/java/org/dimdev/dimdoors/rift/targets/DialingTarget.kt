@@ -9,15 +9,18 @@ import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.pockets.generatePocket
+import org.dimdev.dimdoors.world.pocket.type.DialingPocket
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.DialingRegistry
-import org.dimdev.dimdoors.rift.registry.PlayerTrackerPointer
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.DialingPocket
+import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
+import org.dimdev.dimdoors.api.util.Location
 import java.util.*
 
 interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPocket, DialingRegistry> {
@@ -35,16 +38,16 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPo
     ): Boolean {
         val received = target.receiveEntity(owner, entity, relativePos, relativeAngle, relativeVelocity, null)
         if (received) {
-            (this as? Rift<*>)?.takeIf { !it.isRegistered }?.let {
+            this.castOrNull<BlockEntityRift<*>>()?.takeIf { !it.isRegistered() }?.let {
                 DimensionalDoors.LOGGER.warn(
                     "Dialing source at {} was not registered before setting return exit; registering now.",
-                    this.location
+                    it.location()
                 )
                 it.register()
             }
 
             subsystem.setPlayerAddress(uuid, this.address)
-            subsystem.setRift(uuid, PlayerTrackerPointer.Variant.Exit, owner)
+            subsystem.setRift(uuid, PlayerTrackingSubSystem.Variant.Exit, owner)
         }
         return received
     }

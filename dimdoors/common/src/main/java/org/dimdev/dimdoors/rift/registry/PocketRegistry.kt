@@ -5,13 +5,19 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.util.SimpleEvent
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.unboundedMap
-import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.targets.LocationProvider
+import org.dimdev.dimdoors.rift.registry.RiftGraph
+import org.dimdev.dimdoors.rift.registry.SubSystem
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 
 class PocketRegistry(
@@ -68,7 +74,7 @@ class PocketRegistry(
         return getPocketEntrances(info.uuid)
     }
 
-    fun getPocketEntrances(info: UUID): MutableSet<Location> = RiftGraph.getInstance().targets(info).mapNotNull { RiftRegistry.instance.locationOf(it) }.toMutableSet()
+    fun getPocketEntrances(info: UUID): MutableSet<Location> = RiftGraph.getInstance().targets(info).mapNotNull { LocationRiftRegistry.instance.locationOf(it) }.toMutableSet()
 
     fun getPocketEntrance(pocket: Pocket<*, *>?): Location? {
         requireNotNull(pocket) { "pocket" }
@@ -94,7 +100,7 @@ class PocketRegistry(
         fun interface PocketEntranceAdd { fun addPocketEntrance(id: UUID, location: Location) }
     }
 
-    fun getPocketAt(provider: LocationProvider?): Pocket<*, *>? = provider?.providedLocation?.let { location -> location.worldId?.let { directories[it] }?.getPocketAt(location.blockPos) }
+    fun getPocketAt(provider: LocationProvider?): Pocket<*, *>? = provider?.providedLocation?.let { location -> location.worldId.let { directories[it] }?.getPocketAt(location.blockPos) }
 
     fun <P : Pocket<*, *>> getPocketAt(location: LocationProvider?, pocketClass: Class<P>): P? = getPocketAt(location)?.cast(pocketClass)
 

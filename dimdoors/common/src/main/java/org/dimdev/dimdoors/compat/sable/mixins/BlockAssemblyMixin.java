@@ -9,9 +9,9 @@ import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
-import org.dimdev.dimdoors.block.entity.Rift;
+import org.dimdev.dimdoors.rift.Rift;
 import org.dimdev.dimdoors.compat.sable.SableLevelSpaceHelper;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 
 
@@ -24,9 +24,9 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
 
         var blockEntity = originLevel.getBlockEntity(oldPos);
 
-        if(blockEntity instanceof Rift rift) {
-            if (RiftRegistry.Companion.getInstance().isRiftAt(oldLocation)) {
-                    RiftRegistry.Companion.getInstance().moveRift(oldLocation, newLocation);
+        if(blockEntity instanceof Rift<?, ?, ?> rift) {
+            if (LocationRiftRegistry.Companion.getInstance().isRiftAt(oldLocation)) {
+                    LocationRiftRegistry.Companion.getInstance().moveRift(oldLocation, newLocation);
                     rift.setDeleteRift(false);
             }
         }
@@ -36,10 +36,10 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
     public void afterMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
         var blockEntity = resultingLevel.getBlockEntity(newPos);
 
-        if(blockEntity instanceof Rift rift) {
+        if(blockEntity instanceof Rift<?, ?, ?> rift) {
             rift.setDeleteRift(true);
             var newLocation = Location.ofWorld(resultingLevel, newPos);
-            var registry = RiftRegistry.Companion.getInstance();
+            var registry = LocationRiftRegistry.Companion.getInstance();
             if (registry.isRiftAt(newLocation)) {
                 SableLevelSpaceHelper.INSTANCE.track(resultingLevel, registry.getRift(newLocation), newLocation);
             }

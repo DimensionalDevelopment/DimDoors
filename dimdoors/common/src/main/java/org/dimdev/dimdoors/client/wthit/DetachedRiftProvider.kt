@@ -7,6 +7,7 @@ import mcp.mobius.waila.api.IDataWriter
 import mcp.mobius.waila.api.IPluginConfig
 import mcp.mobius.waila.api.IServerAccessor
 import mcp.mobius.waila.api.ITooltip
+import mcp.mobius.waila.api.*
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimdoors.DimensionalDoors.Companion.id
@@ -17,7 +18,7 @@ object DetachedRiftProvider : IBlockComponentProvider, IDataProvider<DetachedRif
     private const val RIFT_ID = "riftId"
 
     override fun appendData(data: IDataWriter, accessor: IServerAccessor<DetachedRiftBlockEntity>, config: IPluginConfig) {
-        (accessor.target.data.destination as? IdMarker)?.let { data.raw().putInt(RIFT_ID, it.id) }
+        (accessor.target.data().destination as? IdMarker)?.let { data.raw().putInt(RIFT_ID, it.id) }
     }
 
     override fun appendBody(tooltip: ITooltip, accessor: IBlockAccessor, config: IPluginConfig) {

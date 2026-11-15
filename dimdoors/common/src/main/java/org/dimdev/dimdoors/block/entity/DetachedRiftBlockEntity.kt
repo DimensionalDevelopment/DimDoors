@@ -84,12 +84,12 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     val decayRadius: Int
         get() {
-            val size = data.size
+            val size = data().size
             return if (size > 0) Mth.ceil(size / DECAY_RADIUS_DIVISOR) else 0
         }
 
-    override fun gatherDebug(textConsumer: Consumer<Component>) {
-        super.gatherDebug(textConsumer)
+    override fun gatherDebug(holder: Location, textConsumer: Consumer<Component>) {
+        super.gatherDebug(holder, textConsumer)
         textConsumer.accept(Component.literal("Decay radius: " + this.decayRadius))
     }
 
@@ -127,8 +127,8 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     override val isDetached: Boolean get() = true
 
-    override fun unregister() {
-        super.unregister()
+    override fun unregister(holder: Location) {
+        super.unregister(holder)
         level?.removeBlock(blockPos, false)
     }
 
@@ -159,10 +159,10 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
                 if (level.random.nextInt(0, 100) <= absoluteChance) {
                     val sizeChange = if (weight > 0) 1 else -1
 
-                    data.size += sizeChange
+                    riftData.size += sizeChange
                 }
 
-                if (weight < 0 && data.size == 0) {
+                if (weight < 0 && riftData.size == 0) {
                     unregister()
                     return
                 }
@@ -170,7 +170,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
                 updateTimer = 0
                 sync()
 
-                if (config.generalConfig.enableRiftDecay && data.size > 20) {
+                if (config.generalConfig.enableRiftDecay && riftData.size > 20) {
                     applySpreadDecay(level as ServerLevel, pos)
                 }
 
@@ -231,6 +231,9 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         list.add(WEIGHT_BUILDER.fieldNode)
         list.add(CURVE_ID_BUILDER.fieldNode)
     }
+
+
+    override val name: String  = "Detached rift"
 
     companion object {
         const val DECAY_RADIUS_DIVISOR: Float = 40f

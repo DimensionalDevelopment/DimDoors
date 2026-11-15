@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimcore.api.client.ToolTipHelper
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
@@ -132,7 +133,7 @@ open class EntranceRiftBlockItem(
                         if (world.getBlockState(searchPos).block === ModBlocks.DETACHED_RIFT) {
                             val rift = world.getBlockEntity(searchPos)?.castOrNull<DetachedRiftBlockEntity>() ?: continue
 
-                            if (sqrt(pos.distSqr(searchPos)) < rift.data.size) return true
+                            if (sqrt(pos.distSqr(searchPos)) < rift.riftData.size) return true
                         }
                     }
                 }

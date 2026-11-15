@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 
 data class LightLevelCondition(val lightLevel: Equation) : Condition {
     override fun matches(rift: EntranceRiftBlockEntity<*>) =
-        this.lightLevel.asBoolean("light" to rift.riftLevel.getLightEmission(rift.blockPos).toDouble())
+        this.lightLevel.asBoolean("light" to rift.level!!.getLightEmission(rift.blockPos).toDouble())
 
     override val type get() = Conditions.LIGHT_LEVEL
 

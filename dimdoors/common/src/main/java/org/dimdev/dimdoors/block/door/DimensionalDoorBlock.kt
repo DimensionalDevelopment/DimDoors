@@ -42,11 +42,18 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
+import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.api.util.math.eulerAngle
+import org.dimdev.dimdoors.api.util.horizontalFacing
+import org.dimdev.dimdoors.api.util.math.plus
+import org.dimdev.dimdoors.api.util.math.times
+import org.dimdev.dimdoors.api.util.math.inverseRotateLocal
+import org.dimdev.dimdoors.api.util.math.inverseTranslateLocal
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
@@ -61,7 +68,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     override fun validStateForTraversal(state: BlockState) = state.block === this && state.getValue(OPEN)
 
-    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) {
+    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: BlockEntityRift<*>) {
         closeDoorBehind(level, pos)
         closeDoorBehind(level, pos.above())
     }
@@ -197,8 +204,10 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState) = getRift(world, pos, state)
 
-    override fun revertToBaseVariant(world: ServerLevel, pos: BlockPos, state: BlockState) {
-        val state = getVisualBlockState(state)
+    override fun revertToBaseVariant(location: Location) {
+        val pos = location.blockPos
+        val world = location.world
+        val state = getVisualBlockState(world.getBlockState(pos))
 
         val upperPos: BlockPos?
         val upperState: BlockState?

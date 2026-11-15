@@ -59,6 +59,8 @@ object ModDimensions {
         return world.dimension() == LIMBO
     }
 
+    fun isLimboDimension(id: ResourceKey<Level>): Boolean = id == LIMBO
+
     @JvmStatic
     fun isRootDimension(world: Level): Boolean = !isPocketDimension(world) && !isLimboDimension(world)
 

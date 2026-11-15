@@ -10,7 +10,8 @@ import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.math.MathUtil
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.rift.targets.LocationProvider
@@ -62,19 +63,19 @@ object TemplateUtils {
     }
 
     fun registerRifts(
-        rifts: MutableList<out Rift<*>>,
+        rifts: MutableList<out BlockEntityRift<*>>,
         linkTo: VirtualTarget<*>?,
         linkProperties: LinkProperties?,
         pocket: Pocket<*, *>
     ) {
         val world: ServerLevel = DimensionalDoors.getWorld(pocket.world)!!
-        val entranceWeights = mutableMapOf<Rift<*>, Float>()
+        val entranceWeights = mutableMapOf<BlockEntityRift<*>, Float>()
 
         // Add logging to debug
         DimensionalDoors.LOGGER.info("Registering {} rifts for pocket {}", rifts.size, pocket.id)
 
         for (rift in rifts) {
-            rift.data.destination.castOrNull<PocketEntranceMarker>()?.let {
+            rift.data().destination.castOrNull<PocketEntranceMarker>()?.let {
                 entranceWeights.put(rift, it.weight)
             }
         }
@@ -87,20 +88,20 @@ object TemplateUtils {
         val selectedEntrance = MathUtil.weightedRandom(entranceWeights)
         DimensionalDoors.LOGGER.info(
             "Selected entrance at {} for pocket {}",
-            selectedEntrance!!.riftBlockPos,
+            selectedEntrance?.self()?.blockPos,
             pocket.id
         )
 
         // Replace entrances with appropriate destinations
         for (rift in rifts) {
-            val destination = rift.data.destination
+            val destination = rift.data().destination
 
             if (destination is PocketEntranceMarker) {
                 if (rift === selectedEntrance) {
                     rift.setDestination(destination.ifDestination)
                     rift.register()
 
-                    val entranceLocation = ofWorld(world, rift.riftBlockPos)
+                    val entranceLocation = ofWorld(world, rift.self().blockPos)
                     instance.addPocketEntrance(pocket, entranceLocation)
                     DimensionalDoors.LOGGER.info(
                         "Registered pocket entrance at {} {}",
@@ -114,11 +115,11 @@ object TemplateUtils {
         }
 
         for (rift in rifts) {
-            if (rift.data.destination is PocketExitMarker) {
-                if (linkProperties != null) rift.properties = linkProperties
+            if (rift.data().destination is PocketExitMarker) {
+                if (linkProperties != null) rift.setProperties(linkProperties)
 
-                val exitDestination = (if (rift.properties?.isOneWay != true) linkTo else VirtualTarget.NoneTarget) ?: run {
-                    DimensionalDoors.LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.riftBlockPos, pocket.id)
+                val exitDestination = (if (rift.properties()?.isOneWay != true) linkTo else VirtualTarget.NoneTarget) ?: run {
+                    DimensionalDoors.LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.self().blockPos, pocket.id)
                     VirtualTarget.NoneTarget
                 }
 
@@ -134,15 +135,15 @@ object TemplateUtils {
 
     fun linkRifts(from: LocationProvider?, to: LocationProvider?) {
         val toLocation = to?.providedLocation ?: return
-        val fromBe = from?.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return
+        val fromBe = from?.providedLocation?.rift ?: return
 
         fromBe.setDestination(toLocation.asTarget())
         fromBe.markStateChanged()
 
-        val toBe = to.providedLocation?.blockEntity?.castOrNull<Rift<*>>() ?: return
-        val properties = toBe.properties ?: return
+        val toBe = to.providedLocation?.rift ?: return
+        val properties = toBe.properties() ?: return
 
-        toBe.properties = properties.withLinksRemaining(properties.linksRemaining - 1)
+        toBe.setProperties(properties.withLinksRemaining(properties.linksRemaining - 1))
         toBe.markStateChanged()
     }
 }

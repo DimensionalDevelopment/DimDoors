@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import java.util.function.Function
 
 data class WorldMatchCondition(val world: ResourceKey<Level>) : Condition {
-    override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean = rift.riftLevel.dimension() == this.world
+    override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean = rift.level?.dimension() == this.world
 
     override val type get() = Conditions.WORLD_MATCH
 

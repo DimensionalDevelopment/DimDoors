@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.HubPocket
+import org.dimdev.dimdoors.rift.registry.PocketRegistry
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 
 class HubRegistry(locations: MutableMap<UUID, UUID> = mutableMapOf(), private var pocket: PocketInfo? = null) : PlayerTrackingSubSystem<HubRegistry.HubKey, HubPocket, HubRegistry>(locations) {
@@ -25,8 +28,6 @@ class HubRegistry(locations: MutableMap<UUID, UUID> = mutableMapOf(), private va
     override fun isCorrectDimensionForPocket(world: ServerLevel) = ModDimensions.isPrivatePocketDimension(world)
     override fun setCurrentKey(uuid: UUID?, key: HubKey?) {}
 
-    override val entranceRegistryVertex: PlayerTrackerPointer get() = RegistryVertices.HUB_ENTRANCE
-    override val exitRegistryVertex: PlayerTrackerPointer get() = RegistryVertices.HUB_EXIT
     override fun type(): Type<HubRegistry> = SubsystemTypes.HUB
 
     object HubKey

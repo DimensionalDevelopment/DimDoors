@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 
 data class WaterloggedCondition(val waterlogged: Boolean) : Condition {
     override fun matches(rift: EntranceRiftBlockEntity<*>): Boolean =
-        rift.riftLevel.getBlockState(rift.blockPos).getValue(BlockStateProperties.WATERLOGGED) == waterlogged
+        rift.level!!.getBlockState(rift.blockPos).getValue(BlockStateProperties.WATERLOGGED) == waterlogged
 
     override val type get() = Conditions.BIOME
 

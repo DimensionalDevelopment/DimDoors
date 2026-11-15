@@ -9,11 +9,11 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.UseOnContext
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.errata.session.Errata
-import org.dimdev.dimdoors.block.entity.Rift
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 
 class RiftConfigurationToolItem internal constructor(properties: Properties) : Item(properties.stacksTo(1)), DetachRiftInteracting {
     override fun useOn(context: UseOnContext): InteractionResult {
-        val rift = context.level.getBlockEntity(context.clickedPos) as? Rift<*> ?: return InteractionResult.PASS
+        val rift = context.level.getBlockEntity(context.clickedPos) as? BlockEntityRift<*> ?: return InteractionResult.PASS
         if (context.level.isClientSide) return InteractionResult.SUCCESS
         val player = context.player as? ServerPlayer ?: return InteractionResult.PASS
 

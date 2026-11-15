@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.errata.schema.FieldNode
-import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.rift.registry.Vertex
@@ -37,7 +36,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
         updateAddress(address.turnDial(type))
     }
 
-    override val target: Target get() = this
+    override fun target(holder: Location) = this
 
     override fun receiveEntity(
         owner: Vertex,
@@ -68,6 +67,8 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
     override fun copy(): DialingTarget {
         return DialingTargetImpl(address)
     }
+
+    override val name = "Dialing Door"
 
     companion object {
         private val DIALING_ADDRESS_BUILDER = CodecRecord(

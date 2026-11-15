@@ -12,9 +12,9 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock
 import org.dimdev.dimdoors.api.entity.LastPositionProvider
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.rift.RiftUtils
 
 interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
@@ -61,7 +61,7 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>
         return InteractionResult.SUCCESS
     }
 
-    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) {}
+    fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: BlockEntityRift<*>) {}
 
     fun validStateForTraversal(state: BlockState): Boolean = true
 

@@ -23,11 +23,14 @@ import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
 import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
+import org.dimdev.dimdoors.api.util.math.eulerAngle
 import org.dimdev.dimdoors.api.util.horizontalFacing
+import org.dimdev.dimdoors.api.util.math.plus
+import org.dimdev.dimdoors.api.util.math.times
 import org.dimdev.dimdoors.api.util.math.*
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.joml.Matrix4d
@@ -65,7 +68,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
 
     override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
-    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: Rift<*>) = rift.detach()
+    override fun postTraverseEffect(level: Level, pos: BlockPos, state: BlockState, rift: BlockEntityRift<*>) = rift.detach()
 
     override fun getPortalPlane(state: BlockState, pos: BlockPos) = ofDoor(state, pos)
 

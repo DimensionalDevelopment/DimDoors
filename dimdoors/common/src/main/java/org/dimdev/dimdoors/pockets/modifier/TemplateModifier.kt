@@ -6,10 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import org.dimdev.dimcore.api.errata.schema.Schemas
-import org.dimdev.dimdoors.block.entity.Rift
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.TemplateTarget
 import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.rift.targets.TemplateTarget
 import java.util.stream.IntStream
 import java.util.stream.Stream
 
@@ -19,7 +19,7 @@ abstract class TemplateModifier<V, T: TemplateTarget<V, T>>(val ids: MutableList
     override fun apply(parameters: PocketGenerationContext, manager: RiftManager) {
         val template = createTarget(template)
 
-        manager.foreachConsume { id, rift: Rift<*> ->
+        manager.foreachConsume { id, rift ->
             if (ids.contains(id)) {
                 rift.setDestination(template.copy())
                 return@foreachConsume true

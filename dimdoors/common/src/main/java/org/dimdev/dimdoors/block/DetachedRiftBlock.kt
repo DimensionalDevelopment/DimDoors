@@ -138,9 +138,9 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         if (!level.isClientSide() && projectile is FarShotEnderPearlEntity) {
             val entity = projectile.owner ?: return
 
-            val rift = getRift(level, hit.blockPos, state)
+            val rift = getRift(level, hit.blockPos, state) ?: return
 
-            if (EntranceRiftBlockEntity.attemptTeleport(entity, rift!!)) projectile.discard()
+            if (EntranceRiftBlockEntity.attemptTeleport(entity, rift, rift.providedLocation)) projectile.discard()
         }
     }
 
