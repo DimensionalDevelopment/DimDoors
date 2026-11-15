@@ -23,7 +23,7 @@ import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.world.ModLootTables
 
-class RiftRemoverItem(settings: Properties) : Item(settings), DetachRiftInteracting {
+class RiftRemoverItem(settings: Properties) : Item(settings) {
     override fun appendHoverText(
         itemStack: ItemStack,
         level: TooltipContext,

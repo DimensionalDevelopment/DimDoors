@@ -7,7 +7,6 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
-import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
@@ -17,8 +16,6 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.item.DetachRiftInteracting
-import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.sqrt
 
@@ -27,7 +24,7 @@ open class EntranceRiftBlockItem(
     settings: Properties,
     private val setupFunction: (EntranceRiftBlockEntity<*>) -> Unit = {},
     private var hasToolTip: Boolean = true
-) : BlockItem(block, settings), DetachRiftInteracting {
+) : BlockItem(block, settings) {
 
     constructor(block: Block, settings: Properties, setupFunction: (EntranceRiftBlockEntity<*>) -> Unit) : this(
         block,
@@ -47,19 +44,19 @@ open class EntranceRiftBlockItem(
         }
     }
 
-    override fun useOn(context: UseOnContext): InteractionResult = place(DimDoorBlockPlaceContext(context))
+//    override fun useOn(context: UseOnContext): InteractionResult = place(DimDoorBlockPlaceContext(context))
 
     override fun place(ctx: BlockPlaceContext): InteractionResult {
-        val context = ctx as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL
+        val context = ctx/* as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL*/
 
         var pos = context.clickedPos
 
         val placedOnRift = context.level.getBlockState(pos).block === ModBlocks.DETACHED_RIFT
 
-        if (!placedOnRift) {
-            context.setToProperReplaced()
-            pos = context.clickedPos
-        }
+//        if (!placedOnRift) {
+//            context.setToProperReplaced()
+//            pos = context.clickedPos
+//        }
 
         if (!placedOnRift && !context.player!!.isShiftKeyDown && isRiftNear(context.level, pos)) {
             // Allowing on second right click would require cancelling client-side, which

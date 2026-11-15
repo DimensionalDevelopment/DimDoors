@@ -13,6 +13,7 @@ object ModItemTags {
     val FABRIC = Registries.ITEM.tag("fabric")
     val ANCIENT_FABRIC = Registries.ITEM.tag("ancient_fabric")
     val TRANSCENDENT_ENCHANTABLE = Registries.ITEM.tag("enchantable/transcendent")
+    val DETACH_RIFT_INTERACTING = Registries.ITEM.tag("detach_rift_interacting")
 
     val DYES = DyeColor.entries.map(::dye)
 

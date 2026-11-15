@@ -23,17 +23,17 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.api.rift.target.RedstoneTarget
-import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity
-import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.particle.client.RiftParticleOptions
+import org.dimdev.dimdoors.tag.ModItemTags
 import org.dimdev.dimdoors.world.ModDimensions.isPocketDimension
 import kotlin.jvm.optionals.getOrNull
+import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 
 class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings), RedstoneTarget, RiftProvider<DetachedRiftBlockEntity>, VisualOutline {
     init {
@@ -107,7 +107,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
     public override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.ENTITYBLOCK_ANIMATED
 
     public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().`is`(ModItemTags.DETACH_RIFT_INTERACTING))
             Shapes.block()
         else
             Shapes.empty()

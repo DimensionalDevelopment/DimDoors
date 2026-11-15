@@ -22,7 +22,6 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
-import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 import org.dimdev.dimdoors.api.util.math.eulerAngle
 import org.dimdev.dimdoors.api.util.horizontalFacing
 import org.dimdev.dimdoors.api.util.math.plus
@@ -31,10 +30,11 @@ import org.dimdev.dimdoors.api.util.math.*
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.item.DetachRiftInteracting
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
+import org.dimdev.dimdoors.tag.ModItemTags
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
+import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 
 class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings),
     TraversableRiftBlock<EntranceRiftBlockEntity.Impl>, VisualOutline {
@@ -50,7 +50,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
     }
 
     public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().`is`(ModItemTags.DETACH_RIFT_INTERACTING))
             Shapes.block()
         else
             Shapes.empty()

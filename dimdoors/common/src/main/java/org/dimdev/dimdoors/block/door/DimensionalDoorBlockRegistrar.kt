@@ -7,6 +7,7 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
@@ -71,7 +72,9 @@ object DimensionalDoorBlockRegistrar {
         populateTags(BuiltInRegistries.BLOCK, map, ModBlockTags.DIMENSIONAL_DOORS) { false }
 
     fun populateItemTags(map: ItemTagMap): ItemTagMap =
-        populateTags(BuiltInRegistries.ITEM, map, ModItemTags.DIMENSIONAL_DOORS) { false }
+        populateTags(BuiltInRegistries.ITEM, map, ModItemTags.DIMENSIONAL_DOORS) { false }.also {
+            it.getOrPut(ModItemTags.DETACH_RIFT_INTERACTING) { mutableListOf() } += it[ModItemTags.DIMENSIONAL_DOORS]!! + it[ItemTags.DOORS]!!
+        }
 
     fun getDimensionalVariant(block: Block): Block? {
         var id = block.builtInRegistryHolder().key().location()

@@ -3,23 +3,21 @@ package org.dimdev.dimdoors.item
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.context.BlockPlaceContext
-import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext
 
-class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem(block, properties), DetachRiftInteracting {
-    override fun useOn(context: UseOnContext): InteractionResult {
-        if (context.player == null) return InteractionResult.FAIL
-
-        return place(DimDoorBlockPlaceContext(context))
-    }
+class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem(block, properties) {
+//    override fun useOn(context: UseOnContext): InteractionResult {
+//        if (context.player == null) return InteractionResult.FAIL
+//
+//        return place(DimDoorBlockPlaceContext(context))
+//    }
 
     override fun place(ctx: BlockPlaceContext): InteractionResult {
-        val context = ctx as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL
+        val context = ctx //as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL
 
         if (!context.level.getBlockState(context.clickedPos).`is`(ModBlocks.DETACHED_RIFT)) return InteractionResult.FAIL
 

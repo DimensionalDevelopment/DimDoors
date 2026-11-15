@@ -138,6 +138,11 @@ class ItemTagProvider(output: FabricDataOutput, completableFuture: CompletableFu
         add(ModBlocks.GREEN_ANCIENT_FABRIC, ConventionalItemTags.GREEN_DYED, ModItemTags.ANCIENT_FABRIC)
         add(ModBlocks.RED_ANCIENT_FABRIC, ConventionalItemTags.RED_DYED, ModItemTags.ANCIENT_FABRIC)
         add(ModBlocks.BLACK_ANCIENT_FABRIC, ConventionalItemTags.BLACK_DYED, ModItemTags.ANCIENT_FABRIC)
+
+        tag(ModItemTags.DETACH_RIFT_INTERACTING).add(ModItems.RIFT_BLADE.key(), ModItems.RIFT_STABILIZER.key(), ModItems.RIFT_SIGNATURE.key(),
+            ModItems.STABILIZED_RIFT_SIGNATURE.key(), ModItems.RIFT_REMOVER.key(), ModItems.RIFT_CONFIGURATION_TOOL.key(),
+            ModItems.UNTETHERED_RIFT.key(),
+            ModBlocks.LIMINAL_TRANSMITTER.asItem().key(), ModBlocks.DIMENSIONAL_PORTAL.asItem().key())
     }
 
     private fun add(tagKey: TagKey<Item>, vararg suppliers: ItemLike) {
@@ -191,3 +196,5 @@ class ItemTagProvider(output: FabricDataOutput, completableFuture: CompletableFu
         for (tagKey in tags) tag(tagKey).add(supplier.asItem().builtInRegistryHolder().key())
     }
 }
+
+private fun Item.key(): ResourceKey<Item> = this.builtInRegistryHolder().key()

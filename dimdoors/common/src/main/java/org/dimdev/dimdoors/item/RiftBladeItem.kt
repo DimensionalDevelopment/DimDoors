@@ -25,7 +25,7 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.atan2
 
-class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings), DetachRiftInteracting {
+class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
     override fun appendHoverText(
         itemStack: ItemStack,
         level: TooltipContext,

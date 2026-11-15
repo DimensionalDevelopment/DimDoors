@@ -11,7 +11,7 @@ import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.errata.session.Errata
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 
-class RiftConfigurationToolItem internal constructor(properties: Properties) : Item(properties.stacksTo(1)), DetachRiftInteracting {
+class RiftConfigurationToolItem internal constructor(properties: Properties) : Item(properties.stacksTo(1)) {
     override fun useOn(context: UseOnContext): InteractionResult {
         val rift = context.level.getBlockEntity(context.clickedPos) as? BlockEntityRift<*> ?: return InteractionResult.PASS
         if (context.level.isClientSide) return InteractionResult.SUCCESS

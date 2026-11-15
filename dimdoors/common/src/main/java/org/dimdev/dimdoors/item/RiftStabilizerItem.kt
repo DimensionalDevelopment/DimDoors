@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import java.util.function.Consumer
 
-class RiftStabilizerItem(settings: Properties) : Item(settings), DetachRiftInteracting {
+class RiftStabilizerItem(settings: Properties) : Item(settings) {
     override fun useOn(context: UseOnContext): InteractionResult {
         val level = context.level
         val pos = context.clickedPos
