@@ -5,19 +5,14 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.world.ModDimensions
 import org.dimdev.dimdoors.world.pocket.PocketDirectory
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.Pocket
-import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.unboundedMap
-import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 
 class PocketRegistry(

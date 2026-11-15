@@ -13,23 +13,14 @@ import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.api.util.unboundedMap
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.pockets.TemplateUtils
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.targets.DelvingTarget
 import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.Pocket
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
-import org.dimdev.dimdoors.api.util.unboundedMap
 import java.util.*
 
 class DungeonRegistry(dungeons: Map<UUID, Dungeon> = emptyMap()) : SubSystem<DungeonRegistry>() {

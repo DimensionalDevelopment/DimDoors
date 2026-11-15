@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.api.util.translate
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
+import org.dimdev.dimdoors.api.util.translate
 
 object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSided()) {
 
@@ -30,6 +31,8 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val WORLD_THREAD = registerRegular("world_thread")
     @JvmField val FRAYED_FILAMENT = registerRegular("frayed_filament")
     @JvmField val RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", ::RiftConfigurationToolItem)
+
+    @JvmField val UNTETHERED_RIFT = registerRegular("untethered_rift", ::PortableRiftItem)
 
 
     //TOOLS

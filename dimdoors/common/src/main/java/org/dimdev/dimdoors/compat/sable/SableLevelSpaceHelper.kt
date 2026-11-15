@@ -26,7 +26,6 @@ import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.LevelSpaceHelper
-import org.dimdev.dimdoors.api.util.Location
 import org.joml.Matrix4d
 import java.util.*
 

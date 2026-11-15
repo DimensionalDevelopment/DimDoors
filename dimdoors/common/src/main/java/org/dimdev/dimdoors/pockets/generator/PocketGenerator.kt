@@ -24,11 +24,6 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
-import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.api.util.Weighted
-import org.dimdev.dimdoors.api.util.mutableList
-import org.dimdev.dimdoors.api.util.nullableForGetter
-import java.util.*
 
 abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     protected val builder: AbstractPocket.AbstractPocketBuilder<*, *>?,

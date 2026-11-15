@@ -2,10 +2,12 @@ package org.dimdev.dimdoors.item
 
 import com.mojang.serialization.Codec
 import net.minecraft.core.BlockPos
+import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 import org.dimdev.dimdoors.api.util.RotatedLocation
+import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.entity.mask.MaskType
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 
@@ -17,4 +19,10 @@ object ModDataComponentTypes : PlatformRegistry.DataComponentTypePlatformRegistr
 
     @JvmField
     val VIRTUAL_TARGET = create("virtual_target", VirtualTarget.CODEC, null)
+
+    val RIFT_DATA = create("rift_data", RiftData.CODEC)
+    val RIFT_CURVE = create("rift_curve", Codec.INT, ByteBufCodecs.INT.cast())
+    val RIFT_YAW = create("rift_yaw", Codec.FLOAT, ByteBufCodecs.FLOAT.cast())
+
+    val TRACKED_ITEM = create("tracked_item", UUIDUtil.CODEC, UUIDUtil.STREAM_CODEC.cast())
 }

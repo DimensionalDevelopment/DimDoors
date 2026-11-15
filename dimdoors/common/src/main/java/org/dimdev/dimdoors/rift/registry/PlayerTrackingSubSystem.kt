@@ -6,16 +6,12 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.StringRepresentable
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.util.UUIDExtensions
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.util.UUIDExtensions.derive
+import org.dimdev.dimdoors.world.pocket.type.Pocket
 import java.util.*
 
 abstract class PlayerTrackingSubSystem<V, P : Pocket<*, *>, T : PlayerTrackingSubSystem<V, P, T>>(var locations: MutableMap<UUID, UUID>) : SubSystem<T>() {

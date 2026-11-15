@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Rotations
+import net.minecraft.core.component.DataComponentMap
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
@@ -25,6 +26,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.client.RiftCurves
+import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.util.Utils
@@ -232,6 +234,19 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         list.add(CURVE_ID_BUILDER.fieldNode)
     }
 
+    override fun applyImplicitComponents(componentInput: DataComponentInput) {
+        super.applyImplicitComponents(componentInput)
+        componentInput.get(ModDataComponentTypes.RIFT_DATA)?.run { setRiftData(this) }
+        componentInput.get(ModDataComponentTypes.RIFT_CURVE)?.run { curveID = this }
+        componentInput.get(ModDataComponentTypes.RIFT_YAW)?.run { riftYaw = this }
+    }
+
+    override fun collectImplicitComponents(components: DataComponentMap.Builder) {
+        super.collectImplicitComponents(components)
+        components.set(ModDataComponentTypes.RIFT_DATA, riftData)
+        components.set(ModDataComponentTypes.RIFT_CURVE, curveID)
+        components.set(ModDataComponentTypes.RIFT_YAW, riftYaw)
+    }
 
     override val name: String  = "Detached rift"
 

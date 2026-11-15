@@ -12,6 +12,7 @@
   "mixins": [
     "BlockItemMixin",
     "DataAttachmentMixin",
+    "ItemEntityMixin",
     "PlayerMixin"
   ],
   "injectors": {

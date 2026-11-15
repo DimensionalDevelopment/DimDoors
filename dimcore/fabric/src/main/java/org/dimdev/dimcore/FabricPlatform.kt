@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.ArgumentType
 import net.minecraft.commands.synchronization.SingletonArgumentInfo
 import net.minecraft.resources.ResourceLocation
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.*
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
@@ -34,6 +35,7 @@ import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -101,6 +103,10 @@ class FabricPlatform : Platform {
         if (level is ServerLevel) consumer.invoke(level, pos, state, player)
     }
 
+    override fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit) = ServerEntityEvents.ENTITY_LOAD.register { entity, level -> consumer.invoke(level, entity) }
+
+    override fun onItemPickup(consumer: (Player, ItemStack) -> Unit) = ITEM_PICKUP.register(consumer)
+
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = CommandRegistrationCallback.EVENT.register { dispatcher, _, _ -> consumer.invoke(dispatcher) }
 
     override fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A) =
@@ -130,6 +136,12 @@ class FabricPlatform : Platform {
         @JvmField
         val PLAYER_TICK: SimpleEvent<(ServerPlayer) -> Unit> = SimpleEvent.of { listeners -> { player ->
                 listeners.forEach { listener -> listener.invoke(player) }
+            }
+        }
+
+        @JvmField
+        val ITEM_PICKUP: SimpleEvent<(Player, ItemStack) -> Unit> = SimpleEvent.of { listeners -> { player, stack ->
+                listeners.forEach { listener -> listener.invoke(player, stack) }
             }
         }
     }

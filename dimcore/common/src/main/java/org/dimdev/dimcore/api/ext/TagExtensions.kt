@@ -3,6 +3,9 @@ package org.dimdev.dimcore.api.ext
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
+import com.mojang.serialization.Codec
+import net.minecraft.nbt.*
+import java.nio.file.Path
 
 fun Tag.at(path: List<String>): Tag? = path.fold<String, Tag?>(this) { tag, key ->
     when (tag) {
@@ -22,3 +25,7 @@ fun CompoundTag.putAt(path: List<String>, value: Tag?) {
         else -> {}
     }
 }
+
+fun Path.readCompressedNbt(): CompoundTag = NbtIo.readCompressed(this, NbtAccounter.unlimitedHeap())
+
+fun <T> Tag.read(codec: Codec<T>): T? = codec.parse(NbtOps.INSTANCE, this).resultOrPartial().castOrNull()

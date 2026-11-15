@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -45,6 +46,8 @@ interface Platform {
     fun onBeforeBlockPlace(callback: BlockPlaceCallback)
     fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit)
     fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit)
+    fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit)
+    fun onItemPickup(consumer: (Player, ItemStack) -> Unit)
     fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit)
     fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A)
     fun <T : CustomPacketPayload> sendPacket(player: ServerPlayer, packet: T)

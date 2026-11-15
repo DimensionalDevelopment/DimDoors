@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.util
 
 import com.mojang.datafixers.Products.P2
+import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
@@ -27,6 +28,8 @@ object CodecUtils {
     public fun createMusic(sound: Holder<SoundEvent>): Music {
         return Music(sound, 0, 0, true)
     }
+
+    fun <L: G, R: G, G> mapEither(either: Either<L, R>): G = either.map({ it }, { it })
 
     @JvmField
     val GAME_MUSIC: Codec<Music> = Codec.withAlternative(Music.CODEC, SoundEvent.CODEC, ::createMusic)

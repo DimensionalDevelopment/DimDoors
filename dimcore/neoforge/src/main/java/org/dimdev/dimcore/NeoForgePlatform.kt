@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -31,6 +32,8 @@ import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.common.ItemAbilities
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.RegisterCommandsEvent
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent
@@ -163,6 +166,12 @@ class NeoForgePlatform : Platform {
             val level = event.level.castOrNull<ServerLevel>() ?: return@addListener
             consumer.invoke(level, event.pos, event.state, event.player)
         }
+
+    override fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit) = NeoForge.EVENT_BUS.addListener<EntityJoinLevelEvent> { event ->
+            event.level.castOrNull<ServerLevel>()?.let { consumer.invoke(it, event.entity) }
+        }
+
+    override fun onItemPickup(consumer: (Player, ItemStack) -> Unit) = NeoForge.EVENT_BUS.addListener<ItemEntityPickupEvent.Post> { event -> consumer.invoke(event.player, event.originalStack) }
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = NeoForge.EVENT_BUS.addListener<RegisterCommandsEvent> { event -> event.dispatcher.run(consumer) }
 

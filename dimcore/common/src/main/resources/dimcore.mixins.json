@@ -5,8 +5,14 @@
   "minVersion": "0.8",
   "refmap": "dimcore.refmap.json",
   "mixins": [
+    "ArmorStandMixin",
+    "ContainerBlockEntityMixin",
+    "InventoryMixin",
+    "ItemFrameMixin",
+    "MobMixin",
     "PlayerListRespawnMixin",
     "ServerPlayerTeleportMixin",
+    "SlotMixin",
     "accessor.BlockEntityTypeAccessor"
   ],
   "client": [

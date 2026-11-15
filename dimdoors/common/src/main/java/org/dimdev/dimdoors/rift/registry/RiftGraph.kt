@@ -7,6 +7,7 @@ import net.minecraft.core.UUIDUtil
 import org.dimdev.dimdoors.world.pocket.PocketInfo
 import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
 import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes
@@ -121,6 +122,7 @@ class RiftGraph(saved: List<Vertex> = emptyList(), edges: List<Edge> = emptyList
             val graph = getInstance()
 
             LocationRiftRegistry.EVENTS.registerEvents(graph)
+            ItemRiftRegistry.EVENTS.registerEvents(graph)
             PocketRegistry.PocketEvents.ADDED_POCKET_ENTRANCE.register { id, location ->
                 getInstance().addVertex(id, RegistryVertices.ENTRANCE)
 

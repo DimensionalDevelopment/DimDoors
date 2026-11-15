@@ -10,7 +10,6 @@ import org.dimdev.dimdoors.api.rift.target.TargetResolver
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.world.ModDimensions
 
 object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {

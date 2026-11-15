@@ -21,7 +21,6 @@ import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.world.ModStructuresPieces
 
 class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {

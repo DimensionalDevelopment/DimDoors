@@ -11,7 +11,6 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.math.MathUtil
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.rift.registry.LinkProperties
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.rift.targets.LocationProvider

@@ -26,18 +26,13 @@ import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock
-import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.client.ModRecipeBookTypes
-import org.dimdev.dimdoors.network.client.ClientPacketListener
 import org.dimdev.dimdoors.command.ModCommands
 import org.dimdev.dimdoors.compat.lootr.LootrCompat
 import org.dimdev.dimdoors.compat.sable.SableLevelSpaceHelper
 import org.dimdev.dimdoors.criteria.ModCriteria
-import org.dimdev.dimdoors.world.decay.Decay
-import org.dimdev.dimdoors.world.decay.conditions.DecayConditions
-import org.dimdev.dimdoors.world.decay.pattern.DecayPatterns
-import org.dimdev.dimdoors.world.decay.results.DecayResults
 import org.dimdev.dimdoors.effect.ModMobEffects
 import org.dimdev.dimdoors.enchantment.ModEnchantmentEffects
 import org.dimdev.dimdoors.entity.ModEntityTypes
@@ -50,10 +45,7 @@ import org.dimdev.dimdoors.item.MaskWearerEffects
 import org.dimdev.dimdoors.item.ModArmorMaterials
 import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.listener.*
-import org.dimdev.dimdoors.item.*
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar
-import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener
 import org.dimdev.dimdoors.item.door.data.condition.Conditions
 import org.dimdev.dimdoors.item.loot.ModItemLootConditions
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener
@@ -64,28 +56,17 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener
 import org.dimdev.dimdoors.network.packet.s2c.*
 import org.dimdev.dimdoors.particle.ModParticleTypes
 import org.dimdev.dimdoors.pockets.PocketLoader
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
-import org.dimdev.dimdoors.world.pocket.type.addon.PortalColorProvider
 import org.dimdev.dimdoors.pockets.generator.PocketGenerators
-import org.dimdev.dimdoors.listener.pocket.*
 import org.dimdev.dimdoors.pockets.modifier.Modifiers
-import org.dimdev.dimdoors.world.pocket.type.Pocket
-import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
+import org.dimdev.dimdoors.rift.item.Holder
 import org.dimdev.dimdoors.rift.registry.*
-import org.dimdev.dimdoors.rift.registry.LevelSpaceRegistry
-import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
 import org.dimdev.dimdoors.world.*
 import org.dimdev.dimdoors.world.carvers.ModCarvers
 import org.dimdev.dimdoors.world.decay.Decay
@@ -97,10 +78,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pockets
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
 import org.dimdev.dimdoors.world.pocket.type.addon.PortalColorProvider
-import org.dimdev.dimdoors.world.ChunkPlacedContentTracker
 import org.slf4j.Logger
-import org.dimdev.dimdoors.world.DataValues
-import org.dimdev.dimdoors.entity.stat.ModStats
 
 class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsSided<*>>>, EntityAttributeProvider, PacketProvider, RegistrationHooks, PackProvider, ServerReloadListenerProvider {
 
@@ -187,6 +165,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
         platform.onServerStopping {
             Decay.clearQueue()
             ServerPacketHandler.clear()
+            Holder.offline.clear()
         }
 
         registerListeners()
