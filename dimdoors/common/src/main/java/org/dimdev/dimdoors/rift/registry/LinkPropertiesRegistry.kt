@@ -3,11 +3,10 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
-import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
-import org.dimdev.dimdoors.rift.registry.SubSystem
 import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes.PROPERTIES
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -31,10 +30,12 @@ class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutabl
 
     fun setDetached(rift: UUID, detached: Boolean) {
         getOrCreate(rift).isDetached = detached
+        setDirty()
     }
 
     fun setProperties(rift: UUID, properties: LinkProperties?) {
         getOrCreate(rift).properties = properties
+        setDirty()
     }
 
     fun getProperties(rift: UUID): LinkProperties? {
