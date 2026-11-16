@@ -2,68 +2,27 @@ package org.dimdev.dimdoors.util.schematic
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import com.google.common.collect.Maps
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntityType
-import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.CommandBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.CommandBlockEntity
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.minusAssign
 import org.dimdev.dimcore.api.ext.set
 import org.dimdev.dimdoors.entity.mask.MaskEntity
 
 class RelativeBlockSample(@JvmField val schematic: Schematic) {
-    private val blockDataContainer: MutableMap<BlockPos, BlockData> = Maps.newHashMap()
+    private val blockEntities: Map<BlockPos, CompoundTag> = schematic.blocks.blockEntities.mapNotNull { nbt ->
+        nbt.getIntArray("Pos").takeIf { it.size >= 3 }?.let { BlockPos(it[0], it[1], it[2]) to toVanilla(nbt) }
+    }.toMap()
     private val entityContainer: BiMap<CompoundTag, Vec3> = HashBiMap.create()
 
-    private class BlockData {
-        var state: BlockState? = null
-        var blockEntity: CompoundTag? = null
-        var biome: ResourceKey<Biome>? = null
-    }
-
     init {
-        val blockData = schematic.blocks
-        val biomeData = schematic.biomes
-        val width = schematic.width.toInt()
-        val height = schematic.height.toInt()
-        val length = schematic.length.toInt()
-
-        fun <T> Schematic.DataBlock<T>.get(x: Int, y: Int, z: Int): T? {
-            val index = x + z * width + y * width * length
-
-            if(index >= data.size) return null
-
-            return palette.inverse().getValue(data[x + z * width + y * width * length])
-        }
-
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                for (z in 0 until length) {
-
-                    val data = blockDataContainer.computeIfAbsent(BlockPos(x, y, z)) { BlockData() }
-                    data.state = blockData.get(x, y, z)
-                    data.biome = biomeData.get(x, y, z)
-                }
-            }
-        }
-
-        for (blockEntityNbt in schematic.blocks.blockEntities) {
-            val arr = blockEntityNbt.getIntArray("Pos")
-            if (arr.size < 3) continue
-            val position = BlockPos(arr[0], arr[1], arr[2])
-
-            blockDataContainer.computeIfAbsent(position) { BlockData() }.blockEntity = toVanilla(blockEntityNbt)
-        }
-
         for (entityNbt in schematic.entities) {
             val doubles = entityNbt.getList("Pos", Tag.TAG_DOUBLE.toInt())
             this.entityContainer[toVanilla(entityNbt)] =
@@ -78,17 +37,25 @@ class RelativeBlockSample(@JvmField val schematic: Schematic) {
 
         //TODO: in 26.4, investigate how they do block precise biome setting. Use it to implment schematic biome placement.
 
+        val states = schematic.blocks.palette.inverse()
+        val data = schematic.blocks.data
+        val width = schematic.width.toInt()
+        val length = schematic.length.toInt()
+        val commandBlocks = mutableListOf<BlockPos>()
+
         runCatching {
-            this.blockDataContainer.forEach { (pos, data) ->
-                val state = data.state ?: return@forEach
+            for (index in data.indices) {
+                val state = states.getValue(data[index])
+                val pos = BlockPos(index % width, index / (width * length), index / width % length)
                 val actualPos = origin.offset(pos)
 
                 world.setBlock(actualPos, state, 0)
-                data.blockEntity?.let { BlockEntity.loadStatic(actualPos, state, it, provider) }?.let(world::setBlockEntity)
+                blockEntities[pos]?.let { BlockEntity.loadStatic(actualPos, state, it, provider) }?.let(world::setBlockEntity)
+                if (state.block is CommandBlock) commandBlocks += actualPos
             }
         }.also { shouldUpdate = true }
 
-        this.initializePlacedCommandBlocks(origin, world)
+        this.initializePlacedCommandBlocks(commandBlocks, world)
 
 
         for ((nbt, value) in this.entityContainer) {
@@ -110,13 +77,8 @@ class RelativeBlockSample(@JvmField val schematic: Schematic) {
         }
     }
 
-    private fun initializePlacedCommandBlocks(origin: BlockPos, world: ServerLevel) {
-        this.blockDataContainer.forEach { (pos, data) ->
-            if (data.state?.block !is CommandBlock) {
-                return@forEach
-            }
-
-            val actualPos = origin.offset(pos)
+    private fun initializePlacedCommandBlocks(positions: List<BlockPos>, world: ServerLevel) {
+        positions.forEach { actualPos ->
             val commandBlock = world.getBlockEntity(actualPos) as? CommandBlockEntity ?: return@forEach
 
             val state = world.getBlockState(actualPos)
