@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.datagen
 
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.PackOutput
-import org.dimdev.dimdoors.world.decay.DecayPatternHolder
+import org.dimdev.dimdoors.decay.DecayPatternHolder
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 

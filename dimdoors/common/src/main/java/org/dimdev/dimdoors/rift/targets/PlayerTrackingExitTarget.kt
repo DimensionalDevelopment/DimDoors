@@ -5,14 +5,14 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.ownerPlayerUuid
-import org.dimdev.dimcore.api.util.EntityUtils
+import org.dimdev.dimcore.util.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.player.PlayerTrackingSubSystem
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry
+import org.dimdev.dimdoors.util.Location
 
 abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : PlayerTrackingSubSystem<*, *, *>> : VirtualTarget<T>(), EntityTarget {
     override fun receiveEntity(

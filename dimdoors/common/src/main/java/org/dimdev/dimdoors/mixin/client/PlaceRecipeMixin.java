@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.mixin.client;
 import net.minecraft.recipebook.PlaceRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
+import org.dimdev.dimdoors.recipe.tesselating.ShapedTesselatingRecipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;

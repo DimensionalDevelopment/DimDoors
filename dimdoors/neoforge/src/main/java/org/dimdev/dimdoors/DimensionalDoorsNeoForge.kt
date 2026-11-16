@@ -27,7 +27,7 @@ import org.dimdev.dimdoors.fluid.EternalFluid
 import org.dimdev.dimdoors.fluid.LeakFluid
 import org.dimdev.dimdoors.fluid.ModFluidTypes
 import org.dimdev.dimdoors.item.FarShotItem
-import org.dimdev.dimdoors.world.ModBiomeModifiers
+import org.dimdev.dimdoors.worldgen.ModBiomeModifiers
 
 @Mod(DimensionalDoors.MOD_ID)
 class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsNeoForge, DimensionalDoors>(bus, DimensionalDoors.INSTANCE), IDimensionalDoorsSided<DimensionalDoorsNeoForge> {

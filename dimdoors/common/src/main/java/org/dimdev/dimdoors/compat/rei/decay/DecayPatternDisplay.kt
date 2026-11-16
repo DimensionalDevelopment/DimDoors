@@ -14,10 +14,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
-import org.dimdev.dimdoors.compat.decay.DecayDisplayData
+import org.dimdev.dimdoors.compat.recipeviewer.DecayDisplayData
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient
-import org.dimdev.dimdoors.world.decay.DecayPatternHolder
-import org.dimdev.dimdoors.world.decay.results.DecayResult
+import org.dimdev.dimdoors.decay.DecayPatternHolder
+import org.dimdev.dimdoors.decay.results.DecayResult
 import java.util.*
 
 class DecayPatternDisplay(

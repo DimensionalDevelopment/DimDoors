@@ -1,0 +1,48 @@
+package org.dimdev.dimdoors.compat.sable.mixin;
+
+import dev.ryanhcode.sable.api.block.BlockSubLevelAssemblyListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.block.DetachedRiftBlock;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
+import org.dimdev.dimdoors.rift.Rift;
+import org.dimdev.dimdoors.compat.sable.SableLevelSpaceHelper;
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry;
+import org.spongepowered.asm.mixin.Mixin;
+
+
+@Mixin(value = { DimensionalDoorBlock.class, DimensionalTrapDoorBlock.class, DimensionalPortalBlock.class, DetachedRiftBlock.class })
+public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListener {
+    @Override
+    public void beforeMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
+        var oldLocation = Location.ofWorld(originLevel, oldPos);
+        var newLocation = Location.ofWorld(resultingLevel, newPos);
+
+        var blockEntity = originLevel.getBlockEntity(oldPos);
+
+        if(blockEntity instanceof Rift<?, ?, ?> rift) {
+            if (LocationRiftRegistry.Companion.getInstance().isRiftAt(oldLocation)) {
+                    LocationRiftRegistry.Companion.getInstance().moveRift(oldLocation, newLocation);
+                    rift.setDeleteRift(false);
+            }
+        }
+    }
+
+    @Override
+    public void afterMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
+        var blockEntity = resultingLevel.getBlockEntity(newPos);
+
+        if(blockEntity instanceof Rift<?, ?, ?> rift) {
+            rift.setDeleteRift(true);
+            var newLocation = Location.ofWorld(resultingLevel, newPos);
+            var registry = LocationRiftRegistry.Companion.getInstance();
+            if (registry.isRiftAt(newLocation)) {
+                SableLevelSpaceHelper.INSTANCE.track(resultingLevel, registry.getRift(newLocation), newLocation);
+            }
+        }
+    }
+}

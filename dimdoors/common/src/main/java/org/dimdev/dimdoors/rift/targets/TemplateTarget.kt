@@ -5,14 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import org.dimdev.dimcore.api.errata.schema.Schemas
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.VirtualLocation
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.ext.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
 
 abstract class TemplateTarget<V, T: TemplateTarget<V, T>> : RestoringTarget<T>() {

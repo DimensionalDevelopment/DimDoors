@@ -22,19 +22,18 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
-import org.dimdev.dimdoors.api.util.math.eulerAngle
-import org.dimdev.dimdoors.api.util.horizontalFacing
-import org.dimdev.dimdoors.api.util.math.plus
-import org.dimdev.dimdoors.api.util.math.times
-import org.dimdev.dimdoors.api.util.math.*
+import org.dimdev.dimdoors.util.ext.eulerAngle
+import org.dimdev.dimdoors.util.ext.horizontalFacing
+import org.dimdev.dimdoors.util.ext.plus
+import org.dimdev.dimdoors.util.ext.times
+import org.dimdev.dimdoors.util.math.*
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.dimdev.dimdoors.tag.ModItemTags
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
-import org.dimdev.dimdoors.api.util.IDimDoorsCollisionContext
 
 class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings),
     TraversableRiftBlock<EntranceRiftBlockEntity.Impl>, VisualOutline {

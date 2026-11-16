@@ -9,11 +9,11 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.api.util.HolderWeightedList
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
+import org.dimdev.dimdoors.util.HolderWeightedList
+import org.dimdev.dimdoors.util.math.Equation
 import java.util.stream.Stream
 
 class TagReference(

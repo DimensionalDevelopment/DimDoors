@@ -13,8 +13,8 @@ import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock
 import org.dimdev.dimdoors.api.entity.LastPositionProvider
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
 import org.dimdev.dimdoors.rift.RiftUtils
 
 interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {

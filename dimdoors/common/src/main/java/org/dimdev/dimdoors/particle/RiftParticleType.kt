@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
-import org.dimdev.dimdoors.particle.client.RiftParticleOptions
+import org.dimdev.dimdoors.client.particle.RiftParticleOptions
 
 object RiftParticleType : ParticleType<RiftParticleOptions>(true) {
     override fun codec(): MapCodec<RiftParticleOptions> = RiftParticleOptions.CODEC

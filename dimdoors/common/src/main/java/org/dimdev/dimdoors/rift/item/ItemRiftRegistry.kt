@@ -14,10 +14,10 @@ import org.dimdev.dimcore.api.ext.nested
 import org.dimdev.dimcore.api.ext.stacks
 import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.rift.RiftRegistry
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 import java.util.*
 
 

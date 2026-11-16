@@ -7,12 +7,12 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.VirtualLocation
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.HubRegistry
-import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.type.HubPocket
+import org.dimdev.dimdoors.pockets.type.HubPocket
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.player.HubRegistry
+import org.dimdev.dimdoors.subsystem.player.PlayerTrackingSubSystem
 import java.util.*
 
 object HubPocketTarget : VirtualTarget<HubPocketTarget>(), PlayerTrackingEntranceTarget<HubRegistry.HubKey, HubPocket, HubRegistry> {

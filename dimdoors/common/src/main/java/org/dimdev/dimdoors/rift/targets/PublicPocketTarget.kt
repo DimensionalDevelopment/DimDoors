@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.MapCodec
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper.PUBLIC
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.pockets.VirtualLocation.Companion.fromLocation
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.VirtualLocation.Companion.fromLocation
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.util.Location
 
 object PublicPocketTarget : RestoringTarget<PublicPocketTarget>() {
     override fun makeLinkTarget(owner: Vertex): Location? {

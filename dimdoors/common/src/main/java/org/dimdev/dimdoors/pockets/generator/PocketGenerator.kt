@@ -11,19 +11,19 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity
 import org.apache.logging.log4j.LogManager
 import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.api.util.Weighted
-import org.dimdev.dimdoors.api.util.math.Equation
-import org.dimdev.dimdoors.api.util.mutableList
-import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.pockets.PocketCreator
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.pockets.modifier.RiftManager
+import org.dimdev.dimdoors.pockets.type.AbstractPocket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.pockets.type.PocketImpl.Companion.builder
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
-import org.dimdev.dimdoors.world.pocket.type.Pocket
-import org.dimdev.dimdoors.world.pocket.type.PocketImpl.Companion.builder
+import org.dimdev.dimdoors.util.Weighted
+import org.dimdev.dimdoors.util.ext.mutableList
+import org.dimdev.dimdoors.util.ext.nullableForGetter
+import org.dimdev.dimdoors.util.math.Equation
 
 abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     protected val builder: AbstractPocket.AbstractPocketBuilder<*, *>?,

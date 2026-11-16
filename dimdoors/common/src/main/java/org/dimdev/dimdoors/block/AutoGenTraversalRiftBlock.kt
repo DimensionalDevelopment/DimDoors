@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.block
 
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 
 interface AutoGenTraversalRiftBlock<T : EntranceRiftBlockEntity<T>> : TraversableRiftBlock<T> {
     val originalBlock: Block

@@ -13,7 +13,7 @@ package org.dimdev.dimdoors.mixin;//package org.dimdev.dimdoors.mixin;
 //import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 //import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 //import net.minecraft.world.level.storage.LevelStorageSource;
-//import org.dimdev.dimdoors.api.util.SchematicStructureTemplate;
+//import org.dimdev.dimdoors.util.schematic.SchematicStructureTemplate;
 //import org.slf4j.Logger;
 //import org.spongepowered.asm.mixin.Final;
 //import org.spongepowered.asm.mixin.Mixin;

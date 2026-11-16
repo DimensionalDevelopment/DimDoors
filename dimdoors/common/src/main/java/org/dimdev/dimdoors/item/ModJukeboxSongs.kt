@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item
 
 import net.minecraft.core.registries.Registries
-import org.dimdev.dimdoors.api.util.key
+import org.dimdev.dimdoors.util.ext.key
 
 object ModJukeboxSongs {
     val CREEPY = Registries.JUKEBOX_SONG.key("creepy")

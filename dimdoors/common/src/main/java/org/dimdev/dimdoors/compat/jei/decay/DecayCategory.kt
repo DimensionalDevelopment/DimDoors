@@ -8,8 +8,8 @@ import mezz.jei.api.recipe.category.AbstractRecipeCategory
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.compat.decay.DecayDisplayData
 import org.dimdev.dimdoors.compat.jei.ModRecipeTypes
+import org.dimdev.dimdoors.compat.recipeviewer.DecayDisplayData
 
 class DecayCategory(private val guiHelper: IGuiHelper) : AbstractRecipeCategory<DecayDisplayData>(
     ModRecipeTypes.DECAY,

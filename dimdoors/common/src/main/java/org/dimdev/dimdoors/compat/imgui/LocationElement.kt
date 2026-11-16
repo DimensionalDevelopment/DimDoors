@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.errata.schema.ReferenceNode
 import org.dimdev.dimcore.client.errata.ErrataClient
 import org.dimdev.dimcore.client.errata.element.SchemaElement
-import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.util.Location
 import kotlin.jvm.optionals.getOrNull
 
 object LocationElement : SchemaElement {

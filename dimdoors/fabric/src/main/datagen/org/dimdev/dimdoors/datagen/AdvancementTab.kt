@@ -15,13 +15,13 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Blocks
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.criteria.ModCriteria
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.util.ext.tag
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import java.util.*
 import java.util.function.Consumer
 

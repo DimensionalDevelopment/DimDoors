@@ -18,12 +18,12 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.Enchantments
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.event.PlayerTeleportEvents
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.DataValues
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.entity.mask.MaskEvents
 import org.dimdev.dimdoors.entity.mask.MaskType
 import org.dimdev.dimdoors.rift.targets.LimboTarget
-import org.dimdev.dimdoors.world.DataValues
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import kotlin.math.min
 
 object MaskWearerEffects {

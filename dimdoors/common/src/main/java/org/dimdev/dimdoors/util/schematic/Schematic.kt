@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.minusAssign
 import org.dimdev.dimcore.api.ext.set
-import org.dimdev.dimdoors.util.CodecUtils
+import org.dimdev.dimdoors.util.codec.CodecUtils
 import java.util.*
 
 class Schematic(

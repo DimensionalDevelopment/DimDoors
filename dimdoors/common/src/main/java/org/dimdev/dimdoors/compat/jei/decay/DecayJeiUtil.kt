@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.compat.decay.DecayDisplayData
-import org.dimdev.dimdoors.world.decay.results.DecayResult
+import org.dimdev.dimdoors.compat.recipeviewer.DecayDisplayData
+import org.dimdev.dimdoors.decay.results.DecayResult
 
 object DecayJeiUtil {
     @JvmStatic

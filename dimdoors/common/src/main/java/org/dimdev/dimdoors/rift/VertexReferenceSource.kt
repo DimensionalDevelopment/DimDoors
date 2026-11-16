@@ -7,9 +7,9 @@ import net.minecraft.server.level.ServerPlayer
 import org.dimdev.dimcore.api.errata.reference.ReferenceEntry
 import org.dimdev.dimcore.api.errata.reference.ReferenceSource
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
 import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import kotlin.jvm.optionals.getOrNull
 

@@ -6,7 +6,7 @@ import org.dimdev.dimcore.api.Platform;
 import org.dimdev.dimcore.api.client.ClientPlatform;
 import org.dimdev.dimcore.api.event.DebugTextEvents;
 import org.dimdev.dimcore.client.FabricClientPlatform;
-import org.dimdev.dimdoors.world.DataValues;
+import org.dimdev.dimdoors.DataValues;
 import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.injection.At;

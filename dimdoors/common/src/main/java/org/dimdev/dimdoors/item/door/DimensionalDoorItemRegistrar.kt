@@ -19,9 +19,8 @@ import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.item.ItemExtensions
-import org.dimdev.dimdoors.item.door.data.RiftDataList
 import org.dimdev.dimdoors.rift.targets.EscapeTarget
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget
 import java.util.function.Consumer

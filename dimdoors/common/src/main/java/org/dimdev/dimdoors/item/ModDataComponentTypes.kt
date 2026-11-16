@@ -6,10 +6,10 @@ import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
-import org.dimdev.dimdoors.api.util.RotatedLocation
-import org.dimdev.dimdoors.block.entity.RiftData
 import org.dimdev.dimdoors.entity.mask.MaskType
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
+import org.dimdev.dimdoors.util.RotatedLocation
 
 object ModDataComponentTypes : PlatformRegistry.DataComponentTypePlatformRegistry(getSided()) {
     val DESTINATION = create("destination", RotatedLocation.CODEC, RotatedLocation.STREAM_CODEC.cast())

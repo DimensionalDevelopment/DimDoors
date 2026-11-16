@@ -5,19 +5,19 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimcore.api.util.EntityUtils.chat
+import org.dimdev.dimcore.util.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.VirtualLocation
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.DialingAddress
-import org.dimdev.dimdoors.rift.registry.DialingRegistry
-import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.type.DialingPocket
+import org.dimdev.dimdoors.pockets.type.DialingPocket
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.player.DialingAddress
+import org.dimdev.dimdoors.subsystem.player.DialingRegistry
+import org.dimdev.dimdoors.subsystem.player.PlayerTrackingSubSystem
+import org.dimdev.dimdoors.util.Location
 import java.util.*
 
 interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPocket, DialingRegistry> {

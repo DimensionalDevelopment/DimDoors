@@ -10,11 +10,11 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.material.FogType
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient.renderSky
-import org.dimdev.dimdoors.network.client.ClientPacketListener.getAddonClient
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.EnvironmentAddon
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
+import org.dimdev.dimdoors.client.network.ClientPacketListener.getAddonClient
+import org.dimdev.dimdoors.pockets.addon.PocketAddons
+import org.dimdev.dimdoors.pockets.addon.environment.EnvironmentAddon
+import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyData
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import org.joml.Matrix4f
 
 enum class DungeonDimensionEffect : DimensionEffect {

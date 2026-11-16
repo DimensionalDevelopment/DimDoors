@@ -7,7 +7,7 @@ import net.minecraft.client.Camera
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.EndSkyData
+import org.dimdev.dimdoors.pockets.addon.environment.sky.EndSkyData
 import org.joml.Matrix4f
 
 object EndEnvironmentRendering {

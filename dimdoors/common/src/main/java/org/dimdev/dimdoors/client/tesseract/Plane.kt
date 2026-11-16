@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.client.tesseract
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.texture.OverlayTexture
-import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.util.RGBA
 import org.joml.Matrix4f
 import org.joml.Vector4f
 

@@ -7,7 +7,7 @@ import net.minecraft.data.tags.TagsProvider
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes
 import net.minecraft.world.level.dimension.DimensionType
 import org.dimdev.dimdoors.tag.DimensionTypeTags
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import java.util.concurrent.CompletableFuture
 
 class LevelTagProvider(output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : TagsProvider<DimensionType>(output, Registries.DIMENSION_TYPE, registriesFuture) {

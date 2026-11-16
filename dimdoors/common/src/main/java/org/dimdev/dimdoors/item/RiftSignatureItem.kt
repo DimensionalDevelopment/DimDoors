@@ -18,14 +18,14 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.ModGameRules
-import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.util.LevelSpaceHelper
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.util.RotatedLocation
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import kotlin.jvm.optionals.getOrNull
 
 open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : Item(settings) {

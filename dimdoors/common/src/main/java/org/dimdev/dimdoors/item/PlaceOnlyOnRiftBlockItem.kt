@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Block
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 
 class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem(block, properties) {
 //    override fun useOn(context: UseOnContext): InteractionResult {

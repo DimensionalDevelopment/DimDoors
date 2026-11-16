@@ -12,9 +12,9 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.rift.item.Holder
 import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
-import org.dimdev.dimdoors.rift.registry.RiftGraph
 import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
 
 class PortableRiftItem(properties: Properties) : Item(properties), ItemRift {
 

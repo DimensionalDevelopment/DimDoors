@@ -7,7 +7,8 @@ import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.ResourceLocation
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer.Companion.TESSERACT_PATH
+import org.dimdev.dimdoors.client.render.blockentity.DetachedRiftBlockEntityRenderer.Companion.TESSERACT_PATH
+import org.dimdev.dimdoors.client.render.blockentity.RiftCrackRenderer
 import org.lwjgl.opengl.GL11
 
 object RenderTypes {

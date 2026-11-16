@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.api.rift.target
 import net.minecraft.core.Rotations
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
 
 fun interface EntityTarget : Target {
     fun receiveEntity(

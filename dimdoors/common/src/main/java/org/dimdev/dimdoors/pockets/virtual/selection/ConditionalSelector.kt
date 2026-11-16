@@ -5,15 +5,15 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
-import org.dimdev.dimdoors.api.util.math.Equation
-import org.dimdev.dimdoors.api.util.mutableList
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.NoneVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.util.ext.mutableList
+import org.dimdev.dimdoors.util.math.Equation
 
 class ConditionalSelector(override val level: ResourceKey<Level>, val pocketMap: MutableList<ConditionalPocket>) : ImplementedVirtualPocket<ConditionalSelector> {
     override fun prepareAndPlacePocket(parameters: PocketGenerationContext, setupLoot: Boolean?): Pocket<*, *>? {

@@ -16,8 +16,8 @@ import net.minecraft.world.level.storage.LevelResource
 import org.dimdev.dimcore.api.ext.*
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.util.CodecUtils
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.codec.CodecUtils
 import java.nio.file.Files
 import java.util.*
 

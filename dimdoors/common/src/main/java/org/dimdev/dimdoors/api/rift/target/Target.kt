@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.api.rift.target
 
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
 
 interface Target {
     // Allows a target to have a default case and forward everything

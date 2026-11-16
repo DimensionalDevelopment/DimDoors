@@ -6,14 +6,14 @@ import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.PocketLoader
 import org.dimdev.dimdoors.pockets.PocketTemplate
 import org.dimdev.dimdoors.pockets.modifier.Modifier
-import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.AbstractPocket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.util.math.Equation
 import kotlin.jvm.optionals.getOrNull
 
 class SchematicGenerator(

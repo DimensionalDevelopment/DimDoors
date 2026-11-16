@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.pockets.virtual.selection
 
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
-import org.dimdev.dimdoors.api.util.WeightedList
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.util.WeightedList
 
 abstract class AbstractVirtualPocketList<T : AbstractVirtualPocketList<T>>(override val level: ResourceKey<Level>) : WeightedList<VirtualPocket, PocketGenerationContext>(), ImplementedVirtualPocket<T> {
     override fun prepareAndPlacePocket(parameters: PocketGenerationContext): Pocket<*, *>? =

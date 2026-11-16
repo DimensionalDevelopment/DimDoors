@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.compat.jei.ModRecipeTypes
-import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.ShapedTesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 
 class TesselatingRecipeCategory(private val guiHelper: IGuiHelper) : AbstractRecipeCategory<RecipeHolder<TesselatingRecipe>>(
     ModRecipeTypes.TESSELATING,

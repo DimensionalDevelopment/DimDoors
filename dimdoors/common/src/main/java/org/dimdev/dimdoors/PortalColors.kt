@@ -8,9 +8,9 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.util.GsonHelper
 import net.minecraft.world.item.DyeColor
 import net.minecraft.world.level.Level
-import org.dimdev.dimcore.api.util.function.StreamUtils
-import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimcore.util.util.function.StreamUtils
 import org.dimdev.dimdoors.util.Utils
+import org.dimdev.dimdoors.util.ext.unboundedMap
 import java.io.IOException
 import java.util.*
 import java.util.stream.IntStream

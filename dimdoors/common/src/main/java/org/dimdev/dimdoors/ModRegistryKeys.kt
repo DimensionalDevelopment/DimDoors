@@ -6,25 +6,25 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimcore.api.BuilderType
 import org.dimdev.dimcore.api.Type
-import org.dimdev.dimdoors.block.entity.RiftData
-import org.dimdev.dimdoors.item.door.data.RiftDataList
-import org.dimdev.dimdoors.item.door.data.condition.Condition
+import org.dimdev.dimdoors.decay.conditions.DecayCondition
+import org.dimdev.dimdoors.decay.pattern.DecayPattern
+import org.dimdev.dimdoors.decay.results.DecayResult
+import org.dimdev.dimdoors.item.door.RiftDataList
+import org.dimdev.dimdoors.item.door.condition.Condition
+import org.dimdev.dimdoors.pockets.addon.PocketAddon
+import org.dimdev.dimdoors.pockets.addon.environment.Environment
+import org.dimdev.dimdoors.pockets.addon.environment.cloud.CloudData
+import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyData
+import org.dimdev.dimdoors.pockets.addon.environment.weather.WeatherData
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.modifier.Modifier
+import org.dimdev.dimdoors.pockets.type.AbstractPocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.world.decay.conditions.DecayCondition
-import org.dimdev.dimdoors.world.decay.pattern.DecayPattern
-import org.dimdev.dimdoors.world.decay.results.DecayResult
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environment
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
 
 object ModRegistryKeys {
     @JvmField val POCKET_GENERATOR_TYPE = "pocket_generator_type".type<MapCodec<out PocketGenerator<*>>>()

@@ -4,14 +4,14 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.api.util.key
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.item.door.data.RiftDataList
-import org.dimdev.dimdoors.item.door.data.condition.Condition
+import org.dimdev.dimdoors.item.door.RiftDataList
+import org.dimdev.dimdoors.item.door.condition.Condition
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
-import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.*
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.util.ext.key
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 object DoorDataDataGen {
     fun bootstrap(ctx: DimDoorsDynamicRegistryProvider.RegistrationHelper) {

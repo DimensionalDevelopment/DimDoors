@@ -16,14 +16,13 @@ import org.dimdev.dimcore.api.errata.subject.ConfigSubject
 import org.dimdev.dimcore.api.ext.at
 import org.dimdev.dimcore.api.ext.putAt
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.block.entity.*
-import org.dimdev.dimdoors.block.entity.CodecRecord
-import org.dimdev.dimdoors.block.entity.Deserialize
-import org.dimdev.dimdoors.block.entity.Serialize
+import org.dimdev.dimdoors.blockentity.*
+import org.dimdev.dimdoors.blockentity.CodecRecord
+import org.dimdev.dimdoors.blockentity.Deserialize
+import org.dimdev.dimdoors.blockentity.Serialize
 import org.dimdev.dimdoors.command.literal
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import kotlin.jvm.optionals.getOrNull
-import org.dimdev.dimdoors.block.entity.RiftData
 
 class RiftConfigSubject<T : Rift<T, H, *>, H: LocationProvider>(val rift: T, val holder: H, private val hand: InteractionHand, private val item: Item) : ConfigSubject {
     override val title: Component get() = rift.name.literal() //TODO: Later turn this into a component.

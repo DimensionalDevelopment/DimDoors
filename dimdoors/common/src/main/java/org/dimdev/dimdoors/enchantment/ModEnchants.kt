@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.enchantment
 
 import net.minecraft.core.registries.Registries
-import org.dimdev.dimdoors.api.util.key
+import org.dimdev.dimdoors.util.ext.key
 
 object ModEnchants {
     @JvmField val STRING_THEORY_ENCHANTMENT = Registries.ENCHANTMENT.key("string_theory")

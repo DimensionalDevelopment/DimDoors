@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 import java.util.*
 
 abstract class DefaultTesselatingDisplay<C : TesselatingRecipe>(val recipe: RecipeHolder<C>) : BasicDisplay(

@@ -4,10 +4,10 @@ import imgui.ImGui
 import imgui.flag.ImGuiWindowFlags
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
-import org.dimdev.dimcore.api.util.function.StreamUtils
+import org.dimdev.dimcore.util.util.function.StreamUtils
 import org.dimdev.dimdoors.PortalColors.base
 import org.dimdev.dimdoors.client.ModShaders
-import org.dimdev.dimdoors.client.RiftCrackRenderer
+import org.dimdev.dimdoors.client.render.blockentity.RiftCrackRenderer
 import java.util.*
 import java.util.function.IntFunction
 import java.util.stream.Collectors

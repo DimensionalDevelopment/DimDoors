@@ -7,9 +7,9 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.util.schematic.Schematic
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 sealed interface PocketTemplate {
     val size: Vec3i

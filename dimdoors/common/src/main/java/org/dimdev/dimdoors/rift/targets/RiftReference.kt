@@ -6,12 +6,12 @@ import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.rift.RiftPlaceholder
 import org.dimdev.dimdoors.rift.VertexReferenceSource
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.RiftPlaceholder
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.RGBA
 import org.dimdev.dimdoors.util.UUIDExtensions.rift
 
 /**

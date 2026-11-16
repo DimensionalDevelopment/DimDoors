@@ -8,13 +8,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.RiftGraph
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.api.util.unboundedMap
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.util.ext.unboundedMap
 import java.util.*
 
 abstract class RiftRegistry<T: LocationProvider, R: RiftRegistry<T, R>>(

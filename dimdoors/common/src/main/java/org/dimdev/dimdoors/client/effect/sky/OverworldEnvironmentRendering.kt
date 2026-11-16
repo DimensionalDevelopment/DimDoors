@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.LightTexture
 import net.minecraft.util.Mth
 import org.dimdev.dimdoors.client.CloudRenderBuffer
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.OverworldCloudData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.OverWorldSkyData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.OverworldWeatherData
+import org.dimdev.dimdoors.pockets.addon.environment.cloud.OverworldCloudData
+import org.dimdev.dimdoors.pockets.addon.environment.sky.OverWorldSkyData
+import org.dimdev.dimdoors.pockets.addon.environment.weather.OverworldWeatherData
 import org.joml.Matrix4f
 
 object OverworldEnvironmentRendering {

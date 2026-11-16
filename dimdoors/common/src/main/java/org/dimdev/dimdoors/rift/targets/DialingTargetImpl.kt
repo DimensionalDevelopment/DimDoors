@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.dimdev.dimdoors.rift.registry.DialingAddress
+import org.dimdev.dimdoors.subsystem.player.DialingAddress
 
 class DialingTargetImpl(override var address: DialingAddress) : VirtualTarget<DialingTargetImpl>(), DialingTarget {
     override val type get() = VirtualTargets.DIALING

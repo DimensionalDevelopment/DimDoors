@@ -8,13 +8,13 @@ import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimdoors.api.util.BlockPosUtil
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.BlockPosUtil
 import org.dimdev.dimdoors.util.LevelSpaceHelper
+import org.dimdev.dimdoors.util.Location
 
 object TargetResolver {
     fun <T : Target> target(location: Location?, clazz: Class<T>): T? = location?.run { target(this.world, this.blockPos, clazz) }

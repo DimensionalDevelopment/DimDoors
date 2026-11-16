@@ -4,7 +4,7 @@ import net.minecraft.client.RecipeBookCategories
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
-import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent
+import org.dimdev.dimdoors.api.event.RegisterRecipeBookCategoriesEvent
 import org.dimdev.dimdoors.client.DimensionalDoorsClient.clientSided
 import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.recipe.ModRecipeTypes

@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 data class PocketEntranceModifier(val id: Int) : Modifier {
     override fun toString(): String = MoreObjects.toStringHelper(this).add("id", id).toString()

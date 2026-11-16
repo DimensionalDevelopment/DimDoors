@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 import noobanidus.mods.lootr.common.api.replacement.ILootrBlockReplacementProvider
-import org.dimdev.dimdoors.api.util.tag
+import org.dimdev.dimdoors.util.ext.tag
 
 class DriftWoodChestReplacmentProvider : ILootrBlockReplacementProvider {
     override fun getPriority(): Int = 10

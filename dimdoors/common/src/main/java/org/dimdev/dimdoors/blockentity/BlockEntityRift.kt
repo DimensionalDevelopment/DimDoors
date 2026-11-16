@@ -8,17 +8,17 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.rift.Rift
-import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
-import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
+import org.dimdev.dimdoors.util.Location
 import java.util.function.Consumer
 
 interface BlockEntityRift<R> : Rift<R, Location, LocationRiftRegistry>, LocationProvider where R : BlockEntity, R : BlockEntityRift<R> {

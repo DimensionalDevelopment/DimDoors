@@ -24,9 +24,9 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.RiftBlockEntity
+import org.dimdev.dimdoors.subsystem.graph.Vertex
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.rift.targets.Targets

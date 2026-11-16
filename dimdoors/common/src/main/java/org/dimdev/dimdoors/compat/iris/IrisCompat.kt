@@ -4,9 +4,9 @@ import net.irisshaders.iris.api.v0.IrisApi
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings
 import net.irisshaders.iris.uniforms.CapturedRenderingState
 import net.minecraft.client.renderer.RenderType
-import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.client.ShaderPackDetector
+import org.dimdev.dimdoors.client.render.DimensionalPortalRenderer
 
 /*
  * Iris compat for dimensional portal rendering by feeding a entity solid RenderType with the warp.png's path when shaders are active and use the normal one when not.

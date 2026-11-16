@@ -4,6 +4,7 @@ import net.minecraft.world.entity.MobCategory
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.entity.mask.MaskEntity
+import org.dimdev.dimdoors.entity.monolith.MonolithEntity
 
 object ModEntityTypes : PlatformRegistry.EntityTypePlatformRegistry(DimensionalDoors.getSided()) {
     @JvmField

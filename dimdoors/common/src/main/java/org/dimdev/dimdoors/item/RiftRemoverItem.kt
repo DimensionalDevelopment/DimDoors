@@ -18,10 +18,10 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.client.ToolTipHelper
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.loot.ModLootTables
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.world.ModLootTables
 
 class RiftRemoverItem(settings: Properties) : Item(settings) {
     override fun appendHoverText(

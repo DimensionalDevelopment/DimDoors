@@ -7,10 +7,10 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 object UnstableTarget : VirtualTarget<UnstableTarget>(), EntityTarget {
     override val type get() = VirtualTargets.UNSTABLE

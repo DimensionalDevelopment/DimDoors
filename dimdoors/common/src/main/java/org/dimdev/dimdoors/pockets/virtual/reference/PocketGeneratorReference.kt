@@ -7,12 +7,12 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.util.math.Equation
 import kotlin.jvm.optionals.getOrNull
 
 abstract class PocketGeneratorReference<T : PocketGeneratorReference<T>>(

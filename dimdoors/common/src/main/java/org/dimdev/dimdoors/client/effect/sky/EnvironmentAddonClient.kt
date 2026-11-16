@@ -6,12 +6,12 @@ import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.LightTexture
 import org.dimdev.dimcore.api.Type
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherData
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherDatum
+import org.dimdev.dimdoors.pockets.addon.environment.cloud.CloudData
+import org.dimdev.dimdoors.pockets.addon.environment.cloud.CloudDatum
+import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyData
+import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyDatum
+import org.dimdev.dimdoors.pockets.addon.environment.weather.WeatherData
+import org.dimdev.dimdoors.pockets.addon.environment.weather.WeatherDatum
 import org.joml.Matrix4f
 
 

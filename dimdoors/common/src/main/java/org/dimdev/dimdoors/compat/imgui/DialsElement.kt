@@ -5,7 +5,7 @@ import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.NumericTag
 import net.minecraft.nbt.Tag
 import org.dimdev.dimcore.client.errata.element.SchemaElement
-import org.dimdev.dimdoors.rift.registry.DialingAddress
+import org.dimdev.dimdoors.subsystem.player.DialingAddress
 
 object DialsElement : SchemaElement {
     override fun edit(context: SchemaElement.Context): Tag? {

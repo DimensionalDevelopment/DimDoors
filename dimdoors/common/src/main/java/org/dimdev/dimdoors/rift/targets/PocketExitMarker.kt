@@ -5,10 +5,10 @@ import net.minecraft.core.Rotations
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimcore.api.util.EntityUtils.chat
+import org.dimdev.dimcore.util.util.EntityUtils.chat
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
 
 object PocketExitMarker : VirtualTarget<PocketExitMarker>(), EntityTarget {
     override fun receiveEntity(

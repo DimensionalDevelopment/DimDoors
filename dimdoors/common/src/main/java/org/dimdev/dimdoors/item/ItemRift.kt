@@ -2,13 +2,13 @@ package org.dimdev.dimdoors.item
 
 import net.minecraft.world.item.ItemStack
 import org.dimdev.dimdoors.rift.Rift
-import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.rift.item.Holder
 import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 
 interface ItemRift : Rift<ItemRift, Holder, ItemRiftRegistry> {
     private fun stack(holder: Holder): ItemStack? = riftRegistry.idAt(holder)?.let { holder.findStack(it) }

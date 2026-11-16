@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.api.event
 
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.chunk.LevelChunk
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 
 fun interface ChunkServedCallback {
     fun onChunkServed(level: ServerLevel, chunk: LevelChunk)

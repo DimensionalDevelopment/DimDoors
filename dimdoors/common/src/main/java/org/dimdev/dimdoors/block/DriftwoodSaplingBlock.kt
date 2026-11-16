@@ -5,7 +5,7 @@ import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.SaplingBlock
 import net.minecraft.world.level.block.grower.TreeGrower
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimdoors.world.feature.ModFeatures
+import org.dimdev.dimdoors.worldgen.feature.ModFeatures
 import java.util.*
 
 class DriftwoodSaplingBlock(properties: Properties) : SaplingBlock(

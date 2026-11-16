@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.DimCore.transfer
 import org.dimdev.dimcore.api.ext.cast
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 
 class TransferType<U : Unit<U>> private constructor(
     private val id: ResourceLocation,

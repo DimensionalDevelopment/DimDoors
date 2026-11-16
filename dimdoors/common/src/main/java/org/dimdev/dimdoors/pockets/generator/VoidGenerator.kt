@@ -4,12 +4,12 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.modifier.Modifier
-import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.AbstractPocket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.util.math.Equation
 import kotlin.jvm.optionals.getOrNull
 
 class VoidGenerator(

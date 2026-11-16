@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.phys.BlockHitResult
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.TesselatingLoomBlockEntity
 
 class TesselatingLoomBlock(builder: Properties) : BaseEntityBlock(builder) {
     init {

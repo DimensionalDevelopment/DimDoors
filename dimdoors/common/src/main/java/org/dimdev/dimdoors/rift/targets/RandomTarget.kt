@@ -14,22 +14,24 @@ import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
-import org.dimdev.dimdoors.api.util.math.MathUtil
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.Location.Companion.ofWorld
+import org.dimdev.dimdoors.util.math.MathUtil
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper.ALL_DUNGEONS
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.*
-import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
+import org.dimdev.dimdoors.rift.link.*
+import org.dimdev.dimdoors.subsystem.graph.*
+import org.dimdev.dimdoors.subsystem.pocket.*
+import org.dimdev.dimdoors.rift.link.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.pockets.type.Pocket
 import kotlin.math.*
 
 abstract class RandomTarget<T : RandomTarget<T>>(

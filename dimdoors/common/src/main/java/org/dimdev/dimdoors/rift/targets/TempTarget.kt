@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
 
 class TempTarget(private val temp: VirtualTarget<*>, private val original: VirtualTarget<*>) : VirtualTarget<TempTarget>() {
     override val type get() = VirtualTargets.TEMP

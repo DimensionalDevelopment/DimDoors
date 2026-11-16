@@ -5,7 +5,7 @@ import net.minecraft.world.inventory.RecipeBookType
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.RecipeType
-import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent
+import org.dimdev.dimdoors.api.event.RegisterRecipeBookCategoriesEvent
 import org.dimdev.dimdoors.mixin.client.RecipeBookCategoriesAccessor
 
 object RecipeBookManager {

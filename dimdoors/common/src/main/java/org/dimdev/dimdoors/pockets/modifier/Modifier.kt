@@ -7,7 +7,7 @@ import net.minecraft.resources.RegistryFileCodec
 import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.Pocket
 
 interface Modifier : MapCodecHasHolder<Modifier> {
 

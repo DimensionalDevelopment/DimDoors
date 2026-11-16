@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.rift.targets
 
 import com.mojang.serialization.MapCodec
-import org.dimdev.dimdoors.api.util.RGBA
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.HubRegistry
+import org.dimdev.dimdoors.util.RGBA
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.player.HubRegistry
 
 object HubPocketExitTarget : PlayerTrackingExitTarget<HubPocketExitTarget, HubRegistry>() {
     val color: RGBA = RGBA(0f, 0.5f, 1f, 1f)

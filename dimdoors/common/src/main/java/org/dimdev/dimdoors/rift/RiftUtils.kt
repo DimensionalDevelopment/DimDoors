@@ -6,9 +6,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.Half
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.util.Location
 import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.util.Timer.Companion.create
 import kotlin.math.abs

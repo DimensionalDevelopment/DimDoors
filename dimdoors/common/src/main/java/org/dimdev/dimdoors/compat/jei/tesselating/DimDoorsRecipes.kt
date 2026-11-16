@@ -6,7 +6,7 @@ import mezz.jei.library.plugins.vanilla.crafting.CategoryRecipeValidator
 import net.minecraft.client.Minecraft
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 
 class DimDoorsRecipes(private val ingredientManager: IIngredientManager) {
     private val recipeManager = Minecraft.getInstance().level?.recipeManager

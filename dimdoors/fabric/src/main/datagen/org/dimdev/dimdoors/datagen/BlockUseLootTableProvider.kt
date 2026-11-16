@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.world.ModLootTables
+import org.dimdev.dimdoors.loot.ModLootTables
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 

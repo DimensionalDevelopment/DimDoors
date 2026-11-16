@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.datagen
 
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 
 abstract class SimpleTesselatingRecipeBuilder<T : TesselatingRecipe, V>(private val result: ItemStack) : TesselatingRecipeBuilder<T, V>() {
     override fun getResult(): Item = this.result.getItem()

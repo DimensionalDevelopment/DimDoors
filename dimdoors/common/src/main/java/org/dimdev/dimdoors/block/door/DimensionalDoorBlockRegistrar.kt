@@ -27,8 +27,8 @@ import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.event.RegisterDimensionalDoorProductionsCallback
 import org.dimdev.dimdoors.block.AutoGenTraversalRiftBlock
 import org.dimdev.dimdoors.block.DoorSoundProvider
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar
 import org.dimdev.dimdoors.tag.ModBlockTags
 import org.dimdev.dimdoors.tag.ModItemTags

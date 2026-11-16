@@ -6,11 +6,11 @@ import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.api.CreativeTab
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.translate
+import org.dimdev.dimdoors.util.ext.translate
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
-import org.dimdev.dimdoors.api.util.translate
+import org.dimdev.dimdoors.util.ext.translate
 
 object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSided()) {
 

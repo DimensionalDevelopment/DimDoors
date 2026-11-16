@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.ItemLike
-import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingShapelessRecipe
 
 class ShapelessTesselatingRecipeBuilder(result: ItemStack) :
     SimpleTesselatingRecipeBuilder<TesselatingShapelessRecipe, NonNullList<Ingredient>>(result) {

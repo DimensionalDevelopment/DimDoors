@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.rift.targets
 
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity
-import org.dimdev.dimdoors.rift.registry.Vertex
+import org.dimdev.dimdoors.blockentity.RiftBlockEntity
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
 
 abstract class RestoringTarget<T : VirtualTarget<T>> : VirtualTarget<T>() {
     override fun receiveOther(owner: Vertex): Target? {

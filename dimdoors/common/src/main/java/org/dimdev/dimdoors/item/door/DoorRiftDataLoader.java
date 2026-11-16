@@ -14,7 +14,6 @@ import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.dimdoors.item.door.data.RiftDataList;
 
 import java.util.Map;
 import java.util.Optional;

@@ -8,15 +8,15 @@ import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.pockets.addon.DyeableAddon
+import org.dimdev.dimdoors.pockets.addon.PocketAddons
 import org.dimdev.dimdoors.pockets.generatePocket
-import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.type.PocketColor
-import org.dimdev.dimdoors.world.pocket.type.PrivatePocket
-import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddons
+import org.dimdev.dimdoors.pockets.type.PocketColor
+import org.dimdev.dimdoors.pockets.type.PrivatePocket
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.player.PlayerTrackingSubSystem
+import org.dimdev.dimdoors.subsystem.pocket.PrivateRegistry
 import java.util.*
 
 //TODO: add the ability to do addon spefific EntityTarget stuff and use it seperate dyeable from PrivatePocket

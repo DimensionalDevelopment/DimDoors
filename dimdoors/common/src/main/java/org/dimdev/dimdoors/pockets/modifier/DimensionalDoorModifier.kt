@@ -11,17 +11,17 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
-import org.dimdev.dimdoors.api.util.math.Equation
-import org.dimdev.dimdoors.api.util.nullableForGetter
+import org.dimdev.dimdoors.util.math.Equation
+import org.dimdev.dimdoors.util.ext.nullableForGetter
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.block.entity.RiftData
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.rift.targets.IdMarker
-import org.dimdev.dimdoors.api.util.nullableForGetter
+import org.dimdev.dimdoors.util.ext.nullableForGetter
 import kotlin.jvm.optionals.getOrNull
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.Pocket
 import kotlin.jvm.optionals.getOrNull
 
 data class DimensionalDoorModifier(private val facing: Direction, private val doorType: Holder<Block>, private val doorData: Holder<RiftData>?, private val x: Equation, private val y: Equation, private val z: Equation) : Modifier {

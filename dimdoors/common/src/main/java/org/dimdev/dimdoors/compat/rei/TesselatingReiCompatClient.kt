@@ -20,8 +20,8 @@ import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingDisplay
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingShapedDisplay
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingShapelessDisplay
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
-import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe
-import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe
+import org.dimdev.dimdoors.recipe.tesselating.ShapedTesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingShapelessRecipe
 import org.dimdev.dimdoors.screen.TessellatingContainer
 
 open class TesselatingReiCompatClient : REIClientPlugin {

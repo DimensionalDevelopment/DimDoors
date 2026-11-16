@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.level.ItemLike
-import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.ShapedTesselatingRecipe
 
 class ShapedTesselatingRecipeJsonBuilder(result: ItemStack) :
     SimpleTesselatingRecipeBuilder<ShapedTesselatingRecipe, ShapedRecipePattern>(result) {

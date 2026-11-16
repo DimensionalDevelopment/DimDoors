@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.rift
 
 import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.util.Location
 import java.util.*
 
 abstract class RiftRegistryVertex<T: LocationProvider, R : RiftRegistry<T, R>, G: Rift<*, T, R>> : RegistryVertex() {

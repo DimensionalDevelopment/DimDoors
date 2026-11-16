@@ -5,6 +5,8 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.crafting.RecipeSerializer
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
+import org.dimdev.dimdoors.recipe.tesselating.ShapedTesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingShapelessRecipe
 
 object ModRecipeSerializers : PlatformRegistry<RecipeSerializer<*>>(Registries.RECIPE_SERIALIZER, BuiltInRegistries.RECIPE_SERIALIZER, getSided()) {
     var SHAPED_TESSELATING = create("shaped_tesselating") { ShapedTesselatingRecipe.Serializer() }

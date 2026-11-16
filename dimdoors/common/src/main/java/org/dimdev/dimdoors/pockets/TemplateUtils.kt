@@ -8,17 +8,17 @@ import net.minecraft.world.level.storage.loot.LootTable
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
-import org.dimdev.dimdoors.api.util.math.MathUtil
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.loot.ModLootTables
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.world.ModLootTables
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.util.Location.Companion.ofWorld
+import org.dimdev.dimdoors.util.math.MathUtil
 
 object TemplateUtils {
 //    fun setupEntityPlaceholders(entities: MutableList<CompoundTag?>, entityTag: CompoundTag) {

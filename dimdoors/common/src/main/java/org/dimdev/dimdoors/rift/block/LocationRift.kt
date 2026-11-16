@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger
 
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.rift.RiftRegistryVertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
-import org.dimdev.dimdoors.api.util.Location
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
+import org.dimdev.dimdoors.util.Location
 import java.util.*
 
 object LocationRift : RiftRegistryVertex<Location, LocationRiftRegistry, BlockEntityRift<*>>() {

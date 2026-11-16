@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.compat.rei.tesselating
 
 import net.minecraft.world.item.crafting.RecipeHolder
-import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingShapelessRecipe
 
 class DefaultTesselatingShapelessDisplay(recipe: RecipeHolder<TesselatingShapelessRecipe>) : DefaultTesselatingDisplay<TesselatingShapelessRecipe>(recipe) {
     override fun getWidth() = if (inputEntries.size > 4) 3 else 2

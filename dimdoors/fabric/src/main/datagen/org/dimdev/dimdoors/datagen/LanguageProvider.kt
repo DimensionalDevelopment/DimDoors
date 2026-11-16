@@ -21,17 +21,17 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimdoors.ModRegistries
+import org.dimdev.dimdoors.ModStats
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.enchantment.ModEnchants
 import org.dimdev.dimdoors.entity.ModEntityTypes
-import org.dimdev.dimdoors.entity.stat.ModStats
 import org.dimdev.dimdoors.fluid.ModFluids
 import org.dimdev.dimdoors.item.ArmorSet
 import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.painting.ModPaintings
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
-import org.dimdev.dimdoors.world.ModBiomes
+import org.dimdev.dimdoors.worldgen.ModBiomes
 import java.util.*
 import java.util.concurrent.CompletableFuture
 

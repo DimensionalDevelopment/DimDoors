@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.datagen
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters
-import org.dimdev.dimdoors.api.util.key
+import org.dimdev.dimdoors.util.ext.key
 
 object ModNoiseParameters {
     @JvmField val STRAND_A: ResourceKey<NoiseParameters> = register("strand_a")

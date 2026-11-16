@@ -30,17 +30,18 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.horizontalFacing
-import org.dimdev.dimdoors.api.util.math.*
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.ext.*
+import org.dimdev.dimdoors.util.ext.horizontalFacing
+import org.dimdev.dimdoors.util.math.*
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 

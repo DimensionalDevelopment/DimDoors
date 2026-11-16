@@ -1,0 +1,259 @@
+package org.dimdev.dimdoors.blockentity
+
+import com.mojang.serialization.Codec
+import net.minecraft.core.BlockPos
+import net.minecraft.core.HolderLookup
+import net.minecraft.core.Rotations
+import net.minecraft.core.component.DataComponentMap
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.util.Mth
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.MobSpawnType
+import net.minecraft.world.entity.monster.EnderMan
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
+import org.dimdev.dimcore.api.errata.schema.FieldNode
+import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.DimensionalDoors.Companion.config
+import org.dimdev.dimdoors.api.rift.target.EntityTarget
+import org.dimdev.dimdoors.client.render.blockentity.RiftCurves
+import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
+import org.dimdev.dimdoors.item.ModDataComponentTypes
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.LevelSpaceHelper
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.TeleportUtil
+import org.dimdev.dimdoors.util.Utils
+import java.util.function.Consumer
+import kotlin.math.abs
+
+class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntity<DetachedRiftBlockEntity>(
+    ModBlockEntityTypes.DETACHED_RIFT, pos, state), EntityTarget {
+    var spawnedEndermanId: Int = 0
+    @JvmField
+    var riftYaw: Float
+    @JvmField
+    var curveID: Int
+
+    var weight = 5
+        set(value) {
+            field = Mth.clamp(value, -100, 100)
+            this.setChanged()
+        }
+
+    private var updateTimer = 0
+
+    init {
+        this.curveID = (Math.random() * RiftCurves.CURVES.size).toInt()
+        this.riftYaw = (Math.random() * 360).toFloat()
+    }
+
+    /**
+     * Checks the blocks around the location of the floating rift and applies the decay
+     */
+    fun applySpreadDecay(world: ServerLevel, pos: BlockPos) {
+        val radius = this.decayRadius
+        if (radius <= 0) return
+
+        val selected = Utils.randomInSphere(world.getRandom(), 1, pos, radius).iterator().next()
+        if (selected == pos) return
+
+        Decay.decayBlock(
+            world,
+            pos,
+            world.getBlockState(pos),
+            selected,
+            world.getBlockState(selected),
+            DecaySource.RIFT
+        )
+    }
+
+    fun setClosing() {
+        weight = -100
+    }
+
+    fun setStabilized() {
+        weight = 0
+    }
+
+    val decayRadius: Int
+        get() {
+            val size = data().size
+            return if (size > 0) Mth.ceil(size / DECAY_RADIUS_DIVISOR) else 0
+        }
+
+    override fun gatherDebug(holder: Location, textConsumer: Consumer<Component>) {
+        super.gatherDebug(holder, textConsumer)
+        textConsumer.accept(Component.literal("Decay radius: " + this.decayRadius))
+    }
+
+    override fun <T> deserialize(nbt: Deserialize<T>) {
+        super.deserialize(nbt)
+        spawnedEndermanId = nbt.get(SPAWNED_ENDERMAN_ID_BUILDER)
+        curveID = nbt.get(CURVE_ID_BUILDER)
+        riftYaw = nbt.get(RIFT_YAW_BUILDER)
+        weight = nbt.get(WEIGHT_BUILDER)
+        updateTimer = nbt.get(UPDATE_TIMER_BUILDER)
+    }
+
+
+    override fun <T> serialize(serialize: Serialize<T, DetachedRiftBlockEntity>) {
+        super.serialize(serialize)
+        serialize.put(SPAWNED_ENDERMAN_ID_BUILDER)
+        serialize.put(CURVE_ID_BUILDER)
+        serialize.put(RIFT_YAW_BUILDER)
+        serialize.put(WEIGHT_BUILDER)
+        serialize.put(UPDATE_TIMER_BUILDER)
+    }
+
+    override fun prepareTag(nbt: CompoundTag) {
+        super.prepareTag(nbt)
+
+        if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC.toInt()) || nbt.contains("stablized", Tag.TAG_ANY_NUMERIC.toInt())) {
+            var weight = 5
+
+            if (nbt.getBoolean("stablized")) weight = 0
+            if (nbt.getBoolean("closing")) weight = -100
+
+            nbt.putInt("weight", weight)
+        }
+    }
+
+    override val isDetached: Boolean get() = true
+
+    override fun unregister(holder: Location) {
+        super.unregister(holder)
+        level?.removeBlock(blockPos, false)
+    }
+
+    override fun receiveEntity(
+        owner: Vertex,
+        entity: Entity,
+        relativePos: Vec3,
+        relativeAngle: Rotations,
+        relativeVelocity: Vec3,
+        location: Location?
+    ): Boolean {
+        if (this.level is ServerLevel) {
+            val localTargetPos = Vec3.atBottomCenterOf(this.worldPosition)
+
+            val frame =
+                LevelSpaceHelper.INSTANCE.projectTeleportFrame(level as ServerLevel, location, localTargetPos, relativeAngle, relativeVelocity)
+
+            TeleportUtil.teleport(entity, this.level as ServerLevel, frame.pos, frame.angle, frame.velocity)
+        }
+        return true
+    }
+
+    override fun update(level: Level, pos: BlockPos, blockState: BlockState) {
+        if (weight != 0) {
+            val absoluteChance = abs(weight)
+
+            if (updateTimer % 20 == 0) {
+                if (level.random.nextInt(0, 100) <= absoluteChance) {
+                    riftData.size += if (weight > 0) 1 else -1
+                    sync()
+                }
+
+                if (weight < 0 && riftData.size == 0) {
+                    unregister()
+                    return
+                }
+
+                updateTimer = 0
+
+                if (config.generalConfig.enableRiftDecay && riftData.size > 20) {
+                    applySpreadDecay(level as ServerLevel, pos)
+                }
+
+                tryEndermanSpawn(level, pos)
+            }
+
+
+            updateTimer++
+        }
+    }
+
+    override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag {
+        val tag = super.getUpdateTag(provider)
+        tag.putInt("weight", this.weight)
+        tag.putInt("curveID", this.curveID)
+        tag.putFloat("rotation", this.riftYaw)
+        return tag
+    }
+
+    private fun tryEndermanSpawn(level: Level, pos: BlockPos) {
+        if (level.getEntity(spawnedEndermanId) is EnderMan) {
+            return
+        }
+
+        if (level.random.nextFloat() < config.generalConfig.endermanSpawnChance) {
+            val list = level.getEntitiesOfClass(
+                EnderMan::class.java,
+                AABB(
+                    (pos.x - 9).toDouble(),
+                    (pos.y - 3).toDouble(),
+                    (pos.z - 9).toDouble(),
+                    (pos.x + 9).toDouble(),
+                    (pos.y + 3).toDouble(),
+                    (pos.z + 9).toDouble()
+                )
+            )
+
+            if (list.isEmpty()) {
+                val enderman = EntityType.ENDERMAN.spawn(level as ServerLevel, pos, MobSpawnType.STRUCTURE) ?: return
+                enderman.absMoveTo(pos.x + 0.5, (pos.y - 1).toDouble(), pos.z + 0.5, 5f, 6f)
+
+                if (level.random.nextDouble() < config.generalConfig.endermanAggressiveChance) {
+                    level.getNearestPlayer(enderman, 50.0)?.run { enderman.target = this }
+                }
+            }
+        }
+    }
+
+    override fun <T> writeUniqueData(serialize: Serialize<T, out DetachedRiftBlockEntity>) {
+        super.writeUniqueData(serialize)
+        serialize.put(RIFT_YAW_BUILDER)
+        serialize.put(WEIGHT_BUILDER)
+        serialize.put(CURVE_ID_BUILDER)
+    }
+
+    override fun gatherFieldNodes(list: MutableList<FieldNode>) {
+        list.add(RIFT_YAW_BUILDER.fieldNode)
+        list.add(WEIGHT_BUILDER.fieldNode)
+        list.add(CURVE_ID_BUILDER.fieldNode)
+    }
+
+    override fun applyImplicitComponents(componentInput: DataComponentInput) {
+        super.applyImplicitComponents(componentInput)
+        componentInput.get(ModDataComponentTypes.RIFT_DATA)?.run { setRiftData(this) }
+        componentInput.get(ModDataComponentTypes.RIFT_CURVE)?.run { curveID = this }
+        componentInput.get(ModDataComponentTypes.RIFT_YAW)?.run { riftYaw = this }
+    }
+
+    override fun collectImplicitComponents(components: DataComponentMap.Builder) {
+        super.collectImplicitComponents(components)
+        components.set(ModDataComponentTypes.RIFT_DATA, riftData)
+        components.set(ModDataComponentTypes.RIFT_CURVE, curveID)
+        components.set(ModDataComponentTypes.RIFT_YAW, riftYaw)
+    }
+
+    override val name: String  = "Detached rift"
+
+    companion object {
+        const val DECAY_RADIUS_DIVISOR: Float = 40f
+        private val SPAWNED_ENDERMAN_ID_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("spawnedEnderManId", Codec.INT, 0, DetachedRiftBlockEntity::spawnedEndermanId) { rift, value -> rift.spawnedEndermanId = value }
+        private val RIFT_YAW_BUILDER = CodecRecord("rotation", Schemas.float(0f, 360f).element(DimensionalDoors.id("rotation")), { (Math.random() * 360).toFloat() }, DetachedRiftBlockEntity::riftYaw) { rift, value -> rift.riftYaw = value }
+        private val CURVE_ID_BUILDER = CodecRecord("curveID", Schemas.int(0, RiftCurves.CURVES.size - 1), { (Math.random() * RiftCurves.CURVES.size).toInt() }, DetachedRiftBlockEntity::curveID) { rift, value -> rift.curveID = value }
+        private val WEIGHT_BUILDER = CodecRecord("weight", Schemas.int(-100, 100, 5), 5, DetachedRiftBlockEntity::weight) { rift, value -> rift.weight = value }
+        private val UPDATE_TIMER_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("updateTimer", Codec.INT, 0, DetachedRiftBlockEntity::updateTimer) { rift, value -> rift.updateTimer = value }
+    }
+}

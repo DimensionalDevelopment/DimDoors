@@ -10,12 +10,12 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle
-import org.dimdev.dimdoors.entity.limbo.LimboExitReason
 import org.dimdev.dimdoors.fluid.ModFluids
+import org.dimdev.dimdoors.limbo.LimboExitReason
 import org.dimdev.dimdoors.rift.targets.EscapeTarget
+import org.dimdev.dimdoors.util.Location
 import org.dimdev.dimdoors.util.UUIDExtensions.rift
+import org.dimdev.dimdoors.util.math.MathUtil.entityEulerAngle
 
 class EternalFluidBlock(settings: Properties) : LiquidBlock(ModFluids.ETERNAL_FLUID, settings) {
     public override fun entityInside(blockState: BlockState, level: Level, blockPos: BlockPos, entity: Entity) {

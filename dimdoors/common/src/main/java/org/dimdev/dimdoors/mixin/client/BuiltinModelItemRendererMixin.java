@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
+import org.dimdev.dimdoors.client.render.item.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

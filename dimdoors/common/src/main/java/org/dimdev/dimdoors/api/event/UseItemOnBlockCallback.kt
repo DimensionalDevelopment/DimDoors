@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.BlockHitResult
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 
 interface UseItemOnBlockCallback {
     fun useItemOnBlock(

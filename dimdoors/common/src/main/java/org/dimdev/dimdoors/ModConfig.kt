@@ -6,8 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
-import org.dimdev.dimcore.api.util.ConfigType
-import org.dimdev.dimdoors.api.util.mutableList
+import org.dimdev.dimcore.util.util.ConfigType
+import org.dimdev.dimdoors.util.ext.mutableList
 
 data class ModConfig(
     val generalConfig: General = General(),

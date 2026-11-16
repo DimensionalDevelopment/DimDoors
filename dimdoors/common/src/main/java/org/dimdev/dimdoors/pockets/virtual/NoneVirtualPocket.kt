@@ -2,8 +2,8 @@ package org.dimdev.dimdoors.pockets.virtual
 
 import com.mojang.serialization.MapCodec
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 
 // TODO: NoneReference instead?
 class NoneVirtualPocket private constructor() : ImplementedVirtualPocket<NoneVirtualPocket> {

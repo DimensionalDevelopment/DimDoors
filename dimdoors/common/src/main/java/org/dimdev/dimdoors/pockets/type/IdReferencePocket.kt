@@ -1,0 +1,86 @@
+package org.dimdev.dimdoors.pockets.type
+
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.Level
+import org.dimdev.dimdoors.pockets.PocketDirectory
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import java.util.function.Function
+
+class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> {
+    var referencedId: Int = Int.MIN_VALUE
+
+    constructor(id: Int, world: ResourceKey<Level>, referencedId: Int) : super(id, world) {
+        this.referencedId = referencedId
+    }
+
+    constructor() : super()
+
+    override val type get() = Pockets.ID_REFERENCE
+
+    override val referencedPocket: Pocket<*, *>? get() = getReferencedPocket(instance.getPocketDirectory(world))
+
+    override fun getReferencedPocket(directory: PocketDirectory): Pocket<*, *>? {
+        return directory.getPocket(referencedId)
+    }
+
+    class IdReferencePocketBuilder : AbstractPocketBuilder<IdReferencePocket, IdReferencePocketBuilder> {
+        private var referencedId = Int.MIN_VALUE
+
+        constructor(referenceId: Int) {
+            this.referencedId = referenceId
+        }
+
+        constructor() : super()
+
+        override fun build(): IdReferencePocket {
+            val pocket = super.build()
+            pocket.referencedId = referencedId
+            return pocket
+        }
+
+        override fun pocket(): IdReferencePocket {
+            return IdReferencePocket()
+        }
+
+        override val type get() = Pockets.ID_REFERENCE
+
+        override fun copy(): IdReferencePocketBuilder {
+            val copy = super.copy()
+            copy.referencedId = referencedId
+            return copy
+        }
+
+        override fun instance(): IdReferencePocketBuilder {
+            return IdReferencePocketBuilder()
+        }
+
+        fun referencedId(referencedId: Int): IdReferencePocketBuilder {
+            this.referencedId = referencedId
+            return this
+        }
+
+        companion object {
+            val CODEC: MapCodec<IdReferencePocketBuilder> = RecordCodecBuilder.mapCodec(
+                Function { instance -> instance.group(
+                        Codec.INT.optionalFieldOf("referenced_id", Int.MIN_VALUE).forGetter(IdReferencePocketBuilder::referencedId)
+                    ).apply(instance, ::IdReferencePocketBuilder)
+                })
+        }
+    }
+
+    companion object {
+        val CODEC: MapCodec<IdReferencePocket> = RecordCodecBuilder.mapCodec { instance -> commonFields<IdReferencePocket>(instance).and(
+                    Codec.INT.fieldOf("referenced_id").forGetter(IdReferencePocket::referencedId)
+                ).apply(instance, ::IdReferencePocket)
+            }
+
+        var KEY: String = "id_reference"
+
+        fun builder(): IdReferencePocketBuilder {
+            return IdReferencePocketBuilder()
+        }
+    }
+}

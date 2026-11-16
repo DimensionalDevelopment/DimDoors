@@ -7,7 +7,7 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceLocation
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 
 abstract class TesselatingRecipeBuilder<T : TesselatingRecipe, V> : RecipeBuilder {
     protected var weavingTime: Int = 200

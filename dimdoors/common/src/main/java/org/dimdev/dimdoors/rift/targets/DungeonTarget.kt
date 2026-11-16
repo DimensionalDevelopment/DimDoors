@@ -5,10 +5,10 @@ import net.minecraft.resources.ResourceKey
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.rift.target.Target
+import org.dimdev.dimdoors.pockets.VirtualLocation
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.rift.registry.DungeonRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.pocket.DungeonRegistry
 
 class DungeonTarget(private val dungeonGroup: ResourceKey<VirtualPocket>) : VirtualTarget<DungeonTarget>() {
     override fun receiveOther(owner: Vertex): Target? {

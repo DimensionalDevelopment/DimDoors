@@ -8,11 +8,11 @@ import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
-import org.dimdev.dimdoors.api.util.math.Equation
-import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.util.ext.nullableForGetter
+import org.dimdev.dimdoors.util.math.Equation
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.jvm.optionals.getOrNull
 
 data class ShellModifier(val layers: MutableList<Layer>, val boxToDrawAround: BoundingBox?) : Modifier {

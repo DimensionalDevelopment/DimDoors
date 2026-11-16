@@ -12,7 +12,7 @@ import net.minecraft.world.level.material.MapColor
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
 import org.dimdev.dimdoors.block.door.DialingDoor
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
 import org.dimdev.dimdoors.item.ModItems.DECAY
 import org.dimdev.dimdoors.item.ModItems.DIMENSIONAL_DOORS
 import org.dimdev.dimdoors.item.PlaceOnlyOnRiftBlockItem

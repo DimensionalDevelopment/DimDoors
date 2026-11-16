@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.entity.mask
 
 import net.minecraft.server.level.ServerPlayer
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 
 object MaskEvents {
     @JvmField val ALLOW_DETECT: SimpleEvent<(MaskEntity, ServerPlayer) -> Boolean> = allow()

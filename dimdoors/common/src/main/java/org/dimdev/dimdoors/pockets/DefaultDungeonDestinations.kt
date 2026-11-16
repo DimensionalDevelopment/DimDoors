@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.pockets
 
 import net.minecraft.resources.ResourceKey
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.AvailableLinkTarget
 import org.dimdev.dimdoors.rift.targets.AvailableLinkTarget.Companion.builder
 import org.dimdev.dimdoors.rift.targets.DungeonTarget

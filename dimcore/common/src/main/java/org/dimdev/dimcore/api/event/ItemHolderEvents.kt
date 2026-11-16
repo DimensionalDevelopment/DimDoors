@@ -3,7 +3,7 @@ package org.dimdev.dimcore.api.event
 import net.minecraft.world.Container
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.ItemStack
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 
 object ItemHolderEvents {
     @JvmField

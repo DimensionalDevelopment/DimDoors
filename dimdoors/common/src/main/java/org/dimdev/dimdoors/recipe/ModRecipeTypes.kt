@@ -6,6 +6,7 @@ import net.minecraft.world.item.crafting.RecipeType
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 
 object ModRecipeTypes : PlatformRegistry<RecipeType<*>>(Registries.RECIPE_TYPE, BuiltInRegistries.RECIPE_TYPE, getSided()) {
     @JvmField

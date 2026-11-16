@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.mixin;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import org.dimdev.dimdoors.item.MaskWearerEffects;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.worldgen.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

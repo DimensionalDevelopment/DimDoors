@@ -9,12 +9,12 @@ import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.util.math.Equation
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 class IdReference(level: ResourceKey<Level> = ModDimensions.DUNGEON, weight: Equation = Equation.FIVE, private val id: ResourceKey<PocketGenerator<*>>) : PocketGeneratorReference<IdReference>(level, weight) {
     override fun getWeight(parameters: PocketGenerationContext): Double {

@@ -5,9 +5,9 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.AirBlock
 import net.minecraft.world.level.block.state.BlockState
-import org.dimdev.dimdoors.world.ModDimensions.isLimboDimension
-import org.dimdev.dimdoors.world.decay.Decay
-import org.dimdev.dimdoors.world.decay.DecaySource
+import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
+import org.dimdev.dimdoors.worldgen.ModDimensions.isLimboDimension
 
 class LimboAirBlock(properties: Properties) : AirBlock(properties) {
     public override fun randomTick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {

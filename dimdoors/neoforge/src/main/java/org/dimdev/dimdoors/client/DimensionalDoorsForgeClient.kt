@@ -59,8 +59,8 @@ class DimensionalDoorsForgeClient(bus: IEventBus, container: ModContainer) : Neo
 
         fun registerRecipeBookCategories(event: RegisterRecipeBookCategoriesEvent) {
             ModRecipeBookGroups.init()
-            org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(
-                org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(
+            org.dimdev.dimdoors.api.event.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(
+                org.dimdev.dimdoors.api.event.RegisterRecipeBookCategoriesEvent(
                     event::registerAggregateCategory,
                     event::registerBookCategories,
                     { type, lookup -> event.registerRecipeCategoryFinder(type, lookup) }

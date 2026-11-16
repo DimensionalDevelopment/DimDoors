@@ -7,11 +7,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.criteria.ModCriteria;
-import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
-import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.limbo.LimboEntranceSource;
+import org.dimdev.dimdoors.ModStats;
+import org.dimdev.dimdoors.worldgen.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
 
 import org.spongepowered.asm.mixin.injection.At;

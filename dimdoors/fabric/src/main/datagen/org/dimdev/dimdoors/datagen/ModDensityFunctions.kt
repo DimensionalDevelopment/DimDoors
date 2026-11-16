@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.levelgen.DensityFunction
 import net.minecraft.world.level.levelgen.DensityFunctions
-import org.dimdev.dimdoors.api.util.key
+import org.dimdev.dimdoors.util.ext.key
 
 object ModDensityFunctions {
     @JvmField val FINAL_DENSITY: ResourceKey<DensityFunction> = register("limbo/final_density")

@@ -6,9 +6,9 @@ import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.api.ext.castOrNull
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.rift.targets.LocationProvider
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import java.util.concurrent.ConcurrentHashMap
 
 interface PocketCreator {

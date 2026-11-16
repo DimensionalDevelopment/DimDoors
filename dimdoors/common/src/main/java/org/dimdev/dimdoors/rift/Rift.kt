@@ -11,20 +11,19 @@ import org.dimdev.dimcore.api.errata.subject.ConfigSubject
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
-import org.dimdev.dimdoors.block.entity.Deserialize
-import org.dimdev.dimdoors.block.entity.Serialize
-import org.dimdev.dimdoors.rift.registry.LinkProperties
-import org.dimdev.dimdoors.rift.registry.LinkPropertiesRegistry
+import org.dimdev.dimdoors.blockentity.Deserialize
+import org.dimdev.dimdoors.blockentity.Serialize
+import org.dimdev.dimdoors.rift.link.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.MessageTarget
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.rift.registry.RegistryVertex
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.api.util.RGBA
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.util.RGBA
 import java.util.*
 import java.util.function.Consumer
-import org.dimdev.dimdoors.block.entity.RiftData
 
 interface Rift<R: Rift<R, H, V>, H: LocationProvider, V: RiftRegistry<H, V>> : Target {
     fun data(holder: H): RiftData

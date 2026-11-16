@@ -13,7 +13,7 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.client.ToolTipHelper
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import java.util.function.Consumer

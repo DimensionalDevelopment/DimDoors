@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.api.event
 
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar
 
 fun interface RegisterDimensionalDoorProductionsCallback {

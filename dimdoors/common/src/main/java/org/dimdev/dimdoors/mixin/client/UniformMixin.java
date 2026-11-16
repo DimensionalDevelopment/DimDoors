@@ -5,8 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.dimdev.dimdoors.api.client.UniformExt;
-import org.dimdev.dimdoors.api.util.math.MathUtil;
+import org.dimdev.dimdoors.client.UniformExt;
+import org.dimdev.dimdoors.util.math.MathUtil;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

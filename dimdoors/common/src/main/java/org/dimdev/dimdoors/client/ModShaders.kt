@@ -4,7 +4,6 @@ import com.mojang.blaze3d.shaders.Uniform
 import net.minecraft.client.renderer.ShaderInstance
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.PortalColors.base
-import org.dimdev.dimdoors.api.client.UniformExt
 
 object ModShaders {
     private var COLORS: Uniform? = null

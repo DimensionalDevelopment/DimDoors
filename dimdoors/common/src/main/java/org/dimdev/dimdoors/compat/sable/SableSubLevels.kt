@@ -11,8 +11,8 @@ import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.ChunkPos
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.rift.registry.LevelSpaceRegistry
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.rift.block.LevelSpaceRegistry
 import java.io.IOException
 import java.nio.file.Files
 import java.util.*

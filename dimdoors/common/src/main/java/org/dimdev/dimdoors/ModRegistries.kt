@@ -1,21 +1,21 @@
 package org.dimdev.dimdoors
 
-import org.dimdev.dimdoors.block.entity.RiftData
-import org.dimdev.dimdoors.item.door.data.RiftDataList
-import org.dimdev.dimdoors.item.door.data.condition.Conditions
+import org.dimdev.dimdoors.item.door.RiftDataList
+import org.dimdev.dimdoors.item.door.condition.Conditions
+import org.dimdev.dimdoors.pockets.addon.environment.Environments
+import org.dimdev.dimdoors.pockets.addon.environment.cloud.CloudDatum
+import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyDatum
+import org.dimdev.dimdoors.pockets.addon.environment.weather.WeatherDatum
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.generator.PocketGenerators
 import org.dimdev.dimdoors.pockets.modifier.Modifiers
+import org.dimdev.dimdoors.pockets.type.Pockets
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.rift.RiftData
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
-import org.dimdev.dimdoors.world.pocket.type.Pockets
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.Environments
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.cloud.CloudDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.SkyDatum
-import org.dimdev.dimdoors.world.pocket.type.addon.environment.weather.WeatherDatum
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 
 object ModRegistries {
     @JvmField val POCKET_GENERATOR_TYPE = PocketGenerators.registry

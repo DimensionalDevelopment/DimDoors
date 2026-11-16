@@ -12,19 +12,19 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.errata.schema.Schemas
-import org.dimdev.dimcore.api.util.EntityUtils.chat
+import org.dimdev.dimcore.util.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.world.decay.Decay
-import org.dimdev.dimdoors.world.decay.DecaySource
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.Location.Companion.getHeightmapPosSafe
-import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
-import org.dimdev.dimdoors.api.util.TeleportUtil
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.Location.Companion.getHeightmapPosSafe
+import org.dimdev.dimdoors.util.Location.Companion.ofWorld
+import org.dimdev.dimdoors.util.TeleportUtil
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import java.util.*
 
 class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {

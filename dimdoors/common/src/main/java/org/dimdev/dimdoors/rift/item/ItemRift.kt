@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.rift.item
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.item.ItemRift
 import org.dimdev.dimdoors.rift.RiftRegistryVertex
-import org.dimdev.dimdoors.rift.registry.SubSystem
-import org.dimdev.dimdoors.rift.registry.SubsystemTypes
+import org.dimdev.dimdoors.subsystem.registry.SubSystem
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 import java.util.*
 
 object ItemRift : RiftRegistryVertex<Holder, ItemRiftRegistry, ItemRift>() {

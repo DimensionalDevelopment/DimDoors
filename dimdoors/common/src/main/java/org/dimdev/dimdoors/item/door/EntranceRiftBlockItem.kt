@@ -14,8 +14,8 @@ import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.sqrt
 

@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.pockets.modifier
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.Vec3i
-import org.dimdev.dimdoors.api.util.math.Equation
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.util.math.Equation
 
 data class OffsetModifier(val offsetX: Equation, val offsetY: Equation, val offsetZ: Equation) : Modifier {
     override val type get() = Modifiers.OFFSET

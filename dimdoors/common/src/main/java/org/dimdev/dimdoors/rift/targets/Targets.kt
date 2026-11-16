@@ -6,12 +6,12 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.transfer.FluidUnit
 import org.dimdev.dimcore.api.transfer.ItemUnit
-import org.dimdev.dimcore.api.util.EntityUtils
+import org.dimdev.dimcore.util.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.*
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.util.LevelSpaceHelper
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.TeleportUtil
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 object Targets {

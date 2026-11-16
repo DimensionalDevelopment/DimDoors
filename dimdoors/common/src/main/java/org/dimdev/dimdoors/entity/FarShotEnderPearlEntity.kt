@@ -22,7 +22,7 @@ import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 
 class FarShotEnderPearlEntity : ThrowableItemProjectile {
     private val setTargetOnFire: Boolean

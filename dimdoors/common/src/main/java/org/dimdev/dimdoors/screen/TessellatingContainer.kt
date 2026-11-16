@@ -13,8 +13,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.CraftingInput
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getSided
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity
-import org.dimdev.dimdoors.recipe.TesselatingRecipe
+import org.dimdev.dimdoors.blockentity.TesselatingLoomBlockEntity
+import org.dimdev.dimdoors.recipe.tesselating.TesselatingRecipe
 import kotlin.math.min
 
 class TessellatingContainer(

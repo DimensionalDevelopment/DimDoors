@@ -3,10 +3,10 @@ package org.dimdev.dimdoors.rift.targets
 import com.mojang.serialization.MapCodec
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.pockets.PocketGenerationHelper
-import org.dimdev.dimdoors.rift.registry.DungeonRegistry
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.subsystem.pocket.DungeonRegistry
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry
 
 object ExtensionTarget : VirtualTarget<ExtensionTarget>() {
     override fun receiveOther(owner: Vertex): Target? {

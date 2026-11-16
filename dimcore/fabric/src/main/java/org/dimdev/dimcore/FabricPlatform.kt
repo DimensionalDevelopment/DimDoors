@@ -38,7 +38,7 @@ import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.Platform
-import org.dimdev.dimcore.api.util.SimpleEvent
+import org.dimdev.dimcore.util.util.SimpleEvent
 import java.nio.file.Path
 
 class FabricPlatform : Platform {

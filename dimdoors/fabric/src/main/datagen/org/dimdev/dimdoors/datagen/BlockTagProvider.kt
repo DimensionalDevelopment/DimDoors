@@ -12,9 +12,9 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.tag.ModBlockTags
+import org.dimdev.dimdoors.util.ext.tag
 import java.util.concurrent.CompletableFuture
 
 class BlockTagProvider(output: FabricDataOutput, lookupProvider: CompletableFuture<HolderLookup.Provider>) : FabricTagProvider.BlockTagProvider(output, lookupProvider) {

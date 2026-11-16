@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.world.entity.Entity
-import org.dimdev.dimdoors.world.DataValues
+import org.dimdev.dimdoors.DataValues
 
 
 object FrayCommand {

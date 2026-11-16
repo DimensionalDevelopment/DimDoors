@@ -13,12 +13,12 @@ import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.world.decay.Decay.DecayContext.Companion.create
-import org.dimdev.dimdoors.world.decay.Decay.DecayLoader.getPatterns
-import org.dimdev.dimdoors.world.decay.DecayPatternHolder
-import org.dimdev.dimdoors.world.decay.DecaySource
-import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern
-import org.dimdev.dimdoors.world.decay.results.DecayResult
+import org.dimdev.dimdoors.decay.Decay.DecayContext.Companion.create
+import org.dimdev.dimdoors.decay.Decay.DecayLoader.getPatterns
+import org.dimdev.dimdoors.decay.DecayPatternHolder
+import org.dimdev.dimdoors.decay.DecaySource
+import org.dimdev.dimdoors.decay.pattern.CompoundDecayPattern
+import org.dimdev.dimdoors.decay.results.DecayResult
 
 object Rending {
     @JvmStatic

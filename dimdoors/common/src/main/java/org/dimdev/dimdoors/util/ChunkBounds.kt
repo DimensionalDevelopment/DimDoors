@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.util
 
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.pockets.type.Pocket
 
 data class ChunkBounds(val minX: Int, val maxX: Int, val minZ: Int, val maxZ: Int) {
     fun contains(chunkX: Int, chunkZ: Int) = chunkX in minX..maxX && chunkZ in minZ..maxZ

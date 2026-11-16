@@ -7,11 +7,10 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
-import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.jvm.optionals.getOrNull
 
 fun <T> ResourceKey<T>.holder() = DimensionalDoors.server.registryAccess().lookupOrThrow(this.registryKey()).get(this).getOrNull()

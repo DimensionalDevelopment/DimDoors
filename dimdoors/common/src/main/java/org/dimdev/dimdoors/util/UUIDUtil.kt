@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.util
 
 import net.minecraft.core.UUIDUtil
-import org.dimdev.dimdoors.rift.registry.RegistryVertices
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.util.CodecUtils
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.codec.CodecUtils
 import java.util.*
 
 object UUIDExtensions {

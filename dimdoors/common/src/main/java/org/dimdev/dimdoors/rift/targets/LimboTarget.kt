@@ -5,13 +5,13 @@ import net.minecraft.core.Rotations
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
-import org.dimdev.dimdoors.api.util.Location
-import org.dimdev.dimdoors.api.util.TeleportUtil
-import org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle
 import org.dimdev.dimdoors.block.ModBlocks
-import org.dimdev.dimdoors.rift.registry.Vertex
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.pockets.VirtualLocation
+import org.dimdev.dimdoors.subsystem.graph.Vertex
+import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.TeleportUtil
+import org.dimdev.dimdoors.util.math.MathUtil.entityEulerAngle
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 object LimboTarget : VirtualTarget<LimboTarget>(), EntityTarget {
     val CODEC = MapCodec.unit(this)

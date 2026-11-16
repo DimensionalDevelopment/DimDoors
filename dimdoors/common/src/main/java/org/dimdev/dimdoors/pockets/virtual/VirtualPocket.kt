@@ -10,11 +10,11 @@ import net.minecraft.resources.RegistryFileCodec
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.dimdev.dimdoors.ModRegistryKeys
-import org.dimdev.dimdoors.api.util.Weighted
 import org.dimdev.dimdoors.pockets.PocketCreator
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.util.Weighted
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 interface VirtualPocket : Weighted<PocketGenerationContext>, PocketCreator {
     fun getNextPocketGeneratorReference(parameters: PocketGenerationContext): PocketGeneratorReference<*>

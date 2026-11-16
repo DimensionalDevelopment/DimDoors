@@ -12,8 +12,8 @@ import net.minecraft.world.level.levelgen.NoiseRouter
 import net.minecraft.world.level.levelgen.NoiseSettings
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.VerticalAnchor
-import org.dimdev.dimdoors.api.util.key
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.util.ext.key
 
 object ModChunkGeneratorSettings {
     @JvmField val LIMBO: ResourceKey<NoiseGeneratorSettings> = Registries.NOISE_SETTINGS.key("limbo")

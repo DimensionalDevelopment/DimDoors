@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.minecraft.core.RegistrySetBuilder
 import net.minecraft.core.registries.Registries
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.world.ModDimensions
+import org.dimdev.dimdoors.worldgen.ModDimensions
 
 class DatagenInitializer : DataGeneratorEntrypoint {
 

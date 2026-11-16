@@ -5,9 +5,8 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
-import org.dimdev.dimdoors.rift.registry.LinkProperties
+import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import kotlin.jvm.optionals.getOrNull
 
 /*

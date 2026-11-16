@@ -19,11 +19,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
-import org.dimdev.dimdoors.rift.registry.DialingAddress
+import org.dimdev.dimdoors.blockentity.DialingDoorBlockEntity
+import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
+import org.dimdev.dimdoors.subsystem.player.DialingAddress
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.api.util.math.MathUtil
+import org.dimdev.dimdoors.util.math.MathUtil
 import kotlin.math.abs
 import kotlin.math.floor
 

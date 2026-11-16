@@ -21,7 +21,7 @@ import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils.triggerRiftCoreHighlight
 import kotlin.math.atan2
 

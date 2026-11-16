@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.compat.jei.decay
 
 import org.dimdev.dimcore.DimCore
-import org.dimdev.dimdoors.compat.decay.DecayDisplayData
-import org.dimdev.dimdoors.world.decay.Decay.DecayLoader.getPatterns
+import org.dimdev.dimdoors.compat.recipeviewer.DecayDisplayData
+import org.dimdev.dimdoors.decay.Decay.DecayLoader.getPatterns
 import kotlin.streams.asSequence
 
 object DecayRecipes {

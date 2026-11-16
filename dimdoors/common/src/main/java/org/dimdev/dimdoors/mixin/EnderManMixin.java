@@ -7,7 +7,7 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import org.dimdev.dimcore.api.ext.EntityExtensionsKt;
 import org.dimdev.dimdoors.item.MaskWearerEffects;
-import org.dimdev.dimdoors.world.DataValues;
+import org.dimdev.dimdoors.DataValues;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

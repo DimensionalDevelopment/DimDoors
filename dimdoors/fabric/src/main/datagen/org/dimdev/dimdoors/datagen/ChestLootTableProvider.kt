@@ -24,8 +24,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator
 import org.dimdev.dimdoors.block.ModBlocks
+import org.dimdev.dimdoors.loot.ModLootTables
 import org.dimdev.dimdoors.tag.ModEnchantmentTags
-import org.dimdev.dimdoors.world.ModLootTables
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 

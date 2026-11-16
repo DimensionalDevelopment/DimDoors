@@ -10,12 +10,12 @@ import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
-import org.dimdev.dimdoors.network.packet.s2c.ClearPocketS2CPacket
-import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket
-import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket
-import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
-import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.type.Pocket
+import org.dimdev.dimdoors.network.s2c.ClearPocketS2CPacket
+import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket
+import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket
+import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
+import org.dimdev.dimdoors.worldgen.ModDimensions
 import java.util.*
 
 object ServerPacketHandler {
