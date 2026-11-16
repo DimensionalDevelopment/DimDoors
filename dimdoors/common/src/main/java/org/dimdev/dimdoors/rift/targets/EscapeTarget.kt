@@ -16,14 +16,16 @@ import org.dimdev.dimcore.api.util.EntityUtils.chat
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.DimensionalDoors.Companion.server
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
+import org.dimdev.dimdoors.world.decay.Decay
+import org.dimdev.dimdoors.world.decay.DecaySource
+import org.dimdev.dimdoors.world.pocket.VirtualLocation
+import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.getHeightmapPosSafe
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.TeleportUtil
 import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.decay.Decay
-import org.dimdev.dimdoors.world.decay.DecaySource
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import java.util.*
 
@@ -175,7 +177,7 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
     private fun decayBlock(level: ServerLevel, pos: BlockPos) {
         val state = level.getBlockState(pos)
         val context =
-            Decay.DecayContext(level, pos, state, pos, state, state.getFluidState(), null, DecaySource.LIMBO)
+            Decay.DecayContext(level, pos, state, pos, state, state.fluidState, DecaySource.LIMBO)
 
         for (pattern in Decay.DecayLoader.getPatterns(context)) {
             if (pattern.value.test(context)) {

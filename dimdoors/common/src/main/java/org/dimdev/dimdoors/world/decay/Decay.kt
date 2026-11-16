@@ -25,10 +25,12 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.ResourceUtil
+import org.dimdev.dimdoors.world.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.network.ServerPacketHandler
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern
+import org.dimdev.dimdoors.api.util.ResourceUtil
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -37,7 +39,7 @@ import kotlin.jvm.optionals.getOrNull
  */
 object Decay {
     private val LOGGER: Logger = LogManager.getLogger()
-    private val DECAY_QUEUE: MutableMap<ResourceKey<Level>, MutableSet<DecayTask>> = HashMap()
+    private val DECAY_QUEUE: MutableMap<ResourceKey<Level>, MutableMap<BlockPos, DecayTask>> = HashMap()
     private const val BREAK_BLOCK_STAGE = 5
     private const val BREAK_BLOCK_RENDER_DISTANCE = 100.0
 
@@ -94,7 +96,7 @@ object Decay {
         if (delay <= 0) {
             task.process()
         } else {
-            DECAY_QUEUE.computeIfAbsent(context.world.dimension()) { HashSet() }.add(task)
+            DECAY_QUEUE.computeIfAbsent(context.world.dimension()) { HashMap() }.putIfAbsent(context.targetBlockPos, task)
         }
     }
 
@@ -106,10 +108,10 @@ object Decay {
     @JvmStatic
     fun tick(world: ServerLevel) {
         val key = world.dimension()
-        val tasks = DECAY_QUEUE[key] ?: return
-        val tasksToRun = tasks.filter { it.reduceDelayIsDone() }.toSet()
-        tasks.removeAll(tasksToRun)
-        tasksToRun.forEach { task -> task.process() }
+        val tasks = DECAY_QUEUE[key]?.takeUnless { it.isEmpty() } ?: return
+        val ready = ArrayList<DecayTask>()
+        tasks.values.removeIf { it.reduceDelayIsDone() && ready.add(it) }
+        ready.forEach { it.process() }
     }
 
     private fun sendBreakBlockProgress(world: ServerLevel, pos: BlockPos, stage: Int) {
@@ -216,9 +218,10 @@ object Decay {
         val targetBlockPos: BlockPos,
         val targetBlockState: BlockState,
         val targetFluidState: FluidState,
-        val targetEntity: Entity?,
         val source: DecaySource
     ) {
+        val targetEntity: Entity? by lazy { world.getEntitiesOfClass(Painting::class.java, AABB.encapsulatingFullBlocks(targetBlockPos, targetBlockPos)).firstOrNull() }
+
         companion object {
             @JvmStatic
             fun create(world: ServerLevel, blockPos: BlockPos, blockState: BlockState, source: DecaySource): DecayContext {
@@ -229,9 +232,7 @@ object Decay {
             fun create(world: ServerLevel, originBlockPos: BlockPos, originBlockState: BlockState, targetBlockPos: BlockPos, targetBlockState: BlockState, source: DecaySource): DecayContext {
                 val targetFluidState = world.getFluidState(targetBlockPos)
 
-                val entity = world.getEntitiesOfClass(Painting::class.java, AABB.encapsulatingFullBlocks(targetBlockPos, targetBlockPos)).firstOrNull()
-
-                return DecayContext(world, originBlockPos, originBlockState, targetBlockPos, targetBlockState, targetFluidState, entity, source)
+                return DecayContext(world, originBlockPos, originBlockState, targetBlockPos, targetBlockState, targetFluidState, source)
             }
         }
     }
