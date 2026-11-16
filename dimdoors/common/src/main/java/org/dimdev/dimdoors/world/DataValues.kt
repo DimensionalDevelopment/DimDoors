@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world
 
 import com.mojang.serialization.Codec
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import net.minecraft.core.BlockPos
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.util.Unit
 import org.dimdev.dimcore.api.PlatformRegistry
@@ -17,5 +16,5 @@ object DataValues : PlatformRegistry.DataValuePlatformRegistry(DimensionalDoors.
     @JvmField val PLACED_CONTENT: DataValue<Int2ObjectOpenHashMap<LongArray>> = create("placed_content", { Int2ObjectOpenHashMap() }, ChunkPlacedContentTracker.CODEC)
     @JvmField val MASK_BODY_STACKS: DataValue<Int> = create("mask_body_stacks", { 0 }, Codec.INT, ByteBufCodecs.VAR_INT)
     @JvmField val MASK_CYCLOPS_TIMER: DataValue<Int> = create("mask_cyclops_timer", { 0 }, Codec.INT)
-    @JvmField val PENDING_REAPER: DataValue<PendingReaper> = create("pending_reaper", { PendingReaper(BlockPos.ZERO, 0) }, PendingReaper.CODEC)
+    @JvmField val PENDING_REAPER: DataValue<PendingReaper> = create("pending_reaper", { PendingReaper.EMPTY }, PendingReaper.CODEC)
 }

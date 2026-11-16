@@ -5,7 +5,6 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
-import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

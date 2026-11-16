@@ -24,9 +24,7 @@ import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.api.util.Location.Companion.getHeightmapPosSafe
 import org.dimdev.dimdoors.api.util.Location.Companion.ofWorld
 import org.dimdev.dimdoors.api.util.TeleportUtil
-import org.dimdev.dimdoors.rift.registry.Vertex
 import org.dimdev.dimdoors.world.ModDimensions
-import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import java.util.*
 
 class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(), EntityTarget {

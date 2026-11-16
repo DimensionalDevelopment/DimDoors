@@ -13,8 +13,8 @@ interface DecayCondition : MapCodecHasHolder<DecayCondition> {
         val CODEC: Codec<DecayCondition> = DecayConditions.codec
 
         @JvmField
-        val LIST_CODEC: Codec<List<DecayCondition>> = Codec.either(CODEC, CODEC.listOf()).xmap<List<DecayCondition>>(
-            { either -> either.map<List<DecayCondition>>({ listOf(it) }, { it }) },
+        val LIST_CODEC: Codec<List<DecayCondition>> = Codec.either(CODEC, CODEC.listOf()).xmap(
+            { either -> either.map({ listOf(it) }, { it }) },
             { conditions -> if (conditions.size > 1) Either.right(conditions) else Either.left(conditions[0]) }
         )
 

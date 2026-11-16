@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.item.door;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -11,16 +10,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 

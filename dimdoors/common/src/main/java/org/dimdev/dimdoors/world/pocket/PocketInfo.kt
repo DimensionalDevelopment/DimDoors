@@ -17,14 +17,14 @@ data class PocketInfo(val world: ResourceKey<Level>, val id: Int) {
 
     companion object {
         @JvmField
-        val CODEC = RecordCodecBuilder.create { instance ->
+        val CODEC: Codec<PocketInfo> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(PocketInfo::world),
                 Codec.INT.fieldOf("id").forGetter(PocketInfo::id)
             ).apply(instance, ::PocketInfo)
         }
 
-        val STRING_CODEC = Codec.STRING.comapFlatMap(::fromString, PocketInfo::toString)
+        val STRING_CODEC: Codec<PocketInfo> = Codec.STRING.comapFlatMap(::fromString, PocketInfo::toString)
 
         fun fromString(value: String): DataResult<PocketInfo> {
             val strings = value.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

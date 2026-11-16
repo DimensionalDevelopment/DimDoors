@@ -112,7 +112,7 @@ class TransferType<U : Unit<U>> private constructor(
         private fun CompoundTag.components(): DataComponentPatch =
             if (contains("components")) DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, get("components")).result().orElse(DataComponentPatch.EMPTY) else DataComponentPatch.EMPTY
 
-        private fun <T> tag(registry: Registry<T>, resource: T, unit: Unit<*>): CompoundTag = CompoundTag().apply {
+        private fun <T: Any> tag(registry: Registry<T>, resource: T, unit: Unit<*>): CompoundTag = CompoundTag().apply {
             putString("id", registry.getKey(resource).toString())
             if (!unit.components.isEmpty) {
                 DataComponentPatch.CODEC.encodeStart(NbtOps.INSTANCE, unit.components).result().ifPresent { put("components", it) }

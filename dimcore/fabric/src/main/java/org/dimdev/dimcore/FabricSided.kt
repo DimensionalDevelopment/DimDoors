@@ -87,7 +87,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
         )
     }
 
-    override fun <T> entryRegister(
+    override fun <T: Any> entryRegister(
         resourceKey: ResourceKey<Registry<T>>,
         registry: Registry<T>?,
         synced: Boolean
@@ -96,7 +96,7 @@ abstract class FabricSided<V : FabricSided<V, S>, S : ModCommon<in V>>(common: S
             override fun createRegistry(): Registry<T> = (BuiltInRegistries.REGISTRY.get(resourceKey.location()) ?: FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister()).cast()
 
             override fun <V : T> register(name: String, supplier: () -> V): V {
-                val type = supplier() as DataValueType<Any>
+                val type = supplier().cast<DataValueType<Any>>()
                 val attachment = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(common.modId, name)) { builder ->
                     builder.initializer(type.defaultValue)
                     builder.persistent(type.codec)

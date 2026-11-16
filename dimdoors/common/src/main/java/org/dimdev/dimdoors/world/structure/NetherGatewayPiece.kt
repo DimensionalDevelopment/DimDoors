@@ -92,7 +92,7 @@ class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
         generateBox(level, box, 2, 4, 4, 4, 4, 4, stairs, stairs, false)
 
         placeBlock(level, Blocks.NETHER_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.HALF, Half.TOP).setValue(StairBlock.FACING, Direction.SOUTH), 2, 4, 3, box)
-        placeBlock(level, Blocks.NETHER_BRICK_STAIRS.defaultBlockState().setValue<Half?, Half?>(StairBlock.HALF, Half.TOP).setValue(StairBlock.FACING, Direction.WEST), 4, 4, 3, box)
+        placeBlock(level, Blocks.NETHER_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.HALF, Half.TOP).setValue(StairBlock.FACING, Direction.WEST), 4, 4, 3, box)
 
         // Build the fourth layer of the gateway
         placeBlock(level, netherBrickState, 3, 5, 3, box)
@@ -151,8 +151,8 @@ class NetherGatewayPiece : NetherFortressPieces.NetherBridgePiece {
             orientation: Direction
         ): NetherGatewayPiece? {
             val boundingBox = BoundingBox.orientBox(x, y, z, -2, 0, 0, 7, 8, 7, orientation)
-            if (!isOkBox(boundingBox) || pieces.findCollisionPiece(boundingBox) != null) return null
-            else return NetherGatewayPiece(genDepth, boundingBox, orientation)
+            return if (!isOkBox(boundingBox) || pieces.findCollisionPiece(boundingBox) != null) null
+            else NetherGatewayPiece(genDepth, boundingBox, orientation)
         }
     }
 }

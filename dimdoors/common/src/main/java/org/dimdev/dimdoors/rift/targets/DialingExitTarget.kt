@@ -9,7 +9,7 @@ object DialingExitTarget : PlayerTrackingExitTarget<DialingExitTarget, DialingRe
 
     override fun copy(): DialingExitTarget = DialingExitTarget
 
-    override val subsystem get() = DialingRegistry.instance
+    override val subsystem get() = instance
 
-    val codec = MapCodec.unit(DialingExitTarget)
+    val codec: MapCodec<DialingExitTarget> = MapCodec.unit(DialingExitTarget)
 }

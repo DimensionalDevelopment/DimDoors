@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
-import org.dimdev.dimdoors.block.entity.DriftwoodChestBlockEntity;
 import org.dimdev.dimdoors.client.ModSheets;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

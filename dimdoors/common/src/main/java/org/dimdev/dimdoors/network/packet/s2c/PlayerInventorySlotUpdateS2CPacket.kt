@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.network.packet.s2c
 
+import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -12,10 +13,10 @@ data class PlayerInventorySlotUpdateS2CPacket(val slot: Int, val stack: ItemStac
     companion object {
         val TYPE = "player_inventory_slot_update".type<PlayerInventorySlotUpdateS2CPacket>()
 
-        val STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT, PlayerInventorySlotUpdateS2CPacket::slot,
-                ItemStack.STREAM_CODEC, PlayerInventorySlotUpdateS2CPacket::stack,
-                ::PlayerInventorySlotUpdateS2CPacket
-            )
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, PlayerInventorySlotUpdateS2CPacket> = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, PlayerInventorySlotUpdateS2CPacket::slot,
+            ItemStack.STREAM_CODEC, PlayerInventorySlotUpdateS2CPacket::stack,
+            ::PlayerInventorySlotUpdateS2CPacket
+        )
     }
 }

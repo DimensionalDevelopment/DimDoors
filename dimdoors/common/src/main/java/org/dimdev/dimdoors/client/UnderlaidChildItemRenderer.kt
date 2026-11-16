@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.ChildItem
 
 object UnderlaidChildItemRenderer {
-    val underlay = ModBlocks.DIMENSIONAL_PORTAL.asItem().defaultInstance
+    val underlay: ItemStack = ModBlocks.DIMENSIONAL_PORTAL.asItem().defaultInstance
 
 
     //    @Override
@@ -22,40 +22,38 @@ object UnderlaidChildItemRenderer {
         light: Int,
         overlay: Int
     ) {
-        val childItem = stack.item.castOrNull<ChildItem>() ?: throw UnsupportedOperationException("Can only use UnderlaidChildItemRenderer for ChildItems")
+        val childItem = stack.item.castOrNull<ChildItem>()
+            ?: throw UnsupportedOperationException("Can only use UnderlaidChildItemRenderer for ChildItems")
 
-        matrices.pushPose()
+        matrices.pusPop {
         matrices.translate(0.5, 0.5, 0.5)
 
-        val itemRenderer = Minecraft.getInstance().getItemRenderer()
+        val itemRenderer = Minecraft.getInstance().itemRenderer
 
-        // TODO: refactor
-        matrices.pushPose()
-        childItem.transformUnderlay(matrices)
-        matrices.scale(0.9f, 0.9f, 0.9f)
-        itemRenderer.renderStatic(underlay, ItemDisplayContext.NONE, light, overlay, matrices, vertexConsumers, null, 0)
-        matrices.popPose()
 
-        val originalItemStack: ItemStack = ItemStack(
-            childItem.originalItem,
-            stack.getCount()
-        )
-        originalItemStack.applyComponents(stack.getComponents())
+        matrices.pusPop {
+            childItem.transformUnderlay(matrices)
+            matrices.scale(0.9f, 0.9f, 0.9f)
+            itemRenderer.renderStatic(underlay, ItemDisplayContext.NONE, light, overlay, matrices, vertexConsumers, null, 0)
+        }
 
-        matrices.pushPose()
-        childItem.transformOverlay(matrices)
-        itemRenderer.renderStatic(
-            originalItemStack,
-            ItemDisplayContext.NONE,
-            light,
-            overlay,
-            matrices,
-            vertexConsumers,
-            null,
-            0
-        )
-        matrices.popPose()
+        val originalItemStack =
+            ItemStack(childItem.originalItem, stack.count).apply { applyComponents(stack.getComponents()) }
 
-        matrices.popPose()
+        matrices.pusPop {
+            childItem.transformOverlay(matrices)
+            itemRenderer.renderStatic(
+                originalItemStack,
+                ItemDisplayContext.NONE,
+                light,
+                overlay,
+                matrices,
+                vertexConsumers,
+                null,
+                0
+            )
+        }
+
+        }
     }
 }

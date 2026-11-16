@@ -23,12 +23,7 @@ interface ConfigSubject {
 }
 
 abstract class EntitySubject<T: Entity>(val entity: T) : ConfigSubject {
-    override fun isValid(player: ServerPlayer): Boolean {
-        val level = entity.level() ?: return false
-        val uuid = entity.uuid
-
-        return !entity.isRemoved
-    }
+    override fun isValid(player: ServerPlayer): Boolean = !entity.isRemoved
 }
 
 abstract class BlockEntitySubject<T : BlockEntity>(val blockEntity: T, private val hand: InteractionHand, private val item: Item) : ConfigSubject {

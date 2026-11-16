@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.item.door.data.condition
 
-import com.mojang.serialization.MapCodec
-import net.minecraft.core.Holder
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
 

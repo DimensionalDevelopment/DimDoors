@@ -22,9 +22,7 @@ import java.nio.file.Files
 abstract class SubSystem<T : SubSystem<T>> : SavedData() {
     abstract fun type(): Type<T>
 
-    override fun save(compoundTag: CompoundTag, provider: HolderLookup.Provider): CompoundTag {
-        return NbtUtil.serialize<T>(compoundTag, cast(), type().codec)
-    }
+    override fun save(compoundTag: CompoundTag, provider: HolderLookup.Provider): CompoundTag = NbtUtil.serialize(compoundTag, cast(), type().codec)
 
     override fun save(file: File, registries: HolderLookup.Provider) {
         if (this.isDirty) {
@@ -57,14 +55,6 @@ abstract class SubSystem<T : SubSystem<T>> : SavedData() {
     companion object {
         fun <T : SubSystem<T>> getInstance(type: Type<T>): T? = getInstance(server, type)
 
-        fun <T : SubSystem<T>> getInstance(server: MinecraftServer, type: Type<T>): T? {
-            return server.overworld().dataStorage.computeIfAbsent<T>(
-                Factory<T>(
-                    type.constructor, { tag, _ -> NbtUtil.deserialize<T>(tag, type.codec) }, DataFixTypes.LEVEL
-                ),
-                type.toFilename()
-            )
-        }
-
+        fun <T : SubSystem<T>> getInstance(server: MinecraftServer, type: Type<T>): T? = server.overworld().dataStorage.computeIfAbsent<T>(Factory<T>(type.constructor, { tag, _ -> NbtUtil.deserialize(tag, type.codec) }, DataFixTypes.LEVEL), type.toFilename())
     }
 }

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.registry
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
@@ -32,13 +33,7 @@ class PocketRegistry(
     }
 
     fun getOrCreate(key: ResourceKey<Level>): PocketDirectory {
-        return directories.computeIfAbsent(key) { key -> this.createDirectory(key) }
-    }
-
-    private fun createDirectory(key: ResourceKey<Level>): PocketDirectory {
-        val directory = PocketDirectory()
-        this.setDirty()
-        return directory
+        return directories.computeIfAbsent(key) { PocketDirectory().also { setDirty() } }
     }
 
     fun getPocketDirectory(key: ResourceKey<Level>): PocketDirectory {
@@ -49,7 +44,7 @@ class PocketRegistry(
         return instance.getOrCreate(key)
     }
 
-    fun createPocket(key: ResourceKey<Level>, builder: Pocket.PocketBuilder<*, *>): Pocket<*, *>? {
+    fun createPocket(key: ResourceKey<Level>, builder: Pocket.PocketBuilder<*, *>): Pocket<*, *> {
         return getPocketDirectory(key).newPocket(key, builder)
     }
 
@@ -58,7 +53,7 @@ class PocketRegistry(
     }
 
     fun <T : Pocket<*, *>> getPocket(info: PocketInfo, clazz: Class<T>): T? =
-        getPocketDirectory(info.world).getPocket<T>(info.id, clazz)
+        getPocketDirectory(info.world).getPocket(info.id, clazz)
 
     fun getPocketEntrances(pocket: Pocket<*, *>): MutableSet<Location> {
         Objects.requireNonNull(pocket, "pocket")
@@ -101,7 +96,7 @@ class PocketRegistry(
 
     companion object {
         @JvmField
-        val CODEC = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<PocketRegistry> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
                     Level.RESOURCE_KEY_CODEC.unboundedMap(PocketDirectory.CODEC).fieldOf("directories").forGetter(PocketRegistry::directories)
                 ).apply(instance, ::PocketRegistry)

@@ -24,5 +24,5 @@ object PublicPocketTarget : RestoringTarget<PublicPocketTarget>() {
 
     override fun copy(): PublicPocketTarget = PublicPocketTarget
 
-    val codec = MapCodec.unit(PublicPocketTarget)
+    val codec: MapCodec<PublicPocketTarget> = MapCodec.unit(PublicPocketTarget)
 }

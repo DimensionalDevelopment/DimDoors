@@ -12,5 +12,7 @@ data class PendingReaper(val entry: BlockPos, val ticks: Int) {
                 Codec.INT.fieldOf("ticks").forGetter(PendingReaper::ticks)
             ).apply(instance, ::PendingReaper)
         }
+
+        val EMPTY = PendingReaper(BlockPos.ZERO, 0)
     }
 }

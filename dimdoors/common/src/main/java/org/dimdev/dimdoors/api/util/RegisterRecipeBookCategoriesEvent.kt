@@ -23,6 +23,11 @@ data class RegisterRecipeBookCategoriesEvent(
 
     companion object {
         @JvmField
-        val EVENT: SimpleEvent<Consumer<RegisterRecipeBookCategoriesEvent>> = SimpleEvent.of { listeners -> Consumer { event -> listeners.forEach { it.accept(event) } } }
+        val EVENT: SimpleEvent<Consumer<RegisterRecipeBookCategoriesEvent>> = SimpleEvent.of { listeners -> { event ->
+                listeners.forEach {
+                    it.accept(event)
+                }
+            }
+        }
     }
 }

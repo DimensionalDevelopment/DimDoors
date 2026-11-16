@@ -6,6 +6,6 @@ import org.dimdev.dimdoors.api.util.imutableList
 abstract class MultipleCondition protected constructor(val conditions: List<Condition>) : Condition {
 
     companion object {
-        val LIST = Condition.CODEC.imutableList().fieldOf("conditions")
+        val LIST: MapCodec<List<Condition>> = Condition.CODEC.imutableList().fieldOf("conditions")
     }
 }

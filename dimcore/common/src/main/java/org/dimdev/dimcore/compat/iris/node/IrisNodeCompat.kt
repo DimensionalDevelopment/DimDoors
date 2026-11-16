@@ -28,7 +28,8 @@ class IrisNodeCompat(val pipeline: IrisRenderingPipeline, programSet: ProgramSet
 
     init {
         RenderNodes.external = { current() != null }
-        RenderNodes.nodes.forEach { (it.renderType as BlendingStateHolder).setTransparencyType(TransparencyType.OPAQUE) }
+        RenderNodes.nodes.filterIsInstance<BlendingStateHolder>().forEach { it.transparencyType = TransparencyType.OPAQUE }
+
         val ext = programSet.cast<ProgramSetExt>()
         RenderNodes.nodes.forEach { node ->
             listOf(GEOMETRY, SHADOW, COMPOSITE).forEach { pass ->

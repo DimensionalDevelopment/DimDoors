@@ -35,3 +35,4 @@ val CommandContext<CommandSourceStack>.dimension: ServerLevel get() = DimensionA
 val CommandContext<CommandSourceStack>.coordinates: Vec3 get() = Vec3Argument.getVec3(this, "coordinates")
 val CommandContext<CommandSourceStack>.yaw get() = FloatArgumentType.getFloat(this, "yaw")
 val CommandContext<CommandSourceStack>.pitch get() = FloatArgumentType.getFloat(this, "pitch")
+fun CommandSourceStack.sendSuccess(messageSupplier: String, allowLogging: Boolean) = sendSuccess(messageSupplier::literal, allowLogging)

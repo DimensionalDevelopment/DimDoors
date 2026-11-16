@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.pockets.modifier
 
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.world.pocket.type.Pocket
 import org.dimdev.dimdoors.rift.targets.IdMarker
+import org.dimdev.dimdoors.world.pocket.type.Pocket
 import kotlin.math.max
 
 class RiftManager(val pocket: Pocket<*, *>, skipGatheringRifts: Boolean = false,
-                                            private var maxId: Int = 0
+                  private var maxId: Int = 0
 ) {
     private val map: MutableMap<Int, BlockEntityRift<*>>
 

@@ -33,9 +33,9 @@ abstract class TemplateModifier<V, T: TemplateTarget<V, T>>(val ids: MutableList
     override fun apply(parameters: PocketGenerationContext, builder: Pocket.PocketBuilder<*, *>) {}
 
     companion object {
-        val IDS_CODEC = Codec.INT_STREAM.xmap(
-            IntStream::boxed,
-            { integerStream -> integerStream.mapToInt(Int::toInt) })
+        val IDS_CODEC: MapCodec<MutableList<Int>> = Codec.INT_STREAM.xmap(
+            IntStream::boxed
+        ) { integerStream -> integerStream.mapToInt(Int::toInt) }
             .xmap(
                 Stream<Int>::toList,
                 MutableList<Int>::stream

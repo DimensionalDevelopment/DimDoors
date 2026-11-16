@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.rift.targets
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 
 class DialingTargetImpl(override var address: DialingAddress) : VirtualTarget<DialingTargetImpl>(), DialingTarget {
@@ -13,9 +12,7 @@ class DialingTargetImpl(override var address: DialingAddress) : VirtualTarget<Di
     }
 
     companion object {
-        private val LOGGER: Logger? = LogManager.getLogger()
-
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<DialingTargetImpl> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 DialingAddress.MAP_CODEC.forGetter(DialingTarget::address)
             ).apply(instance, ::DialingTargetImpl)
         }

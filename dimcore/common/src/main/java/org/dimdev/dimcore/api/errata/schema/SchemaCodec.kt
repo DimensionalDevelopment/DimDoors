@@ -5,6 +5,7 @@ import com.mojang.serialization.*
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.resources.ResourceLocation
+import org.dimdev.dimcore.api.ext.cast
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Stream
@@ -49,7 +50,7 @@ class SchemaCodec<A>(val delegate: Codec<A>, val node: SchemaNode) : Codec<A> {
 }
 
 class SchemaField<A>(val delegate: MapCodec<A>, val field: FieldNode) : MapCodec<A>() {
-    override fun <T> keys(ops: DynamicOps<T>): Stream<T> = if (ops === SchemaOps) Stream.of(field as T) else delegate.keys(ops)
+    override fun <T> keys(ops: DynamicOps<T>): Stream<T> = if (ops === SchemaOps) Stream.of(field.cast()) else delegate.keys(ops)
 
     override fun <T> decode(ops: DynamicOps<T>, input: MapLike<T>): DataResult<A> = delegate.decode(ops, input)
 

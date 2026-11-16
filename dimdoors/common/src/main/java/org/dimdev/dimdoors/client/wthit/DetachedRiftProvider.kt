@@ -7,7 +7,6 @@ import mcp.mobius.waila.api.IDataWriter
 import mcp.mobius.waila.api.IPluginConfig
 import mcp.mobius.waila.api.IServerAccessor
 import mcp.mobius.waila.api.ITooltip
-import mcp.mobius.waila.api.*
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import org.dimdev.dimdoors.DimensionalDoors.Companion.id

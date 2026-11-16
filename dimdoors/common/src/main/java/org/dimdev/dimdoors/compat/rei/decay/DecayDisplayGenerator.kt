@@ -5,7 +5,7 @@ import me.shedaniel.rei.api.client.view.ViewSearchBuilder
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.entry.EntryStack
 import me.shedaniel.rei.api.common.util.EntryStacks
-import org.dimdev.dimdoors.DimensionalDoors.Companion.server
+import org.dimdev.dimcore.DimCore
 import org.dimdev.dimdoors.world.decay.Decay.DecayLoader.getPatterns
 import java.util.*
 
@@ -53,7 +53,7 @@ class DecayDisplayGenerator : DynamicDisplayGenerator<DecayPatternDisplay> {
 
         private val displays: MutableList<DecayPatternDisplay>
             get() {
-                val server = server
+                val server = DimCore.platform.server
 
                 return getPatterns().values
                     .flatten()

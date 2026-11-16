@@ -24,7 +24,7 @@ interface VirtualPocket : Weighted<PocketGenerationContext>, PocketCreator {
     companion object {
         @JvmField
         val CODEC: Codec<VirtualPocket> = Codec.lazyInitialized {
-            Codec.either(ImplementedVirtualPocket.CODEC, VirtualPocketList.CODEC).xmap<VirtualPocket>(
+            Codec.either(ImplementedVirtualPocket.CODEC, VirtualPocketList.CODEC).xmap(
                 { either -> either.map({ it }, { it }) },
                 { virtualPocket ->
                     when (virtualPocket) {

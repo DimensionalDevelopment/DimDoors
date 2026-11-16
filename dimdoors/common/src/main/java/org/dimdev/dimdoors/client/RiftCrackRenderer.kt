@@ -27,7 +27,7 @@ object RiftCrackRenderer {
     ) = model.pusPop {
 
         // Calculate the proper size for the rift render
-        val scale = (size / (poly.maxX - poly.minX)).toFloat()
+        val scale = (size / (poly.maxX - poly.minX))
 
         // Calculate the midpoint of the fractal bounding box
         model.mulPose(Axis.YP.rotation(riftRotation))

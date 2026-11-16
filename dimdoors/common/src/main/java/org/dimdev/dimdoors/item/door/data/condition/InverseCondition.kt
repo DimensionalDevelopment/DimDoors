@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.item.door.data.condition
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity
-import java.util.function.Function
 
 data class InverseCondition(val condition: Condition) : Condition {
     override val type get() = Conditions.INVERSE
@@ -11,7 +10,7 @@ data class InverseCondition(val condition: Condition) : Condition {
     override fun matches(rift: EntranceRiftBlockEntity<*>) = !this.condition.matches(rift)
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<InverseCondition> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 Condition.CODEC.fieldOf("condition").forGetter(InverseCondition::condition)
             ).apply(instance, ::InverseCondition)
         }

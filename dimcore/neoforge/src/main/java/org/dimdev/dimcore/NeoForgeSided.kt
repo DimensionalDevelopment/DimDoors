@@ -16,7 +16,6 @@ import net.minecraft.server.packs.PackLocationInfo
 import net.minecraft.server.packs.PackSelectionConfig
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.PathPackResources
-import net.minecraft.server.packs.repository.KnownPack
 import net.minecraft.server.packs.repository.Pack
 import net.minecraft.server.packs.repository.PackSource
 import net.minecraft.world.item.CreativeModeTab
@@ -53,15 +52,15 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         toRegister.getOrPut(key) { linkedMapOf() }[id(name)] = value
     }
 
-    override fun <T> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>?, synced: Boolean): PlatformRegistry.EntryRegister<T> {
+    override fun <T: Any> entryRegister(resourceKey: ResourceKey<Registry<T>>, registry: Registry<T>?, synced: Boolean): PlatformRegistry.EntryRegister<T> {
         if (resourceKey == PlatformRegistry.DataValuePlatformRegistry.KEY) return object : PlatformRegistry.EntryRegister<T>() {
             override fun <V : T> register(name: String, supplier: () -> V): V {
-                val type = supplier() as DataValueType<Any>
+                val type = supplier().cast<DataValueType<Any>>()
                 val builder = AttachmentType.builder(Supplier { type.defaultValue() }).serialize(type.codec)
                 type.streamCodec?.let(builder::sync)
                 val attachment = builder.build()
                 queue(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, name, attachment)
-                return attachment as V
+                return attachment.cast()
             }
 
             override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
@@ -75,13 +74,13 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
             override fun <V : T> register(name: String, supplier: () -> V): V {
                 val type = supplier() as CreativeTabType
                 queue(Registries.CREATIVE_MODE_TAB, name, CreativeModeTab.builder().apply(type.block).build())
-                return DeferredHolder.create<CreativeModeTab, CreativeModeTab>(Registries.CREATIVE_MODE_TAB, id(name)) as V
+                return DeferredHolder.create(Registries.CREATIVE_MODE_TAB, id(name)).cast()
             }
 
             override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
                 val type = supplier() as CreativeTabType
                 queue(Registries.CREATIVE_MODE_TAB, name, CreativeModeTab.builder().apply(type.block).build())
-                return DeferredHolder.create<CreativeModeTab, CreativeModeTab>(Registries.CREATIVE_MODE_TAB, id(name)) as Holder<V>
+                return DeferredHolder.create(Registries.CREATIVE_MODE_TAB, id(name)).cast()
             }
 
             override fun createRegistry(): Registry<T> = BuiltInRegistries.CREATIVE_MODE_TAB.cast()
@@ -98,7 +97,7 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
 
             override fun <V : T> registerHolder(name: String, supplier: () -> V): Holder<V> {
                 queue(resourceKey, name, supplier() as Any)
-                return DeferredHolder.create<T, V>(resourceKey, id(name)) as Holder<V>
+                return DeferredHolder.create<T, V>(resourceKey, id(name)).cast()
             }
 
             override fun createRegistry(): Registry<T> = target
@@ -116,9 +115,9 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
     ) {
         fun register(event: DataPackRegistryEvent.NewRegistry) {
             if (networkCodec != null) {
-                event.dataPackRegistry<T>(key, codec, networkCodec)
+                event.dataPackRegistry(key, codec, networkCodec)
             } else {
-                event.dataPackRegistry<T>(key, codec)
+                event.dataPackRegistry(key, codec)
             }
         }
     }
@@ -128,7 +127,7 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
             Registry.register<T, T>(
                 registry,
                 resourceLocation,
-                obj as T
+                obj.cast()
             )
         }
     }
@@ -189,14 +188,14 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
 
         bus.addListener<NewRegistryEvent> { event -> registriesToRegister.forEach { event.register(it) } }
 
-        bus.addListener<RegisterEvent>(EventPriority.LOWEST, { event ->
+        bus.addListener<RegisterEvent>(EventPriority.LOWEST) { event ->
             val key = event.registryKey
             val registry = event.registry
 
             toRegister.remove(key)?.takeIf { it.isNotEmpty() }?.let { populate(registry, it) }
 
             hooks?.onEntry?.get(key)?.let { runHooks(registry, it) }
-        })
+        }
 
         if (mod is PacketProvider) bus.addListener<RegisterPayloadHandlersEvent> { event -> mod.registerPackets(NeoForgePacketRegister(event.registrar("1").optional())) }
 
@@ -213,19 +212,19 @@ abstract class NeoForgeSided<V : NeoForgeSided<V, T>, T : ModCommon<in V>>(priva
         common.initRegistries(self())
 
         var initialized = false
-        bus.addListener<RegisterEvent>(EventPriority.HIGHEST, { _ ->
+        bus.addListener<RegisterEvent>(EventPriority.HIGHEST) { _ ->
             if (initialized) return@addListener
             initialized = true
             common.init(self())
             if (mod is RegistrationHooks) hooks = Hooks().also(mod::registrationHooks)
-        })
+        }
     }
 
-    private data class PackInfo(val id: String?, val name: String?, val defaultedOn: Boolean) {
+    private data class PackInfo(val id: String, val name: String, val defaultedOn: Boolean) {
         fun create(modId: String?, type: PackType): Pack? {
-            val resourcePath = ModList.get().getModFileById(modId).getFile().findResource("resourcepacks", id)
+            val resourcePath = ModList.get().getModFileById(modId).file.findResource("resourcepacks", id)
             return Pack.readMetaAndCreate(
-                PackLocationInfo(id, Component.literal(name), PackSource.BUILT_IN, Optional.empty<KnownPack?>()),
+                PackLocationInfo(id, Component.literal(name), PackSource.BUILT_IN, Optional.empty()),
                 PathPackResources.PathResourcesSupplier(resourcePath),
                 type,
                 PackSelectionConfig(false, Pack.Position.BOTTOM, false)

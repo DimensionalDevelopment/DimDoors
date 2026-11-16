@@ -6,9 +6,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.Half
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
-import org.dimdev.dimdoors.api.util.Location
 import org.dimdev.dimdoors.util.Timer
 import org.dimdev.dimdoors.util.Timer.Companion.create
 import kotlin.math.abs
@@ -87,7 +87,7 @@ object RiftUtils {
 
             @JvmStatic
             fun ofTrapdoor(state: BlockState, pos: BlockPos): PortalPlane {
-                val isTop = state.getValue<Half?>(TrapDoorBlock.HALF) == Half.TOP
+                val isTop = state.getValue(TrapDoorBlock.HALF) == Half.TOP
                 val normal = if (isTop) Vec3(0.0, -1.0, 0.0) else Vec3(0.0, 1.0, 0.0)
                 val origin = Vec3.atBottomCenterOf(pos).add(0.0, (if (isTop) 1 else 0).toDouble(), 0.0)
                 val tangentX = Vec3.atLowerCornerOf(state.getValue(DimensionalPortalBlock.FACING).normal)

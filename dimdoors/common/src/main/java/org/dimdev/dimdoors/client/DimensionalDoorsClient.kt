@@ -242,7 +242,7 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
         val wearingTailorsEyePiece = { eyePieceActive }
 
         fun registerEyepieceAlt(block: Block) {
-            val resource = block.builtInRegistryHolder().key().location();
+            val resource = block.builtInRegistryHolder().key().location()
             val baseMaterial = Material(InventoryMenu.BLOCK_ATLAS, resource.withPrefix("block/"))
             val altTexture = resource.withPrefix("block/eyepiece_alternate/")
 

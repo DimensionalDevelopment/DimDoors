@@ -11,10 +11,10 @@ data class MonolithAggroParticlesPacket(val aggro: Int) : CustomPacketPayload {
 
     companion object {
         val TYPE = "monolith_aggro_particles".type<MonolithAggroParticlesPacket>()
-        val STREAM_CODEC = StreamCodec.composite(
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MonolithAggroParticlesPacket> = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT,
                 MonolithAggroParticlesPacket::aggro,
                 ::MonolithAggroParticlesPacket
-            ).cast<RegistryFriendlyByteBuf>()
+        ).cast()
     }
 }

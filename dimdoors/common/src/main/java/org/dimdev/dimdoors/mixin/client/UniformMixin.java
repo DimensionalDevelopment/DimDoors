@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import foundry.imgui.impl.platform.ImGuiMCPlatform;
 import org.dimdev.dimdoors.api.client.UniformExt;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.slf4j.Logger;

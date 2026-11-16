@@ -52,7 +52,7 @@ class DoubleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Bloc
 
     companion object {
         @JvmField
-        val CODEC: MapCodec<DoubleBlockDecayResult> = RecordCodecBuilder.mapCodec { instance -> BlockDecayResult.blockDecayCodec(instance).apply(instance, ::DoubleBlockDecayResult) }
+        val CODEC: MapCodec<DoubleBlockDecayResult> = RecordCodecBuilder.mapCodec { instance -> blockDecayCodec(instance).apply(instance, ::DoubleBlockDecayResult) }
 
         const val KEY: String = "double_block"
     }

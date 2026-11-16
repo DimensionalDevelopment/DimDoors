@@ -106,7 +106,7 @@ object TypeCommands {
         current: (CommandContext<CommandSourceStack>) -> B?,
         apply: (CommandContext<CommandSourceStack>, B) -> Int
     ): LiteralArgumentBuilder<CommandSourceStack> {
-        val exec = { path: Path -> Command<CommandSourceStack> { ctx -> apply(ctx, construct(spec, ctx, "", path, current(ctx))) } }
+        val exec = { path: Path -> Command { ctx -> apply(ctx, construct(spec, ctx, "", path, current(ctx))) } }
 
         val open = Commands.literal("{").executes(exec(Path())).also { open ->
             children(spec, "", Path(), 0, exec) { path -> listOf(Commands.literal("}").executes(exec(path))) }.forEach { open.then(it) }

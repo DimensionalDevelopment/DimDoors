@@ -25,7 +25,7 @@ import kotlin.jvm.optionals.getOrNull
 
 object CodecUtils {
 
-    public fun createMusic(sound: Holder<SoundEvent>): Music {
+    fun createMusic(sound: Holder<SoundEvent>): Music {
         return Music(sound, 0, 0, true)
     }
 
@@ -35,7 +35,7 @@ object CodecUtils {
     val GAME_MUSIC: Codec<Music> = Codec.withAlternative(Music.CODEC, SoundEvent.CODEC, ::createMusic)
 
     @JvmField
-    val STRING_INT = Codec.STRING.xmap( { s -> s.toInt() }, { it.toString()})
+    val STRING_INT: Codec<Int> = Codec.STRING.xmap( { s -> s.toInt() }, { it.toString()})
 
     fun <T : GenericDecayCondition<*>, V> decayConditionFields(
         instance: RecordCodecBuilder.Instance<T>,
@@ -70,13 +70,10 @@ object CodecUtils {
 
     fun <T> pair(codec: Codec<T>): Codec<Pair<T, T>> = Codec.pair(codec.fieldOf("key").codec(), codec.fieldOf("value").codec())
 
-    fun <T> mutableMap(codec: Codec<T>) = pair(codec).listOf().xmap<MutableMap<T, T>>(
-        {
-            it.associate { kotlin.Pair(it.first, it.second) }.toMutableMap()
-        },
-        {
-            it.entries.map { Pair(it.key, it.value) }
-        })
+    fun <T> mutableMap(codec: Codec<T>): Codec<MutableMap<T, T>> = pair(codec).listOf().xmap(
+    { pairs -> pairs.associateTo(mutableMapOf()) { it.first to it.second } },
+        { map -> map.map { (key, value) -> Pair(key, value) } }
+    )
 
     var INT_ARRAY_CODEC: Codec<IntArray> = Codec.BYTE_BUFFER.xmap({ data ->
         val buf = Unpooled.wrappedBuffer(data)

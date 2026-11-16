@@ -4,7 +4,10 @@ import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.advancements.AdvancementType
 import net.minecraft.advancements.DisplayInfo
-import net.minecraft.advancements.critereon.*
+import net.minecraft.advancements.critereon.ChangeDimensionTrigger
+import net.minecraft.advancements.critereon.EnterBlockTrigger
+import net.minecraft.advancements.critereon.InventoryChangeTrigger
+import net.minecraft.advancements.critereon.ItemPredicate
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
@@ -12,12 +15,12 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Blocks
 import org.dimdev.dimdoors.DimensionalDoors
+import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.criteria.ModCriteria
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion
 import org.dimdev.dimdoors.item.ModItems
-import org.dimdev.dimdoors.api.util.tag
 import org.dimdev.dimdoors.world.ModDimensions
 import java.util.*
 import java.util.function.Consumer
@@ -27,20 +30,20 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
 
 
         val root = Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.RIFT_BLADE, "root"))
+            .display(makeDisplay(ModItems.RIFT_BLADE, "root"))
             .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.ENDER_PEARL))
             .save(advancementConsumer, "dimdoors:dimdoors/root")
         Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.WORLD_THREAD, "string_theory"))
+            .display(makeDisplay(ModItems.WORLD_THREAD, "string_theory"))
             .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD))
             .parent(root)
             .save(advancementConsumer, "dimdoors:dimdoors/string_theory")
         val holeInTheSky = Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL, "hole_in_the_sky"))
+            .display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL, "hole_in_the_sky"))
             .addCriterion(
                 "encounter_rift", ModCriteria.RIFT_TRACKED.createCriterion(
                     RiftTrackedCriterion.TriggerInstance(
-                        Optional.empty<ContextAwarePredicate?>()
+                        Optional.empty()
                     )
                 )
             )
@@ -90,7 +93,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             .addCriterion(
                 "spawn", ModCriteria.POCKET_SPAWN_POINT_SET.createCriterion(
                     PocketSpawnPointSetCondition.TriggerInstance(
-                        Optional.empty<ContextAwarePredicate?>()
+                        Optional.empty()
                     )
                 )
             )
@@ -141,7 +144,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
 //                )
 //                .save(advancementConsumer, "dimdoors:dimdoors/lost_and_found");
         Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModBlocks.BLACK_FABRIC, "darklight"))
+            .display(makeDisplay(ModBlocks.BLACK_FABRIC, "darklight"))
             .parent(doorToAdventure)
             .addCriterion(
                 "get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(
@@ -152,12 +155,12 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             )
             .save(advancementConsumer, "dimdoors:dimdoors/darklight")
         val enterLimbo = Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))
+            .display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))
             .parent(doorToAdventure)
             .addCriterion("enter_limbo", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.LIMBO))
             .save(advancementConsumer, "dimdoors:dimdoors/enter_limbo")
         Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModBlocks.UNRAVELLED_FABRIC, "world_unfurled"))
+            .display(makeDisplay(ModBlocks.UNRAVELLED_FABRIC, "world_unfurled"))
             .parent(enterLimbo)
             .addCriterion(
                 "get_the_unravelled",
@@ -166,7 +169,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             .save(advancementConsumer, "dimdoors:dimdoors/world_unfurled")
 
         Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.INFRANGIBLE_FIBER, "unravelled_but_immutable"))
+            .display(makeDisplay(ModItems.INFRANGIBLE_FIBER, "unravelled_but_immutable"))
             .parent(enterLimbo)
             .addCriterion(
                 "get_the_immutable",
@@ -175,7 +178,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             .save(advancementConsumer, "dimdoors:dimdoors/unravelled_but_immutable")
 
         Advancement.Builder.advancement()
-            .display(Companion.makeDisplay(ModItems.FRAYED_FILAMENT, "fuzzy_unreality"))
+            .display(makeDisplay(ModItems.FRAYED_FILAMENT, "fuzzy_unreality"))
             .parent(enterLimbo)
             .addCriterion(
                 "get_the_immutable",
@@ -213,7 +216,7 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
     companion object {
         fun makeDisplay(item: ItemLike, titleKey: String?): DisplayInfo {
             return DisplayInfo(
-                item.asItem().getDefaultInstance(),
+                item.asItem().defaultInstance,
                 Component.translatable("advancement.dimdoors.$titleKey"),
                 Component.translatable("advancement.dimdoors.$titleKey.desc"),
                 Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
@@ -224,11 +227,11 @@ class AdvancementTab : Consumer<Consumer<AdvancementHolder>> {
             )
         }
 
-        fun makeDisplay(item: ItemLike, titleKey: String?, advancementFrame: AdvancementType?): DisplayInfo {
+        fun makeDisplay(item: ItemLike, titleKey: String, advancementFrame: AdvancementType): DisplayInfo {
             return DisplayInfo(
-                item.asItem().getDefaultInstance(),
-                Component.translatable("dimdoors.advancement." + titleKey),
-                Component.translatable("dimdoors.advancement." + titleKey + ".desc"),
+                item.asItem().defaultInstance,
+                Component.translatable("dimdoors.advancement.$titleKey"),
+                Component.translatable("dimdoors.advancement.$titleKey.desc"),
                 Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
                 advancementFrame,
                 true,

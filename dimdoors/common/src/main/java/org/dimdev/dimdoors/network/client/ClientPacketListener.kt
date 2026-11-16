@@ -95,13 +95,11 @@ object ClientPacketListener {
     fun onMonolithTeleportParticles(packet: MonolithTeleportParticlesPacket) {
         Minecraft.getInstance().apply {
             execute {
+                val level = level ?: return@execute
+                val pos = player?.position() ?: return@execute
+
                 particleEngine.add(
-                    MonolithParticle(
-                        level!!,
-                        player!!.x,
-                        player!!.y,
-                        player!!.z
-                    )
+                    MonolithParticle(level, pos)
                 )
             }
         }

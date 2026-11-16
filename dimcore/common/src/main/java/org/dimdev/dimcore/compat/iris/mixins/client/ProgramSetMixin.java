@@ -31,10 +31,10 @@ public abstract class ProgramSetMixin implements ProgramSetExt {
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void dimensionalDoors$captureSources(AbsolutePackPath directory, Function<AbsolutePackPath, String> sourceProvider, ShaderProperties properties, ShaderPack pack, CallbackInfo ci) {
+    private void dimensionalDoors$captureSources(AbsolutePackPath directory, Function<AbsolutePackPath, String> sourceProvider, ShaderProperties shaderProperties, ShaderPack pack, CallbackInfo ci) {
         dimensionalDoors$directory = directory;
         dimensionalDoors$sourceProvider = sourceProvider;
-        dimensionalDoors$properties = properties;
+        dimensionalDoors$properties = shaderProperties;
     }
 
     @Override

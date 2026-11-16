@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen
 
-import net.minecraft.core.Holder
 import net.minecraft.core.NonNullList
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey

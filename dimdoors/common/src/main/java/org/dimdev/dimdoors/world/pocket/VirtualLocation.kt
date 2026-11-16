@@ -25,7 +25,7 @@ data class VirtualLocation(val world: ResourceKey<Level>, val x: Int, val z: Int
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.create { instance ->
+        val CODEC: Codec<VirtualLocation> = RecordCodecBuilder.create { instance ->
                 instance.group(
                     Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(VirtualLocation::world),
                     Codec.INT.fieldOf("x").forGetter(VirtualLocation::x),

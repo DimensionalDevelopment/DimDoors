@@ -29,7 +29,7 @@ class SingleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Bloc
 
     companion object {
         @JvmField
-        val CODEC: MapCodec<SingleBlockDecayResult> = RecordCodecBuilder.mapCodec { instance -> BlockDecayResult.blockDecayCodec(instance).apply(instance, ::SingleBlockDecayResult) }
+        val CODEC: MapCodec<SingleBlockDecayResult> = RecordCodecBuilder.mapCodec { instance -> blockDecayCodec(instance).apply(instance, ::SingleBlockDecayResult) }
 
         const val KEY: String = "single_block"
     }

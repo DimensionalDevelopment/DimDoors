@@ -12,10 +12,10 @@ data class RenderBreakBlockS2CPacket(val pos: BlockPos, val stage: Int) : Custom
 
     companion object {
         val TYPE = "render_break_block".type<RenderBreakBlockS2CPacket>()
-        val STREAM_CODEC = StreamCodec.composite(
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, RenderBreakBlockS2CPacket> = StreamCodec.composite(
                 BlockPos.STREAM_CODEC, RenderBreakBlockS2CPacket::pos,
                 ByteBufCodecs.VAR_INT, RenderBreakBlockS2CPacket::stage,
                 ::RenderBreakBlockS2CPacket
-            ).cast<RegistryFriendlyByteBuf>()
+            ).cast()
     }
 }

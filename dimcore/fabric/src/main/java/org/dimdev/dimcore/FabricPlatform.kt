@@ -1,13 +1,11 @@
 package org.dimdev.dimcore
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import com.mojang.brigadier.arguments.ArgumentType
-import net.minecraft.commands.synchronization.SingletonArgumentInfo
-import net.minecraft.resources.ResourceLocation
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.*
@@ -22,11 +20,11 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry
 import net.fabricmc.fabric.api.registry.FuelRegistry
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.Commands
+import net.minecraft.commands.synchronization.SingletonArgumentInfo
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -37,14 +35,11 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.Platform
 import org.dimdev.dimcore.api.util.SimpleEvent
 import java.nio.file.Path
-import java.util.function.Consumer
 
 class FabricPlatform : Platform {
     override lateinit var server: MinecraftServer

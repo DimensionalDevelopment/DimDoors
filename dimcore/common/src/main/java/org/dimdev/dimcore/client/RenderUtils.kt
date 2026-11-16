@@ -9,9 +9,6 @@ import net.minecraft.util.FastColor
 import net.minecraft.world.phys.Vec3
 
 object RenderUtils {
-    data class Point(val pos: Vec3, val argb: Int) {
-
-    }
 
     fun Vec3.drawBox(stack: PoseStack, buffers: MultiBufferSource, half: Double, color: Int) {
         val type = buffers.getBuffer(RenderType.debugFilledBox())

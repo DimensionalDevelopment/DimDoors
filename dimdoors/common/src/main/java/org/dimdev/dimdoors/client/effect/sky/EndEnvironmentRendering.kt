@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer
 import org.dimdev.dimdoors.world.pocket.type.addon.environment.sky.EndSkyData
 import org.joml.Matrix4f
-import java.util.function.Supplier
 
 object EndEnvironmentRendering {
     fun renderSky(

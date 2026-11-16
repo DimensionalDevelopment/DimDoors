@@ -96,6 +96,6 @@ class DialingDoorBlockEntityRenderer(private val context: BlockEntityRendererPro
         const val VOXEL_SIZE: Float = 1.0f / 16.0f
         private const val HEIGHT_TEXT_SCALE: Float = VOXEL_SIZE * 4.6f / 7f
         const val WIDTH_TEXT_SCALE: Float = VOXEL_SIZE * 0.6f
-        private val TEXT_FORWARD_OFFSET: Double = 0.501 + VOXEL_SIZE
+        private const val TEXT_FORWARD_OFFSET: Double = 0.501 + VOXEL_SIZE
     }
 }

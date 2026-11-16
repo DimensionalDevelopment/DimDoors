@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay.conditions
 
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.dimdev.dimdoors.world.decay.Decay
 import org.dimdev.dimdoors.world.decay.DecaySource
@@ -12,8 +13,8 @@ data class DecaySourceCondition(val source: DecaySource) : DecayCondition {
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group<DecaySource>(
-                    DecaySource.CODEC.fieldOf("source").forGetter<DecaySourceCondition>(DecaySourceCondition::source)
+        val CODEC: MapCodec<DecaySourceCondition> = RecordCodecBuilder.mapCodec { instance -> instance.group(
+                    DecaySource.CODEC.fieldOf("source").forGetter(DecaySourceCondition::source)
                 ).apply(instance, ::DecaySourceCondition)
             }
         var KEY: String = "decay_source"

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay
 
+
 import com.google.gson.JsonElement
 import com.mojang.serialization.JsonOps
 import net.minecraft.core.BlockPos
@@ -21,16 +22,12 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import net.minecraft.world.phys.AABB
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.api.util.ResourceUtil
-import org.dimdev.dimdoors.world.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.network.ServerPacketHandler
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern
-import org.dimdev.dimdoors.api.util.ResourceUtil
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -38,7 +35,6 @@ import kotlin.jvm.optionals.getOrNull
  * change into simpler forms ultimately becoming in most cases unraveled Fabric as time passes.
  */
 object Decay {
-    private val LOGGER: Logger = LogManager.getLogger()
     private val DECAY_QUEUE: MutableMap<ResourceKey<Level>, MutableMap<BlockPos, DecayTask>> = HashMap()
     private const val BREAK_BLOCK_STAGE = 5
     private const val BREAK_BLOCK_RENDER_DISTANCE = 100.0
@@ -56,8 +52,8 @@ object Decay {
 
             //Apply decay to the blocks above, below, and on all four sides.
             // TODO: make max amount configurable
-            val decayAmount = random.nextInt(Direction.values().size - 1) + 1
-            val directions = Direction.values().toMutableList()
+            val decayAmount = random.nextInt(Direction.entries.size - 1) + 1
+            val directions = Direction.entries.toMutableList()
             for (i in 0 until decayAmount) {
                 val direction = directions.removeAt(random.nextInt(directions.size))
                 decayBlock(world, pos, origin, direction, source)
@@ -121,8 +117,6 @@ object Decay {
     }
 
     object DecayLoader {
-        private val LOGGER: Logger = LogManager.getLogger()
-
         private val patterns: MutableMap<ResourceKey<*>, MutableList<DecayPatternHolder>> = HashMap()
 
         private var undiffernitatedPatterns: List<DecayPatternHolder> = ArrayList()

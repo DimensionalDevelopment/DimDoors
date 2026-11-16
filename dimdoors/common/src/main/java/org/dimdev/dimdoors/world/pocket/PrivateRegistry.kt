@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import net.minecraft.server.level.ServerLevel
-import org.dimdev.dimdoors.rift.registry.*
 import org.dimdev.dimdoors.util.CodecUtils.unboundedMap
 import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.rift.registry.SubsystemTypes

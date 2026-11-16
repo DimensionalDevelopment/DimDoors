@@ -6,15 +6,16 @@ import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.particle.Particle
-import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.renderer.texture.OverlayTexture
-import net.minecraft.core.particles.ParticleOptions
+import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.client.MonolithRenderer
 import org.joml.Quaternionf
 
 class MonolithParticle(world: ClientLevel, x: Double, y: Double, z: Double) : Particle(world, x, y, z) {
+    constructor(world: ClientLevel, pos: Vec3): this(world, pos.x, pos.y, pos.z)
+
     init {
         this.age = 30
     }
@@ -34,20 +35,5 @@ class MonolithParticle(world: ClientLevel, x: Double, y: Double, z: Double) : Pa
 
     override fun getRenderType(): ParticleRenderType {
         return ParticleRenderType.CUSTOM
-    }
-
-    class Factory : ParticleProvider<ParticleOptions> {
-        override fun createParticle(
-            particleOptions: ParticleOptions,
-            world: ClientLevel,
-            x: Double,
-            y: Double,
-            z: Double,
-            velocityX: Double,
-            velocityY: Double,
-            velocityZ: Double
-        ): Particle {
-            return MonolithParticle(world, x, y, z)
-        }
     }
 }

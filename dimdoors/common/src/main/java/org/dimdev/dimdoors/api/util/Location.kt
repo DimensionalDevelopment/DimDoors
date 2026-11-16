@@ -15,7 +15,7 @@ import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
-import org.dimdev.dimdoors.DimensionalDoors.Companion.server
+import org.dimdev.dimcore.DimCore
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
@@ -26,7 +26,6 @@ import org.dimdev.dimdoors.util.UUIDExtensions.rift
 import java.util.*
 
 open class Location(val worldId: ResourceKey<Level>, val blockPos: BlockPos) : LocationProvider {
-    private constructor(world: ResourceKey<Level>, x: Int, y: Int, z: Int) : this(world, BlockPos(x, y, z))
 
     val x: Int get() = this.blockPos.x
 
@@ -58,7 +57,7 @@ open class Location(val worldId: ResourceKey<Level>, val blockPos: BlockPos) : L
 
     override fun hashCode(): Int = this.worldId.hashCode() * 31 + this.blockPos.hashCode()
 
-    val world: ServerLevel get() { return server.getLevel(this.worldId)!! }
+    val world: ServerLevel = DimCore.platform.server.getLevel(this.worldId)!!
 
     fun asTarget(): VirtualTarget<*> = riftOrPlaceholder().rift().let(::RiftReference)
     fun riftOrPlaceholder(): UUID = LocationRiftRegistry.instance.getRiftOrPlaceholder(this)

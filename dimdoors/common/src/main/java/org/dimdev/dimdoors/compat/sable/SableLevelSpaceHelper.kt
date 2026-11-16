@@ -32,7 +32,7 @@ import java.util.*
 object SableLevelSpaceHelper : LevelSpaceHelper() {
     @JvmStatic
     fun init() {
-        LevelSpaceHelper.INSTANCE = this
+        INSTANCE = this
         SableEventPlatform.INSTANCE.onSubLevelContainerReady { level, container ->
             if (level is ServerLevel) container.addObserver(object : SubLevelObserver {
                 override fun onSubLevelAdded(subLevel: SubLevel) = trackRiftsIn(level, subLevel)

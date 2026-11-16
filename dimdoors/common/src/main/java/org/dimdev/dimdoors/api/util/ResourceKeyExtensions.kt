@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.DimensionalDoors
 
 fun String.id(): ResourceLocation = DimensionalDoors.id(this)
 
-fun <T : Any> ResourceKey<Registry<T>>.key(name: ResourceLocation) = ResourceKey.create(this, name)
+fun <T : Any> ResourceKey<Registry<T>>.key(name: ResourceLocation): ResourceKey<T> = ResourceKey.create(this, name)
 fun <T : Any> ResourceKey<Registry<T>>.key(name: String) = name.id().let(this::key)
 
 fun <T: Any> ResourceKey<Registry<T>>.tag(id: String): TagKey<T> = TagKey.create<T>(this, DimensionalDoors.id(id))

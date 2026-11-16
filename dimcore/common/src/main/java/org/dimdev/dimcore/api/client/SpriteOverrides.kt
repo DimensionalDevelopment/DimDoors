@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.client.resources.model.Material
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.resources.ResourceManager
 import org.dimdev.dimcore.DimCore.clientPlatform
 
 object SpriteOverrides {
@@ -22,7 +21,7 @@ object SpriteOverrides {
         entries.getOrPut(sprite, ::Entry).alternates += alternate to predicate
     }
 
-    fun reload(manager: ResourceManager) {
+    fun reload() {
         entries.values.forEach {
             it.original?.forEach(NativeImage::close)
             it.original = null

@@ -29,7 +29,7 @@ class SchematicGenerator(
 
         val template: PocketTemplate = PocketLoader.getTemplates()[templateID] ?: throw RuntimeException("Pocket template of id $templateID not found!")
 
-        val pocket: Pocket<*, *> = instance.createPocket(world.dimension(), builder)!!
+        val pocket: Pocket<*, *> = instance.createPocket(world.dimension(), builder)
         val origin = pocket.origin
 
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin)

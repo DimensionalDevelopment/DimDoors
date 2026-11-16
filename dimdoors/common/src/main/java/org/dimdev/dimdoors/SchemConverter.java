@@ -29,23 +29,15 @@ package org.dimdev.dimdoors;//package org.dimdev.dimdoors;
 //import java.util.function.Function;
 //import java.util.function.UnaryOperator;
 import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.*;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
-import org.dimdev.dimdoors.util.schematic.SchemFixer;
-import org.dimdev.dimdoors.util.schematic.SchematicDataFixer;
-import org.dimdev.dimdoors.util.schematic.SpongeSchematicV2FixTypes;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SchemConverter {
     private static int toVersion = 0;

@@ -63,5 +63,5 @@ object HubPocketTarget : VirtualTarget<HubPocketTarget>(), PlayerTrackingEntranc
         return pocket?.castOrNull<HubPocket>()
     }
 
-    val codec = MapCodec.unit(HubPocketTarget)
+    val codec: MapCodec<HubPocketTarget> = MapCodec.unit(HubPocketTarget)
 }

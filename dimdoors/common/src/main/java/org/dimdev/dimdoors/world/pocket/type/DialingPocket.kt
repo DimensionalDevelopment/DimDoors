@@ -59,7 +59,7 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
         override fun pocket() = DialingPocket()
 
         companion object {
-            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec<Builder> { instance ->
+            val CODEC: MapCodec<Builder> = RecordCodecBuilder.mapCodec { instance ->
                 commonFields<Builder>(instance).apply(instance, ::Builder)
             }
         }
@@ -68,7 +68,7 @@ class DialingPocket : Pocket<DialingPocket, DialingPocket.Builder>, DyeableAddon
     override val type get() = Pockets.DIALING
 
     companion object {
-        val CODEC: MapCodec<DialingPocket> = RecordCodecBuilder.mapCodec<DialingPocket> { instance -> commonPocketFields<DialingPocket>(instance)
+        val CODEC: MapCodec<DialingPocket> = RecordCodecBuilder.mapCodec { instance -> commonPocketFields<DialingPocket>(instance)
             .and(DialingAddress.MAP_CODEC.forGetter(DialingPocket::address))
             .apply(instance, ::DialingPocket)
         }

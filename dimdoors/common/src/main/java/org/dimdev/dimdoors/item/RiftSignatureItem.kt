@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DoorBlock
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.dimdev.dimcore.api.client.ToolTipHelper
 import org.dimdev.dimcore.api.ext.castOrNull
@@ -20,8 +21,8 @@ import org.dimdev.dimdoors.ModGameRules
 import org.dimdev.dimdoors.api.util.RotatedLocation
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftVariantProvider
-import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
+import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.sound.ModSoundEvents
 import org.dimdev.dimdoors.util.LevelSpaceHelper
 import org.dimdev.dimdoors.world.ModDimensions
@@ -35,14 +36,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         if (world.isClientSide()) return InteractionResult.SUCCESS
 
-        val player = itemUsageContext.player
+        val player = itemUsageContext.player ?: return InteractionResult.FAIL
 
         if (ModDimensions.isPrivatePocketDimension(world) && !world.gameRules
                 .getBoolean(ModGameRules.RIFT_SIGNATURE_WORKS_IN_PRIVATE_POCKETS)
         ) {
-            player!!.displayClientMessage(
-                Component.translatable("tools.signature_blocked").withStyle(ChatFormatting.BLACK), true
-            )
+            player.displayClientMessage(Component.translatable("tools.signature_blocked").withStyle(ChatFormatting.BLACK), true)
             return InteractionResult.FAIL
         }
 
@@ -54,20 +53,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         val stack = itemUsageContext.itemInHand
 
-        if (!((state.canBeReplaced() || state.block is RiftVariantProvider) && player!!.mayUseItemAt(
-                pos,
-                side.opposite,
-                stack
-            ))
-        ) {
-            pos = pos.relative(side)
-            state = world.getBlockState(pos)
-        }
+        if (state.isRiftViable || !player.mayUseItemAt(pos, side.opposite, stack)) pos = pos.relative(side)
 
         pos = normalizeRiftProviderPos(world, pos)
         state = world.getBlockState(pos)
 
-        if (!(state.canBeReplaced() || state.block is RiftVariantProvider)) {
+        if (state.isRiftViable) {
             return InteractionResult.FAIL
         }
 
@@ -75,12 +66,12 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
 
         if (rotatedLocation == null) {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, RotatedLocation(world.dimension(), pos, player!!.yRot, 0f))
+            setSource(stack, RotatedLocation(world.dimension(), pos, player.yRot, 0f))
             player.displayClientMessage(Component.translatable("${this.descriptionId}.stored"), true)
             world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START, SoundSource.BLOCKS, 0.6f, 1f)
         } else {
             rotatedLocation = normalizeRiftProviderLocation(rotatedLocation)
-            val source = RotatedLocation(world.dimension(), pos, player!!.yRot, 0f)
+            val source = RotatedLocation(world.dimension(), pos, player.yRot, 0f)
 
             val target = rotatedLocation.asTarget()
 
@@ -142,6 +133,8 @@ open class RiftSignatureItem(settings: Properties, var shouldclear: Boolean) : I
             }
             return pos
         }
+
+        val BlockState.isRiftViable: Boolean get() = !(this.canBeReplaced() || this.block is RiftVariantProvider)
 
         private fun normalizeRiftProviderLocation(location: RotatedLocation): RotatedLocation {
             val world = location.world

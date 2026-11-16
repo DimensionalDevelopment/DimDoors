@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.registry
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.UUIDUtil
 import org.dimdev.dimdoors.api.util.nullableForGetter
@@ -14,7 +15,7 @@ import kotlin.jvm.optionals.getOrNull
 class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutableMapOf()) : SubSystem<LinkPropertiesRegistry>() {
     data class Entry(var properties: LinkProperties? = null, var isDetached: Boolean = false) {
         companion object {
-            val CODEC = RecordCodecBuilder.create { instance -> instance.group(
+            val CODEC: Codec<Entry> = RecordCodecBuilder.create { instance -> instance.group(
                 LinkProperties.CODEC.optionalFieldOf("properties").nullableForGetter(Entry::properties),
                 Codec.BOOL.fieldOf("isDetached").forGetter(Entry::isDetached)
                 ).apply(instance) { a, b -> Entry(a.getOrNull(), b) }
@@ -22,7 +23,7 @@ class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutabl
         }
     }
 
-    override fun type(): Type<LinkPropertiesRegistry> = SubsystemTypes.PROPERTIES
+    override fun type(): Type<LinkPropertiesRegistry> = PROPERTIES
 
     private fun getOrCreate(rift: UUID): Entry {
         return propertiesMap.computeIfAbsent(rift) { Entry() }
@@ -43,7 +44,7 @@ class LinkPropertiesRegistry(val propertiesMap: MutableMap<UUID, Entry> = mutabl
     }
 
     companion object {
-        val CODEC = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<LinkPropertiesRegistry> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 UUIDUtil.STRING_CODEC.unboundedMap(Entry.CODEC).fieldOf("properties_map")
                     .forGetter(LinkPropertiesRegistry::propertiesMap)

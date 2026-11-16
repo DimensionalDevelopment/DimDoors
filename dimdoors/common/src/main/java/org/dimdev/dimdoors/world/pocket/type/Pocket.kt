@@ -20,7 +20,6 @@ import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.api.util.nullableForGetter
 import org.dimdev.dimdoors.network.ServerPacketHandler
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
-import org.dimdev.dimdoors.rift.registry.PocketRegistry
 import org.dimdev.dimdoors.rift.registry.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.world.pocket.VirtualLocation
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider
@@ -175,7 +174,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         getAddon(type) ?: type.builderSupplier().apply(this)
 
     fun syncClientAddons() {
-        PocketRegistry.instance.setDirty()
+        instance.setDirty()
         ServerPacketHandler.markPocketSyncDirty(id)
         DimensionalDoors.getWorld(world)?.players()?.filter { box.isInside(it.blockPosition()) }?.forEach {
             ServerPacketHandler.syncPocketAddonsIfNeeded(it, this)
@@ -292,7 +291,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
         fun offsetOrigin(offset: Vec3i): P {
             this.origin =
-                Vec3i(origin.x + offset.x, origin.getY() + offset.getY(), origin.getZ() + offset.getZ())
+                Vec3i(origin.x + offset.x, origin.y + offset.y, origin.z + offset.z)
             return self
         }
 
@@ -300,18 +299,18 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             this.size =
                 Vec3i(size.x + expander.x, size.y + expander.y, size.z + expander.z)
             this.expected = Vec3i(
-                expected.getX() + expander.x,
-                expected.getY() + expander.y,
-                expected.getZ() + expander.z
+                expected.x + expander.x,
+                expected.y + expander.y,
+                expected.z + expander.z
             )
             return self
         }
 
         fun expandExpected(expander: Vec3i): P {
             this.expected = Vec3i(
-                expected.getX() + expander.getX(),
-                expected.getY() + expander.getY(),
-                expected.getZ() + expander.getZ()
+                expected.x + expander.x,
+                expected.y + expander.y,
+                expected.z + expander.z
             )
             return self
         }

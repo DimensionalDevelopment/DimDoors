@@ -1,8 +1,5 @@
 package org.dimdev.dimcore.api.util
 
-import java.util.function.Consumer
-import java.util.function.Function
-
 class SimpleEvent<T> private constructor(invokerFactory: (MutableList<T>) -> T) {
     private val listeners = mutableListOf<T>()
     private val invoker: T = invokerFactory.invoke(listeners)

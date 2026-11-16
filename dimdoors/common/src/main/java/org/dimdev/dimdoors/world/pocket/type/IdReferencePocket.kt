@@ -47,13 +47,13 @@ class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.Id
 
         override val type get() = Pockets.ID_REFERENCE
 
-        public override fun copy(): IdReferencePocketBuilder {
+        override fun copy(): IdReferencePocketBuilder {
             val copy = super.copy()
             copy.referencedId = referencedId
             return copy
         }
 
-        public override fun instance(): IdReferencePocketBuilder {
+        override fun instance(): IdReferencePocketBuilder {
             return IdReferencePocketBuilder()
         }
 
@@ -63,7 +63,7 @@ class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.Id
         }
 
         companion object {
-            val CODEC: MapCodec<IdReferencePocketBuilder> = RecordCodecBuilder.mapCodec<IdReferencePocketBuilder>(
+            val CODEC: MapCodec<IdReferencePocketBuilder> = RecordCodecBuilder.mapCodec(
                 Function { instance -> instance.group(
                         Codec.INT.optionalFieldOf("referenced_id", Int.MIN_VALUE).forGetter(IdReferencePocketBuilder::referencedId)
                     ).apply(instance, ::IdReferencePocketBuilder)
@@ -72,7 +72,7 @@ class IdReferencePocket : AbstractPocket<IdReferencePocket, IdReferencePocket.Id
     }
 
     companion object {
-        val CODEC: MapCodec<IdReferencePocket> = RecordCodecBuilder.mapCodec<IdReferencePocket> { instance -> commonFields<IdReferencePocket>(instance).and(
+        val CODEC: MapCodec<IdReferencePocket> = RecordCodecBuilder.mapCodec { instance -> commonFields<IdReferencePocket>(instance).and(
                     Codec.INT.fieldOf("referenced_id").forGetter(IdReferencePocket::referencedId)
                 ).apply(instance, ::IdReferencePocket)
             }

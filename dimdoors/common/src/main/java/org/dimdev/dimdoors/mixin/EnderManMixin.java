@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;

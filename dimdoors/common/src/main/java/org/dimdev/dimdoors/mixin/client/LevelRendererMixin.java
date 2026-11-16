@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
@@ -17,10 +16,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimcore.client.node.RenderNodes;
-import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
@@ -87,7 +85,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
     @Shadow
     private int ticks;
 
-    public void renderCloudBuffer(PoseStack poseStack, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, float partialTick, int ticks, double camX, double camY, double camZ, float cloudHeight, Vec3 cloudColor) {
+    public void renderCloudBuffer(@NotNull PoseStack poseStack, @NotNull Matrix4f modelViewMatrix, Matrix4f projectionMatrix, float partialTick, int ticks, double camX, double camY, double camZ, float cloudHeight, @NotNull Vec3 cloudColor) {
         if (Float.isNaN(cloudHeight)) {
             return;
         }

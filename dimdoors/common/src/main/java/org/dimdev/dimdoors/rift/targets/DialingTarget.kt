@@ -54,8 +54,7 @@ interface DialingTarget : PlayerTrackingEntranceTarget<DialingAddress, DialingPo
     override fun getKey(uuid: UUID?): DialingAddress? = this.address
 
     override fun createPocket(virtualLocation: VirtualLocation): DialingPocket? {
-        val pocket = PocketGenerationHelper.DIALING.generatePocket(
-            VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1).also { it.castOrNull<DialingTarget>()?.also { it.address = address } })
+        val pocket = PocketGenerationHelper.DIALING.generatePocket(VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1).also { it.castOrNull<DialingTarget>()?.also { target -> target.address = address } })
 
         if (pocket is DialingPocket) {
             pocket.address = address

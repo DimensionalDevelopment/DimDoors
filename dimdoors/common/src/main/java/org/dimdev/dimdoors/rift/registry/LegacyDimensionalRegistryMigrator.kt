@@ -94,7 +94,7 @@ object LegacyDimensionalRegistryMigrator {
             val file = server.dataFile(name)
             if (!Files.exists(file)) return@firstNotNullOfOrNull null
 
-            payload(readSavedDataRoot(file).getCompound("data")).takeUnless { it.isEmpty() }?.let { name to it }
+            payload(readSavedDataRoot(file).getCompound("data")).takeUnless(CompoundTag::isEmpty)?.let { name to it }
         }
 
     private fun readSavedDataRoot(file: Path): CompoundTag = try {

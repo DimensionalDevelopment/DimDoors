@@ -23,7 +23,7 @@ import org.dimdev.dimdoors.block.entity.DialingDoorBlockEntity
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes
 import org.dimdev.dimdoors.rift.registry.DialingAddress
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.util.MathUtils
+import org.dimdev.dimdoors.api.util.math.MathUtil
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -163,9 +163,9 @@ class DialingDoor(settings: Properties, blockSetType: BlockSetType) : Dimensiona
         }
 
         fun intersects(x: Double, y: Double, z: Double): Boolean {
-            return MathUtils.betewen(x, minX, maxX) &&
-                    MathUtils.betewen(y, minY, maxY) &&
-                    MathUtils.betewen(z, minZ, maxZ)
+            return MathUtil.between(x, minX, maxX) &&
+                    MathUtil.between(y, minY, maxY) &&
+                    MathUtil.between(z, minZ, maxZ)
         }
     }
 

@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.registry
 import com.mojang.serialization.Codec
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import org.dimdev.dimcore.api.errata.schema.Schemas
 import org.dimdev.dimdoors.DimensionalDoors
 
@@ -30,7 +31,7 @@ data class DialingAddress(@JvmField val dial1: Byte, @JvmField val dial2: Byte, 
         val CODEC = Schemas.INT.xmap(::from, DialingAddress::to).element(DimensionalDoors.id("dials"))
         val STRING_CODEC: Codec<DialingAddress> = Codec.STRING.xmap(Integer::decode, Int::toString).xmap(DialingAddress::from, DialingAddress::to)
         val MAP_CODEC = CODEC.optionalFieldOf("address", DEFAULT)
-        val STREAM_CODEC = ByteBufCodecs.INT.map (::from, DialingAddress::to).cast<RegistryFriendlyByteBuf>()
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, DialingAddress> = ByteBufCodecs.INT.map (::from, DialingAddress::to).cast<RegistryFriendlyByteBuf>()
 
         fun from(value: Int): DialingAddress {
             return DialingAddress(

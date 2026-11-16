@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.particle.client
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
@@ -40,13 +41,13 @@ data class RiftParticleOptions(val color: Float, val averageAge: Int) : Particle
         private val OUTSIDE_STABLE = RiftParticleOptions(0.0f, 750)
         private val INSIDE_STABLE = RiftParticleOptions(0.7f, 750)
 
-        val CODEC = RecordCodecBuilder.mapCodec { instance -> instance.group(
+        val CODEC: MapCodec<RiftParticleOptions> = RecordCodecBuilder.mapCodec { instance -> instance.group(
                 Codec.FLOAT.fieldOf("color").forGetter(RiftParticleOptions::color),
                 Codec.INT.fieldOf("averageAge").forGetter(RiftParticleOptions::averageAge)
             ).apply(instance, ::RiftParticleOptions)
         }
 
-        val STREAM_CODEC = StreamCodec.composite<RegistryFriendlyByteBuf, RiftParticleOptions, Float, Int>(
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, RiftParticleOptions> = StreamCodec.composite(
                 ByteBufCodecs.FLOAT, RiftParticleOptions::color,
                 ByteBufCodecs.VAR_INT, RiftParticleOptions::averageAge,
             ::RiftParticleOptions)

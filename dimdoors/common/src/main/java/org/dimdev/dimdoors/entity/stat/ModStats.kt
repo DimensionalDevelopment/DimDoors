@@ -15,7 +15,6 @@ object ModStats : PlatformRegistry<ResourceLocation>(Registries.CUSTOM_STAT, Bui
     private fun create(string: String): ResourceLocation {
         val resourceLocation = DimensionalDoors.id(string)
         create(string) { resourceLocation }
-        //        CUSTOM.get(resourceLocation, statFormatter);
         return resourceLocation
     }
 }

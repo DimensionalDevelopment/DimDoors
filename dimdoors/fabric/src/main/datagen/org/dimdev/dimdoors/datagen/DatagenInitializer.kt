@@ -17,25 +17,25 @@ class DatagenInitializer : DataGeneratorEntrypoint {
 
 //        pack.addProvider(DefaultPaintingDataGenerator::new);
 
-        pack.addProvider { output, registries -> DimDoorsDynamicRegistryDatagen(output, registries) }
+        pack.addProvider(::DimDoorsDynamicRegistryDatagen)
 
-        pack.addProvider { output, registries -> DimDoorsModelProvider(output) }
-        pack.addProvider { output, registries -> DimdoorsRecipeProvider(output, registries) }
-        pack.addProvider { output, registries -> AdvancementProvider(output, registries) }
-        pack.addProvider { output, registries -> BlockLootTableProvider(output, registries) }
-        pack.addProvider { output, registries -> ChestLootTableProvider(output, registries) }
-        pack.addProvider { output, registries -> BlockUseLootTableProvider(output, registries) }
-        pack.addProvider { output, registries -> AbstractionDecayProvider(output, registries) }
-        pack.addProvider { output, registries -> LanguageProvider(output, registries) }
+        pack.addProvider { output, _ -> DimDoorsModelProvider(output) }
+        pack.addProvider(::DimdoorsRecipeProvider)
+        pack.addProvider(::AdvancementProvider)
+        pack.addProvider(::BlockLootTableProvider)
+        pack.addProvider(::ChestLootTableProvider)
+        pack.addProvider(::BlockUseLootTableProvider)
+        pack.addProvider(::AbstractionDecayProvider)
+        pack.addProvider(::LanguageProvider)
 
-        pack.addProvider { output, registries -> BlockTagProvider(output, registries) }
-        pack.addProvider { output, registries -> FluidTagProvider(output, registries) }
-        pack.addProvider { output, registries -> BiomeTagProvider(output, registries) }
-        pack.addProvider { output, registries -> ItemTagProvider(output, registries) }
-        pack.addProvider { output, registries -> EnchantmentTagProvider(output, registries) }
-        pack.addProvider { output, registries -> PaintingTagProvider(output, registries) }
-        pack.addProvider { output, registries -> LevelTagProvider(output, registries) }
-        pack.addProvider { output, registries -> EntityTagProvider(output, registries) }
+        pack.addProvider(::BlockTagProvider)
+        pack.addProvider(::FluidTagProvider)
+        pack.addProvider(::BiomeTagProvider)
+        pack.addProvider(::ItemTagProvider)
+        pack.addProvider(::EnchantmentTagProvider)
+        pack.addProvider(::PaintingTagProvider)
+        pack.addProvider(::LevelTagProvider)
+        pack.addProvider(::EntityTagProvider)
 
 //        pack.addProvider(PocketDataGenClassic::new);
     }

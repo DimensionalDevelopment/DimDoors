@@ -13,16 +13,16 @@ import org.dimdev.dimcore.api.event.CameraOverlayEvents
 import org.dimdev.dimcore.api.event.DebugTextEvents
 import org.dimdev.dimcore.api.event.HudEvents
 
-class FabricClientPlatform() : ClientPlatform() {
+class FabricClientPlatform : ClientPlatform() {
     override fun register(type: RenderType, vararg blocks: Block) = BlockRenderLayerMap.INSTANCE.putBlocks(type, *blocks)
     override fun onClientPlayerJoin(listener: () -> Unit) = ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _, _, _ -> listener.invoke() })
     override fun onClientTick(listener: () -> Unit) = ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { listener.invoke() })
     override fun onDebugText(
-        type: ClientPlatform.DebugTextType,
+        type: DebugTextType,
         listener: (MutableList<String>) -> Unit
     ) = when(type) {
-        ClientPlatform.DebugTextType.GAME -> DebugTextEvents.GAME
-        ClientPlatform.DebugTextType.SYSTEM -> DebugTextEvents.SYSTEM
+        DebugTextType.GAME -> DebugTextEvents.GAME
+        DebugTextType.SYSTEM -> DebugTextEvents.SYSTEM
     }.register(listener)
 
     override fun onFirstPersonOverlay(listener: (GuiGraphics, Player, DeltaTracker) -> Unit) = CameraOverlayEvents.OVERLAYS.register(listener)

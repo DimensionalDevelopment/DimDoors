@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BlockEntityWithoutLevelRenderer.class)
 public abstract class BlockEntityWithoutLevelRendererMixin {
     @Inject(method = "renderByItem", at = @At("HEAD"), cancellable = true)
-    private void dimdoors_renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, CallbackInfo info) {
+    private void dimcore_renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, CallbackInfo info) {
         var renderer = DimCore.getClientPlatform().getItemRenderers().get(stack.getItem());
 
         if (renderer != null) {

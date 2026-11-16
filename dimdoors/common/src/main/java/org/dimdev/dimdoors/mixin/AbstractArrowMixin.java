@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -21,7 +20,7 @@ public abstract class AbstractArrowMixin {
     )
     private EntityType<?> dimdoors$transcendentProjectilesApplyEndermanHitEffects(EntityType<?> type) {
         // Vanilla returns before arrow post-hit effects for Endermen; marked arrows should use the normal hit path.
-        if (type == EntityType.ENDERMAN && DataValues.TRANSCENDENT_PROJECTILE.has((Entity) (Object) this)) {
+        if (type == EntityType.ENDERMAN && DataValues.TRANSCENDENT_PROJECTILE.has(this)) {
             return ((Entity) (Object) this).getType();
         }
 

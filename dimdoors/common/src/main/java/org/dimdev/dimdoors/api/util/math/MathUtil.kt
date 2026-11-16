@@ -58,6 +58,10 @@ object MathUtil {
 
     @JvmStatic
     fun between(value: Int, min: Int, max: Int) = value in min..max
+    fun between(value: Long, min: Long, max: Long) = value in min..max
+    fun between(value: Short, min: Short, max: Short) = value in min..max
+    fun between(value: Float, min: Float, max: Float) = value in min..max
+    fun between(value: Double, min: Double, max: Double) = value in min..max
 
     enum class EulerAngleDirection(val angle: Rotations) {
         DOWN(Rotations(90f, 0f, 0f)),

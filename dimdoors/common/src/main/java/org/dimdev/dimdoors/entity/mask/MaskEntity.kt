@@ -101,7 +101,7 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level? = null) :
 
     var mode: MaskMode
         get() {
-            val id = entityData.get<Byte>(MODE)
+            val id = entityData.get(MODE)
             val values = MaskMode.entries.toTypedArray()
             return values[Mth.clamp(id.toInt(), 0, values.size - 1)]
         }
@@ -236,7 +236,11 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level? = null) :
         val masks = if (pocket != null) level.getEntitiesOfClass(MaskEntity::class.java, AABB.of(pocket.box)) else listOf(this)
         masks.filter { it.maskType != MaskType.BLACK && !it.frozen }.forEach { it.chase(player) }
 
-        if (level.gameRules.getBoolean(ModGameRules.DUNGEON_REAPER)) player.addEffect(ModMobEffects.CHASED.createInstance(-1, 0, false, true, true))
+        if (level.gameRules.getBoolean(ModGameRules.DUNGEON_REAPER)) player.addEffect(ModMobEffects.CHASED.createInstance(-1, 0,
+            ambient = false,
+            visible = true,
+            showIcon = true
+        ))
 
         MaskEvents.ALERT.invoker().invoke(this, player)
     }
@@ -260,7 +264,7 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level? = null) :
 
     private fun shatter(player: ServerPlayer) {
         spawnAtLocation(ModItems.MASK_SHARD)
-        player.addEffect(ModMobEffects.CHASED.createInstance(-1, 0, false, true, true))
+        player.addEffect(ModMobEffects.CHASED.createInstance(-1, 0, ambient = false, visible = true, showIcon = true))
         playSound(SoundEvents.GLASS_BREAK, 1f, 0.8f)
         MaskEvents.SHATTER.invoker().invoke(this, player)
         discard()
@@ -429,7 +433,7 @@ class MaskEntity(entityType: EntityType<out MaskEntity>, level: Level? = null) :
         val CHASED: Holder<MobEffect> get() = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModMobEffects.CHASED)
 
         @JvmStatic
-        fun createAttributes(): AttributeSupplier.Builder = Mob.createMobAttributes()
+        fun createAttributes(): AttributeSupplier.Builder = createMobAttributes()
 
         fun pocketId(level: Level, pos: BlockPos) = PocketRegistry.instance.peekPocketDirectory(level.dimension())?.getPocketAt(pos)?.id
 

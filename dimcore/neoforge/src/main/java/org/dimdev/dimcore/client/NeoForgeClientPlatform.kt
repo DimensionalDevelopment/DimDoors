@@ -64,12 +64,12 @@ class NeoForgeClientPlatform : ClientPlatform() {
     }
 
     override fun onDebugText(
-        type: ClientPlatform.DebugTextType,
+        type: DebugTextType,
         listener: (MutableList<String>) -> Unit
     ) {
         when(type) {
-            ClientPlatform.DebugTextType.GAME -> gameInfoProivders
-            ClientPlatform.DebugTextType.SYSTEM -> systemInfoProivders
+            DebugTextType.GAME -> gameInfoProivders
+            DebugTextType.SYSTEM -> systemInfoProivders
         }.add(listener)
     }
 

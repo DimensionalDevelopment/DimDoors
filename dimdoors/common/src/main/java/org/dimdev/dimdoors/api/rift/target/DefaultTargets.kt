@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.api.rift.target
 
 import org.dimdev.dimdoors.api.util.InstanceMap
-import java.util.*
-import java.util.function.Supplier
 
 object DefaultTargets {
     private val DEFAULT_TARGETS = InstanceMap()

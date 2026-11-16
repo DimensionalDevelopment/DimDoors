@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier
 
 import com.mojang.serialization.Codec
+import net.minecraft.core.HolderSet
 import net.minecraft.core.RegistryCodecs
 import net.minecraft.resources.RegistryFileCodec
 import org.dimdev.dimcore.api.MapCodecHasHolder
@@ -16,7 +17,7 @@ interface Modifier : MapCodecHasHolder<Modifier> {
 
     companion object {
         val BASE_CODEC: Codec<Modifier> = Modifiers.codec
-        val LIST_CODEC = RegistryCodecs.homogeneousList(ModRegistryKeys.MODIFIER, BASE_CODEC)
-        val HOLDER_CODEC = RegistryFileCodec.create(ModRegistryKeys.MODIFIER, BASE_CODEC)
+        val LIST_CODEC: Codec<HolderSet<Modifier>> = RegistryCodecs.homogeneousList(ModRegistryKeys.MODIFIER, BASE_CODEC)
+        val HOLDER_CODEC: RegistryFileCodec<Modifier> = RegistryFileCodec.create(ModRegistryKeys.MODIFIER, BASE_CODEC)
     }
 }

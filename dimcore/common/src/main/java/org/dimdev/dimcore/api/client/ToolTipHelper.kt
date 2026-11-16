@@ -13,7 +13,7 @@ object ToolTipHelper {
             else -> {
                 generateSequence(0) { it + 1 }
                     .map { key + it }
-                    .takeWhile { I18n.exists(it) }
+                    .takeWhile(I18n::exists)
                     .forEach { list.add(Component.translatable(it, *args)) }
             }
         }

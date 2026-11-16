@@ -41,8 +41,8 @@ class EnvironmentAddon(environment: Environment = EmptyEnvironment) : PocketAddo
         override val type get() = PocketAddons.ENVIRONMENT_ADDON
 
         companion object {
-            val CODEC = RecordCodecBuilder.mapCodec { instance ->
-                instance!!.group(
+            val CODEC: MapCodec<EnvironmentBuilderAddon> = RecordCodecBuilder.mapCodec { instance ->
+                instance.group(
                     Environment.CODEC.optionalFieldOf("environment", EmptyEnvironment)
                         .forGetter(EnvironmentBuilderAddon::environment)
                 ).apply(instance, ::EnvironmentBuilderAddon)
