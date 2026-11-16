@@ -159,9 +159,8 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
             if (updateTimer % 20 == 0) {
                 if (level.random.nextInt(0, 100) <= absoluteChance) {
-                    val sizeChange = if (weight > 0) 1 else -1
-
-                    riftData.size += sizeChange
+                    riftData.size += if (weight > 0) 1 else -1
+                    sync()
                 }
 
                 if (weight < 0 && riftData.size == 0) {
@@ -170,7 +169,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
                 }
 
                 updateTimer = 0
-                sync()
 
                 if (config.generalConfig.enableRiftDecay && riftData.size > 20) {
                     applySpreadDecay(level as ServerLevel, pos)
