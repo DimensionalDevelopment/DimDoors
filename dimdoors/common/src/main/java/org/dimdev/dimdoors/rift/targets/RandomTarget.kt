@@ -158,15 +158,15 @@ abstract class RandomTarget<T : RandomTarget<T>>(
         val weights = mutableMapOf<Location?, Float>()
         if (this.newRiftWeight > 0) weights[null] = this.newRiftWeight
 
-        for ((id, location) in LocationRiftRegistry.instance.rifts) {
-            val otherVirtualLocation = VirtualLocation.fromLocation(location)
-            val entry = LinkPropertiesRegistry.instance.propertiesMap[id] ?: continue
+        val registry = LocationRiftRegistry.instance
+        for ((id, entry) in LinkPropertiesRegistry.instance.propertiesMap) {
             val properties = entry.properties ?: continue
             val otherWeight = (if (entry.isDetached) properties.floatingWeight else properties.entranceWeight).toDouble()
-            if (otherWeight == 0.0 || Sets.intersection(this.acceptedGroups, properties.groups).isEmpty()) continue
+            if (otherWeight == 0.0 || properties.linksRemaining == 0 || Sets.intersection(this.acceptedGroups, properties.groups).isEmpty()) continue
+            val location = registry.locationOf(id)?.takeUnless { registry.isPlaceholder(id) } ?: continue
+            val otherVirtualLocation = VirtualLocation.fromLocation(location)
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-            if (properties.linksRemaining == 0) continue
             val depthDifference = (otherVirtualLocation.depth - virtualLocation.depth).toDouble()
             val coordDistance = sqrt(this.sq((otherVirtualLocation.x - virtualLocation.x).toDouble()) + this.sq((otherVirtualLocation.z - virtualLocation.z).toDouble())
             )
