@@ -53,13 +53,6 @@ interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEnti
     }
 
     companion object {
-        fun <R> tickRift(
-            level: Level,
-            blockPos: BlockPos,
-            state: BlockState,
-            rift: R?
-        ) where R : BlockEntity, R : BlockEntityRift<*> {
-            rift!!.tick(level, blockPos, state)
-        }
+        fun <R> tickRift(level: Level, blockPos: BlockPos, state: BlockState, rift: R?) where R : BlockEntity, R : BlockEntityRift<*> = rift?.tick(level, blockPos, state)
     }
 }
