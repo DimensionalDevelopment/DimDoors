@@ -18,6 +18,9 @@ abstract class RenderNode(val id: ResourceLocation) {
     var target: TextureTargetFramebuffer? = null
         private set
 
+    var drawn = false
+        private set
+
     val outShard = RenderStateShard.OutputStateShard("${id}_target", { framebuffer()?.bind() }, { MainFramebuffer.bind() })
 
     protected abstract val baseRenderType: RenderType
@@ -68,7 +71,9 @@ abstract class RenderNode(val id: ResourceLocation) {
     }
 
     fun clear() {
+        if (!drawn) return
         target?.clear()
+        drawn = false
     }
 
     private class NodeRenderType(private val node: RenderNode, base: RenderType) : RenderType(
@@ -76,6 +81,7 @@ abstract class RenderNode(val id: ResourceLocation) {
     ) {
         override fun draw(mesh: MeshData) {
             val program = node.program() ?: return mesh.close()
+            node.drawn = true
             setupRenderState()
             program.bind()
             BufferUploader.draw(mesh)

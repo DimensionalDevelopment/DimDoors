@@ -35,6 +35,7 @@ object RenderNodes {
     @JvmStatic
     fun composite() {
         registered.forEach { node ->
+            if (!node.drawn) return@forEach
             val program = node.compositeProgram() ?: return@forEach
             node.target ?: return@forEach
 
