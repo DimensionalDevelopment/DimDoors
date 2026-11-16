@@ -17,10 +17,11 @@ class FluidDecayResult(private val entropy: Int, private val worldThreadChance: 
     override fun worldThreadChance(): Float = worldThreadChance
 
     override fun process(context: Decay.DecayContext): Int {
-        val contents = DecayInventoryHelper.takeContents(context.world, context.targetBlockPos)
+        val pos = context.target.pos
+        val contents = DecayInventoryHelper.takeContents(context.world, pos)
         val newState = fluid.defaultFluidState().createLegacyBlock()
-        context.world.setBlockAndUpdate(context.targetBlockPos, newState)
-        DecayInventoryHelper.transferOrDrop(context.world, context.targetBlockPos, contents)
+        context.world.setBlockAndUpdate(pos, newState)
+        DecayInventoryHelper.transferOrDrop(context.world, pos, contents)
         return entropy
     }
 

@@ -138,7 +138,6 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val SOLID_STATIC = regular("solid_static") {
-        block(::UnravelledFabricBlock)
         blockProperties(Blocks.STONE) {
             strength(7f, 25f)
             randomTicks()
@@ -167,15 +166,8 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     @JvmField val LIMBO_AIR = create("limbo_air") {
-        block(::LimboAirBlock)
-        blockProperties {
-            randomTicks()
-            replaceable()
-            noCollission()
-            noLootTable()
-            isSuffocating { _, _, _ -> false }
-            isViewBlocking { _, _, _ -> false }
-        }
+        block(::AirBlock)
+        blockProperties(Blocks.AIR)
     }
 
     //Decay graph filler.
@@ -458,7 +450,6 @@ object ModBlocks : PlatformRegistry.BlockItemPlatformRegistry(getSided()) {
     }
 
     private fun unravelled(name: String, block: Builder.() -> Unit = {}): Block = create(name) {
-        block(::UnravelledFabricBlock)
         blockProperties(Blocks.STONE, UNRAVELLED_FABRIC_BLOCK_SETTINGS)
         block(this)
     }

@@ -13,8 +13,8 @@ class SingleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Bloc
     override val type get() = DecayResults.SINGLE_BLOCK
 
     override fun process(context: Decay.DecayContext): Int {
-        val target = context.targetBlockState
-        var pos = context.targetBlockPos
+        val target = context.target.blockState
+        var pos = context.target.pos
         val newState = block.withPropertiesOf(target)
         val contents = DecayInventoryHelper.takeContents(context.world, pos)
 

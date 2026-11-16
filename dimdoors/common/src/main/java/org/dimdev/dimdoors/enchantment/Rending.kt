@@ -68,7 +68,7 @@ object Rending {
     private fun getRendingDrop(level: ServerLevel, pos: BlockPos, block: Block): Item? {
         val state = block.defaultBlockState()
 
-        val context = create(level, pos, state, DecaySource.CUSTOM)
+        val context = create(level, DecaySource.CUSTOM, pos)
 
         return getPatterns(context)
             .asSequence()

@@ -4,16 +4,13 @@ package org.dimdev.dimdoors.decay
 import com.google.gson.JsonElement
 import com.mojang.serialization.JsonOps
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.core.Holder
-import net.minecraft.core.HolderLookup
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.sounds.SoundSource
-import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.decoration.Painting
@@ -40,46 +37,19 @@ object Decay {
     private const val BREAK_BLOCK_RENDER_DISTANCE = 100.0
 
     /**
-     * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
-     * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
-     */
-    @JvmStatic
-    fun applySpreadDecay(world: ServerLevel, pos: BlockPos, random: RandomSource, source: DecaySource) {
-        //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
-        //full spread decay checks, which can also shift its performance impact on the game.
-        if (random.nextDouble() < config.decayConfig.decaySpreadChance) {
-            val origin = world.getBlockState(pos)
-
-            //Apply decay to the blocks above, below, and on all four sides.
-            // TODO: make max amount configurable
-            val decayAmount = random.nextInt(Direction.entries.size - 1) + 1
-            val directions = Direction.entries.toMutableList()
-            for (i in 0 until decayAmount) {
-                val direction = directions.removeAt(random.nextInt(directions.size))
-                decayBlock(world, pos, origin, direction, source)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun decayBlock(world: ServerLevel, originPos: BlockPos, originBlockState: BlockState, direction: Direction, source: DecaySource) {
-        val targetPos = originPos.relative(direction)
-        decayBlock(world, originPos, originBlockState, targetPos, world.getBlockState(targetPos), source)
-    }
-
-    /**
      * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
      */
     @JvmStatic
-    fun decayBlock(world: ServerLevel, originPos: BlockPos, originBlockState: BlockState, targetPos: BlockPos, targetBlockState: BlockState, source: DecaySource) {
-        val context = DecayContext.create(world, originPos, originBlockState, targetPos, targetBlockState, source)
+    fun decayBlock(world: ServerLevel, source: DecaySource, originPos: BlockPos, targetPos: BlockPos? = null) {
+        val context = DecayContext.create(world, source, originPos, targetPos)
 
         val patterns = DecayLoader.getPatterns(context)
 
         for (pattern in patterns) {
             if (pattern.value.test(context)) {
-                sendBreakBlockProgress(world, context.targetBlockPos, BREAK_BLOCK_STAGE)
-                world.playSound(null, context.targetBlockPos, ModSoundEvents.TEARING, SoundSource.BLOCKS, 0.5f, 1f)
+                val pos = context.target.pos
+                sendBreakBlockProgress(world, pos, BREAK_BLOCK_STAGE)
+                world.playSound(null, pos, ModSoundEvents.TEARING, SoundSource.BLOCKS, 0.5f, 1f)
                 queueDecay(context, pattern, config.decayConfig.decayDelay)
                 break
             }
@@ -92,7 +62,7 @@ object Decay {
         if (delay <= 0) {
             task.process()
         } else {
-            DECAY_QUEUE.computeIfAbsent(context.world.dimension()) { HashMap() }.putIfAbsent(context.targetBlockPos, task)
+            DECAY_QUEUE.computeIfAbsent(context.world.dimension()) { HashMap() }.putIfAbsent(context.target.pos, task)
         }
     }
 
@@ -122,7 +92,7 @@ object Decay {
         private var undiffernitatedPatterns: List<DecayPatternHolder> = ArrayList()
 
         @JvmStatic
-        fun reload(provider: HolderLookup.Provider, manager: ResourceManager) {
+        fun reload(manager: ResourceManager) {
             undiffernitatedPatterns = ArrayList(ResourceUtil.loadResources(manager, "decay_patterns", ".json") { id, stream -> loadPattern(ResourceUtil.readJson(stream), id) }.values)
         }
 
@@ -139,8 +109,8 @@ object Decay {
                     is ResourceKey<*> -> patterns.getOrDefault(obj, emptyList())
                     is Holder<*> -> obj.unwrapKey().getOrNull()?.let { patterns[it] } ?: emptyList()
                     is DecayContext -> {
-                        var patterns = getPatterns(obj.targetBlockState)
-                        if (patterns.isEmpty()) patterns = getPatterns(obj.targetFluidState)
+                        var patterns = getPatterns(obj.target.blockState)
+                        if (patterns.isEmpty()) patterns = getPatterns(obj.target.fluidState)
                         if (patterns.isEmpty()) patterns = getPatterns(obj.targetEntity)
                         if (patterns.isEmpty()) patterns = emptyList()
                         patterns
@@ -152,10 +122,6 @@ object Decay {
 
             return emptyList()
         }
-
-//    public static Collection<DecayPatternHolder> getPatterns(ResourceKey<Fluid> fluid) {
-//        return fluidPatterns.getOrDefault(fluid, Collections.emptyList());
-//    }
 
         @JvmStatic
         fun getPatterns(): Map<ResourceKey<*>, List<DecayPatternHolder>> {
@@ -179,15 +145,9 @@ object Decay {
         }
 
         fun process() {
-            sendBreakBlockProgress(context.world, context.targetBlockPos, -1)
-            val currentContext = DecayContext.create(
-                context.world,
-                context.originBlockPos,
-                context.world.getBlockState(context.originBlockPos),
-                context.targetBlockPos,
-                context.world.getBlockState(context.targetBlockPos),
-                context.source
-            )
+            sendBreakBlockProgress(context.world, context.target.pos, -1)
+
+            val currentContext = context
 
             if (!processor.value.test(currentContext)) {
                 return
@@ -195,9 +155,10 @@ object Decay {
 
             if (currentContext.source.decayIntoWorldThread()) {
                 if (config.decayConfig.decaysIntoAir) {
-                    val contents = DecayInventoryHelper.takeContents(currentContext.world, currentContext.targetBlockPos)
-                    currentContext.world.setBlockAndUpdate(currentContext.targetBlockPos, Blocks.AIR.defaultBlockState())
-                    DecayInventoryHelper.drop(currentContext.world, currentContext.targetBlockPos, contents)
+                    val pos = currentContext.target.pos
+                    val contents = DecayInventoryHelper.takeContents(currentContext.world, pos)
+                    currentContext.world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
+                    DecayInventoryHelper.drop(currentContext.world, pos, contents)
                 } else processor.value.applyPattern(currentContext)
             } else {
                 processor.value.applyPattern(currentContext)
@@ -205,28 +166,33 @@ object Decay {
         }
     }
 
+    data class Snapshot(val pos: BlockPos, val blockState: BlockState, val fluidState: FluidState) {
+        companion object {
+            fun create(
+                world: ServerLevel,
+                pos: BlockPos
+            ): Snapshot {
+                val blockState = world.getBlockState(pos)
+                val fluidState = blockState.fluidState
+                return Snapshot(pos, blockState, fluidState)
+            }
+        }
+    }
+
     data class DecayContext(
         val world: ServerLevel,
-        val originBlockPos: BlockPos,
-        val originBlockState: BlockState,
-        val targetBlockPos: BlockPos,
-        val targetBlockState: BlockState,
-        val targetFluidState: FluidState,
+        val origin: Snapshot,
+        val target: Snapshot,
         val source: DecaySource
     ) {
-        val targetEntity: Entity? by lazy { world.getEntitiesOfClass(Painting::class.java, AABB.encapsulatingFullBlocks(targetBlockPos, targetBlockPos)).firstOrNull() }
+        val targetEntity: Entity? by lazy { world.getEntitiesOfClass(Painting::class.java, AABB.encapsulatingFullBlocks(target.pos, target.pos)).firstOrNull() }
 
         companion object {
-            @JvmStatic
-            fun create(world: ServerLevel, blockPos: BlockPos, blockState: BlockState, source: DecaySource): DecayContext {
-                return create(world, blockPos, blockState, blockPos, blockState, source)
-            }
+            fun create(world: ServerLevel, source: DecaySource, originBlockPos: BlockPos, targetBlockPos: BlockPos? = null): DecayContext {
+                val origin = Snapshot.create(world, originBlockPos)
+                val target = if(targetBlockPos == null) origin else Snapshot.create(world, targetBlockPos)
 
-            @JvmStatic
-            fun create(world: ServerLevel, originBlockPos: BlockPos, originBlockState: BlockState, targetBlockPos: BlockPos, targetBlockState: BlockState, source: DecaySource): DecayContext {
-                val targetFluidState = world.getFluidState(targetBlockPos)
-
-                return DecayContext(world, originBlockPos, originBlockState, targetBlockPos, targetBlockState, targetFluidState, source)
+                return DecayContext(world, origin, target, source)
             }
         }
     }

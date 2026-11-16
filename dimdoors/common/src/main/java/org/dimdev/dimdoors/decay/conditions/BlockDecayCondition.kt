@@ -15,7 +15,7 @@ import java.util.function.Supplier
 class BlockDecayCondition(tagOrElementLocation: CodecUtils.TagOrElementLocation<Block>, invert: Boolean) : GenericDecayCondition<Block>(tagOrElementLocation, invert) {
     override val type get() = DecayConditions.BLOCK
 
-    override fun getHolder(context: Decay.DecayContext): Holder<Block> = context.targetBlockState.blockHolder
+    override fun getHolder(context: Decay.DecayContext): Holder<Block> = context.target.blockState.blockHolder
 
     override fun registry(): ResourceKey<Registry<Block>> = Registries.BLOCK
 

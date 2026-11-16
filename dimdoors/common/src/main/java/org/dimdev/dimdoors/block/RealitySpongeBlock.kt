@@ -15,11 +15,9 @@ class RealitySpongeBlock(settings: Properties) : Block(settings) {
             val targetBlockPos = pos.relative(direction)
             decayBlock(
                 world,
+                DecaySource.REALITY_SPONGE,
                 pos,
-                state,
                 targetBlockPos,
-                world.getBlockState(targetBlockPos),
-                DecaySource.REALITY_SPONGE
             )
         }
     }

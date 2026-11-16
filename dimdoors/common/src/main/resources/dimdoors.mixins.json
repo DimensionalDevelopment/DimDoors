@@ -27,6 +27,7 @@
     "NetherFortressPiecesMixin",
     "PlayerEntityMixin",
     "PointedDripstoneBlockMixin",
+    "ServerLevelMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",

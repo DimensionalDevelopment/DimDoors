@@ -21,9 +21,9 @@ class FluidDecayCondition(
     override val type get() = DecayConditions.FLUID
 
 
-    override fun test(context: Decay.DecayContext): Boolean = super.test(context) && (fluidType == Type.BOTH || (context.targetFluidState.isSource && fluidType == Type.SOURCE))
+    override fun test(context: Decay.DecayContext): Boolean = super.test(context) && (fluidType == Type.BOTH || (context.target.fluidState.isSource && fluidType == Type.SOURCE))
 
-    override fun getHolder(context: Decay.DecayContext): Holder<Fluid> = context.targetFluidState.holder()
+    override fun getHolder(context: Decay.DecayContext): Holder<Fluid> = context.target.fluidState.holder()
 
     override fun registry(): ResourceKey<Registry<Fluid>> = Registries.FLUID
 

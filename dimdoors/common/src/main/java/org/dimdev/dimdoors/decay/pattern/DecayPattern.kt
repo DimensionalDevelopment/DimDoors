@@ -18,7 +18,7 @@ interface DecayPattern : MapCodecHasHolder<DecayPattern> {
 
     fun constructApplicable(access: RegistryAccess): Stream<ResourceKey<*>>
 
-    fun applyPattern(context: Decay.DecayContext) = ENTROPY_EVENT.invoker().entropy(context.world, context.targetBlockPos, process(context))
+    fun applyPattern(context: Decay.DecayContext) = ENTROPY_EVENT.invoker().entropy(context.world, context.target.pos, process(context))
 
     fun interface EntropyEvent {
         fun entropy(world: Level, pos: BlockPos, entorpy: Int)

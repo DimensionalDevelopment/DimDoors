@@ -15,8 +15,8 @@ class DoubleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Bloc
     override val type get() = DecayResults.DOUBLE_BLOCK
 
     override fun process(context: Decay.DecayContext): Int {
-        val target = context.targetBlockState
-        val pos = context.targetBlockPos
+        val target = context.target.blockState
+        val pos = context.target.pos
         val world = context.world
         val contents = DecayInventoryHelper.takeContents(world, pos)
 

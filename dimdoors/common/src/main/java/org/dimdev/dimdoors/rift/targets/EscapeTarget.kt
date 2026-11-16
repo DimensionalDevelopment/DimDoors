@@ -81,7 +81,7 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
                         if (random.nextFloat() < (1 / (destLoc.blockPos.distSqr(pos)
                                 .toFloat())) * DimensionalDoors.config.limboConfig.limboBlocksCorruptingExitWorldAmount
                         ) {
-                            decayBlock(destLevel, pos)
+                            Decay.decayBlock(destLevel, DecaySource.LIMBO, pos)
                         }
                     }
             }
@@ -170,19 +170,6 @@ class EscapeTarget(val canEscapeLimbo: Boolean) : VirtualTarget<EscapeTarget>(),
                 randomizeCoord(pos.z, minRange, maxRange)
             )
         )
-    }
-
-    private fun decayBlock(level: ServerLevel, pos: BlockPos) {
-        val state = level.getBlockState(pos)
-        val context =
-            Decay.DecayContext(level, pos, state, pos, state, state.fluidState, DecaySource.LIMBO)
-
-        for (pattern in Decay.DecayLoader.getPatterns(context)) {
-            if (pattern.value.test(context)) {
-                pattern.value.applyPattern(context)
-                return
-            }
-        }
     }
 
     fun randomizeCoord(coord: Int, minRange: Int, maxRange: Int): Int {

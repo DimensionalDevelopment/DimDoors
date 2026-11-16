@@ -6,8 +6,6 @@ import org.dimdev.dimdoors.decay.pattern.DecayPattern
 import java.util.function.Consumer
 
 class DecayPatternHolder(val id: ResourceLocation, val value: DecayPattern) {
-//    public static final StreamCodec<RegistryFriendlyByteBuf, DecayPatternHolder> STREAM_CODEC;
-
     override fun equals(other: Any?): Boolean {
         return this === other || other is DecayPatternHolder && this.id == other.id
     }

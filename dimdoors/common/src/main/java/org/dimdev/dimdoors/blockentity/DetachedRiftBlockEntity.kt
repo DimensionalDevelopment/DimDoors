@@ -68,11 +68,9 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
         Decay.decayBlock(
             world,
+            DecaySource.RIFT,
             pos,
-            world.getBlockState(pos),
-            selected,
-            world.getBlockState(selected),
-            DecaySource.RIFT
+            selected
         )
     }
 

@@ -45,11 +45,7 @@ import org.dimdev.dimdoors.entity.ModEntityTypes.MASK
 import org.dimdev.dimdoors.entity.ModEntityTypes.MONOLITH
 import org.dimdev.dimdoors.entity.mask.MaskEntity
 import org.dimdev.dimdoors.fluid.ModFluids
-import org.dimdev.dimdoors.item.AttackBlockCallbackListener
-import org.dimdev.dimdoors.item.MaskWearerEffects
-import org.dimdev.dimdoors.item.ModArmorMaterials
-import org.dimdev.dimdoors.item.ModDataComponentTypes
-import org.dimdev.dimdoors.item.ModItems
+import org.dimdev.dimdoors.item.*
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar
 import org.dimdev.dimdoors.item.door.UseDoorItemOnBlockCallbackListener
 import org.dimdev.dimdoors.item.door.condition.Conditions
@@ -69,15 +65,17 @@ import org.dimdev.dimdoors.pockets.type.Pockets
 import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
-import org.dimdev.dimdoors.rift.block.*
+import org.dimdev.dimdoors.rift.block.LevelSpaceRegistry
 import org.dimdev.dimdoors.rift.item.Holder
-import org.dimdev.dimdoors.rift.link.*
+import org.dimdev.dimdoors.rift.link.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.sound.ModSoundEvents
-import org.dimdev.dimdoors.subsystem.graph.*
-import org.dimdev.dimdoors.subsystem.registry.*
+import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
+import org.dimdev.dimdoors.subsystem.registry.LegacyDimensionalRegistryMigrator
+import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 import org.dimdev.dimdoors.worldgen.*
 import org.dimdev.dimdoors.worldgen.carvers.ModCarvers
 import org.slf4j.Logger
@@ -188,7 +186,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
 
     override fun registerServerReloadListeners(register: ServerReloadListenerRegister) {
         register.register("pocket_loader", PocketLoader::reload)
-        register.register("decay_loader", true, Decay.DecayLoader::reload)
+        register.register("decay_loader", true) { _, manager -> Decay.DecayLoader.reload(manager) }
         register.register("portal_colors") { _, manager -> PortalColors.load(manager) }
 
         //        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
