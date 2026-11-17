@@ -46,7 +46,7 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
         relativeVelocity: Vec3,
         location: Location?
     ): Boolean {
-        if (location != null) {
+        if (location != null && owner.providedLocation != location) {
             return super<EntranceRiftBlockEntity>.receiveEntity(owner
                 , entity,
                 relativePos,
