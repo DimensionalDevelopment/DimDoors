@@ -5,6 +5,7 @@ import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.entry.EntryStack
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes
+import net.minecraft.core.Holder
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -16,7 +17,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimdoors.compat.recipeviewer.DecayDisplayData
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient
-import org.dimdev.dimdoors.decay.DecayPatternHolder
+import org.dimdev.dimdoors.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.decay.results.DecayResult
 import java.util.*
 
@@ -29,7 +30,7 @@ class DecayPatternDisplay(
     override fun getCategoryIdentifier() = TesselatingReiCompatClient.DECAYS_INTO
 
     companion object {
-        fun list(patternHolder: DecayPatternHolder, registryAccess: RegistryAccess): MutableList<DecayPatternDisplay> {
+        fun list(patternHolder: Holder<DecayPattern>, registryAccess: RegistryAccess): MutableList<DecayPatternDisplay> {
             return DecayDisplayData.list(patternHolder, registryAccess)
                 .map<DecayPatternDisplay>(::create)
                 .filter(Objects::nonNull)

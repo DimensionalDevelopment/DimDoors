@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.enchantment
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.tags.BlockTags
@@ -13,11 +14,11 @@ import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.decay.Decay.DecayContext.Companion.create
+import org.dimdev.dimdoors.decay.Decay
 import org.dimdev.dimdoors.decay.Decay.DecayLoader.getPatterns
-import org.dimdev.dimdoors.decay.DecayPatternHolder
 import org.dimdev.dimdoors.decay.DecaySource
 import org.dimdev.dimdoors.decay.pattern.CompoundDecayPattern
+import org.dimdev.dimdoors.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.decay.results.DecayResult
 
 object Rending {
@@ -38,7 +39,9 @@ object Rending {
 
             val blockItem = drop.item.castOrNull<BlockItem>() ?: continue
 
-            val replacement = getRendingDrop(level, pos, blockItem.block) ?: continue
+
+
+            val replacement = getRendingDrop(level, blockItem.block.defaultBlockState().let { Decay.Snapshot(pos, it, it.fluidState) }) ?: continue
 
             drops[i] = drop.transmuteCopy(replacement, drop.count)
         }
@@ -65,16 +68,13 @@ object Rending {
         return if (level >= 2) 0.3f else 0.1f
     }
 
-    private fun getRendingDrop(level: ServerLevel, pos: BlockPos, block: Block): Item? {
-        val state = block.defaultBlockState()
+    private fun getRendingDrop(level: ServerLevel, snapshot: Decay.Snapshot): Item? {
 
-        val context = create(level, DecaySource.CUSTOM, pos)
-
-        return getPatterns(context)
+        return getPatterns(level, snapshot)
             .asSequence()
-            .map(DecayPatternHolder::value)
+            .map(Holder<DecayPattern>::value)
             .filterIsInstance<CompoundDecayPattern>()
-            .filter { data -> data.test(context) }
+            .filter { data -> data.test(level, snapshot, DecaySource.CUSTOM) }
             .map(CompoundDecayPattern::result).
             flatMap(DecayResult::produces)
             .map(DecayResult.Result::obj)

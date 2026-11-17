@@ -6,24 +6,28 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.decoration.Painting
 import net.minecraft.world.entity.decoration.PaintingVariant
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
 import org.dimdev.dimdoors.util.codec.CodecUtils
 import java.util.stream.Stream
 
 data class PaintingDecayPattern(val from: CodecUtils.TagOrElementLocation<PaintingVariant>, val to: ResourceKey<PaintingVariant>) : DecayPattern {
     override val type get() = DecayPatterns.PAINTING
 
-    override fun test(context: Decay.DecayContext): Boolean {
-        val painting = context.targetEntity as? Painting ?: return false
+    override fun test(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Boolean {
+        val painting = snapshot.targetEntity(level)?.castOrNull<Painting>() ?: return false
         return from.test(painting.variant)
     }
 
-    override fun process(context: Decay.DecayContext): Int {
-        val painting = context.targetEntity as? Painting ?: return 0
-        painting.setVariant(context.world.registryAccess().registryOrThrow(Registries.PAINTING_VARIANT).getHolderOrThrow(to))
+    override fun process(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Int {
+        val painting = snapshot.targetEntity(level)?.castOrNull<Painting>() ?: return 0
+
+        painting.variant = level.registryAccess().registryOrThrow(Registries.PAINTING_VARIANT).getHolderOrThrow(to)
         return 1
     }
 

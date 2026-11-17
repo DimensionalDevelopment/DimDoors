@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.RegistryAccess
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -37,6 +38,7 @@ interface Platform {
     fun onPlayerJoin(consumer: (ServerPlayer) -> Unit)
     fun onPlayerQuit(consumer: (ServerPlayer) -> Unit)
     fun onServerLevelTick(consumer: (ServerLevel) -> Unit)
+    fun onTagsLoaded(consumer: (RegistryAccess, Boolean) -> Unit)
     fun onPlayerTick(consumer: (ServerPlayer) -> Unit)
     fun onPlayerChangeWorld(consumer: (ServerPlayer, ServerLevel, ServerLevel) -> Unit)
     fun onAttackBlock(callback: AttackBlockCallback)

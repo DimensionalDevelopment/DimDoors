@@ -20,11 +20,6 @@ import org.dimdev.dimdoors.network.s2c.*
 import org.dimdev.dimdoors.pockets.addon.PocketAddon
 import org.dimdev.dimdoors.pockets.addon.PocketAddonType
 import org.dimdev.dimdoors.pockets.addon.PocketAddons
-import java.lang.Long
-import kotlin.Boolean
-import kotlin.Exception
-import kotlin.Int
-import kotlin.apply
 
 object ClientPacketListener {
     private val LOGGER: Logger = LogManager.getLogger()
@@ -102,16 +97,6 @@ object ClientPacketListener {
                     MonolithParticle(level, pos)
                 )
             }
-        }
-    }
-
-    fun onRenderBreakBlock(packet: RenderBreakBlockS2CPacket) {
-        val client = Minecraft.getInstance()
-        client.execute {
-            if (client.level == null) {
-                return@execute
-            }
-            client.levelRenderer.destroyBlockProgress(Long.hashCode(packet.pos.asLong()), packet.pos, packet.stage)
         }
     }
 

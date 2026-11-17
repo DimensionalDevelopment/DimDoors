@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.decay.results
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.DoublePlantBlock
@@ -12,16 +13,16 @@ import org.dimdev.dimdoors.decay.DecayInventoryHelper
 class SingleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Block) : BlockDecayResult(entropy, worldThreadChance, block) {
     override val type get() = DecayResults.SINGLE_BLOCK
 
-    override fun process(context: Decay.DecayContext): Int {
-        val target = context.target.blockState
-        var pos = context.target.pos
+    override fun process(level: ServerLevel, snapshot: Decay.Snapshot): Int {
+        val target = snapshot.blockState
+        var pos = snapshot.pos
         val newState = block.withPropertiesOf(target)
-        val contents = DecayInventoryHelper.takeContents(context.world, pos)
+        val contents = DecayInventoryHelper.takeContents(level, pos)
 
         if (target.block is DoublePlantBlock || target.block is DoorBlock) pos = if (target.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER) pos.above() else pos
 
-        context.world.setBlockAndUpdate(pos, newState)
-        DecayInventoryHelper.transferOrDrop(context.world, pos, contents)
+        level.setBlockAndUpdate(pos, newState)
+        DecayInventoryHelper.transferOrDrop(level, pos, contents)
         return entropy
     }
 

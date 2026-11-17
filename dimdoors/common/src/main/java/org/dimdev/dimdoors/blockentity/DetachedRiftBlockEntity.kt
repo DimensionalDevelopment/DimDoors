@@ -69,7 +69,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         Decay.decayBlock(
             world,
             DecaySource.RIFT,
-            pos,
             selected
         )
     }

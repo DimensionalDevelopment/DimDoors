@@ -5,5 +5,5 @@ import org.dimdev.dimdoors.util.ext.tag
 
 object DimensionTypeTags {
     @JvmField val MONOLITHS_CAN_EXIST = Registries.DIMENSION_TYPE.tag("monoliths_can_exist")
-    @JvmField val UNRAVELLED_FABRIC_CAN_UNRAVEL = Registries.DIMENSION_TYPE.tag("unravelled_fabric_can_unravel")
+    @JvmField val ALLOWS_DECAY = Registries.DIMENSION_TYPE.tag("allows_decay")
 }

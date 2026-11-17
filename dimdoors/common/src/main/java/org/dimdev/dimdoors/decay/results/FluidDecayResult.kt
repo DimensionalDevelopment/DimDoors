@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.decay.results
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.level.material.FluidState
@@ -16,12 +17,12 @@ class FluidDecayResult(private val entropy: Int, private val worldThreadChance: 
 
     override fun worldThreadChance(): Float = worldThreadChance
 
-    override fun process(context: Decay.DecayContext): Int {
-        val pos = context.target.pos
-        val contents = DecayInventoryHelper.takeContents(context.world, pos)
+    override fun process(level: ServerLevel, snapshot: Decay.Snapshot): Int {
+        val pos = snapshot.pos
+        val contents = DecayInventoryHelper.takeContents(level, pos)
         val newState = fluid.defaultFluidState().createLegacyBlock()
-        context.world.setBlockAndUpdate(pos, newState)
-        DecayInventoryHelper.transferOrDrop(context.world, pos, contents)
+        level.setBlockAndUpdate(pos, newState)
+        DecayInventoryHelper.transferOrDrop(level, pos, contents)
         return entropy
     }
 

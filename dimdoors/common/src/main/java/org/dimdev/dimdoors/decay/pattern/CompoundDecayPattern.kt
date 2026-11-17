@@ -5,7 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
 import org.dimdev.dimdoors.decay.conditions.Applicator
 import org.dimdev.dimdoors.decay.conditions.DecayCondition
 import org.dimdev.dimdoors.decay.results.DecayResult
@@ -14,9 +16,9 @@ import java.util.stream.Stream
 data class CompoundDecayPattern(val conditions: List<DecayCondition>, val result: DecayResult) : DecayPattern {
     override val type get() = DecayPatterns.COMPOUND
 
-    override fun test(context: Decay.DecayContext): Boolean = conditions.all { condition -> condition.test(context) }
+    override fun test(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Boolean = conditions.all { condition -> condition.test(level, snapshot, source) }
 
-    override fun process(context: Decay.DecayContext): Int = result.process(context)
+    override fun process(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Int = result.process(level, snapshot)
 
     override fun constructApplicable(access: RegistryAccess): Stream<ResourceKey<*>> =
         conditions.filterIsInstance<Applicator<*>>().stream().flatMap<ResourceKey<*>> { it.constructApplicable(access) }

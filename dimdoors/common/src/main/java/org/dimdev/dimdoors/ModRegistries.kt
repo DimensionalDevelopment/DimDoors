@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors
 
+import org.dimdev.dimdoors.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.item.door.RiftDataList
 import org.dimdev.dimdoors.item.door.condition.Conditions
 import org.dimdev.dimdoors.pockets.addon.environment.Environments
@@ -36,5 +37,6 @@ object ModRegistries {
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GROUPS, VirtualPocket.CODEC)
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.RIFT_DATA, RiftData.CODEC)
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC)
+        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DECAY_PATTERN, DecayPattern.CODEC)
     }
 }

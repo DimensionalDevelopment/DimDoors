@@ -14,6 +14,6 @@ class LevelTagProvider(output: FabricDataOutput, registriesFuture: CompletableFu
     override fun addTags(provider: HolderLookup.Provider) {
         tag(DimensionTypeTags.MONOLITHS_CAN_EXIST).add(ModDimensions.POCKET_TYPE_KEY, ModDimensions.LIMBO_TYPE_KEY)
 
-        tag(DimensionTypeTags.UNRAVELLED_FABRIC_CAN_UNRAVEL).add(ModDimensions.LIMBO_TYPE_KEY).add(BuiltinDimensionTypes.END)
+        tag(DimensionTypeTags.ALLOWS_DECAY).add(ModDimensions.LIMBO_TYPE_KEY).add(BuiltinDimensionTypes.END)
     }
 }

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.*
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -23,6 +24,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.synchronization.SingletonArgumentInfo
 import net.minecraft.core.BlockPos
+import net.minecraft.core.RegistryAccess
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -71,6 +73,8 @@ class FabricPlatform : Platform {
     override fun onPlayerQuit(consumer: (ServerPlayer) -> Unit) = ServerPlayConnectionEvents.DISCONNECT.register { handler, _ -> consumer.invoke(handler.player) }
 
     override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = ServerTickEvents.START_WORLD_TICK.register(ServerTickEvents.StartWorldTick { consumer.invoke(it) })
+
+    override fun onTagsLoaded(consumer: (RegistryAccess, Boolean) -> Unit) = CommonLifecycleEvents.TAGS_LOADED.register { registryAccess, isClient -> consumer.invoke(registryAccess, isClient) }
 
     override fun onPlayerTick(consumer: (ServerPlayer) -> Unit) = PLAYER_TICK.register(consumer)
 

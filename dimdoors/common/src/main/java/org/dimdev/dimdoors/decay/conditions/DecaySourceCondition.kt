@@ -2,14 +2,16 @@ package org.dimdev.dimdoors.decay.conditions
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimdoors.decay.Decay
 import org.dimdev.dimdoors.decay.DecaySource
 
 data class DecaySourceCondition(val source: DecaySource) : DecayCondition {
     override val type get() = DecayConditions.DECAY_SOURCE
 
-    override fun test(context: Decay.DecayContext): Boolean {
-        return this.source == context.source
+    override fun test(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Boolean {
+        return this.source == source
     }
 
     companion object {

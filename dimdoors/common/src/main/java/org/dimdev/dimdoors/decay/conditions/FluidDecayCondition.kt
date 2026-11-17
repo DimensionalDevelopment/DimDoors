@@ -6,10 +6,12 @@ import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.tags.TagKey
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
 import org.dimdev.dimdoors.util.codec.CodecUtils
 import java.util.*
 
@@ -21,9 +23,9 @@ class FluidDecayCondition(
     override val type get() = DecayConditions.FLUID
 
 
-    override fun test(context: Decay.DecayContext): Boolean = super.test(context) && (fluidType == Type.BOTH || (context.target.fluidState.isSource && fluidType == Type.SOURCE))
+    override fun test(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Boolean = super.test(level, snapshot, source) && (fluidType == Type.BOTH || (snapshot.fluidState.isSource && fluidType == Type.SOURCE))
 
-    override fun getHolder(context: Decay.DecayContext): Holder<Fluid> = context.target.fluidState.holder()
+    override fun getHolder(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Holder<Fluid> = snapshot.fluidState.holder()
 
     override fun registry(): ResourceKey<Registry<Fluid>> = Registries.FLUID
 

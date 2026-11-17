@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.decay.results
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.BedBlock
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.DoorBlock
@@ -14,11 +15,10 @@ import org.dimdev.dimdoors.decay.DecayInventoryHelper
 class DoubleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Block) : BlockDecayResult(entropy, worldThreadChance, block) {
     override val type get() = DecayResults.DOUBLE_BLOCK
 
-    override fun process(context: Decay.DecayContext): Int {
-        val target = context.target.blockState
-        val pos = context.target.pos
-        val world = context.world
-        val contents = DecayInventoryHelper.takeContents(world, pos)
+    override fun process(level: ServerLevel, snapshot: Decay.Snapshot): Int {
+        val target = snapshot.blockState
+        val pos = snapshot.pos
+        val contents = DecayInventoryHelper.takeContents(level, pos)
 
         if (target.block is DoorBlock) {
             val otherPos = if (target.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) pos.below() else pos.above()
@@ -29,22 +29,22 @@ class DoubleBlockDecayResult(entropy: Int, worldThreadChance: Float, block: Bloc
 
             val newState = block.defaultBlockState().setValue(TrapDoorBlock.OPEN, true).setValue(TrapDoorBlock.FACING, facing)
 
-            world.setBlockAndUpdate(pos, newState)
-            world.setBlockAndUpdate(otherPos, newState)
-            DecayInventoryHelper.transferOrDrop(world, pos, contents)
+            level.setBlockAndUpdate(pos, newState)
+            level.setBlockAndUpdate(otherPos, newState)
+            DecayInventoryHelper.transferOrDrop(level, pos, contents)
 
             return entropy
         } else if (target.block is BedBlock) {
             val otherPos = pos.relative(BedBlock.getConnectedDirection(target))
             val newState = block.defaultBlockState()
 
-            world.setBlockAndUpdate(pos, newState)
-            world.setBlockAndUpdate(otherPos, newState)
-            DecayInventoryHelper.transferOrDrop(world, pos, contents)
+            level.setBlockAndUpdate(pos, newState)
+            level.setBlockAndUpdate(otherPos, newState)
+            DecayInventoryHelper.transferOrDrop(level, pos, contents)
             return entropy
         }
 
-        DecayInventoryHelper.drop(world, pos, contents)
+        DecayInventoryHelper.drop(level, pos, contents)
         return 0
     }
 

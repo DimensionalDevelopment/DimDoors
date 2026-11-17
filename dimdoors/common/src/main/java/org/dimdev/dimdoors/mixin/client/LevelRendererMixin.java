@@ -18,6 +18,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
+import org.dimdev.dimdoors.client.network.ClientPacketListener;
+import org.dimdev.dimdoors.decay.Decay;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.jetbrains.annotations.Nullable;
@@ -364,5 +366,21 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
         if (state.getBlock() instanceof DetachedRiftBlock) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "levelEvent", at = @At("HEAD"), cancellable = true)
+    public void dimdoors$levelEvent(int type, BlockPos pos, int data, CallbackInfo ci) {
+        if(type == Decay.INSTANCE.getLevelEventId()) {
+            var client = Minecraft.getInstance();
+            client.execute(() ->{
+                if (client.level == null) {
+                    return;
+                }
+                client.levelRenderer.destroyBlockProgress(Long.hashCode(pos.asLong()), pos, data);
+            });
+
+            ci.cancel();
+        }
+
     }
 }

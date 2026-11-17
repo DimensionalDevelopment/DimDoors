@@ -17,7 +17,6 @@ class RealitySpongeBlock(settings: Properties) : Block(settings) {
                 world,
                 DecaySource.REALITY_SPONGE,
                 pos,
-                targetBlockPos,
             )
         }
     }

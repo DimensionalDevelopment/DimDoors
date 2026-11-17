@@ -49,6 +49,7 @@ object ModRegistryKeys {
     @JvmField val POCKET_GROUPS = "pockets/groups".dynamic<VirtualPocket>()
     @JvmField val RIFT_DATA = "pockets/rift_data".dynamic<RiftData>()
     @JvmField val DOOR_DATA = "door/data".dynamic<RiftDataList>()
+    @JvmField val DECAY_PATTERN = "decay_patterns".dynamic<DecayPattern>()
 
     fun register() {}
 

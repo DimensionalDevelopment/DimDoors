@@ -2,11 +2,13 @@ package org.dimdev.dimdoors.decay.conditions
 
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
+import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
 
 interface DecayCondition : MapCodecHasHolder<DecayCondition> {
-    fun test(context: Decay.DecayContext): Boolean
+    fun test(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Boolean
 
     companion object {
         @JvmField

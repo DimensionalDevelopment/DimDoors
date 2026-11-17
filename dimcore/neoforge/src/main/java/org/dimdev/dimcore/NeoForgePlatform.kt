@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.synchronization.ArgumentTypeInfos
 import net.minecraft.commands.synchronization.SingletonArgumentInfo
 import net.minecraft.core.BlockPos
+import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
@@ -32,17 +33,14 @@ import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.common.ItemAbilities
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.RegisterCommandsEvent
+import net.neoforged.neoforge.event.TagsUpdatedEvent
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent
 import net.neoforged.neoforge.event.level.BlockEvent
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent
-import net.neoforged.neoforge.event.server.ServerStartedEvent
-import net.neoforged.neoforge.event.server.ServerStartingEvent
-import net.neoforged.neoforge.event.server.ServerStoppedEvent
-import net.neoforged.neoforge.event.server.ServerStoppingEvent
+import net.neoforged.neoforge.event.server.*
 import net.neoforged.neoforge.event.tick.LevelTickEvent
 import net.neoforged.neoforge.event.tick.PlayerTickEvent
 import net.neoforged.neoforge.network.PacketDistributor
@@ -98,6 +96,8 @@ class NeoForgePlatform : Platform {
     override fun onPlayerQuit(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 
     override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<LevelTickEvent.Pre> { it.level.castOrNull<ServerLevel>()?.run(consumer) }
+
+    override fun onTagsLoaded(consumer: (RegistryAccess, Boolean) -> Unit) = NeoForge.EVENT_BUS.addListener<TagsUpdatedEvent> { consumer.invoke(it.registryAccess, it.shouldUpdateStaticData()) }
 
     override fun onPlayerTick(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerTickEvent.Post> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 

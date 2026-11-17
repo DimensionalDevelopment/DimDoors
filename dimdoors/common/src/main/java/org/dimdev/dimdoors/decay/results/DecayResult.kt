@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.decay.results
 import com.mojang.datafixers.Products.P2
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.server.level.ServerLevel
 import org.dimdev.dimcore.api.MapCodecHasHolder
 import org.dimdev.dimdoors.decay.Decay
 
@@ -11,7 +12,7 @@ interface DecayResult : MapCodecHasHolder<DecayResult> {
 
     fun worldThreadChance(): Float = 0f
 
-    fun process(context: Decay.DecayContext): Int
+    fun process(level: ServerLevel, snapshot: Decay.Snapshot): Int
 
     fun produces(): List<Result>
 

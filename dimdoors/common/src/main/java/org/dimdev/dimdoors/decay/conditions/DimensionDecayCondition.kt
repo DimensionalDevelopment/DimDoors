@@ -1,12 +1,15 @@
 package org.dimdev.dimdoors.decay.conditions
 
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.dimension.DimensionType
 import org.dimdev.dimdoors.decay.Decay
+import org.dimdev.dimdoors.decay.DecaySource
 import org.dimdev.dimdoors.util.codec.CodecUtils
 import org.dimdev.dimdoors.util.codec.CodecUtils.createCodec
 
@@ -16,9 +19,7 @@ class DimensionDecayCondition private constructor(
 ) : GenericDecayCondition<DimensionType>(tagOrElementLocation, invert) {
     override val type get() = DecayConditions.DIMENSION
 
-    public override fun getHolder(context: Decay.DecayContext): Holder<DimensionType> {
-        return context.world.dimensionTypeRegistration()
-    }
+    public override fun getHolder(level: ServerLevel, snapshot: Decay.Snapshot, source: DecaySource): Holder<DimensionType> = level.dimensionTypeRegistration()
 
     override fun registry(): ResourceKey<Registry<DimensionType>> = Registries.DIMENSION_TYPE
 
