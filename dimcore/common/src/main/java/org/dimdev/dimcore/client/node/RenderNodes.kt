@@ -1,16 +1,17 @@
 package org.dimdev.dimcore.client.node
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.BufferUploader
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.server.packs.resources.ResourceManager
-import org.lwjgl.opengl.GL11
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 
 object RenderNodes {
+    private val guiNodes = mutableMapOf<Item, RenderNode>()
     private val registered = mutableListOf<RenderNode>()
 
     val nodes: List<RenderNode> get() = registered
@@ -34,23 +35,7 @@ object RenderNodes {
 
     @JvmStatic
     fun composite() {
-        registered.forEach { node ->
-            if (!node.drawn) return@forEach
-            val program = node.compositeProgram() ?: return@forEach
-            node.target ?: return@forEach
-
-            node.compositeFramebuffer().bind()
-            RenderSystem.enableDepthTest()
-            RenderSystem.depthFunc(GL11.GL_LEQUAL)
-            RenderSystem.depthMask(true)
-            RenderSystem.enableBlend()
-            RenderSystem.blendFuncSeparate(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE)
-            program.bind()
-            BufferUploader.draw(quad())
-            program.unbind()
-            RenderSystem.disableBlend()
-            RenderSystem.defaultBlendFunc()
-        }
+        registered.forEach(RenderNode::composite)
         MainFramebuffer.bind()
     }
 
@@ -60,12 +45,39 @@ object RenderNodes {
         MainFramebuffer.bind()
     }
 
-    private fun quad(): MeshData {
+    fun quad(): MeshData {
         val quad = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
         quad.addVertex(0f, 0f, 0f).setUv(0f, 0f)
         quad.addVertex(1f, 0f, 0f).setUv(1f, 0f)
         quad.addVertex(1f, 1f, 0f).setUv(1f, 1f)
         quad.addVertex(0f, 1f, 0f).setUv(0f, 1f)
         return quad.buildOrThrow()
+    }
+
+    @JvmStatic
+    fun compositeScissored() {
+        registered.forEach {
+            it.composite()
+            if (it.drawn) it.target?.clear()
+        }
+        MainFramebuffer.bind()
+    }
+
+    @JvmStatic
+    fun compositeGui(itemStack: ItemStack, graphics: GuiGraphics, x: Int, y: Int) {
+        val node = guiNodes[itemStack.item] ?: return
+        if (!node.drawn) return
+        val pose = graphics.pose().last().pose()
+        val left = (x + pose.m30()).toInt()
+        val top = (y + pose.m31()).toInt()
+        graphics.enableScissor(left, top, left + 16, top + 16)
+        node.composite()
+        node.target?.clear()
+        MainFramebuffer.bind()
+        graphics.disableScissor()
+    }
+
+    fun registerItem(item: Item, renderNode: RenderNode) {
+        guiNodes[item] = renderNode
     }
 }

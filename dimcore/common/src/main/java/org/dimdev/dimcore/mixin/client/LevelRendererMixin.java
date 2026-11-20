@@ -36,6 +36,7 @@ public class LevelRendererMixin {
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderType;translucent()Lnet/minecraft/client/renderer/RenderType;"))
     private void dimcore$compositeNodes(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
         if (!RenderNodes.INSTANCE.getExternal().invoke()) RenderNodes.composite();
+        RenderNodes.clear();
         RenderTarget translucent = ((LevelRenderer) (Object) this).getTranslucentTarget();
         if (translucent != null) translucent.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
     }

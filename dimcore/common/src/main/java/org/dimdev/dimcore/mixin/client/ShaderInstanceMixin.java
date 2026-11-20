@@ -28,10 +28,7 @@ public abstract class ShaderInstanceMixin {
     @Unique
     private int dimcore$geometry = -1;
 
-    @Inject(method = {
-        "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
-        "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V"
-    }, at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/shaders/ProgramManager;linkShader(Lcom/mojang/blaze3d/shaders/Shader;)V"))
+    @Inject(method = "<init>*", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/shaders/ProgramManager;linkShader(Lcom/mojang/blaze3d/shaders/Shader;)V"))
     private void dimcore$loadGeometry(CallbackInfo ci, @Local(argsOnly = true) ResourceProvider provider, @Local JsonObject json) throws IOException {
         if (!json.has(DIMCORE_GEOMETRY)) return;
         ResourceLocation id = ResourceLocation.parse(GsonHelper.getAsString(json, DIMCORE_GEOMETRY));

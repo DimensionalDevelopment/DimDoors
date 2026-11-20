@@ -17,6 +17,9 @@
   ],
   "client": [
     "client.BlockEntityWithoutLevelRendererMixin",
+    "client.GameRendererMixin",
+    "client.GuiGraphicsMixin",
+    "client.InventoryScreenMixin",
     "client.LevelRendererMixin",
     "client.ShaderInstanceMixin"
   ],

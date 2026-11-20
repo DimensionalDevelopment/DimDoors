@@ -1,5 +1,6 @@
 package org.dimdev.dimcore.client.node
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.BufferUploader
 import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexConsumer
@@ -8,8 +9,10 @@ import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.resources.ResourceLocation
+import org.dimdev.dimcore.client.node.RenderNodes.quad
 import org.dimdev.dimcore.client.node.vanilla.TextureTargetFramebuffer
 import org.dimdev.dimcore.client.node.vanilla.VanillaNodeProgram
+import org.lwjgl.opengl.GL11
 
 abstract class RenderNode(val id: ResourceLocation) {
     private var default: Pair<ShaderInstance, NodeProgram>? = null
@@ -74,6 +77,24 @@ abstract class RenderNode(val id: ResourceLocation) {
         if (!drawn) return
         target?.clear()
         drawn = false
+    }
+
+    fun composite() {
+        if (!drawn) return
+        val program = compositeProgram() ?: return
+        target ?: return
+
+        compositeFramebuffer().bind()
+        RenderSystem.enableDepthTest()
+        RenderSystem.depthFunc(GL11.GL_LEQUAL)
+        RenderSystem.depthMask(true)
+        RenderSystem.enableBlend()
+        RenderSystem.blendFuncSeparate(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE)
+        program.bind()
+        BufferUploader.draw(quad())
+        program.unbind()
+        RenderSystem.disableBlend()
+        RenderSystem.defaultBlendFunc()
     }
 
     private class NodeRenderType(private val node: RenderNode, base: RenderType) : RenderType(

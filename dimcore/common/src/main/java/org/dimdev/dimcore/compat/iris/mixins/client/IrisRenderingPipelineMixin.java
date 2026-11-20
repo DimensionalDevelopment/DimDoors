@@ -38,6 +38,7 @@ public abstract class IrisRenderingPipelineMixin implements IrisRenderingPipelin
     @Inject(method = "beginTranslucents", at = @At("HEAD"))
     private void dimensionalDoors$compositeNodes(CallbackInfo ci) {
         RenderNodes.composite();
+        RenderNodes.clear();
     }
 
     @Inject(method = "finalizeLevelRendering", at = @At("RETURN"))
