@@ -7,6 +7,7 @@ import imgui.ImGui
 import imgui.flag.ImGuiWindowFlags
 import net.minecraft.Util
 import net.minecraft.client.renderer.LightTexture
+import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.util.Mth
@@ -16,37 +17,50 @@ import org.dimdev.dimdoors.client.ModShaders
 import org.dimdev.dimdoors.client.RenderTypes
 import org.dimdev.dimdoors.client.render.blockentity.RiftCurves.PolygonInfo
 import org.dimdev.dimdoors.util.ext.id
+import org.joml.Vector3f
 import kotlin.math.roundToInt
 
 object RiftCrackRenderer {
 
+    fun drawCrack(matrices: PoseStack, buffers: MultiBufferSource, curveId: Int, size: Int) {
+        drawCrack(
+            matrices,
+            ChromaticAberration.buffer(buffers),
+            0f,
+            RiftCurves.CURVES[curveId],
+            size / 150f,
+        )
+    }
+
+    private val scratchScale = Vector3f()
+
     fun drawCrack(
-        model: PoseStack,
+        matrices: PoseStack,
         vc: VertexConsumer,
         riftRotation: Float,
         poly: PolygonInfo,
         size: Float,
-    ) = model.pusPop {
+    ) = matrices.pusPop {
 
-        // Calculate the proper size for the rift render
+        val poseScale = matrices.last().pose().getScale(scratchScale).x * size
         val scale = (size / (poly.maxX - poly.minX))
 
-        // Calculate the midpoint of the fractal bounding box
-        model.mulPose(Axis.YP.rotation(riftRotation))
-        model.scale(scale, scale, scale)
-        model.translate(-(poly.maxX + poly.minX) / 2.0, -(poly.maxY + poly.minY) / 2.0, 0.0)
 
-        val pose = model.last()
+        matrices.mulPose(Axis.YP.rotation(riftRotation))
+        matrices.scale(scale, scale, scale)
+        matrices.translate(-(poly.maxX + poly.minX) / 2.0, -(poly.maxY + poly.minY) / 2.0, 0.0)
+
+        val pose = matrices.last()
 
         // Draw the rift
         val points = poly.points
         var i = 0
         val pointsSize = points.size
         while (i < pointsSize) {
-            points[i]!!.render(pose, vc, size)
-            points[i + 1]!!.render(pose, vc, size)
-            points[i + 2]!!.render(pose, vc, size)
-            points[i + 2]!!.render(pose, vc, size)
+            points[i].render(pose, vc, poseScale)
+            points[i + 1].render(pose, vc, poseScale)
+            points[i + 2].render(pose, vc, poseScale)
+            points[i + 2].render(pose, vc, poseScale)
             i += 3
         }
     }
@@ -56,8 +70,10 @@ object RiftCrackRenderer {
         vc: VertexConsumer,
         size: Float
     ) {
+
+
         vc.addVertex(pose, x.toFloat(), y.toFloat(), 0f)
-            .setColor(0.08f, 0.08f, 0.08f, 1f)
+            .setColor(0.08f * 255f, 0.08f, 0.08f, 1f)
             .setUv(0f, 0f)
             .setUv1((size * 150).roundToInt(), 0)
             .setLight(LightTexture.FULL_BRIGHT)
@@ -95,7 +111,7 @@ object RiftCrackRenderer {
 
             oscilationDuration.render("Oscillation Duration", 0f, 8f) { oscilationDuration = it }
             orbitDuration.render("Orbit Duration", 0f, 8f) { orbitDuration = it }
-            worldSeparation.render("Separation", 0f, 0.05f) { worldSeparation = it }
+            worldSeparation.render("World Separation", 0f, 0.05f) { worldSeparation = it }
             ImGui.end()
         }
 
