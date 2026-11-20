@@ -10,15 +10,14 @@ import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
 import org.dimdev.dimdoors.subsystem.registry.SubSystem
 import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 
-interface ItemRift : Rift<ItemRift, Holder, ItemRiftRegistry> {
-    private fun stack(holder: Holder): ItemStack? = riftRegistry.idAt(holder)?.let { holder.findStack(it) }
+interface ItemRift : Rift<ItemRift, Holder, ItemStack, ItemRiftRegistry> {
 
     override fun data(holder: Holder): RiftData {
-        return stack(holder)?.get(ModDataComponentTypes.RIFT_DATA)?.copy() ?: RiftData()
+        return riftRegistry.storedAt(holder)?.get(ModDataComponentTypes.RIFT_DATA)?.copy() ?: RiftData()
     }
 
     override fun setRiftData(holder: Holder, data: RiftData) {
-        stack(holder)?.set(ModDataComponentTypes.RIFT_DATA, data.copy())
+        riftRegistry.storedAt(holder)?.set(ModDataComponentTypes.RIFT_DATA, data.copy())
     }
 
     override val riftRegistryType: SubSystem.Type<ItemRiftRegistry> get() = SubsystemTypes.ITEM_RIFT
@@ -30,4 +29,6 @@ interface ItemRift : Rift<ItemRift, Holder, ItemRiftRegistry> {
     override var isDeleteRift: Boolean
         get() = true
         set(value) {}
+
+
 }

@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.subsystem.registry.SubsystemTypes
 import org.dimdev.dimdoors.util.Location
 import java.util.function.Consumer
 
-interface BlockEntityRift<R> : Rift<R, Location, LocationRiftRegistry>, LocationProvider where R : BlockEntity, R : BlockEntityRift<R> {
+interface BlockEntityRift<R> : Rift<R, Location, BlockEntityRift<*>, LocationRiftRegistry>, LocationProvider where R : BlockEntity, R : BlockEntityRift<R> {
     fun self(): R = this.cast()
 
     override val providedLocation: Location
@@ -61,6 +61,7 @@ interface BlockEntityRift<R> : Rift<R, Location, LocationRiftRegistry>, Location
     fun markStateChanged() = markStateChanged(providedLocation)
     fun gatherDebug(textConsumer: Consumer<Component>) = gatherDebug(providedLocation, textConsumer)
     fun detach() {}
+    fun <S : LocationProvider> copyFrom(rift: Rift<*, S, *, *>, other: S) = super.copyFrom(providedLocation, rift, other)
 
     fun copyFrom(rift: BlockEntityRift<*>) {
         this.setRiftData(rift.data().copy())

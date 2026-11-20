@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.rift
 
 import org.dimdev.dimdoors.rift.targets.LocationProvider
+import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
 import org.dimdev.dimdoors.subsystem.graph.Vertex
 import org.dimdev.dimdoors.subsystem.registry.SubSystem
 import org.dimdev.dimdoors.util.Location
 import java.util.*
 
-abstract class RiftRegistryVertex<T: LocationProvider, R : RiftRegistry<T, R>, G: Rift<*, T, R>> : RegistryVertex() {
+abstract class RiftRegistryVertex<T: LocationProvider, S, R : RiftRegistry<T, S, R>, G: Rift<*, T, S, R>> : RegistryVertex() {
     override fun getLocation(id: UUID): Location? = SubSystem.getInstance(riftRegistry)?.locationOf(id)?.providedLocation
 
     abstract fun getRift(self: UUID): G?
@@ -18,7 +19,7 @@ abstract class RiftRegistryVertex<T: LocationProvider, R : RiftRegistry<T, R>, G
         val t = SubSystem.getInstance(riftRegistry)?.locationOf(self) ?: return
 
         getRift(self)?.let { rift ->
-            if (source.type is RiftRegistryVertex<*, *, *>) {
+            if (source.type is RiftRegistryVertex<*, *, *, *>) {
                 rift.handleSourceGone(t)
             }
         }
@@ -30,7 +31,7 @@ abstract class RiftRegistryVertex<T: LocationProvider, R : RiftRegistry<T, R>, G
         val t = SubSystem.getInstance(riftRegistry)?.locationOf(self) ?: return
 
         getRift(self)?.run {
-            if(target.type is RiftRegistryVertex<*, *, *>) {
+            if(target.type is RiftRegistryVertex<*, *, *, *>) {
                 handleTargetGone(t)
 
             }
@@ -64,6 +65,11 @@ abstract class RiftRegistryVertex<T: LocationProvider, R : RiftRegistry<T, R>, G
         val t = SubSystem.getInstance(riftRegistry)?.locationOf(self) ?: return
 
         getRift(self)?.also { rift -> rift.updateColor(t) }
+    }
+
+    fun setDestination(self: UUID, destination: VirtualTarget<*>) {
+        val t = SubSystem.getInstance(riftRegistry)?.locationOf(self) ?: return
+        getRift(self)?.setDestination(t, destination)
     }
 
     abstract val riftRegistry: SubSystem.Type<R>

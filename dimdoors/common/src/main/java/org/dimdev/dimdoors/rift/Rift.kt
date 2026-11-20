@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockState
 import org.dimdev.dimcore.api.errata.schema.FieldNode
 import org.dimdev.dimcore.api.errata.subject.ConfigSubject
 import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.api.rift.target.Target
 import org.dimdev.dimdoors.blockentity.Deserialize
@@ -17,15 +18,17 @@ import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.link.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.LocationProvider
 import org.dimdev.dimdoors.rift.targets.MessageTarget
+import org.dimdev.dimdoors.rift.targets.RiftReference
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
 import org.dimdev.dimdoors.subsystem.graph.Vertex
 import org.dimdev.dimdoors.subsystem.registry.SubSystem
 import org.dimdev.dimdoors.util.RGBA
 import java.util.*
 import java.util.function.Consumer
 
-interface Rift<R: Rift<R, H, V>, H: LocationProvider, V: RiftRegistry<H, V>> : Target {
+interface Rift<R: Rift<R, H, S, V>, H: LocationProvider, S, V: RiftRegistry<H, S, V>> : Target {
     fun data(holder: H): RiftData
     fun setRiftData(holder: H, data: RiftData)
 
@@ -182,7 +185,7 @@ interface Rift<R: Rift<R, H, V>, H: LocationProvider, V: RiftRegistry<H, V>> : T
         }
     }
 
-    fun <S : LocationProvider> copyFrom(holder: H, rift: Rift<*, S, *>, other: S) = setRiftData(holder, rift.data(other).copy())
+    fun <O : LocationProvider> copyFrom(holder: H, rift: Rift<*, O, *, *>, other: O) = setRiftData(holder, rift.data(other).copy())
 
     val isDetached: Boolean
         get() = false
@@ -205,4 +208,29 @@ interface Rift<R: Rift<R, H, V>, H: LocationProvider, V: RiftRegistry<H, V>> : T
     }
 
     fun vertex(holder: H): Vertex = Vertex(riftRegistry.getRiftOrPlaceholder(holder), vertexType)
+
+
+    companion object {
+        fun <FH: LocationProvider, FS, TH: LocationProvider, TS> transfer(
+            fromStored: FS, fromHolder: FH, fromType: Rift<*, FH, FS, *>,
+            toStored: TS, toHolder: TH, toType: Rift<*, TH, TS, *>
+        ) {
+            toType.riftRegistry.attach(toStored, toHolder)
+
+            val old = fromType.vertex(fromHolder)
+
+            toType.copyFrom(toHolder, fromType, fromHolder)
+            toType.register(toHolder)
+            toType.setProperties(toHolder, fromType.properties(fromHolder))
+
+            val dest = RiftReference(toType.vertex(toHolder))
+            RiftGraph.getInstance().run {
+                sources(old.id).forEach { source -> vertex(source)?.castOrNull<RiftRegistryVertex<*, *, *, *>>()?.setDestination(source, dest) }
+            }
+
+            fromType.data(fromHolder).destination.takeIf { it !== VirtualTarget.NoneTarget }?.unregister(old)
+            fromType.unregister(fromHolder)
+            fromType.riftRegistry.detach(fromStored)
+        }
+    }
 }

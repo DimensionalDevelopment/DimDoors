@@ -22,8 +22,6 @@ interface RiftProvider<T> : EntityBlock, RiftVariantProvider, PerservesBlockEnti
             }
     }
 
-    fun getRiftPos(world: Level, pos: BlockPos, state: BlockState): BlockPos = pos
-
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState): BlockEntityRift<*>? {
         var pos = pos
         pos = getRiftPos(world, pos, state)

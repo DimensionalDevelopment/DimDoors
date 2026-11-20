@@ -30,10 +30,6 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
-import org.dimdev.dimdoors.util.ext.horizontalFacing
-import org.dimdev.dimdoors.util.ext.eulerAngle
-import org.dimdev.dimdoors.util.math.inverseRotateLocal
-import org.dimdev.dimdoors.util.math.inverseTranslateLocal
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
@@ -41,6 +37,10 @@ import org.dimdev.dimdoors.block.TraversableRiftBlock
 import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofTrapdoor
 import org.dimdev.dimdoors.util.Location
+import org.dimdev.dimdoors.util.ext.eulerAngle
+import org.dimdev.dimdoors.util.ext.horizontalFacing
+import org.dimdev.dimdoors.util.math.inverseRotateLocal
+import org.dimdev.dimdoors.util.math.inverseTranslateLocal
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
@@ -53,18 +53,6 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
     override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) = super<TraversableRiftBlock>.onBlockExploded(state, level, pos, explosion)
 
     override fun getPortalPlane(state: BlockState, pos: BlockPos) = ofTrapdoor(state, pos)
-
-//    public override fun useItemOn(
-//        stack: ItemStack,
-//        state: BlockState,
-//        level: Level,
-//        pos: BlockPos,
-//        player: Player,
-//        hand: InteractionHand,
-//        hitResult: BlockHitResult
-//    ): ItemInteractionResult =
-//        if (stack.item is DetachRiftInteracting) ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
-//        else super.useItemOn(stack, state, level, pos, player, hand, hitResult)
 
     public override fun useWithoutItem(
         state: BlockState,
@@ -84,12 +72,6 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
         world.gameEvent(player, if (state.getValue(OPEN)) GameEvent.BLOCK_OPEN else GameEvent.BLOCK_CLOSE, pos)
         return InteractionResult.SUCCESS
     }
-
-//    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-//        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().item is DetachRiftInteracting)
-//            Shapes.block()
-//        else
-//            super.getShape(state, level, pos, context)
 
     override fun getVisualShape(
         state: BlockState,
@@ -140,7 +122,7 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState) = getRift(world, pos, state)
 
     override fun revertToBaseVariant(location: Location) {
-        location.world.setBlock(location.blockPos, getVisualBlockState(location.blockState), UPDATE_CLIENTS or UPDATE_KNOWN_SHAPE)
+        location.world.setBlock(location.blockPos, getVisualBlockState(location.blockState), 18)
     }
 
     override fun closeRift(level: Level, pos: BlockPos, state: BlockState) {
@@ -153,8 +135,9 @@ abstract class DimensionalTrapDoorBlock<T : EntranceRiftBlockEntity<T>>(
                 .setValue(POWERED, state.getValue(POWERED))
                 .setValue(HALF, state.getValue(HALF))
 
-            level.removeBlock(pos, false)
-            level.setBlockAndUpdate(pos, newState)
+            level.setBlock(pos, newState, 18)
         }
     }
+
+    override fun isBase(): Boolean = false
 }

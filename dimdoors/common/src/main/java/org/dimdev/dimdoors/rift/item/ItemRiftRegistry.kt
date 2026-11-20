@@ -23,7 +23,7 @@ import java.util.*
 
 class ItemRiftRegistry(
     rifts: Map<UUID, Holder> = emptyMap(),
-    placeholders: Collection<UUID> = emptySet()) : RiftRegistry<Holder, ItemRiftRegistry>(rifts, placeholders) {
+    placeholders: Collection<UUID> = emptySet()) : RiftRegistry<Holder, ItemStack, ItemRiftRegistry>(rifts, placeholders) {
 
     override fun type() = SubsystemTypes.ITEM_RIFT
     override val events: RiftEvents<Holder> get() = EVENTS
@@ -42,6 +42,16 @@ class ItemRiftRegistry(
             else -> EVENTS.riftMoveEvent.invoker().riftMoved(id, previous, holder)
         }
     }
+
+    override fun attach(stored: ItemStack, ref: Holder): UUID = getRiftOrPlaceholder(ref).also { stored.set(ModDataComponentTypes.TRACKED_ITEM, it) }
+
+    override fun detach(stored: ItemStack) {
+        stored.remove(ModDataComponentTypes.RIFT_DATA)
+        val id = stored.remove(ModDataComponentTypes.TRACKED_ITEM) ?: return
+        track(id, null)
+    }
+
+    override fun storedAt(ref: Holder): ItemStack? = idAt(ref)?.let { ref.findStack(it) }
 
     companion object {
         private val LOGGER: Logger = LogManager.getLogger()
@@ -86,16 +96,6 @@ class ItemRiftRegistry(
 
                 return false
             }
-        }
-
-        fun attach(stack: ItemStack, holder: Holder): UUID = UUID.randomUUID().also {
-            stack.set(ModDataComponentTypes.TRACKED_ITEM, it)
-            instance.track(it, holder)
-        }
-
-        fun detach(stack: ItemStack) {
-            val id = stack.remove(ModDataComponentTypes.TRACKED_ITEM) ?: return
-            instance.track(id, null)
         }
 
         fun find(stack: ItemStack, id: UUID): ItemStack? = stack.nested().firstOrNull { it.get(ModDataComponentTypes.TRACKED_ITEM) == id }

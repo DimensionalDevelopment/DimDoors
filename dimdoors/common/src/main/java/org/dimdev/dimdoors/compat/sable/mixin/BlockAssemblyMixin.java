@@ -24,7 +24,7 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
 
         var blockEntity = originLevel.getBlockEntity(oldPos);
 
-        if(blockEntity instanceof Rift<?, ?, ?> rift) {
+        if(blockEntity instanceof Rift<?, ?, ?, ?> rift) {
             if (LocationRiftRegistry.Companion.getInstance().isRiftAt(oldLocation)) {
                     LocationRiftRegistry.Companion.getInstance().moveRift(oldLocation, newLocation);
                     rift.setDeleteRift(false);
@@ -36,7 +36,7 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
     public void afterMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
         var blockEntity = resultingLevel.getBlockEntity(newPos);
 
-        if(blockEntity instanceof Rift<?, ?, ?> rift) {
+        if(blockEntity instanceof Rift<?, ?, ?, ?> rift) {
             rift.setDeleteRift(true);
             var newLocation = Location.ofWorld(resultingLevel, newPos);
             var registry = LocationRiftRegistry.Companion.getInstance();

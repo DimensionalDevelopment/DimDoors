@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.subsystem.registry.SubSystem
 import org.dimdev.dimdoors.util.ext.unboundedMap
 import java.util.*
 
-abstract class RiftRegistry<T: LocationProvider, R: RiftRegistry<T, R>>(
+abstract class RiftRegistry<T: LocationProvider, S, R: RiftRegistry<T, S, R>>(
     rifts: Map<UUID, T> = emptyMap(),
     placeholders: Collection<UUID> = emptySet()
 ) : SubSystem<R>() {
@@ -99,6 +99,10 @@ abstract class RiftRegistry<T: LocationProvider, R: RiftRegistry<T, R>>(
     abstract val events: RiftEvents<T>
     abstract val logger: Logger
 
+    abstract fun attach(stored: S, ref: T): UUID
+    abstract fun detach(stored: S)
+    abstract fun storedAt(ref: T): S?
+
     abstract class RiftEvents<E: Any> {
         fun interface PlaceholderAdded<T: Any> { fun placeholderAdded(id: UUID, t: T) }
         fun interface RiftAdded<T: Any> { fun riftAdded(id: UUID, t: T) }
@@ -121,7 +125,7 @@ abstract class RiftRegistry<T: LocationProvider, R: RiftRegistry<T, R>>(
     }
 
     companion object {
-        fun <T : LocationProvider, R : RiftRegistry<T, R>> codec(
+        fun <T : LocationProvider, S, R : RiftRegistry<T, S, R>> codec(
             codec: Codec<T>,
             name: String,
             function: (Map<UUID, T>, Collection<UUID>) -> R

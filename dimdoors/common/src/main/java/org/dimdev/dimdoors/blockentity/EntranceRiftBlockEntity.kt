@@ -123,8 +123,8 @@ abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected
         }
     }
 
-    override fun unregister() {
-        super.unregister()
+    override fun unregister(holder: Location) {
+        super.unregister(holder)
 
         val level = level ?: return
         val pos = this.blockPos
@@ -155,7 +155,7 @@ abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected
     companion object {
         private val ESCAPE_TARGET = EscapeTarget(true)
         @JvmStatic
-         fun <H: LocationProvider> attemptTeleport(entity: Entity, rift: Rift<*, H, *>, holder: H): Boolean {
+         fun <H: LocationProvider> attemptTeleport(entity: Entity, rift: Rift<*, H, *, *>, holder: H): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport

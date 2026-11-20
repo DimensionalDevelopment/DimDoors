@@ -39,9 +39,12 @@ import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils
 import org.dimdev.dimdoors.rift.RiftUtils.PortalPlane.Companion.ofDoor
 import org.dimdev.dimdoors.util.Location
-import org.dimdev.dimdoors.util.ext.*
+import org.dimdev.dimdoors.util.ext.eulerAngle
 import org.dimdev.dimdoors.util.ext.horizontalFacing
-import org.dimdev.dimdoors.util.math.*
+import org.dimdev.dimdoors.util.ext.plus
+import org.dimdev.dimdoors.util.ext.times
+import org.dimdev.dimdoors.util.math.inverseRotateLocal
+import org.dimdev.dimdoors.util.math.inverseTranslateLocal
 import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
@@ -70,43 +73,6 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
         return super.customDestroy(level, pos, state, i, j)
     }
-
-//    public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-//        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().ri.item is DetachRiftInteracting)
-//            Shapes.block()
-//        else
-//            super.getShape(state, level, pos, context)
-//
-//    override fun getVisualShape(
-//        state: BlockState,
-//        level: BlockGetter,
-//        pos: BlockPos,
-//        context: CollisionContext
-//    ): VoxelShape {
-//        val direction = state.getValue(FACING)
-//        val flag = !state.getValue(OPEN)
-//        val flag1 = state.getValue(HINGE) == DoorHingeSide.RIGHT
-//
-//        return when (direction) {
-//            Direction.SOUTH -> if(flag) SOUTH_AABB else (if(flag1) EAST_AABB else WEST_AABB)
-//            Direction.WEST -> if(flag) WEST_AABB else (if(flag1) SOUTH_AABB else NORTH_AABB)
-//            Direction.NORTH -> if(flag) NORTH_AABB else (if(flag1) WEST_AABB else EAST_AABB)
-//            else -> if(flag) EAST_AABB else (if(flag1) NORTH_AABB else SOUTH_AABB)
-//        }
-//    }
-
-//    public override fun useItemOn(
-//        stack: ItemStack,
-//        state: BlockState,
-//        level: Level,
-//        pos: BlockPos,
-//        player: Player,
-//        hand: InteractionHand,
-//        hitResult: BlockHitResult
-//    ): ItemInteractionResult =
-//        if (stack.item is DetachRiftInteracting) ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
-//        else super.useItemOn(stack, state, level, pos, player, hand, hitResult)
-
     public override fun useWithoutItem(
         state: BlockState,
         world: Level,
@@ -129,8 +95,6 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
     public override fun getDrops(state: BlockState, params: LootParams.Builder): MutableList<ItemStack?> {
         return getVisualBlockState(state).getDrops(params)
     }
-
-    override fun getRiftPos(world: Level, pos: BlockPos, state: BlockState): BlockPos = if (state.getValue(HALF) == DoubleBlockHalf.LOWER) pos else pos.below()
 
     override fun providerType() = "Dimensional door"
 
@@ -185,11 +149,6 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     fun baseBlock() = BuiltInRegistries.BLOCK.get(getDimensionalDoorBlockRegistrar()[BuiltInRegistries.BLOCK.getKey(this)])
 
-    //    @Override
-    //    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
-    //        return RenderShape.ENTITYBLOCK_ANIMATED;
-    //    }
-
     override fun convertToRiftProvider(world: ServerLevel, pos: BlockPos, state: BlockState) = getRift(world, pos, state)
 
     override fun revertToBaseVariant(location: Location) {
@@ -220,6 +179,10 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
 
     override fun getPortalPlane(state: BlockState, pos: BlockPos): RiftUtils.PortalPlane = ofDoor(state, pos)
 
+    override fun getRiftPos(world: Level, pos: BlockPos, state: BlockState): BlockPos {
+        return if(state.getValue(HALF) == DoubleBlockHalf.UPPER) pos.below() else pos
+    }
+
     override fun closeRift(level: Level, pos: BlockPos, state: BlockState) {
         val base = baseBlock()
 
@@ -231,9 +194,10 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
                 .setValue(POWERED, state.getValue(POWERED))
                 .setValue(HALF, DoubleBlockHalf.LOWER)
 
-            level.removeBlock(pos, false)
-            level.setBlockAndUpdate(pos, newState)
-            level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER))
+            level.setBlock(pos, newState, 18)
+            level.setBlock(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER), 18)
         }
     }
+
+    override fun isBase(): Boolean = false
 }
