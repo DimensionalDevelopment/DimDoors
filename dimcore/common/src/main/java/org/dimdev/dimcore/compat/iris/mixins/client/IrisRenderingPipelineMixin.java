@@ -1,6 +1,7 @@
 package org.dimdev.dimcore.compat.iris.mixins.client;
 
 import net.irisshaders.iris.pipeline.IrisRenderingPipeline;
+import net.minecraft.client.Minecraft;
 import net.irisshaders.iris.shaderpack.programs.ProgramSet;
 import net.irisshaders.iris.targets.RenderTargets;
 import org.dimdev.dimcore.client.node.RenderNodes;
@@ -37,6 +38,7 @@ public abstract class IrisRenderingPipelineMixin implements IrisRenderingPipelin
 
     @Inject(method = "beginTranslucents", at = @At("HEAD"))
     private void dimensionalDoors$compositeNodes(CallbackInfo ci) {
+        if (!Minecraft.getInstance().player.getMainHandItem().isEmpty()) RenderNodes.INSTANCE.getNodes().forEach(node -> System.out.println(node.getId() + " drawn=" + node.getDrawn()));
         RenderNodes.composite();
         RenderNodes.clear();
     }

@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:reality_sponge"
+        "recipe": "minecraft:world_thread_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "liminal_lint": {
+    "world_thread": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:liminal_lint"
+            "items": "dimdoors:world_thread"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "liminal_lint"
+      "world_thread"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:reality_sponge"
+      "minecraft:world_thread_helmet"
     ]
   }
 }

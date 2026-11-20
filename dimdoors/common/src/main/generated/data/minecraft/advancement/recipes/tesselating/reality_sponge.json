@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:garment_of_reality_leggings"
+        "recipe": "minecraft:reality_sponge"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "infrangible_fiber": {
+    "liminal_lint": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:infrangible_fiber"
+            "items": "dimdoors:liminal_lint"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "infrangible_fiber"
+      "liminal_lint"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:garment_of_reality_leggings"
+      "minecraft:reality_sponge"
     ]
   }
 }

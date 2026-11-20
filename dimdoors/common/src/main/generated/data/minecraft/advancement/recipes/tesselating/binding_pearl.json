@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:fabric_of_reality"
+        "recipe": "minecraft:binding_pearl"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "stable_fabric": {
+    "mask_shard": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:stable_fabric"
+            "items": "dimdoors:mask_shard"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "stable_fabric"
+      "mask_shard"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:fabric_of_reality"
+      "minecraft:binding_pearl"
     ]
   }
 }

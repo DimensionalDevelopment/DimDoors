@@ -1,32 +1,32 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "dimdoors:rift_pearl"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "stable_fabric": {
+    "enduring_fibers": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:stable_fabric"
+            "items": "dimdoors:enduring_fibers"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:fabric_of_finality"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "stable_fabric"
+      "enduring_fibers"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:rift_pearl"
+      "minecraft:fabric_of_finality"
     ]
   }
 }

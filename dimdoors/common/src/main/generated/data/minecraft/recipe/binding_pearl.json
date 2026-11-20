@@ -2,18 +2,19 @@
   "type": "dimdoors:shaped_tesselating",
   "key": {
     "O": {
-      "item": "dimdoors:infrangible_fiber"
+      "item": "minecraft:ender_eye"
     },
     "X": {
-      "item": "dimdoors:stable_fabric"
+      "item": "dimdoors:mask_shard"
     }
   },
   "pattern": [
-    "XXX",
-    "XOX"
+    "X X",
+    " O ",
+    "X X"
   ],
   "result": {
     "count": 1,
-    "id": "dimdoors:garment_of_reality_boots"
+    "id": "dimdoors:binding_pearl"
   }
 }

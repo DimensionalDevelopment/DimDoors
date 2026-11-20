@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:rift_blade"
+        "recipe": "minecraft:fuzzy_fireball"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "inventory_changed": {
+    "liminal_lint": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:iron_sword"
+            "items": "dimdoors:liminal_lint"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "inventory_changed"
+      "liminal_lint"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:rift_blade"
+      "minecraft:fuzzy_fireball"
     ]
   }
 }

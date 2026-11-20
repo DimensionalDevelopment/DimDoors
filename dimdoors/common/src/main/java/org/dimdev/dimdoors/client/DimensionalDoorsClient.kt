@@ -49,16 +49,8 @@ import org.dimdev.dimdoors.client.particle.LimboAshParticle
 import org.dimdev.dimdoors.client.particle.MonolithParticle
 import org.dimdev.dimdoors.client.particle.RiftParticle
 import org.dimdev.dimdoors.client.render.DimensionalPortalRenderer
-import org.dimdev.dimdoors.client.render.blockentity.DetachedRiftBlockEntityRenderer
-import org.dimdev.dimdoors.client.render.blockentity.DialingDoorBlockEntityRenderer
-import org.dimdev.dimdoors.client.render.blockentity.EntranceRiftBlockEntityRenderer
-import org.dimdev.dimdoors.client.render.blockentity.RiftCrackRenderer
-import org.dimdev.dimdoors.client.render.blockentity.pusPop
-import org.dimdev.dimdoors.client.render.entity.FarShotEnderPearlRenderer
-import org.dimdev.dimdoors.client.render.entity.MaskModel
-import org.dimdev.dimdoors.client.render.entity.MaskRenderer
-import org.dimdev.dimdoors.client.render.entity.MonolithModel
-import org.dimdev.dimdoors.client.render.entity.MonolithRenderer
+import org.dimdev.dimdoors.client.render.blockentity.*
+import org.dimdev.dimdoors.client.render.entity.*
 import org.dimdev.dimdoors.client.render.item.MaskItemRenderer
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen
 import org.dimdev.dimdoors.compat.imgui.DialsElement
@@ -75,6 +67,7 @@ import org.dimdev.dimdoors.particle.ModParticleTypes
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes
 import org.dimdev.dimdoors.screen.TessellatingContainer
 import org.dimdev.dimdoors.util.Timer
+import org.dimdev.dimdoors.util.ext.id
 import org.lwjgl.glfw.GLFW
 
 object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRendererProvider {
@@ -200,29 +193,26 @@ object DimensionalDoorsClient : ModClient<IDimDoorsClientSided<*>>, EntityRender
     }
 
     override fun initItemProperties(consumer: (Item, ResourceLocation, ClampedItemPropertyFunction) -> Unit) {
-        consumer.invoke(
-            ModItems.FARSHOT,
-            ResourceLocation.withDefaultNamespace("pull"),
-            ClampedItemPropertyFunction { stack: ItemStack?, _, entity: LivingEntity?, _ ->
-                if (entity == null) 0.0f else if (CrossbowItem.isCharged(stack!!)) 0.0f else (stack.getUseDuration(
-                    entity
-                ) - entity.useItemRemainingTicks).toFloat() / CrossbowItem.getChargeDuration(stack, entity).toFloat()
-            })
-        consumer.invoke(
-            ModItems.FARSHOT,
-            ResourceLocation.withDefaultNamespace("pulling"),
-            ClampedItemPropertyFunction { stack: ItemStack, _, entity: LivingEntity?, _ ->
-                if (entity != null && entity.isUsingItem && entity.getUseItem() == stack && !CrossbowItem.isCharged(
-                        stack
-                    )
-                ) 1.0f else 0.0f
-            })
-        consumer.invoke(
-            ModItems.FARSHOT,
-            ResourceLocation.withDefaultNamespace("charged"),
-            ClampedItemPropertyFunction { stack: ItemStack, _, _, _ ->
-                if (CrossbowItem.isCharged(stack)) 1.0f else 0.0f
-            })
+        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pull")) { stack: ItemStack, _, entity: LivingEntity?, _ ->
+            when {
+                entity == null -> 0.0f
+                CrossbowItem.isCharged(stack) -> 0.0f
+                else -> (stack.getUseDuration(entity) - entity.useItemRemainingTicks).toFloat() / CrossbowItem.getChargeDuration(stack, entity).toFloat()
+            }
+        }
+
+        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("pulling")) { stack: ItemStack, _, entity: LivingEntity?, _ ->
+            if (entity != null && entity.isUsingItem && entity.getUseItem() == stack && !CrossbowItem.isCharged(stack)
+            ) 1.0f else 0.0f
+        }
+        consumer.invoke(ModItems.FARSHOT, ResourceLocation.withDefaultNamespace("charged")) { stack: ItemStack, _, _, _ ->
+            if (CrossbowItem.isCharged(stack)) 1.0f else 0.0f
+        }
+
+        val hasRift: ClampedItemPropertyFunction = { stack, _, _, _ -> if(stack.has(ModDataComponentTypes.RIFT_DATA)) 1.0f else 0.0f}
+
+        consumer.invoke(ModItems.PORTABLE_RIFT, "has_rift".id(), hasRift)
+        consumer.invoke(ModItems.RIFT_MOVER, "has_rift".id(), hasRift)
     }
 
     override fun initModelLayers(consumer: (ModelLayerLocation, () -> LayerDefinition) -> Unit) {

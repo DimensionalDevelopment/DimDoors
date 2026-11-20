@@ -1,32 +1,32 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "enduring_fabric": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:world_thread_leggings"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "world_thread": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:enduring_fibers"
+            "items": "dimdoors:world_thread"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
-    },
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "dimdoors:fabric_of_finality"
-      },
-      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "enduring_fabric"
+      "world_thread"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:fabric_of_finality"
+      "minecraft:world_thread_leggings"
     ]
   }
 }

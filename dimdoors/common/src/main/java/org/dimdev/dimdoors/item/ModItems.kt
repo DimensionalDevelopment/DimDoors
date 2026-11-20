@@ -6,7 +6,6 @@ import net.minecraft.world.level.material.Fluid
 import org.dimdev.dimcore.api.CreativeTab
 import org.dimdev.dimcore.api.PlatformRegistry
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.util.ext.translate
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.entity.ModEntityTypes
 import org.dimdev.dimdoors.fluid.ModFluids
@@ -32,7 +31,10 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val FRAYED_FILAMENT = registerRegular("frayed_filament")
     @JvmField val RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", ::RiftConfigurationToolItem)
 
-    @JvmField val UNTETHERED_RIFT = registerRegular("untethered_rift", ::PortableRiftItem)
+    @JvmField val PORTABLE_RIFT = registerRegular("portable_rift", ::PortableRiftItem)
+    @JvmField val RIFT_MOVER = registerRegular("rift_mover", ::RiftMoverItem)
+
+    @JvmField val BINDING_PEARL = registerRegular("binding_pearl")
 
 
     //TOOLS

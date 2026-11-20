@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-17T00:54:10.1675564	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-11-20T12:06:20.4141565	DimensionalDoors/Tags for minecraft:item
 8f9476956d65d161fe472eb42508de647fa77308 data\dimdoors\tags\item\driftwood_logs.json
 dbcc03e48802ed569fe8072833434ea0eebe4a19 data\minecraft\tags\item\enchantable\durability.json
 cfcad26923b372e137eea32f4561ee982d598a52 data\c\tags\item\armors.json
@@ -67,10 +67,10 @@ ffd248f6cd04a0a000a9d32bcbe576d155719987 data\minecraft\tags\item\stairs.json
 9338d2f6967c73a7816996781c16a7c9f4222aaf data\minecraft\tags\item\walls.json
 daf6d7d1df3d3e665fddcfe3fa60a5acc20edbb4 data\c\tags\item\ingots.json
 51a054e5b082139034ae8493c37d1a75bcd47ed8 data\c\tags\item\dyed\black.json
-39957f9a44a88d63e3a336c4a216af31242fd569 data\dimdoors\tags\item\detach_rift_interacting.json
+53b34ca2cfa7980db1398b9cc8b0f43b2176f358 data\dimdoors\tags\item\detach_rift_interacting.json
 2355ffa443c773254d6d184067744225757977da data\dimdoors\tags\item\fabric.json
-0116f731140377947c015ecb22772ccf3f616fcf data\c\tags\item\fences.json
 34cd16328f0fb57e37526790a4ca65bd8f9d6aef data\minecraft\tags\item\wooden_slabs.json
+0116f731140377947c015ecb22772ccf3f616fcf data\c\tags\item\fences.json
 8c72aee9016ef5d30103537c6816d991a5d732f6 data\c\tags\item\fence_gates.json
 2e3854a8a3d6c3cc8739c37495aed8fcd7e6fb62 data\minecraft\tags\item\foot_armor.json
 543789f1b8118d671b9658cbb768ef57faffff05 data\minecraft\tags\item\planks.json

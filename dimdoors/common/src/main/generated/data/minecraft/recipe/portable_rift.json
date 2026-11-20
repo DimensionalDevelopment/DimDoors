@@ -1,0 +1,23 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "B": {
+      "item": "dimdoors:binding_pearl"
+    },
+    "P": {
+      "tag": "c:glass_panes"
+    },
+    "S": {
+      "item": "minecraft:shulker_shell"
+    }
+  },
+  "pattern": [
+    " P ",
+    "PBP",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:portable_rift"
+  }
+}

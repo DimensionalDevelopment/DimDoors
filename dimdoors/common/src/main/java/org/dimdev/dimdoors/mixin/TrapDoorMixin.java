@@ -44,4 +44,9 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
         return dimensionalDoor instanceof RiftVariantProvider ? dimensionalDoor.withPropertiesOf(state) : null;
 
     }
+
+    @Override
+    public boolean isBase() {
+        return true;
+    }
 }

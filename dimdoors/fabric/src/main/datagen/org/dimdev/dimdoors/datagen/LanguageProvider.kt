@@ -126,6 +126,12 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
 
         add(ModItems.RIFT_KEY, "Rift Key")
 
+        add(ModItems.PORTABLE_RIFT.descriptionId + ".empty", "Rift Globe")
+        add(ModItems.PORTABLE_RIFT.descriptionId + ".full", "Untethered Rift")
+        add(ModItems.RIFT_MOVER, "Rift Mover")
+
+        add(ModItems.BINDING_PEARL, "Binding Pearl")
+
         addDoorAutoGen(Blocks.IRON_DOOR, "Public Door") {
             info(0, "Place on the block under a rift")
             info(1, "to activate that rift or place")

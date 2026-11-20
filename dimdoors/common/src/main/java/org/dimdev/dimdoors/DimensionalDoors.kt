@@ -293,6 +293,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             platform.onBeforeBlockPlace { level: Level, pos: BlockPos, _, placer: Entity -> shouldCancelBlockModification(level, pos, placer) }
 
             UseItemOnBlockCallback.EVENT.register(UseDoorItemOnBlockCallbackListener())
+            UseItemOnBlockCallback.EVENT.register(PortableRiftUseOnBlockListener())
 
             PlacedContent.tracker = ChunkPlacedContentTracker
             platform.onAfterBlockPlace { level, pos, _, placer -> if (placer is Player && ModDimensions.isPocketDimension(level)) PlacedContent.tracker.onPlaced(level, pos) }

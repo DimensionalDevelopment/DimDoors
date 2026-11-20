@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:stable_fabric"
+        "recipe": "minecraft:world_thread_chestplate"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:stable_fabric"
+      "minecraft:world_thread_chestplate"
     ]
   }
 }

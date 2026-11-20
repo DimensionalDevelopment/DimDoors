@@ -141,7 +141,7 @@ class ItemTagProvider(output: FabricDataOutput, completableFuture: CompletableFu
 
         tag(ModItemTags.DETACH_RIFT_INTERACTING).add(ModItems.RIFT_BLADE.key(), ModItems.RIFT_STABILIZER.key(), ModItems.RIFT_SIGNATURE.key(),
             ModItems.STABILIZED_RIFT_SIGNATURE.key(), ModItems.RIFT_REMOVER.key(), ModItems.RIFT_CONFIGURATION_TOOL.key(),
-            ModItems.UNTETHERED_RIFT.key(),
+            ModItems.PORTABLE_RIFT.key(), ModItems.RIFT_MOVER.key(),
             ModBlocks.LIMINAL_TRANSMITTER.asItem().key(), ModBlocks.DIMENSIONAL_PORTAL.asItem().key())
     }
 

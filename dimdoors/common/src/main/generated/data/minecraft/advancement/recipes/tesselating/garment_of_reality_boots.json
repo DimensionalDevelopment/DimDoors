@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:garment_of_reality_boots"
+        "recipe": "minecraft:garment_of_reality_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:garment_of_reality_boots"
+      "minecraft:garment_of_reality_boots"
     ]
   }
 }

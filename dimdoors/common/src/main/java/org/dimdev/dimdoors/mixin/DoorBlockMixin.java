@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +50,15 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
     public @Nullable BlockState getRiftProviderState(@NotNull BlockState state) {
         Block dimensionalDoor = DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this);
         return dimensionalDoor instanceof RiftVariantProvider ? dimensionalDoor.withPropertiesOf(state) : null;
+    }
 
+    @Override
+    public @NotNull BlockPos getRiftPos(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+    }
+
+    @Override
+    public boolean isBase() {
+        return true;
     }
 }

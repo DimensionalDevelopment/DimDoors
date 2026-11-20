@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:world_thread_boots"
+        "recipe": "minecraft:rift_blade"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "world_thread": {
+    "iron_sword": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:world_thread"
+            "items": "minecraft:iron_sword"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "world_thread"
+      "iron_sword"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:world_thread_boots"
+      "minecraft:rift_blade"
     ]
   }
 }

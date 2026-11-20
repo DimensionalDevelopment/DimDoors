@@ -1,32 +1,32 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "dimdoors:farshot"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "world_thread": {
+    "frayed_filament": {
       "conditions": {
         "items": [
           {
-            "items": "dimdoors:world_thread"
+            "items": "dimdoors:frayed_filament"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:liminal_lint"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "world_thread"
+      "frayed_filament"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:farshot"
+      "minecraft:liminal_lint"
     ]
   }
 }

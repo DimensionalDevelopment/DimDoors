@@ -6,7 +6,8 @@
     "dimdoors:stabilized_rift_signature",
     "dimdoors:rift_remover",
     "dimdoors:rift_configuration_tool",
-    "dimdoors:untethered_rift",
+    "dimdoors:portable_rift",
+    "dimdoors:rift_mover",
     "dimdoors:liminal_transmitter",
     "dimdoors:dimensional_portal"
   ]

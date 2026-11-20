@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:fuzzy_fireball"
+        "recipe": "minecraft:liminal_transmitter"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:fuzzy_fireball"
+      "minecraft:liminal_transmitter"
     ]
   }
 }
