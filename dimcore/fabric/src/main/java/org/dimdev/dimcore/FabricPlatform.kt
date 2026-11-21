@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.*
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -39,6 +40,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.ChunkAccess
 import org.dimdev.dimcore.api.Platform
 import org.dimdev.dimcore.util.util.SimpleEvent
 import java.nio.file.Path
@@ -124,6 +126,9 @@ class FabricPlatform : Platform {
     override fun registerStrippable(source: Block, target: Block) = StrippableBlockRegistry.register(source, target)
 
     override fun registerFlammable(block: Block, encouragement: Int, flammability: Int) = FlammableBlockRegistry.getDefaultInstance().add(block, encouragement, flammability)
+
+    override fun onChunkLoad(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit) = ServerChunkEvents.CHUNK_LOAD.register(consumer)
+    override fun onChunkUnload(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit) = ServerChunkEvents.CHUNK_UNLOAD.register(consumer)
 
     companion object {
         @JvmField

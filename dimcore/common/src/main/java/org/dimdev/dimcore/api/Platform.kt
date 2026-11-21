@@ -20,7 +20,9 @@ import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.ChunkAccess
 import net.minecraft.world.phys.BlockHitResult
+import org.dimdev.dimcore.api.event.ChunkEvents
 import java.nio.file.Path
 
 interface Platform {
@@ -49,6 +51,7 @@ interface Platform {
     fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit)
     fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit)
     fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit)
+    fun allowChunkSave(predicate: (ServerLevel, ChunkAccess) -> Boolean) = ChunkEvents.ALLOW.register(predicate)
     fun onItemPickup(consumer: (Player, ItemStack) -> Unit)
     fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit)
     fun <A : ArgumentType<*>> registerArgumentType(id: ResourceLocation, clazz: Class<A>, supplier: () -> A)
@@ -60,7 +63,8 @@ interface Platform {
     fun registerFuel(item: ItemLike, amount: Int)
     fun registerStrippable(source: Block, target: Block)
     fun registerFlammable(block: Block, encouragement: Int, flammability: Int)
-
+    fun onChunkLoad(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit)
+    fun onChunkUnload(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit)
     fun interface AttackBlockCallback {
         fun attack(player: Player, hand: InteractionHand, pos: BlockPos, direction: Direction): InteractionResult
     }

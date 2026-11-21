@@ -8,6 +8,10 @@ class SimpleEvent<T> private constructor(invokerFactory: (MutableList<T>) -> T) 
         listeners.add(listener)
     }
 
+    fun unregister(listener: T) {
+        listeners.remove(listener)
+    }
+
     fun invoker(): T {
         return invoker
     }

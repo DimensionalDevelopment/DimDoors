@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import org.dimdev.dimcore.util.DataValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -54,12 +55,14 @@ public abstract class DataAttachmentMixin<T> implements DataValue<T> {
     }
 
     @Override
-    public void remove(Object object) {
+    public @Nullable T remove(Object object) {
         var target = asAttachmentTarget(object);
 
         if (target != null) {
-            target.removeAttached(self());
+            return target.removeAttached(self());
         }
+
+        return null;
     }
 
     @Override

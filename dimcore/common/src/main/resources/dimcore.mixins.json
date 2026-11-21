@@ -6,6 +6,7 @@
   "refmap": "dimcore.refmap.json",
   "mixins": [
     "ArmorStandMixin",
+    "ChunkMapMixin",
     "ContainerBlockEntityMixin",
     "InventoryMixin",
     "ItemFrameMixin",

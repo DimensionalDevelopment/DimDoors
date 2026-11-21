@@ -3,6 +3,7 @@ package org.dimdev.dimcore.mixin;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.dimdev.dimcore.util.DataValue;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -52,12 +53,13 @@ public abstract class DataAttachmentMixin<T> implements DataValue<T> {
     }
 
     @Override
-    public void remove(Object object) {
+    public @Nullable T remove(Object object) {
         var holder = asAttachmentHolder(object);
 
         if (holder != null) {
             holder.removeData(self());
         }
+        return null;
     }
 
     @Override

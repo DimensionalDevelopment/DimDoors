@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
+import net.minecraft.world.level.chunk.LevelChunkSection
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.*
 import org.dimdev.dimcore.api.errata.session.Errata
@@ -166,6 +167,8 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             ServerPacketHandler.clear()
             Holder.offline.clear()
         }
+
+        platform.allowChunkSave { level, access -> ModDimensions.isPocketDimension(level) && !access.sections.all(LevelChunkSection::hasOnlyAir) }
 
         registerListeners()
         //        SchemFixer.run();

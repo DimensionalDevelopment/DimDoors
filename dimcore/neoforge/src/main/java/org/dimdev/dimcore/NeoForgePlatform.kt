@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.FireBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.ChunkAccess
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.EventPriority
 import net.neoforged.fml.ModList
@@ -40,6 +41,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent
 import net.neoforged.neoforge.event.level.BlockEvent
+import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.server.*
 import net.neoforged.neoforge.event.tick.LevelTickEvent
 import net.neoforged.neoforge.event.tick.PlayerTickEvent
@@ -196,4 +198,16 @@ class NeoForgePlatform : Platform {
     override fun registerStrippable(source: Block, target: Block) { strippables[source] = target }
 
     override fun registerFlammable(block: Block, encouragement: Int, flammability: Int) = Blocks.FIRE.cast<FireBlock>().setFlammable(block, encouragement, flammability)
+
+    override fun onChunkLoad(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit) {
+        NeoForge.EVENT_BUS.addListener<ChunkEvent.Load> {
+            it.level.castOrNull<ServerLevel>()?.also { level -> consumer.invoke(level, it.chunk) }
+        }
+    }
+
+    override fun onChunkUnload(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit) {
+        NeoForge.EVENT_BUS.addListener<ChunkEvent.Unload> {
+            it.level.castOrNull<ServerLevel>()?.also { level -> consumer.invoke(level, it.chunk) }
+        }
+    }
 }

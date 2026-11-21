@@ -10,6 +10,6 @@ interface DataValue<T> {
     fun set(obj : Any?, value: T?)
     fun update(obj : Any?, defaultValue: T, operator: UnaryOperator<T?>)
     fun update(obj : Any?, operator: UnaryOperator<T?>)
-    fun remove(obj : Any?)
+    fun remove(obj : Any?): T?
     fun has(obj : Any?): Boolean
 }
