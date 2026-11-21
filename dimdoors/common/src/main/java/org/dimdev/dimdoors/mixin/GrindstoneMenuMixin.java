@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.item.ModDataComponentTypes;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.rift.item.ItemRiftRegistry;
 import org.dimdev.dimdoors.util.GrindstoneAccessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +19,10 @@ public class GrindstoneMenuMixin implements GrindstoneAccessor {
     @Shadow
     @Final
     private Container resultSlots;
+
+    @Shadow
+    @Final
+    private ContainerLevelAccess access;
 
     @Inject(method = "computeResult", at = @At("HEAD"), cancellable = true)
     public void dimdoor$computeResult(ItemStack inputItem, ItemStack additionalItem, CallbackInfoReturnable<ItemStack> cir) {
@@ -34,5 +38,10 @@ public class GrindstoneMenuMixin implements GrindstoneAccessor {
     @Override
     public Container resultSlots() {
         return resultSlots;
+    }
+
+    @Override
+    public ContainerLevelAccess getAccess() {
+        return access;
     }
 }

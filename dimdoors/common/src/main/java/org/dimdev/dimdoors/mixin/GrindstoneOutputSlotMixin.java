@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(targets = "net.minecraft.world.inventory.GrindstoneMenu$4")
 public class GrindstoneOutputSlotMixin extends Slot {
     @Shadow(aliases = "field_16780") @Final GrindstoneMenu this$0;
-    @Shadow @Final ContainerLevelAccess val$access;
 
     public GrindstoneOutputSlotMixin(Container container, int slot, int x, int y) {
         super(container, slot, x, y);
@@ -38,10 +37,12 @@ public class GrindstoneOutputSlotMixin extends Slot {
     private void dimdoors$onTake(Player player, ItemStack stack, CallbackInfo ci) {
         if (!stack.is(ModItems.PORTABLE_RIFT)) return;
 
-        val$access.execute((level, pos) -> {
+        var grindstone = (GrindstoneAccessor) this$0;
+
+        grindstone.getAccess().execute((level, pos) -> {
             if (!(level instanceof ServerLevel serverLevel)) return;
 
-            ItemRiftRegistry.Companion.getInstance().detach(((GrindstoneAccessor) this$0).resultSlots().getItem(0));
+            ItemRiftRegistry.Companion.getInstance().detach(grindstone.resultSlots().getItem(0));
 
             LootParams ctx = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.BLOCK_STATE, level.getBlockState(pos))
