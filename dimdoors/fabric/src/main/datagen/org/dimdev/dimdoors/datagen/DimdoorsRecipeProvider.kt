@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.Blocks
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.generate
-import org.dimdev.dimdoors.datagen.TesselatingRecipeProvider.hasItems
 import org.dimdev.dimdoors.item.ModItems
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX
 import org.dimdev.dimdoors.tag.ModItemTags

@@ -8,7 +8,7 @@ import net.minecraft.nbt.Tag
 import org.dimdev.dimcore.api.ext.castOrNull
 
 object NbtUtil {
-    fun <T> deserialize(data: CompoundTag, codec: MapCodec<T>): T = codec.decoder().parse(NbtOps.INSTANCE, data).getOrThrow()
+    fun <T> deserialize(data: CompoundTag, codec: MapCodec<T>): T = codec.decoder().parse(NbtOps.INSTANCE, data).resultOrPartial().orElseThrow()
 
     fun <T> deserialize(data: Tag, codec: Codec<T>): T = NbtOps.INSTANCE.withParser<T>(codec).apply(data).getOrThrow()
 

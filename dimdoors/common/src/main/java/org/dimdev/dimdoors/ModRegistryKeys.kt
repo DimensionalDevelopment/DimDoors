@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.pockets.addon.environment.sky.SkyData
 import org.dimdev.dimdoors.pockets.addon.environment.weather.WeatherData
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
 import org.dimdev.dimdoors.pockets.modifier.Modifier
-import org.dimdev.dimdoors.pockets.type.AbstractPocket
+import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.RiftData
@@ -28,7 +28,7 @@ import org.dimdev.dimdoors.subsystem.registry.SubSystem
 
 object ModRegistryKeys {
     @JvmField val POCKET_GENERATOR_TYPE = "pocket_generator_type".type<MapCodec<out PocketGenerator<*>>>()
-    @JvmField val POCKET_TYPE = "abstract_pocket_type".type<BuilderType<AbstractPocket<*, *>, AbstractPocket.AbstractPocketBuilder<*, *>>>()
+    @JvmField val POCKET_TYPE = "abstract_pocket_type".type<BuilderType<Pocket<*, *>, Pocket.PocketBuilder<*, *>>>()
     @JvmField val VIRTUAL_POCKET_TYPE = "virtual_pocket_type".type<MapCodec<out ImplementedVirtualPocket<*>>>()
     @JvmField val VIRTUAL_TARGET = "virtual_type".type<MapCodec<out VirtualTarget<*>>>()
     @JvmField val MODIFIER_TYPE = "modifier_type".type<MapCodec<out Modifier>>()

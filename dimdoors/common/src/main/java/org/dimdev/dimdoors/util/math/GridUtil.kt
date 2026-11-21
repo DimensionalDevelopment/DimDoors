@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.util.math
 
 import net.minecraft.core.BlockPos
+import net.minecraft.world.level.ChunkPos
 
 object GridUtil {
     /**
@@ -9,9 +10,9 @@ object GridUtil {
      * @param id The element's id in the grid
      * @return The location on the grid
      */
-    fun idToGridPos(id: Int): GridPos {
+    fun idToGridPos(id: Int): ChunkPos {
         if (id < 0) throw UnsupportedOperationException("Cannot get GridPos of negative id.")
-        val out = if (id > 8) idToGridPos(id / 9) else GridPos(0, 0)
+        val out = if (id > 8) idToGridPos(id / 9) else ChunkPos(0, 0)
         var x = out.x * 3
         var z = out.z * 3
 
@@ -19,9 +20,7 @@ object GridUtil {
         x += ((minor + 1) % 3 - 1).toInt()
         z += ((minor / 3 + 1) % 3 - 1).toInt()
 
-        out.x = x
-        out.z = z
-        return out
+        return ChunkPos(x, z)
     }
 
 
@@ -31,22 +30,20 @@ object GridUtil {
      * @param pos The location on the grid
      * @return The id of the location on the grid
      */
-    fun gridPosToID(pos: GridPos): Int {
-        return convToID(pos)
+    fun gridPosToID(pos: ChunkPos): Int {
+        return convToID(pos.x, pos.z)
     }
 
-    private fun convToID(pos: GridPos): Int {
-        var x = pos.x
-        var z = pos.z
+    private fun convToID(chunkX: Int, chunkZ: Int): Int {
+        var x = chunkX
+        var z = chunkZ
 
         var id = Math.floorMod(x, 3) + (Math.floorMod(z, 3) * 3)
 
         x = Math.floorDiv(x + 1, 3)
         z = Math.floorDiv(z + 1, 3)
         if (x != 0 || z != 0) {
-            pos.x = x
-            pos.z = z
-            id += 9 * convToID(pos)
+            id += 9 * convToID(x, z)
         }
         return id
     }

@@ -16,7 +16,6 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.TemplateUtils
 import org.dimdev.dimdoors.pockets.modifier.Modifier
 import org.dimdev.dimdoors.pockets.modifier.RiftManager
-import org.dimdev.dimdoors.pockets.type.AbstractPocket
 import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.type.PocketImpl.Companion.builder
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
@@ -26,7 +25,7 @@ import org.dimdev.dimdoors.util.ext.nullableForGetter
 import org.dimdev.dimdoors.util.math.Equation
 
 abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
-    protected val builder: AbstractPocket.AbstractPocketBuilder<*, *>?,
+    protected val builder: Pocket.PocketBuilder<*, *>?,
     protected val weight: Equation,
     protected val setupLoot: Boolean?,
     protected val modifiers: MutableList<Holder<Modifier>>,
@@ -109,16 +108,8 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         return RiftManager(pocket)
     }
 
-    fun pocketBuilder(parameters: PocketGenerationContext): Pocket.PocketBuilder<*, *> { // TODO: PocketBuilder from json
-        if (builder == null) {
-            return builder().expand(getSize(parameters))
-        }
-        val abstractBuilder: AbstractPocket.AbstractPocketBuilder<*, *> = builder.copy()
-
-        if (abstractBuilder is Pocket.PocketBuilder<*, *>) {
-            return abstractBuilder.expand(getSize(parameters))
-        }
-        return builder().expand(getSize(parameters))
+    fun pocketBuilder(parameters: PocketGenerationContext): Pocket.PocketBuilder<*, *> {
+        return (builder?.copy() ?: builder()).expand(getSize(parameters))
     }
 
     abstract fun getSize(parameters: PocketGenerationContext): Vec3i
@@ -129,7 +120,7 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
         val HOLDER_CODEC: Codec<Holder<PocketGenerator<*>>> = RegistryFileCodec.create(ModRegistryKeys.POCKET_GENERATOR, CODEC)
 
         fun <T : PocketGenerator<T>> commonFields(instance: RecordCodecBuilder.Instance<T>) = instance.group(
-            AbstractPocket.BUILDER_CODEC.optionalFieldOf("builder").nullableForGetter { it.builder },
+            Pocket.BUILDER_CODEC.optionalFieldOf("builder").nullableForGetter { it.builder },
             Equation.CODEC.optionalFieldOf("weight", Equation.FIVE).forGetter { it.weight },
             Codec.BOOL.optionalFieldOf("setup_loot").nullableForGetter { it.setupLoot },
             Modifier.HOLDER_CODEC.mutableList().fieldOf("modifiers").forGetter { it.modifiers },

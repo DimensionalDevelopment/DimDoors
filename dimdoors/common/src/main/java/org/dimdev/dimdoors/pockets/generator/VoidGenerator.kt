@@ -6,14 +6,13 @@ import net.minecraft.core.Holder
 import net.minecraft.core.Vec3i
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.modifier.Modifier
-import org.dimdev.dimdoors.pockets.type.AbstractPocket
 import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.util.math.Equation
 import kotlin.jvm.optionals.getOrNull
 
 class VoidGenerator(
-    builder: AbstractPocket.AbstractPocketBuilder<*, *>?,
+    builder: Pocket.PocketBuilder<*, *>?,
     weight: Equation,
     setupLoot: Boolean?,
     modifiers: MutableList<Holder<Modifier>>,

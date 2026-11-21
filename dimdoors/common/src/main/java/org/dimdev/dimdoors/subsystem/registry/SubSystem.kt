@@ -20,6 +20,7 @@ import java.nio.file.Files
  * A subsystem in Dimensional Doors is a SavedData that is backed by a codec for its serialization and deserialization. They can be accessed via the getInstance method and their respective Type instance.
  */
 abstract class SubSystem<T : SubSystem<T>> : SavedData() {
+
     abstract fun type(): Type<T>
 
     override fun save(compoundTag: CompoundTag, provider: HolderLookup.Provider): CompoundTag = NbtUtil.serialize(compoundTag, cast(), type().codec)

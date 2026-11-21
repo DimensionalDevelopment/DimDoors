@@ -117,6 +117,8 @@ abstract class RiftRegistry<T: LocationProvider, S, R: RiftRegistry<T, S, R>>(
         abstract val vertexType: RegistryVertex
 
         open fun registerEvents(riftGraph: RiftGraph) {
+
+
             placeholderAddEvent.register { id, _ -> riftGraph.addVertex(id, RegistryVertices.RIFT_PLACEHOLDER) }
             riftAddedEvent.register { id, _ -> riftGraph.addVertex(id, vertexType) }
             riftRemoveEvent.register { id, _ -> riftGraph.removeVertex(id) }

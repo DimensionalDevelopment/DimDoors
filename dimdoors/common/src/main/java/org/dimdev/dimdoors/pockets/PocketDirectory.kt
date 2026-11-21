@@ -4,18 +4,19 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
-import org.dimdev.dimdoors.pockets.type.AbstractPocket
-import org.dimdev.dimdoors.pockets.type.IdReferencePocket
 import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry.Companion.instance
 import org.dimdev.dimdoors.util.codec.CodecUtils
 import org.dimdev.dimdoors.util.codec.CodecUtils.unboundedMap
+import org.dimdev.dimdoors.util.ext.chunkPositionsAsLong
 import org.dimdev.dimdoors.util.ext.unboundedMap
 import org.dimdev.dimdoors.util.math.GridUtil
 import java.util.*
@@ -25,29 +26,33 @@ class PocketDirectory {
     var gridSize: Int
     var privatePocketSize: Int = 0
     var publicPocketSize: Int = 0
-    private var pockets: Int2ObjectAVLTreeMap<AbstractPocket<*, *>>
+    private var pockets: Int2ObjectAVLTreeMap<Pocket<*, *>>
     private val nextIDMap: Int2IntAVLTreeMap
+
+    private val claimedChunks = Long2IntOpenHashMap().apply { defaultReturnValue(-1) }
 
     constructor() {
         this.gridSize = DimensionalDoors.config.pocketsConfig.pocketGridSize
         this.nextIDMap = Int2IntAVLTreeMap()
-        this.pockets = Int2ObjectAVLTreeMap<AbstractPocket<*, *>>()
+        this.pockets = Int2ObjectAVLTreeMap<Pocket<*, *>>()
     }
 
     constructor(
         gridSize: Int,
         privatePocketSize: Int,
         publicPocketSize: Int,
-        pockets: MutableMap<Int, AbstractPocket<*, *>>,
+        pockets: MutableMap<Int, Pocket<*, *>>,
         nextIDMap: Int2IntAVLTreeMap
     ) {
         this.gridSize = gridSize
         this.privatePocketSize = privatePocketSize
         this.publicPocketSize = publicPocketSize
-        this.pockets = Int2ObjectAVLTreeMap<AbstractPocket<*, *>>(pockets)
+        this.pockets = Int2ObjectAVLTreeMap(pockets)
         this.nextIDMap = nextIDMap
 
         validateLoadedState()
+
+        if(pockets.isNotEmpty()) pockets.values.forEach(::claimChunks)
     }
 
     /**
@@ -88,7 +93,7 @@ class PocketDirectory {
                 .offsetOrigin(idToCenteredPos(pocketId, base3Size, builder.expectedSize))
                 .build()
 
-            if (!PocketChunkClaims.hasClaimedChunk(candidate)) {
+            if (!hasClaimedChunk(candidate)) {
                 cursor = pocketId
                 pocket = candidate
             } else {
@@ -103,34 +108,15 @@ class PocketDirectory {
 
         nextIDMap.put(base3Size, cursor + squaredSize)
 
-        PocketChunkClaims.claimChunks(pocket)
+        claimChunks(pocket)
 
         addPocket(pocket)
-
-        val idReferenceBuilder = IdReferencePocket.builder()
-        for (i in 1..<squaredSize) {
-            addPocket(
-                idReferenceBuilder
-                    .id(cursor - i)
-                    .world(worldKey)
-                    .referencedId(cursor)
-                    .build()
-            )
-        }
-
-        preloadPocketChunks(pocket)
 
         return pocket
     }
 
     private fun isIdRangeFree(minId: Int, maxId: Int): Boolean {
-        for (id in minId..maxId) {
-            if (this.pockets.containsKey(id)) {
-                return false
-            }
-        }
-
-        return true
+        return (minId..maxId).none(pockets::containsKey)
     }
 
     private fun assertIdRangeFree(minId: Int, maxId: Int) {
@@ -144,24 +130,7 @@ class PocketDirectory {
         }
     }
 
-    private fun preloadPocketChunks(pocket: Pocket<*, *>) {
-        val level = DimensionalDoors.getWorld(pocket.world) ?: return
-
-        val box = pocket.box
-
-        val minCX = box.minX() shr 4
-        val maxCX = box.maxX() shr 4
-        val minCZ = box.minZ() shr 4
-        val maxCZ = box.maxZ() shr 4
-
-        for (cx in minCX..maxCX) {
-            for (cz in minCZ..maxCZ) {
-                level.getChunk(cx, cz)
-            }
-        }
-    }
-
-    private fun addPocket(pocket: AbstractPocket<*, *>?) {
+    private fun addPocket(pocket: Pocket<*, *>?) {
         Objects.requireNonNull(pocket, "pocket")
 
         val previous = this.pockets.putIfAbsent(pocket!!.id, pocket)
@@ -178,24 +147,20 @@ class PocketDirectory {
         DimensionalDoors.LOGGER.warn("Pocket deletion is disabled pending full registry cleanup support. Ignoring removePocket({}).", id)
     }
 
-    private fun referencesPocket(pocket: AbstractPocket<*, *>, id: Int): Boolean {
-        return pocket is IdReferencePocket && pocket.referencedId == id
-    }
-
     /**
      * Gets the pocket that occupies the GridPos which a certain ID represents, or null if there is no pocket at that GridPos.
      * 
      * @return The pocket which occupies the GridPos represented by that ID, or null if there was no pocket occupying that GridPos.
      */
-    fun getPocket(id: Int): Pocket<*, *>? = this.pockets.get(id)?.getReferencedPocket(this)
+    fun getPocket(id: Int): Pocket<*, *>? = this.pockets.get(id)
 
     fun <P : Pocket<*, *>> getPocket(id: Int, clazz: Class<P>): P? = getPocket(id)?.cast(clazz)
 
-    fun idToGridPos(id: Int): GridUtil.GridPos {
+    fun idToGridPos(id: Int): ChunkPos {
         return GridUtil.idToGridPos(id)
     }
 
-    fun gridPosToID(pos: GridUtil.GridPos): Int {
+    fun gridPosToID(pos: ChunkPos): Int {
         return GridUtil.gridPosToID(pos)
     }
 
@@ -227,13 +192,15 @@ class PocketDirectory {
      * @return The ID of the pocket, or -1 if there is no pocket at that location
      */
     fun posToID(pos: BlockPos): Int = this.gridPosToID(
-        GridUtil.GridPos(
+        ChunkPos(
             Math.floorDiv(pos.x, this.gridSize * 16),
             Math.floorDiv(pos.z, this.gridSize * 16)
         )
     )
 
-    fun getPocketAt(pos: BlockPos): Pocket<*, *>? = this.getPocket(this.posToID(pos))
+    fun getPocketAt(pos: ChunkPos): Pocket<*, *>? = this.getPocket(claimedChunks.get(pos.toLong()))
+
+    fun getPocketAt(pos: BlockPos): Pocket<*, *>? = this.getPocket(claimedChunks.get(ChunkPos.asLong(pos.x shr 4, pos.z shr 4)))
 
     fun isWithinPocketBounds(pos: BlockPos): Boolean = this.getPocketAt(pos)?.isInBounds(pos) == true
 
@@ -250,11 +217,9 @@ class PocketDirectory {
 
         for (entry in this.pockets) {
             val key = entry.key
-            val pocket: AbstractPocket<*, *> = entry.value
+            val pocket = entry.value
 
             check(pocket.id == key) { ("Pocket map key/id mismatch. Key=$key, pocketId=${pocket.id}, pocket=$pocket") }
-
-            if (pocket is IdReferencePocket) check(this.pockets.containsKey(pocket.referencedId)) { "Reference pocket ${pocket.id} points to missing pocket ${pocket.referencedId}" }
         }
     }
 
@@ -265,19 +230,27 @@ class PocketDirectory {
     val pocketCount: Int
         get() = this.pockets.size
 
-    fun getPockets(): Map<Int, AbstractPocket<*, *>> {
+    fun getPockets(): Map<Int, Pocket<*, *>> {
         return Collections.unmodifiableMap(this.pockets)
+    }
+
+    private fun hasClaimedChunk(pocket: Pocket<*, *>): Boolean {
+        return pocket.box.chunkPositionsAsLong.any(claimedChunks::containsKey)
+    }
+
+    private fun claimChunks(pocket: Pocket<*, *>) {
+        pocket.box.chunkPositionsAsLong.forEach { claimedChunks[it] = pocket.id }
     }
 
     companion object {
         val CODEC: Codec<PocketDirectory> = RecordCodecBuilder.create { instance ->
-                instance.group(
-                    Codec.INT.fieldOf("grid_size").forGetter(PocketDirectory::gridSize),
-                    Codec.INT.fieldOf("private_pocket_size").forGetter (PocketDirectory::privatePocketSize),
-                    Codec.INT.fieldOf("public_pocket_size").forGetter(PocketDirectory::publicPocketSize),
-                    CodecUtils.STRING_INT.unboundedMap(AbstractPocket.CODEC).fieldOf("pockets").forGetter(PocketDirectory::pockets),
-                    unboundedMap(CodecUtils.STRING_INT, Codec.INT, ::Int2IntAVLTreeMap).fieldOf("next_id_map").forGetter(PocketDirectory::nextIDMap)
-                ).apply(instance, ::PocketDirectory)
-            }
+            instance.group(
+                Codec.INT.fieldOf("grid_size").forGetter(PocketDirectory::gridSize),
+                Codec.INT.fieldOf("private_pocket_size").forGetter(PocketDirectory::privatePocketSize),
+                Codec.INT.fieldOf("public_pocket_size").forGetter(PocketDirectory::publicPocketSize),
+                CodecUtils.STRING_INT.unboundedMap(Pocket.CODEC).fieldOf("pockets").forGetter(PocketDirectory::pockets),
+                unboundedMap(CodecUtils.STRING_INT, Codec.INT, ::Int2IntAVLTreeMap).fieldOf("next_id_map").forGetter(PocketDirectory::nextIDMap),
+            ).apply(instance, ::PocketDirectory)
+        }
     }
 }

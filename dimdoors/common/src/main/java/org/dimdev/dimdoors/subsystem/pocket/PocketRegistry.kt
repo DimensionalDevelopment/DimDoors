@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.subsystem.pocket
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.util.util.SimpleEvent
@@ -22,7 +24,6 @@ import java.util.*
 class PocketRegistry(
     val directories: MutableMap<ResourceKey<Level>, PocketDirectory> = mutableMapOf(),
 ) : SubSystem<PocketRegistry>() {
-
     fun forEachPocketDirectory(consumer: (ResourceKey<Level>, PocketDirectory) -> Unit) {
         directories.forEach(consumer)
     }
@@ -93,11 +94,13 @@ class PocketRegistry(
         fun interface PocketEntranceAdd { fun addPocketEntrance(id: UUID, location: Location) }
     }
 
+    fun getPocketAt(level: ServerLevel, pos: ChunkPos): Pocket<*, *>? = directories[level.dimension()]?.getPocketAt(pos)
     fun getPocketAt(provider: LocationProvider?): Pocket<*, *>? = provider?.providedLocation?.let { location -> location.worldId.let { directories[it] }?.getPocketAt(location.blockPos) }
 
     fun <P : Pocket<*, *>> getPocketAt(location: LocationProvider?, pocketClass: Class<P>): P? = getPocketAt(location)?.cast(pocketClass)
 
     companion object {
+
         @JvmField
         val CODEC: MapCodec<PocketRegistry> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(

@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import org.dimdev.dimcore.api.BuilderTypeHasHolder
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
@@ -30,7 +31,13 @@ import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 import kotlin.streams.asSequence
 
-abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : AbstractPocket<T, V>, AddonProvider {
+abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : BuilderTypeHasHolder<Pocket<*, *>, Pocket.PocketBuilder<*, *>>, AddonProvider {
+    var id: Int = 0
+        protected set
+
+    lateinit var world: ResourceKey<Level>
+        protected set
+
     protected val addons = mutableMapOf<PocketAddonType<*, *>, PocketAddon>()
     private var range = -1
     lateinit var box: BoundingBox
@@ -48,7 +55,9 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         virtualLocation: VirtualLocation,
         addons: MutableList<PocketAddon>,
         generator: Optional<ResourceKey<PocketGenerator<*>>>
-    ) : super(id, world) {
+    ) {
+        this.id = id
+        this.world = world
         this.range = range
         this.box = box
         this.virtualLocation = virtualLocation
@@ -57,7 +66,9 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         addons.forEach { addon -> this.addons[addon.type] = addon }
     }
 
-    constructor(id: Int, world: ResourceKey<Level>, x: Int, z: Int) : super(id, world) {
+    constructor(id: Int, world: ResourceKey<Level>, x: Int, z: Int) {
+        this.id = id
+        this.world = world
         val gridSize = instance.getPocketDirectory(world).gridSize * 16
         this.box = BoundingBox.fromCorners(
             Vec3i(x * gridSize, 0, z * gridSize),
@@ -150,9 +161,9 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
                 }.associate { it.key to it.value }
         }
 
-    override fun toVariableMap(variableMap: MutableMap<String, Double>): MutableMap<String, Double> {
-        var variableMap = variableMap
-        variableMap = super.toVariableMap(variableMap)
+    fun toVariableMap(variableMap: MutableMap<String, Double> = mutableMapOf()): MutableMap<String, Double> {
+        val variableMap = variableMap
+        variableMap["id"] = this.id.toDouble()
         variableMap["originX"] = this.box.minX().toDouble()
         variableMap["originY"] = this.box.minY().toDouble()
         variableMap["originZ"] = this.box.minZ().toDouble()
@@ -162,9 +173,6 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         variableMap["depth"] = this.virtualLocation.depth.toDouble()
         return variableMap
     }
-
-    override val referencedPocket: Pocket<*, *>
-        get() = this
 
     fun expand(amount: Int) {
         this.box = this.box.inflatedBy(amount)
@@ -214,7 +222,10 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
     }
 
     // TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
-    abstract class PocketBuilder<T : Pocket<T, P>, P : PocketBuilder<T, P>> : AbstractPocketBuilder<T, P> {
+    abstract class PocketBuilder<T : Pocket<T, P>, P : PocketBuilder<T, P>> : BuilderTypeHasHolder<Pocket<*, *>, PocketBuilder<*, *>> {
+        protected var id: Int = 0
+        protected var world: ResourceKey<Level>? = null
+
         protected var addons = mutableMapOf<PocketAddonType<*, *>, PocketAddon.PocketBuilderAddon<*, *>>()
 
         protected var origin: Vec3i = Vec3i(0, 0, 0)
@@ -232,7 +243,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             }
         }
 
-        protected constructor() : super() {
+        protected constructor() {
             initAddons()
         }
 
@@ -252,13 +263,16 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
 
         fun <C : PocketAddon.PocketBuilderAddon<*, *>> getAddon(id: PocketAddonType<*, *>): C? = addons[id]?.cast()
 
-        override val expectedSize: Vec3i
+        val expectedSize: Vec3i
             get() = expected
 
-        override fun build(): T {
+        open fun build(): T {
             if (range < 1) throw RuntimeException("Cannot create pocket with range < 1")
 
-            val instance = super.build()
+            val instance = pocket()
+
+            instance.id = id
+            instance.world = world!!
 
             instance.setRange(range)
             instance.box = BoundingBox.fromCorners(
@@ -277,8 +291,25 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             return instance
         }
 
-        override fun copy(): P {
-            val copy = super.copy()
+        fun id(id: Int): P {
+            this.id = id
+            return this.self
+        }
+
+        fun world(world: ResourceKey<Level>): P {
+            this.world = world
+            return this.self
+        }
+
+        open val self: P
+            get() = this.cast()
+
+        abstract fun pocket(): T
+
+        fun copy(): P {
+            val copy = instance()
+            copy.id = this.id
+            copy.world = this.world
             copy.range = range
             copy.origin = origin
             copy.size = size
@@ -288,6 +319,8 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
             copy.addons = addons.toMutableMap()
             return copy
         }
+
+        abstract fun instance(): P
 
         fun offsetOrigin(offset: Vec3i): P {
             this.origin =
@@ -344,12 +377,18 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Abstra
         var KEY: String = "pocket"
 
         fun <T : Pocket<*, *>> commonPocketFields(instance: RecordCodecBuilder.Instance<T>): P7<RecordCodecBuilder.Mu<T>, Int, ResourceKey<Level>, Int, BoundingBox, VirtualLocation, MutableList<PocketAddon>, Optional<ResourceKey<PocketGenerator<*>>>> {
-            return commonFields(instance)
-                .and(Codec.INT.fieldOf("range").forGetter(Pocket<*, *>::getRange))
-                .and(BoundingBox.CODEC.fieldOf("box").forGetter(Pocket<*, *>::box))
-                .and(VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(Pocket<*, *>::virtualLocation))
-                .and(PocketAddon.LIST_CODEC.fieldOf("addons").forGetter { it.addons.values.toMutableList() })
-                .and(ResourceKey.codec(ModRegistryKeys.POCKET_GENERATOR).optionalFieldOf("generator").nullableForGetter(Pocket<*, *>::generator))
+            return instance.group(
+                Codec.INT.fieldOf("id").forGetter(Pocket<*, *>::id),
+                Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(Pocket<*, *>::world),
+                Codec.INT.fieldOf("range").forGetter(Pocket<*, *>::getRange),
+                BoundingBox.CODEC.fieldOf("box").forGetter(Pocket<*, *>::box),
+                VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(Pocket<*, *>::virtualLocation),
+                PocketAddon.LIST_CODEC.fieldOf("addons").forGetter { it.addons.values.toMutableList() },
+                    ResourceKey.codec(ModRegistryKeys.POCKET_GENERATOR).optionalFieldOf("generator").nullableForGetter(Pocket<*, *>::generator))
         }
+
+
+        val CODEC = Pockets.codec
+        val BUILDER_CODEC = Pockets.builderCodec
     }
 }
