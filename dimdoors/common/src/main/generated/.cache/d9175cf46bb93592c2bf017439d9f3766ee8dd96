@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-20T12:06:20.4141565	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-11-25T00:44:15.6377254	DimensionalDoors/Tags for minecraft:item
 8f9476956d65d161fe472eb42508de647fa77308 data\dimdoors\tags\item\driftwood_logs.json
 dbcc03e48802ed569fe8072833434ea0eebe4a19 data\minecraft\tags\item\enchantable\durability.json
 cfcad26923b372e137eea32f4561ee982d598a52 data\c\tags\item\armors.json
@@ -34,7 +34,7 @@ c271b34bed3724cbaf6e66b1db8164bc101c8852 data\c\tags\item\ores.json
 22c3c0806fe9b64996f5d8d4b73005cc46aa2f7e data\minecraft\tags\item\logs_that_burn.json
 723cca5af2737efaa392c9c5d91793ad781a13e6 data\c\tags\item\storage_blocks.json
 bd609edc2d80462eab96eb74e1dbb199fe383100 data\c\tags\item\dyed\gray.json
-2efbe1bc5c2f2218cd8f84ac77a048fd97a08c6d data\minecraft\tags\item\doors.json
+1c722cd653e7e44c2ccb7aea8926b921bbf0edb4 data\minecraft\tags\item\doors.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\fire_aspect.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\breaks_decorated_pots.json
 126e932bd1394573bfd8f89245617b2a0f29f64b data\c\tags\item\dyed\blue.json

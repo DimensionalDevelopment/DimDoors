@@ -168,7 +168,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             Holder.offline.clear()
         }
 
-        platform.allowChunkSave { level, access -> ModDimensions.isPocketDimension(level) && !access.sections.all(LevelChunkSection::hasOnlyAir) }
+        platform.allowChunkSave { level, access -> !ModDimensions.isPocketDimension(level) || !access.sections.all(LevelChunkSection::hasOnlyAir) }
 
         registerListeners()
         //        SchemFixer.run();

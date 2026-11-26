@@ -12,6 +12,7 @@ import net.minecraft.data.models.blockstates.PropertyDispatch
 import net.minecraft.data.models.blockstates.Variant
 import net.minecraft.data.models.blockstates.VariantProperties
 import net.minecraft.data.models.model.*
+import java.util.Optional
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
@@ -385,9 +386,10 @@ class DimDoorsModelProvider(dataGenerator: FabricDataOutput) : FabricModelProvid
 
     companion object {
         private fun generateFarshot(itemModelGenerator: ItemModelGenerators) {
-            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_0", ModelTemplates.FLAT_ITEM)
-            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_1", ModelTemplates.FLAT_ITEM)
-            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_2", ModelTemplates.FLAT_ITEM)
+            val pulling = ModelTemplate(Optional.of(ModelLocationUtils.getModelLocation(ModItems.FARSHOT)), Optional.empty(), TextureSlot.LAYER0)
+            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_0", pulling)
+            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_1", pulling)
+            itemModelGenerator.generateFlatItem(ModItems.FARSHOT, "_pulling_2", pulling)
 
             ModelTemplates.FLAT_ITEM.create(
                 ModelLocationUtils.getModelLocation(ModItems.FARSHOT),

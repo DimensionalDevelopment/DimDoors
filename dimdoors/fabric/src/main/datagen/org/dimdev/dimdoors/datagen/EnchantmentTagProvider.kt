@@ -17,6 +17,6 @@ class EnchantmentTagProvider(output: FabricDataOutput, completableFuture: Comple
             .add(ModEnchants.TREPIDATION_ENCHANTMENT)
             .add(ModEnchants.TRANSCENDENT_ENCHANTMENT)
 
-        tag(ModEnchantmentTags.BLOCKED_ON_FARSHOT).add(Enchantments.INFINITY, Enchantments.MULTISHOT)
+        tag(ModEnchantmentTags.BLOCKED_ON_FARSHOT).add(Enchantments.INFINITY, Enchantments.MULTISHOT, Enchantments.POWER)
     }
 }

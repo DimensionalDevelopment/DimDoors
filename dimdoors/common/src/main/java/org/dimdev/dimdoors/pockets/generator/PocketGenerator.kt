@@ -81,14 +81,11 @@ abstract class PocketGenerator<T : PocketGenerator<T>> protected constructor(
     ) {
         val world = parameters.world
 
-        if (setupLootTables)  // temp
-            pocket.blockEntities.forEach { (_, blockEntity: BlockEntity) ->
-                if (blockEntity is Container) { // comment in if needed
-                    if (blockEntity is RandomizableContainerBlockEntity && blockEntity.lootTable == null && blockEntity.isEmpty) {
-                        TemplateUtils.setupLootTable(world, blockEntity, LOGGER)
-                    }
-                }
-            }
+        pocket.blockEntities.forEach { (_, blockEntity: BlockEntity) ->
+            if (blockEntity !is RandomizableContainerBlockEntity) return@forEach
+            if (setupLootTables && blockEntity.lootTable == null && blockEntity.isEmpty) TemplateUtils.setupLootTable(world, blockEntity, LOGGER)
+            else blockEntity.lootTable?.let { blockEntity.setLootTable(it, blockEntity.lootTableSeed) }
+        }
 
         manager.rifts.forEach { rift ->
             val destination = rift.data().destination

@@ -9,9 +9,9 @@
     }
   },
   "pattern": [
-    " XO",
+    "XO ",
     "X O",
-    " XO"
+    "XO "
   ],
   "result": {
     "count": 1,

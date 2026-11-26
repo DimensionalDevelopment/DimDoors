@@ -42,7 +42,6 @@ class DimensionalDoorsNeoForge(bus: IEventBus) : NeoForgeSided<DimensionalDoorsN
             ChunkServedCallback.EVENT.invoker().onChunkServed(level, chunk)
         }
 
-
     }
 
     override fun createFlowingEternalFluid(): Fluid {

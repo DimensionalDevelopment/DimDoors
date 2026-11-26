@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.ChunkAccess
 import org.dimdev.dimcore.api.Platform
+import org.dimdev.dimcore.api.event.BlockEvents
 import org.dimdev.dimcore.util.util.SimpleEvent
 import java.nio.file.Path
 
@@ -98,7 +99,7 @@ class FabricPlatform : Platform {
         }
     }
 
-    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = AFTER_BLOCK_PLACE.register(consumer)
+    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = BlockEvents.AFTER_PLACE.register(consumer)
 
     override fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit) = PlayerBlockBreakEvents.AFTER.register { level, player, pos, state, _ ->
         if (level is ServerLevel) consumer.invoke(level, pos, state, player)
@@ -131,12 +132,6 @@ class FabricPlatform : Platform {
     override fun onChunkUnload(consumer: (level: ServerLevel, chunk: ChunkAccess) -> Unit) = ServerChunkEvents.CHUNK_UNLOAD.register(consumer)
 
     companion object {
-        @JvmField
-        val AFTER_BLOCK_PLACE: SimpleEvent<(ServerLevel, BlockPos, BlockState, Entity?) -> Unit> = SimpleEvent.of { listeners -> { level, pos, state, placer ->
-                listeners.forEach { listener -> listener.invoke(level, pos, state, placer) }
-            }
-        }
-
         @JvmField
         val PLAYER_TICK: SimpleEvent<(ServerPlayer) -> Unit> = SimpleEvent.of { listeners -> { player ->
                 listeners.forEach { listener -> listener.invoke(player) }

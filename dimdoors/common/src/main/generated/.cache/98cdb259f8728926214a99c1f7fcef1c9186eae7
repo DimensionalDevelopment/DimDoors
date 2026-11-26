@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-20T12:06:20.4261242	DimensionalDoors/Recipes
+// 1.21.1	2026-11-25T00:44:15.6486964	DimensionalDoors/Recipes
 6cd1d8857cae36233240857263fa7285115ba35c data\minecraft\recipe\magenta_terracotta_from_magenta_terracotta_fence_stonecutting.json
 14da5103f2751780e60c3642a34a3e170b1b5771 data\dimdoors\advancement\recipes\building_blocks\green_terracotta_slab.json
 3e29aeca27dd16629d28197809c51426b268c438 data\dimdoors\advancement\recipes\building_blocks\yellow_glazed_terracotta_slab.json
@@ -273,7 +273,7 @@ bea8854b6cca6687733183fd2191753074bb6123 data\dimdoors\recipe\white_terracotta_g
 790a3dea3a4c711a7889039c9f27be6a31c033ae data\dimdoors\recipe\white_terracotta_stairs.json
 633da5cade14f34c6e871b3c13d830391424edd3 data\minecraft\advancement\recipes\building_blocks\end_stone_from_end_stone_slab_stonecutting.json
 40403d83878c99a3c2356ce99494df5a81d077bc data\dimdoors\advancement\recipes\building_blocks\clay_slab_smelting.json
-6cdb420f21167f2c2ec6c6faac0eb39ff70fad55 data\minecraft\recipe\farshot.json
+325675323d67872cd02d43042f5dc836fa9e2031 data\minecraft\recipe\farshot.json
 c035b2264257e139ad683963d519f443410784bf data\dimdoors\advancement\recipes\decorations\purple_terracotta_fence.json
 8e3714709c93aef0db884019fe6725c54eb52ba1 data\dimdoors\recipe\mud_wall.json
 76efc610ecfacc9b2bce7abb8ef9dc4d2e0a6fb6 data\dimdoors\advancement\recipes\building_blocks\terracotta_slab.json

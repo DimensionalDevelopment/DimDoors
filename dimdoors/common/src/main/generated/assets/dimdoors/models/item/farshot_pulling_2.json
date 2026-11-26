@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "dimdoors:item/farshot",
   "textures": {
     "layer0": "dimdoors:item/farshot_pulling_2"
   }

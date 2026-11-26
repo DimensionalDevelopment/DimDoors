@@ -138,8 +138,8 @@ object MaskWearerEffects {
     fun registerEvents() {
         platform.onPlayerTick(::tick)
 
-        PlayerTeleportEvents.ALLOW.register { player, level, _ ->
-            if (wornType(player) == null || ModDimensions.isLimboDimension(level)) return@register true
+        PlayerTeleportEvents.ALLOW.register { player, level, _, cause ->
+            if (cause == PlayerTeleportEvents.Cause.COMMAND || wornType(player) == null || ModDimensions.isLimboDimension(level)) return@register true
 
             player.server.tell(TickTask(player.server.tickCount) { LimboTarget.teleportToLimbo(player) })
             false

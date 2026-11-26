@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.entity
 
+import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.level.TicketType
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.Entity
@@ -12,6 +14,8 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.GameRules
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
@@ -22,7 +26,9 @@ import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.ext.castOrNull
-import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.block.DetachedRiftBlock
+import org.dimdev.dimdoors.block.TraversableRiftBlock
+import java.util.Comparator
 
 class FarShotEnderPearlEntity : ThrowableItemProjectile {
     private val setTargetOnFire: Boolean
@@ -51,8 +57,8 @@ class FarShotEnderPearlEntity : ThrowableItemProjectile {
         val target = result.entity
         target.hurt(this.damageSources().thrown(this, this.owner), 0.0f) // vanilla parity: aggro the target
 
-        val owner = this.owner?.takeIf { owner == target } ?: return
-        val level = this.level().castOrNull<ServerLevel>()?.takeIf { owner.level() !== it } ?: return
+        val owner = this.owner?.takeIf { it != target } ?: return
+        val level = this.level().castOrNull<ServerLevel>()?.takeIf { owner.level() === it } ?: return
 
         val ownerPos = owner.position()
         val targetPos = target.position()
@@ -182,19 +188,53 @@ class FarShotEnderPearlEntity : ThrowableItemProjectile {
         if (this.owner?.castOrNull<ServerPlayer>()?.isAlive == true && !this.isAlive && this.level().gameRules.getBoolean(GameRules.RULE_ENDER_PEARLS_VANISH_ON_DEATH)) {
             this.discard()
         } else {
-            val hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity).castOrNull<BlockHitResult>()
+            if (!this.level().isClientSide) {
+                val from = this.position()
+                val to = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity).location
 
-            if (hit != null && hit.type == HitResult.Type.BLOCK && this.level().getBlockEntity(hit.blockPos) is DetachedRiftBlockEntity) {
-                this.onHit(hit)
+                val start = BlockPos.containing(from)
+
+                BlockGetter.traverseBlocks(from, to, Unit, { _, pos ->
+                    if (pos == start) return@traverseBlocks null
+                    val state = this.level().getBlockState(pos)
+                    when (val block = state.block) {
+                        is TraversableRiftBlock<*> -> {
+                            val owner = this.owner ?: return@traverseBlocks null
+                            val riftPos = block.getRiftPos(this.level(), pos, state)
+                            val riftState = this.level().getBlockState(riftPos)
+                            val rift = block.getRift(this.level(), riftPos, riftState)
+                            if (rift == null || !block.validStateForTraversal(riftState) || rift.hasTraversed(this.level(), from, to)) return@traverseBlocks null
+                            if (!rift.teleport(owner, Vec3.atBottomCenterOf(riftPos))) return@traverseBlocks null
+                            block.postTraverseEffect(this.level(), riftPos, riftState, rift)
+                            this.discard()
+                            true
+                        }
+                        is DetachedRiftBlock -> true.also { this.onHit(BlockHitResult(pos.center, this.direction.opposite, pos, false)) }
+                        else -> null
+                    }
+                }) { false }
+
+                if (this.isRemoved) return
             }
 
             super.tick()
+
+            if (this.isRemoved) return
+            val level = this.level().castOrNull<ServerLevel>() ?: return
+            val next = ChunkPos(BlockPos.containing(this.position().add(this.deltaMovement)))
+            level.chunkSource.addRegionTicket(FARSHOT_TICKET, next, 2, next)
         }
     }
 
     private fun playSound(level: Level, pos: Vec3) {
         level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS)
     }
+
+    override fun changeDimension(transition: DimensionTransition): Entity? =
+        super.changeDimension(transition)?.also {
+            val next = ChunkPos(BlockPos.containing(it.position().add(it.deltaMovement)))
+            transition.newLevel().chunkSource.addRegionTicket(FARSHOT_TICKET, next, 2, next)
+        }
 
     override fun canChangeDimensions(oldLevel: Level, newLevel: Level): Boolean {
         if (oldLevel.dimension() === Level.END) {
@@ -212,6 +252,8 @@ class FarShotEnderPearlEntity : ThrowableItemProjectile {
     }
 
     companion object {
+        private val FARSHOT_TICKET: TicketType<ChunkPos> = TicketType.create("dimdoors_farshot", Comparator.comparingLong(ChunkPos::toLong), 40)
+
         fun Entity.isAllowedToTeleportOwner(level: Level) = if (this.level().dimension() !== level.dimension()) {
             this.canUsePortal(true)
         } else {

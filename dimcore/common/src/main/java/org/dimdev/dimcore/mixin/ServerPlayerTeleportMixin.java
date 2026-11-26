@@ -7,6 +7,7 @@ import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimcore.api.event.PlayerTeleportEvents;
+import org.dimdev.dimcore.api.ext.ServerPlayerExt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,9 +16,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerTeleportMixin {
+public class ServerPlayerTeleportMixin implements ServerPlayerExt {
+    @Unique
+    private PlayerTeleportEvents.Cause dimcore$cause = PlayerTeleportEvents.Cause.OTHER;
+
+    @Override
+    public boolean dimcore$teleportAs(PlayerTeleportEvents.Cause cause, BooleanSupplier teleport) {
+        PlayerTeleportEvents.Cause previous = dimcore$cause;
+        dimcore$cause = cause;
+        try {
+            return teleport.getAsBoolean();
+        } finally {
+            dimcore$cause = previous;
+        }
+    }
+
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
     private void dimcore$beforeChangeDimension(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
         if (!dimcore$allow(transition.newLevel(), transition.pos())) {
@@ -75,7 +91,7 @@ public class ServerPlayerTeleportMixin {
 
     @Unique
     private boolean dimcore$allow(ServerLevel level, Vec3 pos) {
-        return PlayerTeleportEvents.ALLOW.invoker().invoke(dimcore$player(), level, pos);
+        return PlayerTeleportEvents.ALLOW.invoker().invoke(dimcore$player(), level, pos, dimcore$cause);
     }
 
     @Unique

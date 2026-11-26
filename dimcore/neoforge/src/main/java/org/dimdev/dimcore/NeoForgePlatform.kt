@@ -49,6 +49,7 @@ import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.registries.RegisterEvent
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 import org.dimdev.dimcore.api.Platform
+import org.dimdev.dimcore.api.event.BlockEvents
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimcore.api.ext.castOrNull
 import java.nio.file.Path
@@ -99,7 +100,7 @@ class NeoForgePlatform : Platform {
 
     override fun onServerLevelTick(consumer: (ServerLevel) -> Unit) = NeoForge.EVENT_BUS.addListener<LevelTickEvent.Pre> { it.level.castOrNull<ServerLevel>()?.run(consumer) }
 
-    override fun onTagsLoaded(consumer: (RegistryAccess, Boolean) -> Unit) = NeoForge.EVENT_BUS.addListener<TagsUpdatedEvent> { consumer.invoke(it.registryAccess, it.shouldUpdateStaticData()) }
+    override fun onTagsLoaded(consumer: (RegistryAccess, Boolean) -> Unit) = NeoForge.EVENT_BUS.addListener<TagsUpdatedEvent> { consumer.invoke(it.registryAccess, it.updateCause == TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED) }
 
     override fun onPlayerTick(consumer: (ServerPlayer) -> Unit) = NeoForge.EVENT_BUS.addListener<PlayerTickEvent.Post> { it.entity.castOrNull<ServerPlayer>()?.run(consumer) }
 
@@ -159,10 +160,7 @@ class NeoForgePlatform : Platform {
             }
         }
 
-    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, BlockEvent.EntityPlaceEvent::class.java) { event ->
-            val level = event.level.castOrNull<ServerLevel>() ?: return@addListener
-            consumer.invoke(level, event.pos, event.placedBlock, event.entity)
-        }
+    override fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit) = BlockEvents.AFTER_PLACE.register(consumer)
 
     override fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit) = NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, BlockEvent.BreakEvent::class.java) { event ->
             val level = event.level.castOrNull<ServerLevel>() ?: return@addListener

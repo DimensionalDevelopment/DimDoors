@@ -52,6 +52,7 @@ class ItemTagProvider(output: FabricDataOutput, completableFuture: CompletableFu
             ModBlocks.GOLD_DOOR,
             ModBlocks.AMALGAM_DOOR,
             ModBlocks.STONE_DOOR,
+            ModBlocks.QUARTZ_DOOR,
             ModBlocks.DIALING_DOOR
         )
 

@@ -164,8 +164,8 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             add("created", "Rift created")
 
             add("bound") {
-                info(1, "Leads to (%d, %d, %d)")
-                info(0, "at dimension %d")
+                info(0, "Leads to (%s, %s, %s)")
+                info(1, "at dimension %s")
             }
 
             add("unbound") {
@@ -180,8 +180,8 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
             add("created", "Rift created")
 
             add("bound") {
-                info(0, "Leads to (%d, %d, %d)")
-                info(1, "at dimension %d")
+                info(0, "Leads to (%s, %s, %s)")
+                info(1, "at dimension %s")
             }
             add("unbound") {
                 info(0, "First click stores a location,.")
@@ -434,6 +434,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         add("config") {
             add("dimdoors") {
                 addTitle("Dimensional Doors")
+                add("requires_cloth", "Install Cloth Config to edit these settings in game.")
                 add("general") {
                     addCategory("General Settings")
                     addOption(

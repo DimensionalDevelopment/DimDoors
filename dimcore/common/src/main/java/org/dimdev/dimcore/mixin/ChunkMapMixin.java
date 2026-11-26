@@ -29,6 +29,7 @@ public class ChunkMapMixin extends ChunkStorage {
     @Inject(method = "save(Lnet/minecraft/world/level/chunk/ChunkAccess;)Z", at = @At("HEAD"), cancellable = true)
     private void dimcore$allowChunkSave(ChunkAccess chunk, CallbackInfoReturnable<Boolean> cir) {
         if (!ChunkEvents.ALLOW.invoker().invoke(level, chunk)) {
+            this.write(chunk.getPos(), null);
             cir.setReturnValue(false);
         }
     }

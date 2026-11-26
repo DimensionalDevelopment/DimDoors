@@ -152,9 +152,9 @@ object TesselatingRecipeProvider {
         }
 
         shaped(ModItems.FARSHOT) {
-            pattern(" XO")
+            pattern("XO ")
             pattern("X O")
-            pattern(" XO")
+            pattern("XO ")
             define('X', ModItems.WORLD_THREAD)
             define('O', ModBlocks.DRIFTWOOD_PLANKS)
             unlockedByItem(ModItems.WORLD_THREAD)

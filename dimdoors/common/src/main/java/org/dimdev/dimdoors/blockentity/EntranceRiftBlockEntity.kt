@@ -72,8 +72,8 @@ abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected
         this.renderBlockState = state.block.castOrNull<TraversableRiftBlock<*>>()?.getVisualBlockState(state) ?: state
     }
 
-    fun teleport(entity: Entity): Boolean {
-        val status: Boolean = attemptTeleport(entity, this, providedLocation)
+    fun teleport(entity: Entity, sourcePos: Vec3 = entity.position()): Boolean {
+        val status: Boolean = attemptTeleport(entity, this, providedLocation, sourcePos)
 
         if (this.isStateDirty && !this.riftData.alwaysDelete) this.setChanged()
 
@@ -155,7 +155,7 @@ abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected
     companion object {
         private val ESCAPE_TARGET = EscapeTarget(true)
         @JvmStatic
-         fun <H: LocationProvider> attemptTeleport(entity: Entity, rift: Rift<*, H, *, *>, holder: H): Boolean {
+         fun <H: LocationProvider> attemptTeleport(entity: Entity, rift: Rift<*, H, *, *>, holder: H, sourcePos: Vec3 = entity.position()): Boolean {
             rift.isStateDirty = false
 
             // Attempt a teleport
@@ -173,7 +173,7 @@ abstract class EntranceRiftBlockEntity<T : EntranceRiftBlockEntity<T>> protected
 
                 if (block is CoordinateTransformerBlock) {
                     val blockPos = loc.blockPos
-                    val sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(loc.world, blockPos, entity, entity.position(), relativeAngle, relativeVelocity)
+                    val sourceFrame = LevelSpaceHelper.INSTANCE.sourceTeleportFrame(loc.world, blockPos, entity, sourcePos, relativeAngle, relativeVelocity)
                     val transformationBuilder = block.transformation(state, blockPos)
                     val rotatorBuilder = block.rotator(state, blockPos)
                     relativePos = block.transformTo(transformationBuilder, sourceFrame.pos)

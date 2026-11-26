@@ -6,10 +6,12 @@ package org.dimdev.dimdoors.item
 
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.projectile.Projectile
 import net.minecraft.world.item.BowItem
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.enchantment.EnchantedItemInUse
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.Level
@@ -32,7 +34,12 @@ open class FarShotItem(properties: Properties) : BowItem(properties) {
         val hasFlaming = enchantments.getLevel(registry.getOrThrow(Enchantments.FLAME)) > 0
         val punchLevel = enchantments.getLevel(registry.getOrThrow(Enchantments.PUNCH))
 
-        return FarShotEnderPearlEntity(level, shooter, hasFlaming, punchLevel)
+        return FarShotEnderPearlEntity(level, shooter, hasFlaming, punchLevel).also { pearl ->
+            if (level is ServerLevel) {
+                val use = EnchantedItemInUse(weapon, null, shooter) {}
+                enchantments.entrySet().forEach { it.key.value().onProjectileSpawned(level, it.intValue, use, pearl) }
+            }
+        }
     }
 
     override fun getAllSupportedProjectiles(): Predicate<ItemStack> {
