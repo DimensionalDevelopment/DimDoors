@@ -40,7 +40,8 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
     override fun useOn(context: UseOnContext): InteractionResult {
         val level = context.level
         val pos = context.clickedPos
-        val rift = level.getBlockEntity(pos) as? DetachedRiftBlockEntity ?: return InteractionResult.PASS
+        val blockEntity = level.getBlockEntity(pos)
+        val rift = blockEntity as? DetachedRiftBlockEntity ?: return if (blockEntity is BlockEntityRift<*>) InteractionResult.FAIL else InteractionResult.PASS
         if (level.isClientSide) return InteractionResult.SUCCESS
         val serverPlayer = context.player as? ServerPlayer ?: return InteractionResult.PASS
 
@@ -48,7 +49,7 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
             pos,
             ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(
                 DimensionalPortalBlock.FACING,
-                context.clickedFace.opposite
+                context.clickedFace.opposite.takeIf { it.axis.isHorizontal } ?: context.horizontalDirection
             )
         )
         level.getBlockEntity(pos)?.castOrNull<BlockEntityRift<*>>()?.copyFrom(rift)
@@ -126,7 +127,7 @@ class RiftBladeItem(settings: Properties) : SwordItem(Tiers.IRON, settings) {
 
     override fun use(world: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         if (world.isClientSide) {
-            player.displayClientMessage(Component.translatable("${this.descriptionId}.rift_miss"), true)
+            player.displayClientMessage(Component.translatable("tools.rift_miss"), true)
             triggerRiftCoreHighlight()
         }
 

@@ -9,6 +9,7 @@ import org.dimdev.dimcore.util.util.EntityUtils
 import org.dimdev.dimdoors.api.rift.target.EntityTarget
 import org.dimdev.dimdoors.api.rift.target.TargetResolver.entity
 import org.dimdev.dimdoors.pockets.type.Pocket
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
 import org.dimdev.dimdoors.subsystem.graph.Vertex
 import org.dimdev.dimdoors.subsystem.player.PlayerTrackingSubSystem
 import org.dimdev.dimdoors.subsystem.pocket.PocketRegistry
@@ -70,7 +71,7 @@ abstract class PlayerTrackingExitTarget<T : PlayerTrackingExitTarget<T, S>, S : 
 
     override fun register(owner: Vertex) {
         super.register(owner)
-        val location = owner.providedLocation!!
+        val location = LocationRiftRegistry.instance.locationOf(owner.id) ?: return
 
         val registry = PocketRegistry.instance.getPocketDirectory(location.worldId)
         val pocket = registry.getPocketAt(location.blockPos)

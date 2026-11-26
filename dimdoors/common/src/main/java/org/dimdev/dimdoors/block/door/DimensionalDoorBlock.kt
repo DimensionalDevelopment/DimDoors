@@ -34,6 +34,7 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.block.RiftProvider
 import org.dimdev.dimdoors.block.TraversableRiftBlock
+import org.dimdev.dimdoors.item.IntrinsicRift
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.rift.RiftUtils
@@ -119,7 +120,7 @@ abstract class DimensionalDoorBlock<T : EntranceRiftBlockEntity<T>>(
             }
             return Blocks.AIR.defaultBlockState()
         } else {
-            return if (doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos)) ModBlocks.DETACHED_RIFT.defaultBlockState() else state
+            return if (doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos)) (if (world.getBlockEntity(pos) is IntrinsicRift) Blocks.AIR.defaultBlockState() else ModBlocks.DETACHED_RIFT.defaultBlockState()) else state
         }
     }
 

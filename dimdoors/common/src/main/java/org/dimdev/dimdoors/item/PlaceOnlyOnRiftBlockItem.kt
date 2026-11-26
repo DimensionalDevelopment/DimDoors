@@ -3,18 +3,21 @@ package org.dimdev.dimdoors.item
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.phys.BlockHitResult
 import org.dimdev.dimcore.api.ext.castOrNull
 import org.dimdev.dimdoors.block.ModBlocks
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
+import org.dimdev.dimdoors.item.door.UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext
 
 class PlaceOnlyOnRiftBlockItem(block: Block, properties: Properties) : BlockItem(block, properties) {
-//    override fun useOn(context: UseOnContext): InteractionResult {
-//        if (context.player == null) return InteractionResult.FAIL
-//
-//        return place(DimDoorBlockPlaceContext(context))
-//    }
+    override fun useOn(context: UseOnContext): InteractionResult {
+        if (context.player == null) return InteractionResult.FAIL
+
+        return place(DimDoorBlockPlaceContext(context.player, context.hand, context.itemInHand, BlockHitResult(context.clickLocation, context.clickedFace, context.clickedPos, context.isInside)))
+    }
 
     override fun place(ctx: BlockPlaceContext): InteractionResult {
         val context = ctx //as? DimDoorBlockPlaceContext ?: return InteractionResult.FAIL

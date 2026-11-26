@@ -15,6 +15,7 @@ import org.dimdev.dimdoors.api.entity.LastPositionProvider
 import org.dimdev.dimdoors.blockentity.BlockEntityRift
 import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
+import org.dimdev.dimdoors.item.IntrinsicRift
 import org.dimdev.dimdoors.rift.RiftUtils
 
 interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling, CoordinateTransformerBlock {
@@ -74,6 +75,8 @@ interface TraversableRiftBlock<T : EntranceRiftBlockEntity<T>> : RiftProvider<T>
 
     override fun onBlockExploded(state: BlockState, level: Level, pos: BlockPos, explosion: Explosion) {
         val entity = level.getBlockEntity(pos)
+
+        if (entity is IntrinsicRift) return super.onBlockExploded(state, level, pos, explosion)
 
         if (entity is EntranceRiftBlockEntity<*>) {
             level.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState(), 18)

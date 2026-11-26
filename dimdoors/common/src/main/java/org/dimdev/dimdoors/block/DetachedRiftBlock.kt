@@ -3,7 +3,11 @@ package org.dimdev.dimdoors.block
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.Projectile
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
@@ -22,19 +26,22 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
+import org.dimdev.dimdoors.api.block.ExtendedBlock
 import org.dimdev.dimdoors.api.rift.target.RedstoneTarget
-import org.dimdev.dimdoors.util.Location
 import org.dimdev.dimdoors.block.DimensionalPortalBlock.Companion.checkType
 import org.dimdev.dimdoors.blockentity.DetachedRiftBlockEntity
 import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
 import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
-import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity
 import org.dimdev.dimdoors.client.particle.RiftParticleOptions
+import org.dimdev.dimdoors.entity.FarShotEnderPearlEntity
+import org.dimdev.dimdoors.rift.block.LocationRiftRegistry
+import org.dimdev.dimdoors.subsystem.graph.RiftGraph
 import org.dimdev.dimdoors.tag.ModItemTags
+import org.dimdev.dimdoors.util.Location
 import org.dimdev.dimdoors.worldgen.ModDimensions.isPocketDimension
 import kotlin.jvm.optionals.getOrNull
 
-class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings), RedstoneTarget, RiftProvider<DetachedRiftBlockEntity>, VisualOutline {
+class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings), RedstoneTarget, RiftProvider<DetachedRiftBlockEntity>, VisualOutline, ExtendedBlock {
     init {
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.POWER, 0))
     }
@@ -62,15 +69,41 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
         val level = location.world
         val pos = location.blockPos
 
+        val registry = LocationRiftRegistry.instance
+        val sources = registry.idAt(location)?.let { RiftGraph.getInstance().sources(it) } ?: emptySet()
+        val best = sources.mapNotNull(registry::locationOf)
+            .filter { it.blockState.block is LiminalTransmitterBlock }
+            .maxOfOrNull { it.world.getBestNeighborSignal(it.blockPos) } ?: 0
+        val signal = maxOf(strength, best)
+
         var state = level.getBlockState(pos)
 
-        if(state.getValue(BlockStateProperties.POWER) == strength) return false
+        if(state.getValue(BlockStateProperties.POWER) == signal) return false
 
-        state = level.getBlockState(pos).setValue(BlockStateProperties.POWER, strength)
+        state = level.getBlockState(pos).setValue(BlockStateProperties.POWER, signal)
 
         level.setBlockAndUpdate(pos, state)
 
         return true
+    }
+
+    override fun onPlace(state: BlockState, level: Level, pos: BlockPos, oldState: BlockState, movedByPiston: Boolean) {
+        super.onPlace(state, level, pos, oldState, movedByPiston)
+        if (!level.isClientSide && !oldState.`is`(this)) level.scheduleTick(pos, this, 1)
+    }
+
+    override fun tick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {
+        recieveSignal(0, Location.ofWorld(level, pos))
+    }
+
+    override fun onAttacked(
+        world: Level,
+        player: Player,
+        hand: InteractionHand,
+        pos: BlockPos,
+        direction: Direction
+    ): InteractionResult {
+        return InteractionResult.FAIL
     }
 
     override fun animateTick(state: BlockState, world: Level, pos: BlockPos, rand: RandomSource) {
@@ -106,7 +139,7 @@ class DetachedRiftBlock(settings: Properties) : WaterLoggableBlockWithEntity(set
     public override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.ENTITYBLOCK_ANIMATED
 
     public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().`is`(ModItemTags.DETACH_RIFT_INTERACTING))
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$isHolding`(ModItemTags.DETACH_RIFT_INTERACTING))
             Shapes.block()
         else
             Shapes.empty()

@@ -43,9 +43,10 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     @JvmField
     var curveID: Int
 
-    var weight = 5
+    var weight: Int
+        get() = riftData.weight
         set(value) {
-            field = Mth.clamp(value, -100, 100)
+            riftData.weight = value
             this.setChanged()
         }
 
@@ -84,7 +85,7 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     val decayRadius: Int
         get() {
             val size = data().size
-            return if (size > 0) Mth.ceil(size / DECAY_RADIUS_DIVISOR) else 0
+            return if (weight != 0 && size > 20) Mth.ceil(size / DECAY_RADIUS_DIVISOR) else 0
         }
 
     override fun gatherDebug(holder: Location, textConsumer: Consumer<Component>) {
@@ -97,7 +98,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         spawnedEndermanId = nbt.get(SPAWNED_ENDERMAN_ID_BUILDER)
         curveID = nbt.get(CURVE_ID_BUILDER)
         riftYaw = nbt.get(RIFT_YAW_BUILDER)
-        weight = nbt.get(WEIGHT_BUILDER)
         updateTimer = nbt.get(UPDATE_TIMER_BUILDER)
     }
 
@@ -107,21 +107,22 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         serialize.put(SPAWNED_ENDERMAN_ID_BUILDER)
         serialize.put(CURVE_ID_BUILDER)
         serialize.put(RIFT_YAW_BUILDER)
-        serialize.put(WEIGHT_BUILDER)
         serialize.put(UPDATE_TIMER_BUILDER)
     }
 
     override fun prepareTag(nbt: CompoundTag) {
         super.prepareTag(nbt)
 
-        if (nbt.contains("closing", Tag.TAG_ANY_NUMERIC.toInt()) || nbt.contains("stablized", Tag.TAG_ANY_NUMERIC.toInt())) {
-            var weight = 5
-
-            if (nbt.getBoolean("stablized")) weight = 0
-            if (nbt.getBoolean("closing")) weight = -100
-
-            nbt.putInt("weight", weight)
+        val weight = when {
+            nbt.getBoolean("closing") -> -100
+            nbt.getBoolean("stablized") -> 0
+            nbt.contains("weight", Tag.TAG_ANY_NUMERIC.toInt()) -> nbt.getInt("weight")
+            else -> return
         }
+
+        val data = nbt.getCompound("data")
+        if (!data.contains("weight")) data.putInt("weight", weight)
+        nbt.put("data", data)
     }
 
     override val isDetached: Boolean get() = true
@@ -181,7 +182,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
 
     override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag {
         val tag = super.getUpdateTag(provider)
-        tag.putInt("weight", this.weight)
         tag.putInt("curveID", this.curveID)
         tag.putFloat("rotation", this.riftYaw)
         return tag
@@ -219,13 +219,11 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
     override fun <T> writeUniqueData(serialize: Serialize<T, out DetachedRiftBlockEntity>) {
         super.writeUniqueData(serialize)
         serialize.put(RIFT_YAW_BUILDER)
-        serialize.put(WEIGHT_BUILDER)
         serialize.put(CURVE_ID_BUILDER)
     }
 
     override fun gatherFieldNodes(list: MutableList<FieldNode>) {
         list.add(RIFT_YAW_BUILDER.fieldNode)
-        list.add(WEIGHT_BUILDER.fieldNode)
         list.add(CURVE_ID_BUILDER.fieldNode)
     }
 
@@ -250,7 +248,6 @@ class DetachedRiftBlockEntity(pos: BlockPos, state: BlockState) : RiftBlockEntit
         private val SPAWNED_ENDERMAN_ID_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("spawnedEnderManId", Codec.INT, 0, DetachedRiftBlockEntity::spawnedEndermanId) { rift, value -> rift.spawnedEndermanId = value }
         private val RIFT_YAW_BUILDER = CodecRecord("rotation", Schemas.float(0f, 360f).element(DimensionalDoors.id("rotation")), { (Math.random() * 360).toFloat() }, DetachedRiftBlockEntity::riftYaw) { rift, value -> rift.riftYaw = value }
         private val CURVE_ID_BUILDER = CodecRecord("curveID", Schemas.int(0, RiftCurves.CURVES.size - 1), { (Math.random() * RiftCurves.CURVES.size).toInt() }, DetachedRiftBlockEntity::curveID) { rift, value -> rift.curveID = value }
-        private val WEIGHT_BUILDER = CodecRecord("weight", Schemas.int(-100, 100, 5), 5, DetachedRiftBlockEntity::weight) { rift, value -> rift.weight = value }
         private val UPDATE_TIMER_BUILDER = CodecRecord<DetachedRiftBlockEntity, Int>("updateTimer", Codec.INT, 0, DetachedRiftBlockEntity::updateTimer) { rift, value -> rift.updateTimer = value }
     }
 }

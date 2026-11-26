@@ -1,10 +1,13 @@
 package org.dimdev.dimdoors.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.item.IntrinsicRift;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -20,8 +23,9 @@ public class DoublePlantBlockMixin {
             ),
             index = 1
     )
-    private static BlockState tweakThingy(BlockState arg2, @Local(argsOnly = true) BlockState blockState
+    private static BlockState tweakThingy(BlockState arg2, @Local(argsOnly = true) BlockState blockState, @Local(argsOnly = true) Level level, @Local(argsOnly = true) BlockPos pos
     ) {
+        if (level.getBlockEntity(pos.below()) instanceof IntrinsicRift) return arg2;
         return blockState.getBlock() instanceof DimensionalDoorBlock ? ModBlocks.DETACHED_RIFT.defaultBlockState() : arg2;
     }
 }

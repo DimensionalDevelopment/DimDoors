@@ -1,7 +1,22 @@
 [
   {
     "condition": {
-      "type": "dimdoors:always_true"
+      "type": "dimdoors:world_match",
+      "world": "dimdoors:personal_pockets"
+    },
+    "data": {
+      "destination": {
+        "type": "dimdoors:hub_pocket_exit"
+      }
+    }
+  },
+  {
+    "condition": {
+      "type": "dimdoors:inverse",
+      "condition": {
+        "type": "dimdoors:world_match",
+        "world": "dimdoors:personal_pockets"
+      }
     },
     "data": {
       "destination": {

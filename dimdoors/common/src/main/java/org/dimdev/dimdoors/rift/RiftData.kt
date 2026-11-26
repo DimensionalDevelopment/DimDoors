@@ -23,12 +23,18 @@ class RiftData {
             field = Mth.clamp(value, 0 , 150)
         }
 
+    var weight: Int = 5
+        set(value) {
+            field = Mth.clamp(value, -100, 100)
+        }
+
     fun copy(): RiftData {
         val data = RiftData()
         data.destination = this.destination.copy()
         data.color = this.color.copy()
         data.alwaysDelete = this.alwaysDelete
         data.size = size
+        data.weight = weight
         data.colorOverride = this.colorOverride?.copy()
         return data
     }
@@ -40,14 +46,16 @@ class RiftData {
                 Schemas.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::alwaysDelete),
                 RGBA.CODEC.optionalFieldOf("colorOverride").nullableForGetter(RiftData::colorOverride),
                 Schemas.int(0, 150).optionalFieldOf("size", 0).forGetter(RiftData::size),
+                Schemas.int(-100, 100, 5).optionalFieldOf("weight", 5).forGetter(RiftData::weight),
                 Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter { false }
-            ).apply(instance) { destination, color, alwaysDelete, colorOverride, size, forcedColor ->
+            ).apply(instance) { destination, color, alwaysDelete, colorOverride, size, weight, forcedColor ->
                 val data = RiftData()
                 data.destination = destination
                 data.color = color
                 data.alwaysDelete = alwaysDelete
                 data.colorOverride = colorOverride.getOrNull() ?: color.takeIf { forcedColor }
                 data.size = size
+                data.weight = weight
                 data
             }
         }

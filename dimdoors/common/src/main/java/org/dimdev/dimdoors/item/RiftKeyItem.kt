@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.context.UseOnContext
 import org.dimdev.dimcore.api.ext.castOrNull
@@ -35,11 +36,12 @@ class RiftKeyItem(settings: Properties) : Item(
 
             val provider = state.block.castOrNull<RiftVariantProvider>() ?: return super.useOn(context)
 
-            val rift = provider.convertToRiftProvider(level as ServerLevel, pos, state) ?: return super.useOn(context)
+            val rift = provider.convertToRiftProvider(level as ServerLevel, pos, state)?.takeUnless { it is IntrinsicRift } ?: return super.useOn(context)
 
             val original: VirtualTarget<*> = rift.data().destination
             rift.setDestination(TempTarget(temp.copy(), original.copy()))
             context.level.playSound(null, pos, ModSoundEvents.KEY_LOCK, SoundSource.BLOCKS)
+            stack.hurtAndBreak(1, context.player!!, LivingEntity.getSlotForHand(context.hand))
 
             return InteractionResult.SUCCESS
         }

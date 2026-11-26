@@ -31,7 +31,7 @@ open class PortableRiftItem(properties: Properties) : Item(properties), ItemRift
     }
 
     open fun useOn(level: ServerLevel, player: Player, stack: ItemStack, pos: BlockPos, facing: Direction, state: BlockState): InteractionResult {
-        val rift = state.block.castOrNull<RiftProvider<*>>()?.getRift(level, pos, state)  ?: return InteractionResult.PASS
+        val rift = state.block.castOrNull<RiftProvider<*>>()?.getRift(level, pos, state)?.takeUnless { it is IntrinsicRift } ?: return InteractionResult.PASS
         Rift.transfer(rift, rift.location(), rift, stack, Holder.entity(player), this)
         level.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START, SoundSource.BLOCKS, 0.6f, 1f)
         return InteractionResult.CONSUME

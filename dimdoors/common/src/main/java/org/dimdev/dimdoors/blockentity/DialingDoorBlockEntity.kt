@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimcore.api.errata.schema.FieldNode
+import org.dimdev.dimdoors.item.IntrinsicRift
 import org.dimdev.dimdoors.rift.targets.DialingTarget
 import org.dimdev.dimdoors.rift.targets.DialingTargetImpl
 import org.dimdev.dimdoors.subsystem.graph.Vertex
@@ -13,7 +14,7 @@ import org.dimdev.dimdoors.subsystem.player.DialingAddress
 import org.dimdev.dimdoors.util.Copyable
 import org.dimdev.dimdoors.util.Location
 
-class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, pos, state), DialingTarget, Copyable<DialingTarget> {
+class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlockEntity<DialingDoorBlockEntity>(ModBlockEntityTypes.DIALING_DOOR, pos, state), DialingTarget, Copyable<DialingTarget>, IntrinsicRift {
     override var address = DialingAddress.DEFAULT
 
 
@@ -37,6 +38,8 @@ class DialingDoorBlockEntity(pos: BlockPos, state: BlockState) : EntranceRiftBlo
     }
 
     override fun target(holder: Location) = this
+
+    override fun detach() {}
 
     override fun receiveEntity(
         owner: Vertex,

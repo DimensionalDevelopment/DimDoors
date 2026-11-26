@@ -52,7 +52,11 @@ object DoorDataDataGen {
 
         ctx.register(key(Blocks.OAK_DOOR), RiftDataList.of(EscapeTarget.of(true), Condition.alwaysTrue()))
 
-        ctx.register(key(ModBlocks.DRIFTWOOD_DOOR), RiftDataList.of(HubPocketTarget, Condition.alwaysTrue()))
+        ctx.register(key(ModBlocks.DRIFTWOOD_DOOR), RiftDataList.builder()
+            .add(HubPocketExitTarget, Condition.level(ModDimensions.PERSONAL))
+            .add(HubPocketTarget, Condition.not(Condition.level(ModDimensions.PERSONAL)))
+            .builder()
+        )
     }
 
     private fun key(door: Block): ResourceKey<RiftDataList> = ModRegistryKeys.DOOR_DATA.key(door.builtInRegistryHolder().key().location())

@@ -21,8 +21,8 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import org.dimdev.dimdoors.blockentity.DialingDoorBlockEntity
 import org.dimdev.dimdoors.blockentity.ModBlockEntityTypes
-import org.dimdev.dimdoors.subsystem.player.DialingAddress
 import org.dimdev.dimdoors.sound.ModSoundEvents
+import org.dimdev.dimdoors.subsystem.player.DialingAddress
 import org.dimdev.dimdoors.util.math.MathUtil
 import kotlin.math.abs
 import kotlin.math.floor
@@ -64,7 +64,7 @@ class DialingDoor(settings: Properties, blockSetType: BlockSetType) : Dimensiona
         for (i in BUTTONS.indices) {
             val button: InteractionShape = BUTTONS[i]
             if (button.intersects(coordiantes)) {
-                return DialingAddress.DialType.values()[i]
+                return DialingAddress.DialType.entries[i]
             }
         }
 
@@ -76,8 +76,8 @@ class DialingDoor(settings: Properties, blockSetType: BlockSetType) : Dimensiona
         val size = Vec3.atLowerCornerOf(max.subtract(min).offset(1, 1, 1))
         val c = p.subtract(size.scale(0.5))
 
-        val front = Vec3.atLowerCornerOf(facing.getNormal())
-        val right = Vec3.atLowerCornerOf(facing.getClockWise().getNormal())
+        val front = Vec3.atLowerCornerOf(facing.normal)
+        val right = Vec3.atLowerCornerOf(facing.clockWise.normal)
 
         return Vec3(
             c.dot(right) + abs(size.dot(right)) * 0.5,
@@ -138,7 +138,7 @@ class DialingDoor(settings: Properties, blockSetType: BlockSetType) : Dimensiona
 
 
     override fun getDrops(state: BlockState, params: LootParams.Builder): MutableList<ItemStack?> {
-        val resourcekey = this.getLootTable()
+        val resourcekey = this.lootTable
         if (resourcekey === BuiltInLootTables.EMPTY) {
             return mutableListOf()
         } else {

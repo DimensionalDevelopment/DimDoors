@@ -19,4 +19,9 @@ public class TheFasterEntityCollisionContextMixin implements IDimDoorsCollisionC
     public ItemStack dimensionalDoors$getHeldItem() {
         return this.entity instanceof final LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY;
     }
+
+    @Override
+    public ItemStack dimensionalDoors$getOffhandItem() {
+        return this.entity instanceof final LivingEntity livingEntity ? livingEntity.getOffhandItem() : ItemStack.EMPTY;
+    }
 }

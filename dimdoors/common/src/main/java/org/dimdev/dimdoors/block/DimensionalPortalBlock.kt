@@ -4,7 +4,10 @@ import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Explosion
@@ -22,6 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import org.dimdev.dimcore.api.VisualOutline
 import org.dimdev.dimcore.api.ext.cast
 import org.dimdev.dimdoors.DimensionalDoors.Companion.getDimensionalDoorBlockRegistrar
+import org.dimdev.dimdoors.api.block.ExtendedBlock
 import org.dimdev.dimdoors.util.ext.eulerAngle
 import org.dimdev.dimdoors.util.ext.horizontalFacing
 import org.dimdev.dimdoors.util.ext.plus
@@ -36,7 +40,7 @@ import org.joml.Matrix4d
 import org.joml.Matrix4dc
 
 class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntity(settings),
-    TraversableRiftBlock<EntranceRiftBlockEntity.Impl>, VisualOutline {
+    TraversableRiftBlock<EntranceRiftBlockEntity.Impl>, VisualOutline, ExtendedBlock {
     init {
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false))
     }
@@ -49,7 +53,7 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
     }
 
     public override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
-        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$getHeldItem`().`is`(ModItemTags.DETACH_RIFT_INTERACTING))
+        if(context.cast<IDimDoorsCollisionContext>().`dimensionalDoors$isHolding`(ModItemTags.DETACH_RIFT_INTERACTING))
             Shapes.block()
         else
             Shapes.empty()
@@ -61,6 +65,16 @@ class DimensionalPortalBlock(settings: Properties) : WaterLoggableBlockWithEntit
         context: CollisionContext
     ): VoxelShape {
         return Shapes.empty()
+    }
+
+    override fun onAttacked(
+        world: Level,
+        player: Player,
+        hand: InteractionHand,
+        pos: BlockPos,
+        direction: Direction
+    ): InteractionResult {
+        return InteractionResult.FAIL
     }
 
     override fun entityInside(state: BlockState, world: Level, pos: BlockPos, entity: Entity) = super<TraversableRiftBlock>.entityInside(state, world, pos, entity)

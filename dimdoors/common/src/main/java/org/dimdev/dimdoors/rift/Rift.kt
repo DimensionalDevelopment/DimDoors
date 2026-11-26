@@ -220,12 +220,23 @@ interface Rift<R: Rift<R, H, S, V>, H: LocationProvider, S, V: RiftRegistry<H, S
             val old = fromType.vertex(fromHolder)
 
             toType.copyFrom(toHolder, fromType, fromHolder)
+            RiftGraph.getInstance().run {
+                targets(old.id).singleOrNull()?.let { id ->
+                    toType.setRiftData(toHolder, toType.data(toHolder).also { it.destination = RiftReference(Vertex(id, vertex(id)!!)) })
+                }
+            }
             toType.register(toHolder)
             toType.setProperties(toHolder, fromType.properties(fromHolder))
 
-            val dest = RiftReference(toType.vertex(toHolder))
+            val target = toType.vertex(toHolder)
+            val dest = RiftReference(target)
             RiftGraph.getInstance().run {
-                sources(old.id).forEach { source -> vertex(source)?.castOrNull<RiftRegistryVertex<*, *, *, *>>()?.setDestination(source, dest) }
+                sources(old.id).forEach { source ->
+                    vertex(source)?.castOrNull<RiftRegistryVertex<*, *, *, *>>()?.run {
+                        setDestination(source, dest)
+                        addEdge(source, target.id)
+                    }
+                }
             }
 
             fromType.data(fromHolder).destination.takeIf { it !== VirtualTarget.NoneTarget }?.unregister(old)

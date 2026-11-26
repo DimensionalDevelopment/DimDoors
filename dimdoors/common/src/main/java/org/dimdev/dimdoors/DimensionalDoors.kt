@@ -319,7 +319,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             var pos = pos
             if (player.isCreative && !config.doorsConfig.placeRiftsInCreativeMode) return
 
-            if (blockEntity is BlockEntityRift<*>) {
+            if (blockEntity is BlockEntityRift<*> && blockEntity !is IntrinsicRift) {
                 if (state.block is DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) { pos = pos.below() }
 
                 var detachedState = ModBlocks.DETACHED_RIFT.defaultBlockState()
@@ -329,7 +329,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
                     )
 
                 world.setBlockAndUpdate(pos, detachedState)
-                world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { rift -> rift.data() }
+                world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent { rift -> rift.copyFrom(blockEntity) }
             }
         }
 

@@ -204,7 +204,6 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
         }
 
         addEntry(ModItems.RIFT_BLADE) {
-            add("rift_miss", "You can only use this item on a rift's core")
             info(0, "Opens temporary doors on rifts")
             info(1, "and has a teleport attack.")
         }
@@ -365,6 +364,7 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
                 add("alwaysDelete", "Always Delete")
                 add("colorOverride", "Color Override")
                 add("size", "Size")
+                add("weight", "Weight")
             }
             add("rgba") {
                 add("red", "Red")
@@ -375,7 +375,6 @@ class LanguageProvider(dataOutput: FabricDataOutput, registryLookup: Completable
 
             add("detached_rift") {
                 add("data", "Rift Data")
-                add("weight", "Weight")
                 add("curveID", "Curve")
                 add("rotation", "Rotation")
             }
