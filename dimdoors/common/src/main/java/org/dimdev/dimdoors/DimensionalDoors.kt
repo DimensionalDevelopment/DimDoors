@@ -67,7 +67,7 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualPockets
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers
 import org.dimdev.dimdoors.recipe.ModRecipeTypes
 import org.dimdev.dimdoors.rift.block.LevelSpaceRegistry
-import org.dimdev.dimdoors.rift.item.Holder
+import org.dimdev.dimdoors.rift.item.holder.Holder
 import org.dimdev.dimdoors.rift.link.LinkPropertiesRegistry
 import org.dimdev.dimdoors.rift.targets.Targets
 import org.dimdev.dimdoors.rift.targets.VirtualTargets
@@ -296,8 +296,7 @@ class DimensionalDoors : ModCommon<IDimensionalDoorsSided<out IDimensionalDoorsS
             platform.onBeforeBlockPlace { level: Level, pos: BlockPos, _, placer: Entity -> shouldCancelBlockModification(level, pos, placer) }
 
             UseItemOnBlockCallback.EVENT.register(UseDoorItemOnBlockCallbackListener())
-            UseItemOnBlockCallback.EVENT.register(PortableRiftUseOnBlockListener())
-
+            UseItemOnBlockCallback.EVENT.register(RiftUseOnBlockListener())
             PlacedContent.tracker = ChunkPlacedContentTracker
             platform.onAfterBlockPlace { level, pos, _, placer -> if (placer is Player && ModDimensions.isPocketDimension(level)) PlacedContent.tracker.onPlaced(level, pos) }
             platform.onAfterBlockBreak { level, pos, _, _ -> if (ModDimensions.isPocketDimension(level)) PlacedContent.tracker.onRemoved(level, pos) }

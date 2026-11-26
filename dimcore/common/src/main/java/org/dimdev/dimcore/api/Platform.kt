@@ -51,6 +51,7 @@ interface Platform {
     fun onAfterBlockPlace(consumer: (ServerLevel, BlockPos, BlockState, Entity?) -> Unit)
     fun onAfterBlockBreak(consumer: (ServerLevel, BlockPos, BlockState, Player) -> Unit)
     fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit)
+    fun onEntityLeaveLevel(consumer: (ServerLevel, Entity) -> Unit)
     fun allowChunkSave(predicate: (ServerLevel, ChunkAccess) -> Boolean) = ChunkEvents.ALLOW.register(predicate)
     fun onItemPickup(consumer: (Player, ItemStack) -> Unit)
     fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit)

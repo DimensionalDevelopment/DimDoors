@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.item
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.Container
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.BundleContents
 import net.minecraft.world.item.component.ItemContainerContents
@@ -10,10 +11,11 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dimdev.dimcore.DimCore.platform
 import org.dimdev.dimcore.api.event.ItemHolderEvents
-import org.dimdev.dimcore.api.ext.nested
+import org.dimdev.dimcore.api.ext.children
 import org.dimdev.dimcore.api.ext.stacks
 import org.dimdev.dimdoors.item.ModDataComponentTypes
 import org.dimdev.dimdoors.rift.RiftRegistry
+import org.dimdev.dimdoors.rift.item.holder.Holder
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertices
 import org.dimdev.dimdoors.subsystem.graph.RiftGraph
@@ -32,7 +34,7 @@ class ItemRiftRegistry(
     fun track(id: UUID, holder: Holder?) {
         val inverse = bimap.inverse()
 
-        val previous = if (holder == null) inverse.remove(id) else inverse.put(id, holder)
+        val previous = if (holder == null) inverse.remove(id).also { placeholders -= id } else inverse.forcePut(id, holder)
         if (previous == holder) return
 
         setDirty()
@@ -43,7 +45,10 @@ class ItemRiftRegistry(
         }
     }
 
-    override fun attach(stored: ItemStack, ref: Holder): UUID = getRiftOrPlaceholder(ref).also { stored.set(ModDataComponentTypes.TRACKED_ITEM, it) }
+    override fun attach(stored: ItemStack, ref: Holder): UUID {
+        idAt(ref)?.takeIf { ref.findStack()?.get(ModDataComponentTypes.TRACKED_ITEM) != it }?.let { bimap.remove(ref) }
+        return getRiftOrPlaceholder(ref).also { stored.set(ModDataComponentTypes.TRACKED_ITEM, it) }
+    }
 
     override fun detach(stored: ItemStack) {
         stored.remove(ModDataComponentTypes.RIFT_DATA)
@@ -51,7 +56,9 @@ class ItemRiftRegistry(
         track(id, null)
     }
 
-    override fun storedAt(ref: Holder): ItemStack? = idAt(ref)?.let { ref.findStack(it) }
+    override fun storedAt(ref: Holder): ItemStack? = idAt(ref)?.let { ref.findStack() }
+
+    fun removeWhere(predicate: (Holder) -> Boolean) = bimap.entries.mapNotNull { (holder, id) -> id.takeIf { predicate(holder) } }.forEach { track(it, null) }
 
     companion object {
         private val LOGGER: Logger = LogManager.getLogger()
@@ -63,21 +70,26 @@ class ItemRiftRegistry(
 
             override fun registerEvents(riftGraph: RiftGraph) {
                 super.registerEvents(riftGraph)
-                platform.onEntityJoinLevel { _, entity -> if (entity is ItemEntity) track(entity.item, Holder.entity(entity)) }
-                platform.onItemPickup { player, stack -> if (!player.level().isClientSide) track(stack, Holder.entity(player)) }
-                ItemHolderEvents.ENTITY.register { entity, stack -> if (!entity.level().isClientSide) track(stack, Holder.entity(entity)) }
-                ItemHolderEvents.CONTAINER.register { container, stack -> if (stack.has(ModDataComponentTypes.TRACKED_ITEM) || stack.has(DataComponents.CONTAINER) || stack.has(DataComponents.BUNDLE_CONTENTS)) Holder.of(container)?.let { track(stack, it) } }
+
+                platform.onEntityJoinLevel { _, entity -> if (entity is ItemEntity) track(entity.item, Holder.entity(entity, 0)) }
+                platform.onEntityLeaveLevel { _, entity -> if (entity !is Player && entity.removalReason?.shouldDestroy() == true) instance.removeWhere { it.owner == entity.uuid } }
+                ItemHolderEvents.ENTITY.register { entity, index, stack -> if (!entity.level().isClientSide) track(stack, Holder.entity(entity, index)) }
+                ItemHolderEvents.ENTITY_INVENTORY.register { entity, index, stack -> if (!entity.level().isClientSide && stack.mayHoldRift) track(stack, Holder.EntityInventoryHolder(entity.uuid, index)) }
+                ItemHolderEvents.CONTAINER.register { container, index, stack -> if (stack.mayHoldRift) Holder.of(container, index)?.let { track(stack, it) } }
+                ItemHolderEvents.CONTAINER_DESTROYED.register { container, index -> Holder.of(container, index)?.let { slot -> instance.removeWhere { it.root == slot } } }
                 platform.onPlayerJoin { player -> Holder.offline.remove(player.uuid) }
                 platform.onAfterBlockPlace { level, pos, _, _ ->
                     val container = level.getBlockEntity(pos) as? Container ?: return@onAfterBlockPlace
-                    val holder = Holder.of(container) ?: return@onAfterBlockPlace
-                    container.stacks.forEach { track(it, holder) }
+                    container.stacks.forEachIndexed { index, stack -> Holder.of(container, index)?.let { track(stack, it) } }
                 }
             }
 
-            private fun track(stack: ItemStack, holder: Holder) = stack.nested().mapNotNull { it.get(ModDataComponentTypes.TRACKED_ITEM) }
-                .filter { instance.locationOf(it) != null }
-                .forEach { instance.track(it, holder) }
+            private fun track(stack: ItemStack, holder: Holder, depth: Int = Holder.RECURSION_DEPTH) {
+                stack.get(ModDataComponentTypes.TRACKED_ITEM)?.let { instance.track(it, holder) }
+                if (depth > 0) stack.children.forEachIndexed { index, nested -> if (nested.mayHoldRift) track(nested, Holder.NestedHolder(holder, index), depth - 1) }
+            }
+
+            private val ItemStack.mayHoldRift get() = has(ModDataComponentTypes.TRACKED_ITEM) || has(DataComponents.CONTAINER) || has(DataComponents.BUNDLE_CONTENTS)
 
 
 
@@ -97,8 +109,6 @@ class ItemRiftRegistry(
                 return false
             }
         }
-
-        fun find(stack: ItemStack, id: UUID): ItemStack? = stack.nested().firstOrNull { it.get(ModDataComponentTypes.TRACKED_ITEM) == id }
 
         fun rift(stack: ItemStack): Holder? = stack.get(ModDataComponentTypes.TRACKED_ITEM)?.let { instance.locationOf(it) }
 

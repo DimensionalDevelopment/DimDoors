@@ -107,6 +107,8 @@ class FabricPlatform : Platform {
 
     override fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit) = ServerEntityEvents.ENTITY_LOAD.register { entity, level -> consumer.invoke(level, entity) }
 
+    override fun onEntityLeaveLevel(consumer: (ServerLevel, Entity) -> Unit) = ServerEntityEvents.ENTITY_UNLOAD.register { entity, level -> consumer.invoke(level, entity) }
+
     override fun onItemPickup(consumer: (Player, ItemStack) -> Unit) = ITEM_PICKUP.register(consumer)
 
     override fun registerCommands(consumer: (CommandDispatcher<CommandSourceStack>) -> Unit) = CommandRegistrationCallback.EVENT.register { dispatcher, _, _ -> consumer.invoke(dispatcher) }

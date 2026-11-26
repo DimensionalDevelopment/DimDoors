@@ -31,8 +31,12 @@ object ModItems : PlatformRegistry.ItemPlatformRegistry(DimensionalDoors.getSide
     @JvmField val FRAYED_FILAMENT = registerRegular("frayed_filament")
     @JvmField val RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", ::RiftConfigurationToolItem)
 
-    @JvmField val PORTABLE_RIFT = registerRegular("portable_rift", ::PortableRiftItem)
-    @JvmField val RIFT_MOVER = registerRegular("rift_mover", ::RiftMoverItem)
+    @JvmField val PORTABLE_RIFT = registerRegular("portable_rift", ::PortableRiftItem) {
+        stacksTo(1)
+    }
+    @JvmField val RIFT_MOVER = registerRegular("rift_mover", ::RiftMoverItem) {
+        stacksTo(1)
+    }
 
     @JvmField val BINDING_PEARL = registerRegular("binding_pearl")
 

@@ -35,14 +35,15 @@ public class GrindstoneOutputSlotMixin extends Slot {
 
     @Inject(method = "onTake", at = @At("HEAD"))
     private void dimdoors$onTake(Player player, ItemStack stack, CallbackInfo ci) {
-        if (!stack.is(ModItems.PORTABLE_RIFT)) return;
+        ItemStack input = this$0.getSlot(GrindstoneMenu.INPUT_SLOT).getItem();
+        if (!input.is(ModItems.PORTABLE_RIFT)) return;
 
         var grindstone = (GrindstoneAccessor) this$0;
 
         grindstone.getAccess().execute((level, pos) -> {
             if (!(level instanceof ServerLevel serverLevel)) return;
 
-            ItemRiftRegistry.Companion.getInstance().detach(grindstone.resultSlots().getItem(0));
+            ItemRiftRegistry.Companion.getInstance().detach(input);
 
             LootParams ctx = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.BLOCK_STATE, level.getBlockState(pos))

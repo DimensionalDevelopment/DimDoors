@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemFrameMixin {
     @Inject(method = "setItem(Lnet/minecraft/world/item/ItemStack;Z)V", at = @At("HEAD"))
     private void dimcore$setItem(ItemStack stack, boolean updateNeighbours, CallbackInfo ci) {
-        ItemHolderEvents.ENTITY.invoker().invoke((ItemFrame) (Object) this, stack);
+        ItemHolderEvents.ENTITY.invoker().invoke((ItemFrame) (Object) this, 0, stack);
     }
 }

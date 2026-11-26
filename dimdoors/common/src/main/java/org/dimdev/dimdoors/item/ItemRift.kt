@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item
 import net.minecraft.world.item.ItemStack
 import org.dimdev.dimdoors.rift.Rift
 import org.dimdev.dimdoors.rift.RiftData
-import org.dimdev.dimdoors.rift.item.Holder
+import org.dimdev.dimdoors.rift.item.holder.Holder
 import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertices

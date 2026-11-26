@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.pockets.type.Pocket
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
 import org.dimdev.dimdoors.rift.RiftData
+import org.dimdev.dimdoors.rift.item.holder.Holder
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.subsystem.graph.RegistryVertex
 import org.dimdev.dimdoors.subsystem.registry.SubSystem
@@ -36,6 +37,7 @@ object ModRegistryKeys {
     @JvmField val POCKET_ADDON_TYPE = "pocket_applicable_addon_type".type<BuilderType<PocketAddon, PocketAddon.PocketBuilderAddon<*, *>>>()
     @JvmField val SUBSYSTEM_TYPE = "subsystem_type".type<SubSystem.Type<*>>()
     @JvmField val REGISTRY_VERTEX_TYPE = "registry_vertex".type<RegistryVertex>()
+    @JvmField val ITEM_HOLDER = "item_holder".type<MapCodec<out Holder>>()
     val DECAY_CONDITION_TYPE = "decay_condition_type".type<MapCodec<out DecayCondition>>()
     val DECAY_RESULT_TYPE = "decay_result_type".type<MapCodec<out DecayResult>>()
     val DECAY_PATTERN_TYPE = "decay_pattern_type".type<MapCodec<out DecayPattern>>()

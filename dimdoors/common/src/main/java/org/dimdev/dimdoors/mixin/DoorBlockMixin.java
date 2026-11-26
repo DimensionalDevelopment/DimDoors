@@ -61,4 +61,5 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
     public boolean isBase() {
         return true;
     }
+
 }

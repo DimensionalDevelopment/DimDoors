@@ -18,9 +18,9 @@ import org.dimdev.dimdoors.rift.item.ItemRiftRegistry
 import org.dimdev.dimdoors.sound.ModSoundEvents
 
 class RiftMoverItem(properties: Properties) : PortableRiftItem(properties) {
-    override fun getDescriptionId(stack: ItemStack): String {
-        return this.getDescriptionId()
-    }
+    override fun getDescriptionId(stack: ItemStack): String = this.descriptionId
+
+    override fun canUse(stack: ItemStack) = true
 
     override fun useOn(level: ServerLevel, player: Player, stack: ItemStack, pos: BlockPos, facing: Direction, state: BlockState): InteractionResult {
         return if (ItemRiftRegistry.rift(stack) != null) {

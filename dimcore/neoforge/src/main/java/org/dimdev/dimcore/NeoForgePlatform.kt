@@ -36,6 +36,7 @@ import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.RegisterCommandsEvent
 import net.neoforged.neoforge.event.TagsUpdatedEvent
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent
@@ -168,6 +169,10 @@ class NeoForgePlatform : Platform {
         }
 
     override fun onEntityJoinLevel(consumer: (ServerLevel, Entity) -> Unit) = NeoForge.EVENT_BUS.addListener<EntityJoinLevelEvent> { event ->
+            event.level.castOrNull<ServerLevel>()?.let { consumer.invoke(it, event.entity) }
+        }
+
+    override fun onEntityLeaveLevel(consumer: (ServerLevel, Entity) -> Unit) = NeoForge.EVENT_BUS.addListener<EntityLeaveLevelEvent> { event ->
             event.level.castOrNull<ServerLevel>()?.let { consumer.invoke(it, event.entity) }
         }
 

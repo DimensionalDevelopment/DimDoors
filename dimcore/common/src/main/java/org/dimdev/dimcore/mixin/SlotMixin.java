@@ -17,6 +17,6 @@ public class SlotMixin {
 
     @Inject(method = "set", at = @At("HEAD"))
     private void dimcore$set(ItemStack stack, CallbackInfo ci) {
-        ItemHolderEvents.CONTAINER.invoker().invoke(this.container, stack);
+        ItemHolderEvents.CONTAINER.invoker().invoke(this.container, ((Slot) (Object) this).getContainerSlot(), stack);
     }
 }

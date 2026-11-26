@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import org.dimdev.dimdoors.util.RGBA
 import org.dimdev.dimdoors.util.ext.nullableForGetter
+import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
 class RiftData {
@@ -38,6 +39,10 @@ class RiftData {
         data.colorOverride = this.colorOverride?.copy()
         return data
     }
+
+    override fun equals(other: Any?) = other is RiftData && destination == other.destination && alwaysDelete == other.alwaysDelete && colorOverride == other.colorOverride && color == other.color && size == other.size && weight == other.weight
+
+    override fun hashCode() = Objects.hash(destination, alwaysDelete, colorOverride, color, size, weight)
 
     companion object {
         val CODEC = Schemas.record<RiftData>(DimensionalDoors.id("rift_data")) { instance -> instance.group(

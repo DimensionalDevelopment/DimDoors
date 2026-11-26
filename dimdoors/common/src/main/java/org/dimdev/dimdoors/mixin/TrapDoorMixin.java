@@ -49,4 +49,5 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
     public boolean isBase() {
         return true;
     }
+
 }
