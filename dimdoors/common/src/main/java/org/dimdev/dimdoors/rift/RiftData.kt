@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.rift
 
 import com.mojang.serialization.Codec
 import net.minecraft.core.Holder
-import net.minecraft.resources.RegistryFileCodec
 import net.minecraft.util.Mth
 import org.dimdev.dimcore.api.errata.schema.Schemas
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
@@ -65,6 +65,6 @@ class RiftData {
             }
         }
 
-        val HOLDER_CODEC: Codec<Holder<RiftData>> = RegistryFileCodec.create(ModRegistryKeys.RIFT_DATA, CODEC)
+        val HOLDER_CODEC: Codec<Holder<RiftData>> = DatapackLoader.holderCodec(ModRegistryKeys.RIFT_DATA)
     }
 }

@@ -14,7 +14,10 @@ import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.commands.arguments.ResourceLocationArgument
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument
-import net.minecraft.core.*
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.core.Holder
+import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component.literal
 import net.minecraft.network.chat.MutableComponent
@@ -32,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.block.RiftVariantProvider
 import org.dimdev.dimdoors.blockentity.EntranceRiftBlockEntity
@@ -67,7 +71,7 @@ object PocketCommand {
         return this.literal(name) {
             argument("id", ResourceLocationArgument.id()) {
                 requires { obj -> obj.isPlayer }
-                suggests { ctx, builder -> getSuggestions(ctx.source.registryAccess(), resourceKey, builder) }
+                suggests { _, builder -> getSuggestions(resourceKey, builder) }
                 execute {
                     placePocket(
                         source,
@@ -237,7 +241,7 @@ object PocketCommand {
         targetEntity: Entity?,
         selectedSourcePos: BlockPos?
     ): Int {
-        val creator = source.registryAccess().registry(idFunction).map<T> { a -> a.get(id) }.getOrNull() ?: run {
+        val creator = DatapackLoader.get(ResourceKey.create(idFunction, id)) ?: run {
             source.sendFailure(literal("Unknown pocket id: $id"))
             return 0
         }
@@ -337,14 +341,12 @@ object PocketCommand {
                 && player.mayUseItemAt(sourcePos, Direction.UP, ItemStack.EMPTY)
 
     fun <T : PocketCreator> getSuggestions(
-        access: RegistryAccess,
         resourceKey: ResourceKey<Registry<T>>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
         return SharedSuggestionProvider.suggest(
-            access.registry<T>(resourceKey)
-                .map(Registry<T>::keySet).stream()
-                .flatMap(MutableSet<ResourceLocation>::stream)
+            DatapackLoader.keySet(resourceKey)
+                .map { it.location() }
                 .map(ResourceLocation::toString), builder
         )
     }

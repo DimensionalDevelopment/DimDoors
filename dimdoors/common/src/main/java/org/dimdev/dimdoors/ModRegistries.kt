@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors
 
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.decay.pattern.DecayPattern
 import org.dimdev.dimdoors.item.door.RiftDataList
 import org.dimdev.dimdoors.item.door.condition.Conditions
@@ -33,10 +34,10 @@ object ModRegistries {
     val CLOUD_DATA_TYPE = CloudDatum.registry
 
     @JvmStatic fun register() {
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GENERATOR, PocketGenerator.CODEC)
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GROUPS, VirtualPocket.CODEC)
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.RIFT_DATA, RiftData.CODEC)
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC)
-        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DECAY_PATTERN, DecayPattern.CODEC)
+        DatapackLoader.register(ModRegistryKeys.POCKET_GENERATOR, PocketGenerator.CODEC)
+        DatapackLoader.register(ModRegistryKeys.POCKET_GROUPS, VirtualPocket.CODEC)
+        DatapackLoader.register(ModRegistryKeys.RIFT_DATA, RiftData.CODEC)
+        DatapackLoader.register(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC)
+        DatapackLoader.register(ModRegistryKeys.DECAY_PATTERN, DecayPattern.CODEC)
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.data.DataProvider
 import net.minecraft.resources.RegistryDataLoader
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.stream.Stream
 
@@ -22,7 +22,7 @@ abstract class DimDoorsDynamicRegistryProvider(private val output: FabricDataOut
     override fun run(cachedOutput: CachedOutput): CompletableFuture<*> {
         return registriesFuture.thenCompose { registries ->
             CompletableFuture.supplyAsync({
-                val entries = Entries(registries)
+                val entries = Entries(registries, ::registerAdditional)
                 val provider = entries.createProvider(registries)
 
                 configure(RegistrationHelper(provider, entries))
@@ -33,6 +33,9 @@ abstract class DimDoorsDynamicRegistryProvider(private val output: FabricDataOut
             }
         }
     }
+
+
+    abstract fun registerAdditional(entries: Entries);
 
     protected abstract fun configure(helper: RegistrationHelper)
 
@@ -49,13 +52,19 @@ abstract class DimDoorsDynamicRegistryProvider(private val output: FabricDataOut
 
     private data class ConfiguredEntries(val entries: Entries, val provider: HolderLookup.Provider)
 
-    inner class Entries internal constructor(registries: HolderLookup.Provider) {
+    inner class Entries internal constructor(registries: HolderLookup.Provider, consumer: (Entries) -> Unit) {
         internal val registries: MutableMap<ResourceKey<out Registry<*>>, RegistryEntries<*>> = linkedMapOf()
 
         init {
             DynamicRegistries.getDynamicRegistries()
                 .filter { data -> registries.lookup(data.key()).isPresent }
                 .forEach { addRegistry(it) }
+
+            consumer(this)
+        }
+
+        fun <T> addRegistry(key: ResourceKey<out Registry<T>>, codec: Codec<T>) {
+            registries[key] = RegistryEntries(key, codec)
         }
 
         private fun <T> addRegistry(data: RegistryDataLoader.RegistryData<T>) {
@@ -86,7 +95,7 @@ abstract class DimDoorsDynamicRegistryProvider(private val output: FabricDataOut
                         return Optional.of(overlay)
                     }
 
-                    return parentLookups.computeIfAbsent(key as ResourceKey<out Registry<*>>) { wrapParentLookup<T>(parent, key) as Optional<HolderLookup.RegistryLookup<*>> } as Optional<HolderLookup.RegistryLookup<T>>
+                    return parentLookups.computeIfAbsent(key as ResourceKey<out Registry<*>>) { wrapParentLookup(parent, key) as Optional<HolderLookup.RegistryLookup<*>> } as Optional<HolderLookup.RegistryLookup<T>>
                 }
             }
         }

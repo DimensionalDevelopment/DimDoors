@@ -4,6 +4,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
@@ -28,11 +29,11 @@ data class PocketGenerationContext(
     }
 
 
-    fun <T> lookupHolder(id: ResourceKey<T>): Holder<T> {
-        return provider.asGetterLookup().lookupOrThrow<T>(id.registryKey()).getOrThrow(id)
+    fun <T : Any> lookupHolder(id: ResourceKey<T>): Holder<T> {
+        return DatapackLoader.lookup(id.registryKey())!!.getOrThrow(id)
     }
 
-    fun <T> lookupHolderOptional(id: ResourceKey<T>): Holder.Reference<T>? {
-        return provider.asGetterLookup().lookup(id.registryKey()).getOrNull()?.get(id)?.getOrNull()
+    fun <T : Any> lookupHolderOptional(id: ResourceKey<T>): Holder.Reference<T>? {
+        return DatapackLoader.lookup(id.registryKey())?.get(id)?.getOrNull()
     }
 }

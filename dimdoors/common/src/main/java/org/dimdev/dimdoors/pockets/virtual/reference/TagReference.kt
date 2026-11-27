@@ -8,6 +8,7 @@ import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.Level
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator
@@ -32,7 +33,7 @@ class TagReference(
     override fun getReferencedPocketGenerator(parameters: PocketGenerationContext): Holder<PocketGenerator<*>> = selectPocket(parameters, false)
 
     private fun selectPocket(parameters: PocketGenerationContext, peek: Boolean): Holder<PocketGenerator<*>> {
-        val pockets = this.pockets ?: getPocketsMatchingTags(parameters.provider.lookupOrThrow(ModRegistryKeys.POCKET_GENERATOR).listElements(), required, blackList, exact).also { this.pockets = it }
+        val pockets = this.pockets ?: getPocketsMatchingTags(DatapackLoader.lookupOrThrow(ModRegistryKeys.POCKET_GENERATOR).listElements(), required, blackList, exact).also { this.pockets = it }
         return (if (peek) pockets.peekNextRandomWeighted(parameters) else pockets.getNextRandomWeighted(parameters))!!
     }
 

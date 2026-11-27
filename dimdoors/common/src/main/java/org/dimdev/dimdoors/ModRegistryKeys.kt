@@ -45,8 +45,8 @@ object ModRegistryKeys {
     val SKY_DATA = "cloud_data".type<Type<SkyData>>()
     val CLOUD_DATA = "sky_data".type<Type<CloudData>>()
     val WEATHER_DATA = "weather_data".type<Type<WeatherData>>()
+    val MODIFIER = "virtual_pocket_type".type<Modifier>()
 
-    @JvmField val MODIFIER = "virtual_pocket_type".type<Modifier>()
     @JvmField val POCKET_GENERATOR = "pockets/generators".dynamic<PocketGenerator<*>>()
     @JvmField val POCKET_GROUPS = "pockets/groups".dynamic<VirtualPocket>()
     @JvmField val RIFT_DATA = "pockets/rift_data".dynamic<RiftData>()

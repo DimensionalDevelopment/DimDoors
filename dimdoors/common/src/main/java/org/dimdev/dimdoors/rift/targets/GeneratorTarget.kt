@@ -20,6 +20,6 @@ class GeneratorTarget(override val template: ResourceKey<PocketGenerator<*>>?) :
     override val type: MapCodec<GeneratorTarget> get() = VirtualTargets.GENERATOR
 
     companion object {
-        val CODEC = TemplateTarget.codec(ModRegistryKeys.POCKET_GENERATOR, ::GeneratorTarget)
+        val CODEC = codec(ModRegistryKeys.POCKET_GENERATOR, ::GeneratorTarget)
     }
 }

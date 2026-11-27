@@ -6,6 +6,7 @@ import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket
@@ -38,8 +39,7 @@ class PathSelector(level: ResourceKey<Level>, private val path: ResourceLocation
 
     private fun initialize(context: PocketGenerationContext) {
         if (!initalized) {
-            context.provider.lookup(ModRegistryKeys.POCKET_GROUPS).stream()
-                .flatMap { it.listElements() }
+            DatapackLoader.lookupOrThrow(ModRegistryKeys.POCKET_GROUPS).listElements()
                 .filter(::checkKey)
                 .map(Holder.Reference<VirtualPocket>::value)
                 .forEach(::add)

@@ -14,3 +14,8 @@ transitive-accessible class net/minecraft/client/renderer/RenderStateShard$Outpu
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 
 transitive-accessible field net/minecraft/client/renderer/texture/SpriteContents byMipLevel [Lcom/mojang/blaze3d/platform/NativeImage;
+
+transitive-accessible method net/minecraft/core/Holder$Reference bindValue (Ljava/lang/Object;)V
+transitive-accessible method net/minecraft/core/Holder$Reference bindTags (Ljava/util/Collection;)V
+transitive-accessible method net/minecraft/core/HolderSet$Named <init> (Lnet/minecraft/core/HolderOwner;Lnet/minecraft/tags/TagKey;)V
+transitive-accessible method net/minecraft/core/HolderSet$Named bind (Ljava/util/List;)V

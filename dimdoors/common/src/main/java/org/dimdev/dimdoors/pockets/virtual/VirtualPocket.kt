@@ -4,12 +4,9 @@ import com.mojang.datafixers.Products.P1
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.RegistryFileCodec
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
-import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.PocketCreator
 import org.dimdev.dimdoors.pockets.PocketGenerationContext
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference
@@ -35,9 +32,6 @@ interface VirtualPocket : Weighted<PocketGenerationContext>, PocketCreator {
                 }
             )
         }
-
-        @JvmField
-        val HOLDER_CODEC: Codec<Holder<VirtualPocket>> = RegistryFileCodec.create(ModRegistryKeys.POCKET_GROUPS, CODEC)
 
         fun <T : VirtualPocket> commonFields(instance: RecordCodecBuilder.Instance<T>): P1<RecordCodecBuilder.Mu<T>, ResourceKey<Level>> = instance.group(ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("level", ModDimensions.DUNGEON).forGetter { it.level })
     }

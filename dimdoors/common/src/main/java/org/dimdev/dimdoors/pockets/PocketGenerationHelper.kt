@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.DimensionalDoors
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.pockets.type.Pocket
@@ -13,7 +14,7 @@ import org.dimdev.dimdoors.rift.link.LinkProperties
 import org.dimdev.dimdoors.rift.targets.VirtualTarget
 import kotlin.jvm.optionals.getOrNull
 
-fun <T> ResourceKey<T>.holder() = DimensionalDoors.server.registryAccess().lookupOrThrow(this.registryKey()).get(this).getOrNull()
+fun <T : Any> ResourceKey<T>.holder() = DatapackLoader.lookup(this.registryKey())?.get(this)?.getOrNull()
 private fun ResourceKey<Level>.world() = DimensionalDoors.getWorld(this)
 
 object PocketGenerationHelper {

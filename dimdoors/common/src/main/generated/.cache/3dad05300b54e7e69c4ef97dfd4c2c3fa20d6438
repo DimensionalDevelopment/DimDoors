@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-25T00:44:15.657672	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-11-27T00:10:13.9598076	DimensionalDoors/Tags for minecraft:block
 f47d7226fc980f30e9f71eb3e9c31fcc4daa1b54 data\dimdoors\tags\block\decays_to\red_sand_wall.json
 7192a6a29ad8a8a941224e401e813eb14fb752e2 data\minecraft\tags\block\trapdoors.json
 16cc5d20b8fadfc390c1734649de68848350e151 data\dimdoors\tags\block\decays_to\driftwood_leaves.json
@@ -14,8 +14,8 @@ a3972dba30a723f786e388d83c4b9073eaff0e88 data\dimdoors\tags\block\decays_to\furn
 8784b912d211e77c62ea40b284c420731c0dd0f4 data\minecraft\tags\block\dead_bush_may_place_on.json
 5d012d4f8fb9e2f65ab59939c6c0591fa1a5df5b data\c\tags\block\dyed\brown.json
 e570c8f9ab7b381e2acd76066c4475a4e122cb19 data\dimdoors\tags\block\decays_to\dark_sand_button.json
-5e075782be9bed2ffff676c4f7543b4620fb1794 data\minecraft\tags\block\logs.json
 763c4a168bb069924f905f670bf7870013d3cadc data\c\tags\block\chests\wooden.json
+5e075782be9bed2ffff676c4f7543b4620fb1794 data\minecraft\tags\block\logs.json
 968f54e0c7ac63c27d6b5da1344653339e6e5ced data\minecraft\tags\block\sword_efficient.json
 c1eb09373ad5c8e79da486dcad6940694b892c3c data\c\tags\block\dyed\light_blue.json
 18ef648ae8bd9439c8cf73538a187b41516835cb data\minecraft\tags\block\wooden_stairs.json

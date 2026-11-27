@@ -384,7 +384,7 @@ abstract class Pocket<T : Pocket<T, V>, V : Pocket.PocketBuilder<T, V>> : Builde
                 BoundingBox.CODEC.fieldOf("box").forGetter(Pocket<*, *>::box),
                 VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(Pocket<*, *>::virtualLocation),
                 PocketAddon.LIST_CODEC.fieldOf("addons").forGetter { it.addons.values.toMutableList() },
-                    ResourceKey.codec(ModRegistryKeys.POCKET_GENERATOR).optionalFieldOf("generator").nullableForGetter(Pocket<*, *>::generator))
+                ResourceKey.codec(ModRegistryKeys.POCKET_GENERATOR).optionalFieldOf("generator").nullableForGetter(Pocket<*, *>::generator))
         }
 
 

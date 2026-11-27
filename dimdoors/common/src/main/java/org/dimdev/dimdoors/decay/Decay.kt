@@ -18,6 +18,7 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.ticks.ScheduledTick
 import net.minecraft.world.ticks.TickPriority
 import org.dimdev.dimcore.api.ext.castOrNull
+import org.dimdev.dimcore.util.DatapackLoader
 import org.dimdev.dimdoors.DimensionalDoors.Companion.config
 import org.dimdev.dimdoors.ModRegistryKeys
 import org.dimdev.dimdoors.decay.pattern.DecayPattern
@@ -66,11 +67,9 @@ object Decay {
         fun reload(registryAccess: RegistryAccess) {
             patterns.clear()
 
-            registryAccess.registry(ModRegistryKeys.DECAY_PATTERN).ifPresent {
-                it.holders().forEach { pattern ->
-                    pattern.value().constructApplicable(registryAccess)
-                        .forEach { resourceKey -> patterns.computeIfAbsent(resourceKey) { ArrayList() }.add(pattern) }
-                }
+            DatapackLoader.lookup(ModRegistryKeys.DECAY_PATTERN)?.listElements()?.forEach { pattern ->
+                pattern.value().constructApplicable(registryAccess)
+                    .forEach { resourceKey -> patterns.computeIfAbsent(resourceKey) { ArrayList() }.add(pattern) }
             }
         }
 
@@ -136,7 +135,7 @@ object Decay {
                 val (sourceName, patternId) = encoded.split("|").takeIf { it.size == 2 } ?: return Optional.empty()
                 val source = DecaySource.entries.firstOrNull { it.serializedName == sourceName } ?: return Optional.empty()
                 val id = ResourceLocation.tryParse(patternId) ?: return Optional.empty()
-                return level.registryAccess().registryOrThrow(ModRegistryKeys.DECAY_PATTERN).getHolder(id).map { DecayTask(source, it) }
+                return DatapackLoader.lookupOrThrow(ModRegistryKeys.DECAY_PATTERN).get(ResourceKey.create(ModRegistryKeys.DECAY_PATTERN, id)).map { DecayTask(source, it) }
             }
         }
     }

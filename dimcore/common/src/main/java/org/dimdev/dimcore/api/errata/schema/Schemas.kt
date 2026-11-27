@@ -33,11 +33,11 @@ object Schemas {
         return SchemaCodec(codec.codec(), codec.schema(id))
     }
 
-    fun <T> registryKey(key: ResourceKey<out Registry<T>>): SchemaCodec<ResourceKey<T>> = SchemaCodec(ResourceKey.codec(key),
+    fun <T: Any> registryKey(key: ResourceKey<out Registry<T>>): SchemaCodec<ResourceKey<T>> = SchemaCodec(ResourceKey.codec(key),
         ReferenceNode(ReferenceSources.registry(key).id)
     )
 
-    fun <T> holder(key: ResourceKey<out Registry<T>>, codec: Codec<Holder<T>>): SchemaCodec<Holder<T>> = SchemaCodec(codec,
+    fun <T: Any> holder(key: ResourceKey<out Registry<T>>, codec: Codec<Holder<T>>): SchemaCodec<Holder<T>> = SchemaCodec(codec,
         ReferenceNode(ReferenceSources.registry(key).id)
     )
 
